@@ -31,10 +31,10 @@ public class Robot {
     public DcMotorEx backRightDrive;
 
 
-    public Limelight3A limelight;
+    //public Limelight3A limelight;
 
 
-    public WebcamName CamCam;
+    //public WebcamName CamCam;
 
     public Telemetry telemetry;
     //public BNO055IMU imu;
@@ -59,10 +59,10 @@ public class Robot {
         frontLeftDrive = hardwareMap.get(DcMotorEx.class, "frontLeftDrive");
         backLeftDrive = hardwareMap.get(DcMotorEx.class, "backLeftDrive");
         backRightDrive = hardwareMap.get(DcMotorEx.class, "backRightDrive");
-        CamCam = hardwareMap.get(WebcamName.class, "CamCam");
+        //CamCam = hardwareMap.get(WebcamName.class, "CamCam");
 
 
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        //limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
 
         imuParameters = new IMU.Parameters(

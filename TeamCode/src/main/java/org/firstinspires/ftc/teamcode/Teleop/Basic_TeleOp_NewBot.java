@@ -9,8 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.Teleop.Limelight_Target_Scanner;
-import org.firstinspires.ftc.teamcode.Teleop.WaveTag;
 
 /**
  * This file is our iterative (Non-Linear) "OpMode" for TeleOp.
@@ -47,8 +45,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
     //private double storedSpeed;
     public Robot robot = null;
     public IMU imu;
-    public Limelight_Target_Scanner scanner = new Limelight_Target_Scanner();
-    public WaveTag targetData = null;
 
     public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
     public static final String PATTERN_KEY = "Pattern";
@@ -81,13 +77,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             imu.initialize(parameters);
         }
         //if using field centric youl need this lolzeez
-        if (blackboard.get(ALLIANCE_KEY) == "BLUE") {
-            scanner.InitLimeLightTargeting(2, robot.hardwareMap);
-        } else if (blackboard.get(ALLIANCE_KEY) == "RED") {
-            scanner.InitLimeLightTargeting(1, robot.hardwareMap);
-        } else {
-            scanner.InitLimeLightTargeting(1, robot.hardwareMap);
-        }
+
 
 
     }
@@ -116,7 +106,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
      */
     public void loop() {
 
-        targetData = scanner.tagInfo();
+
 
 
         //So Begins the input chain. At least try a bit to organise by driver
@@ -125,17 +115,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         controlMode();
         driveSpeed();
 
-        if (gamepad1.square) {
-            autoWheel(targetData.currentlyDetected, targetData.angleX);
-        } else {
-            singleJoystickDrive();
-            spinTargetAquired = false;
-        }
 
-
-        if (gamepad1.touchpad || gamepad2.touchpad) {
-            requestOpModeStop();
-        }
 
         // Driver 2
 
@@ -172,49 +152,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.frontRightDrive.setPower(-motorPowers[1]);
         robot.backLeftDrive.setPower(-motorPowers[2]);
         robot.backRightDrive.setPower(-motorPowers[3]);
-    }
-
-    private void autoWheel(boolean detected, double anglex) {
-
-
-        if (!spinTargetAquired) {
-            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition() + 830*4;
-            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition() - 830*4;
-            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition() + 830*4;
-            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition() - 830*4;
-            spinTargetAquired = true;
-            speed = 1;
-        }//we so cool if this works
-
-
-        if (!detected) {
-            //180 Turn
-            robot.frontLeftDrive.setTargetPosition(SpinTargetFrontLeft);
-            robot.frontRightDrive.setTargetPosition(SpinTargetFrontRight);
-            robot.backLeftDrive.setTargetPosition(SpinTargetBackLeft);
-            robot.backRightDrive.setTargetPosition(SpinTargetBackRight);
-        } else if (detected) //Turn to face target tag
-        {
-            double constant = -850 / 360; //We will know this later
-            speed = 0.65;
-            double turnTicks = targetData.angleX * constant;
-
-            robot.frontLeftDrive.setTargetPosition(robot.frontLeftDrive.getCurrentPosition() + (int) turnTicks);
-            robot.frontRightDrive.setTargetPosition(robot.frontRightDrive.getCurrentPosition() - (int) turnTicks);
-            robot.backLeftDrive.setTargetPosition(robot.backLeftDrive.getCurrentPosition() + (int) turnTicks);
-            robot.backRightDrive.setTargetPosition(robot.backRightDrive.getCurrentPosition() - (int) turnTicks);
-        }
-
-
-        robot.frontLeftDrive.setPower(speed);
-        robot.frontRightDrive.setPower(speed);
-        robot.backLeftDrive.setPower(speed);
-        robot.backRightDrive.setPower(speed);
-
-        robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     private void singleJoystickDrive() {
@@ -333,17 +270,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         // It's mostly used for troubleshooting.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-        telemetry.addData("last detected x angle: ", targetData.angleX);
-        telemetry.addData("last detected y angle: ", targetData.angleY);
-
-        telemetry.addData("last distance x: ", targetData.distanceX);
-        telemetry.addData("last detected distance y: ", targetData.distanceY);
-        telemetry.addData("last detected distance z: ", targetData.distanceZ);
-        telemetry.addData("Is occupied?: ", targetData.currentlyDetected);
-
-        telemetry.addData("Last saved pattern: ", blackboard.get(PATTERN_KEY));
-
-        telemetry.addData("Last saved Allience: ", blackboard.get(ALLIANCE_KEY));
+     //lol
 
         robot.tellMotorOutput();
     }
