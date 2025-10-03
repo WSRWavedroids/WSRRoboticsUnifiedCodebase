@@ -30,11 +30,7 @@ public class Robot {
     public DcMotorEx backLeftDrive;
     public DcMotorEx backRightDrive;
 
-
-    //public Limelight3A limelight;
-
-
-    //public WebcamName CamCam;
+    public DcMotor intakeMotor;
 
     public Telemetry telemetry;
     //public BNO055IMU imu;
@@ -59,11 +55,8 @@ public class Robot {
         frontLeftDrive = hardwareMap.get(DcMotorEx.class, "frontLeftDrive");
         backLeftDrive = hardwareMap.get(DcMotorEx.class, "backLeftDrive");
         backRightDrive = hardwareMap.get(DcMotorEx.class, "backRightDrive");
-        //CamCam = hardwareMap.get(WebcamName.class, "CamCam");
 
-
-        //limelight = hardwareMap.get(Limelight3A.class, "limelight");
-
+        intakeMotor = hardwareMap.get(DcMotor.class, "intake");
 
         imuParameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(
@@ -78,6 +71,8 @@ public class Robot {
         backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.REVERSE);
 
+        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD); //TODO Add direction
+
 
         // This tells the motors to chill when we're not powering them.
         frontRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -85,6 +80,7 @@ public class Robot {
         backRightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //This is new..
         telemetry.addData("Status", "Initialized");
 
