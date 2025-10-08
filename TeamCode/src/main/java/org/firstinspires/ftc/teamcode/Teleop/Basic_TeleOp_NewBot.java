@@ -106,7 +106,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
      */
     public void loop() {
 
-
+        singleJoystickDrive();
 
 
         //So Begins the input chain. At least try a bit to organise by driver
@@ -114,6 +114,19 @@ public class Basic_TeleOp_NewBot extends OpMode {
         //Driver 1
         controlMode();
         driveSpeed();
+/*
+        if(gamepad2.a)
+        {
+            robot.intakeMotor.setPower(1);
+        }
+        else if(gamepad2.b)
+        {
+            robot.intakeMotor.setPower(-1);
+        }
+        else
+        {
+            robot.intakeMotor.setPower(0);
+        }*/
 
 
 
