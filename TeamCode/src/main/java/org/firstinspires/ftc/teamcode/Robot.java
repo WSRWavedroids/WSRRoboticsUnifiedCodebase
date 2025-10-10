@@ -24,7 +24,7 @@ import java.util.Objects;
 
 
 public class Robot {
-
+//add motors w their names here
     public DcMotorEx frontLeftDrive;
     public DcMotorEx frontRightDrive;
     public DcMotorEx backLeftDrive;
