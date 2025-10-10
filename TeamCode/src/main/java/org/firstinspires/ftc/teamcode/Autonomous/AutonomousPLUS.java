@@ -85,11 +85,11 @@ public class AutonomousPLUS extends LinearOpMode {
         motorTicks[1] = (-moveForward - moveRight - turn);
         motorTicks[2] = (-moveForward - moveRight + turn);
         motorTicks[3] = (-moveForward + moveRight - turn);
-//todo un // these
-        //robot.frontLeftDrive.setTargetPosition(-motorTicks[0] + robot.frontLeftDrive.getCurrentPosition());
-        //robot.frontRightDrive.setTargetPosition(-motorTicks[1] + robot.frontRightDrive.getCurrentPosition());
-        //robot.backLeftDrive.setTargetPosition(-motorTicks[2] + robot.backLeftDrive.getCurrentPosition());
-        //robot.backRightDrive.setTargetPosition(-motorTicks[3] + robot.backRightDrive.getCurrentPosition());
+
+        robot.frontLeftDrive.setTargetPosition(-motorTicks[0] + robot.frontLeftDrive.getCurrentPosition());
+        robot.frontRightDrive.setTargetPosition(-motorTicks[1] + robot.frontRightDrive.getCurrentPosition());
+        robot.backLeftDrive.setTargetPosition(-motorTicks[2] + robot.backLeftDrive.getCurrentPosition());
+        robot.backRightDrive.setTargetPosition(-motorTicks[3] + robot.backRightDrive.getCurrentPosition());
 
         if (waitForCompletion) {
             while (opModeIsActive() && robot.isWheelsBusy()) {
@@ -219,13 +219,13 @@ public class AutonomousPLUS extends LinearOpMode {
 
         }
     }
-    //todo un // these
+
     public void moveDiagonalRight(int ticks, long pause) {
         //This moves along the 45/225 axis, Positive ticks move forward and negative move back
         if (opModeIsActive()) {
             robot.setTargets("Diagonal Right", ticks);
-            //robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //robot.backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.powerSet(speed);
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
@@ -238,13 +238,13 @@ public class AutonomousPLUS extends LinearOpMode {
             robot.encoderReset();
         }
     }
-    //todo un // these
+
     public void moveDiagonalLeft(int ticks, long pause) {
         //moves along the 135/315 axis, positive ticks move forward and negative ticks move back
         if (opModeIsActive()) {
             robot.setTargets("Diagonal Left", ticks);
-            //robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            //robot.backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.powerSet(speed);
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
@@ -264,11 +264,11 @@ public class AutonomousPLUS extends LinearOpMode {
         robot.encoderRunningMode();
         timer.reset();
         while (timer.milliseconds() < time)
-        {//todo un // these
-            //robot.frontLeftDrive.setPower(-speed);
-            //robot.backLeftDrive.setPower(-speed);
-            //robot.frontRightDrive.setPower(-speed);
-            //robot.backRightDrive.setPower(-speed);
+        {
+            robot.frontLeftDrive.setPower(-speed);
+            robot.backLeftDrive.setPower(-speed);
+            robot.frontRightDrive.setPower(-speed);
+            robot.backRightDrive.setPower(-speed);
         }
         robot.stopAllMotors();
         sleep(pause);
@@ -280,11 +280,11 @@ public class AutonomousPLUS extends LinearOpMode {
         robot.encoderRunningMode();
         timer.reset();
         while (opModeIsActive() && timer.milliseconds() < time)
-        {//todo un // these
-            //robot.frontLeftDrive.setPower(speed);
-            //robot.backLeftDrive.setPower(speed);
-            //robot.frontRightDrive.setPower(speed);
-            //robot.backRightDrive.setPower(speed);
+        {
+            robot.frontLeftDrive.setPower(speed);
+            robot.backLeftDrive.setPower(speed);
+            robot.frontRightDrive.setPower(speed);
+            robot.backRightDrive.setPower(speed);
         }
         robot.stopAllMotors();
         sleep(pause);
@@ -296,11 +296,11 @@ public class AutonomousPLUS extends LinearOpMode {
         robot.encoderRunningMode();
         timer.reset();
         while (opModeIsActive() && timer.milliseconds() < time)
-        {//todo un // these
-            //robot.frontLeftDrive.setPower(-speed);
-            //robot.backLeftDrive.setPower(speed);
-            //robot.frontRightDrive.setPower(speed);
-            //robot.backRightDrive.setPower(-speed);
+        {
+            robot.frontLeftDrive.setPower(-speed);
+            robot.backLeftDrive.setPower(speed);
+            robot.frontRightDrive.setPower(speed);
+            robot.backRightDrive.setPower(-speed);
         }
         robot.stopAllMotors();
         sleep(pause);
@@ -312,11 +312,11 @@ public class AutonomousPLUS extends LinearOpMode {
         robot.encoderRunningMode();
         timer.reset();
         while (opModeIsActive() && timer.milliseconds() < time)
-        {//todo un // these
-            //robot.frontLeftDrive.setPower(speed);
-            //robot.backLeftDrive.setPower(-speed);
-            //robot.frontRightDrive.setPower(-speed);
-            //robot.backRightDrive.setPower(speed);
+        {
+            robot.frontLeftDrive.setPower(speed);
+            robot.backLeftDrive.setPower(-speed);
+            robot.frontRightDrive.setPower(-speed);
+            robot.backRightDrive.setPower(speed);
         }
         robot.stopAllMotors();
         sleep(pause);
@@ -328,11 +328,11 @@ public class AutonomousPLUS extends LinearOpMode {
         robot.encoderRunningMode();
         timer.reset();
         while (opModeIsActive() && timer.milliseconds() < time)
-        {//todo un // these
-            //robot.frontLeftDrive.setPower(speed);
-            //robot.backLeftDrive.setPower(speed);
-            //robot.frontRightDrive.setPower(-speed);
-            //robot.backRightDrive.setPower(-speed);
+        {
+            robot.frontLeftDrive.setPower(speed);
+            robot.backLeftDrive.setPower(speed);
+            robot.frontRightDrive.setPower(-speed);
+            robot.backRightDrive.setPower(-speed);
         }
         robot.stopAllMotors();
         sleep(pause);
@@ -344,11 +344,11 @@ public class AutonomousPLUS extends LinearOpMode {
         robot.encoderRunningMode();
         timer.reset();
         while (opModeIsActive() && timer.milliseconds() < time)
-        {//todo un // these
-            //robot.frontLeftDrive.setPower(-speed);
-            //robot.backLeftDrive.setPower(-speed);
-            //robot.frontRightDrive.setPower(speed);
-            //robot.backRightDrive.setPower(speed);
+        {
+            robot.frontLeftDrive.setPower(-speed);
+            robot.backLeftDrive.setPower(-speed);
+            robot.frontRightDrive.setPower(speed);
+            robot.backRightDrive.setPower(speed);
         }
         robot.stopAllMotors();
         sleep(pause);
@@ -360,11 +360,11 @@ public class AutonomousPLUS extends LinearOpMode {
         robot.encoderRunningMode();
         timer.reset();
         while (opModeIsActive() && timer.milliseconds() < time)
-        {//todo un // these
-            //robot.frontLeftDrive.setPower(-speed *  PosOneForward_MinusOneBack);
-            //robot.backLeftDrive.setPower(0);
-            //robot.frontRightDrive.setPower(0);
-            //robot.backRightDrive.setPower(-speed * PosOneForward_MinusOneBack);
+        {
+            robot.frontLeftDrive.setPower(-speed *  PosOneForward_MinusOneBack);
+            robot.backLeftDrive.setPower(0);
+            robot.frontRightDrive.setPower(0);
+            robot.backRightDrive.setPower(-speed * PosOneForward_MinusOneBack);
         }
         robot.stopAllMotors();
         sleep(pause);
@@ -376,11 +376,11 @@ public class AutonomousPLUS extends LinearOpMode {
         robot.encoderRunningMode();
         timer.reset();
         while (opModeIsActive() && timer.milliseconds() < time)
-        {//todo un // these
-            //robot.frontLeftDrive.setPower(0);
-            //robot.backLeftDrive.setPower(-speed * PosOneForward_MinusOneBack);
-            //robot.frontRightDrive.setPower(-speed * PosOneForward_MinusOneBack);
-            //robot.backRightDrive.setPower(0);
+        {
+            robot.frontLeftDrive.setPower(0);
+            robot.backLeftDrive.setPower(-speed * PosOneForward_MinusOneBack);
+            robot.frontRightDrive.setPower(-speed * PosOneForward_MinusOneBack);
+            robot.backRightDrive.setPower(0);
         }
         robot.stopAllMotors();
         sleep(pause);
@@ -397,12 +397,12 @@ public class AutonomousPLUS extends LinearOpMode {
 
 
 
-    //todo un // these
+
     public void setDrivetrainTolerances(int ticks) {
-        //robot.frontLeftDrive.setTargetPositionTolerance(ticks);
-        //robot.frontRightDrive.setTargetPositionTolerance(ticks);
-        //robot.backLeftDrive.setTargetPositionTolerance(ticks);
-        //robot.backRightDrive.setTargetPositionTolerance(ticks);
+        robot.frontLeftDrive.setTargetPositionTolerance(ticks);
+        robot.frontRightDrive.setTargetPositionTolerance(ticks);
+        robot.backLeftDrive.setTargetPositionTolerance(ticks);
+        robot.backRightDrive.setTargetPositionTolerance(ticks);
     }
 
     public void prepareNextAction(long pause) {
