@@ -114,7 +114,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         //Driver 1
         controlMode();
         driveSpeed();
-/*
+
         if(gamepad2.a)
         {
             robot.intakeMotor.setPower(1);
@@ -126,7 +126,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         else
         {
             robot.intakeMotor.setPower(0);
-        }*/
+        }
 
 
 
