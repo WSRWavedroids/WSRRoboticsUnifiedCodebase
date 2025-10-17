@@ -121,7 +121,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.intakeMotor.setPower(-1);
             //intake motor toggles
         }
-        /// TODO: 10/16/2025 make a toggle for motor power
+        /// TODO: 10/16/2025 make a toggle for motor power with y button
         if(gamepad2.yWasPressed())
         {
             robot.intakeMotor.setPower(1);
