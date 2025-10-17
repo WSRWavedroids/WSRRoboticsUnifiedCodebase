@@ -97,8 +97,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
         telemetry.addData("HYPE", "Let's do this!!!");
         gamepad1.setLedColor(0, 0, 255, 100000000);
         gamepad2.setLedColor(0, 0, 255, 100000000);
-
-
     }
 
     /*
@@ -156,15 +154,15 @@ public class Basic_TeleOp_NewBot extends OpMode {
         if (motorPowers.length != 4) {
             return;
         }
-        //robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //robot.backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //robot.backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //robot.frontLeftDrive.setPower(-motorPowers[0]); //todo un // these
-        //robot.frontRightDrive.setPower(-motorPowers[1]);
-        //robot.backLeftDrive.setPower(-motorPowers[2]);
-        //robot.backRightDrive.setPower(-motorPowers[3]);
+        robot.frontLeftDrive.setPower(-motorPowers[0]);
+        robot.frontRightDrive.setPower(-motorPowers[1]);
+        robot.backLeftDrive.setPower(-motorPowers[2]);
+        robot.backRightDrive.setPower(-motorPowers[3]);
     }
 
     private void singleJoystickDrive() {
