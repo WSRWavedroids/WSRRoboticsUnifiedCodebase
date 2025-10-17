@@ -286,9 +286,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         // It's mostly used for troubleshooting.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
-     //lol
-
-        robot.tellMotorOutput();
+        robot.tellMotorOutput(); // Updates telemetry too
     }
     private float getLargestAbsVal( float[] values){
         // This function does some math!
