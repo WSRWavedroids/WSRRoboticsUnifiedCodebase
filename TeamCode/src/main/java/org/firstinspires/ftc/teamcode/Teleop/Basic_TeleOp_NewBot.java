@@ -109,7 +109,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         //So Begins the input chain. At least try a bit to organise by driver
 
-        //Driver 1
+        //Driver 2
         controlMode();
         driveSpeed();
 //this is intake motor code todo tune this when robot is built and motor is determined
@@ -120,6 +120,11 @@ public class Basic_TeleOp_NewBot extends OpMode {
         else if(gamepad2.b)
         {
             robot.intakeMotor.setPower(-1);
+            //intake motor toggles
+        }
+        else if(gamepad2.yWasPressed())
+        {
+            robot.intakeMotor.setPower(1);
         }
         else
         {
@@ -128,7 +133,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
-        // Driver 2
+        // Driver 1
 
 
         doTelemetryStuff();
