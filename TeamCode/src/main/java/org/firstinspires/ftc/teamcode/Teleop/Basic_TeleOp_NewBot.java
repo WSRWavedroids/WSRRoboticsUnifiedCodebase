@@ -115,11 +115,11 @@ public class Basic_TeleOp_NewBot extends OpMode {
 //this is intake motor code todo tune this when robot is built and motor is determined
         if(gamepad2.a)
         {
-            robot.intakeSpeed = 1;
+            robot.intakeSpeed = -1;
         }
         else if(gamepad2.b)
         {
-            robot.intakeSpeed = -1;
+            robot.intakeSpeed = 1;
             //intake motor toggles
         }
         /// TODO: 10/16/2025 make a toggle for motor power with y button
@@ -167,10 +167,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        robot.frontLeftDrive.setPower(-motorPowers[0]);
-        robot.frontRightDrive.setPower(-motorPowers[1]);
-        robot.backLeftDrive.setPower(-motorPowers[2]);
-        robot.backRightDrive.setPower(-motorPowers[3]);
+        robot.frontLeftDrive.setPower(motorPowers[0]);
+        robot.frontRightDrive.setPower(motorPowers[1]);
+        robot.backLeftDrive.setPower(motorPowers[2]);
+        robot.backRightDrive.setPower(motorPowers[3]);
     }
 
     private void singleJoystickDrive() {
@@ -192,9 +192,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         if (robot.controlMode == "Robot Centric") {
 
-            motorPowers[0] = (leftY + leftX + rightX);//might need inverted back
+            motorPowers[0] = (leftY - leftX + rightX);//might need inverted back
             motorPowers[1] = (leftY - leftX - rightX);
-            motorPowers[2] = (leftY - leftX + rightX);
+            motorPowers[2] = (leftY + leftX + rightX);
             motorPowers[3] = (leftY + leftX - rightX);
 
         } else if (robot.controlMode == "Field Centric") {
