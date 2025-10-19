@@ -36,6 +36,8 @@ public class Robot {
     public String controlMode = "Robot Centric";// Robot Centric
     public IMU.Parameters imuParameters;
 
+    public double intakeSpeed;
+
 
     //Initialize motors and servos
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, OpMode opmode){
