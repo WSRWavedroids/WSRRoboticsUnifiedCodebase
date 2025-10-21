@@ -182,15 +182,15 @@ public class wheelyCoolMotorTest extends OpMode {
        }
        else if(Direction == "Left")
        {
-           Bot.frontLeftDrive.setPower(speed);
+           Bot.frontLeftDrive.setPower(-speed);
            Bot.frontRightDrive.setPower(-speed);
-           Bot.backLeftDrive.setPower(-speed);
+           Bot.backLeftDrive.setPower(speed);
            Bot.backRightDrive.setPower(speed);
        }else if(Direction == "Right")
        {
-           Bot.frontLeftDrive.setPower(-speed);
+           Bot.frontLeftDrive.setPower(speed);
            Bot.frontRightDrive.setPower(speed);
-           Bot.backLeftDrive.setPower(speed);
+           Bot.backLeftDrive.setPower(-speed);
            Bot.backRightDrive.setPower(-speed);
        }
        else if(Direction == "TurnRight")
