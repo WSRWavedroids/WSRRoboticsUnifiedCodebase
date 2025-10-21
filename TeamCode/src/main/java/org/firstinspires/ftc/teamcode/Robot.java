@@ -37,6 +37,7 @@ public class Robot {
     public IMU.Parameters imuParameters;
 
     public double intakeSpeed;
+    public double intakeTune;
 
 
     //Initialize motors and servos
