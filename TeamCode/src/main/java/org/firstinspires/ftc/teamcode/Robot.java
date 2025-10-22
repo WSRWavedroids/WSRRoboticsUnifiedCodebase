@@ -26,6 +26,9 @@ public class Robot {
 
     public DcMotorEx intakeMotor;
 
+    public DcMotorEx launchLeft;
+    public DcMotorEx launchRight;
+
     public Telemetry telemetry;
     //public BNO055IMU imu;
 

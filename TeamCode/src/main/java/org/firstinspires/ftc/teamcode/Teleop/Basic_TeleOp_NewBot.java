@@ -114,26 +114,33 @@ public class Basic_TeleOp_NewBot extends OpMode {
         driveSpeed();
 //this is intake motor code
         robot.intakeTune = 0.8; // todo tune this when robot is built and motor is determined
-        if(gamepad2.a)
-        {
+        if (gamepad2.a) {
             robot.intakeSpeed = -1;
-        }
-        else if(gamepad2.b)
-        {
+        } else if (gamepad2.b) {
             robot.intakeSpeed = 1;
         }
-        if(gamepad2.yWasPressed())
-        {
+        if (gamepad2.yWasPressed()) {
             robot.intakeSpeed = 1;
-        }
-        else if(gamepad2.xWasPressed())
+        } else if (gamepad2.xWasPressed())
             robot.intakeSpeed = -1;
         {
-        if(gamepad2.aWasReleased() || gamepad2.bWasReleased())
-            robot.intakeSpeed = 0;
+            if (gamepad2.aWasReleased() || gamepad2.bWasReleased())
+                robot.intakeSpeed = 0;
         }
         robot.intakeMotor.setPower(robot.intakeSpeed * robot.intakeTune);
+//launch motors code
 
+        if(gamepad2.right_trigger > 0.2)
+        {
+            robot.launchLeft.setPower(1);
+            robot.launchRight.setPower(-1);
+        }
+        else
+        {
+            robot.launchLeft.setPower(0);
+            robot.launchRight.setPower(0);
+        }
+        //Matthew Was Here
 
         // Driver 1
 
