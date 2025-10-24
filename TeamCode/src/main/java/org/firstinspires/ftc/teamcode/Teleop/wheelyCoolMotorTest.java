@@ -31,9 +31,11 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Basic_Strafer_Bot;
+import org.firstinspires.ftc.teamcode.Robot;
 
 
 /**
@@ -53,7 +55,7 @@ public class wheelyCoolMotorTest extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private double speed = 0.75;
     //private double storedSpeed;
-    public Basic_Strafer_Bot Bot = new Basic_Strafer_Bot();
+    public Robot robot;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -61,7 +63,7 @@ public class wheelyCoolMotorTest extends OpMode {
     public void init() {
 
         // Call the initialization protocol from the Robot class.
-        Bot = new Basic_Strafer_Bot(hardwareMap, telemetry, this);
+        robot = new Robot(hardwareMap, telemetry, this);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -98,15 +100,15 @@ public class wheelyCoolMotorTest extends OpMode {
         telemetry.addData("Gamepad 1 Right: ", "Value X: " + gamepad1.right_stick_x, "Value Y: " + gamepad1.right_stick_y);
         telemetry.addData("Gamepad 2 Left: ", "Value X: " + gamepad2.left_stick_x, "Value Y: " + gamepad2.left_stick_y);
         telemetry.addData("Gamepad 2 Left: ", "Value X: " + gamepad2.right_stick_x, "Value Y: " + gamepad2.right_stick_y);
-        Bot.tellMotorOutput();
+        robot.tellMotorOutput();
 
         //Driver 1
         if (gamepad1.back) {
-            if (Bot.controlMode == "Robot Centric") {
-                Bot.controlMode = "Field Centric";
+            if (robot.controlMode == "Robot Centric") {
+                robot.controlMode = "Field Centric";
                 telemetry.addData("Control Mode", "Field Centric Controls");
-            } else if (Bot.controlMode == "Field Centric") {
-                Bot.controlMode = "Robot Centric";
+            } else if (robot.controlMode == "Field Centric") {
+                robot.controlMode = "Robot Centric";
                 telemetry.addData("Control Mode", "Robot Centric Controls");
             }
         }
@@ -169,52 +171,52 @@ public class wheelyCoolMotorTest extends OpMode {
     {
        if(Direction == "Forward")
        {
-           Bot.frontLeftDrive.setPower(speed);
-           Bot.frontRightDrive.setPower(speed);
-           Bot.backLeftDrive.setPower(speed);
-           Bot.backRightDrive.setPower(speed);
+           robot.frontLeftDrive.setPower(speed);
+           robot.frontRightDrive.setPower(speed);
+           robot.backLeftDrive.setPower(speed);
+           robot.backRightDrive.setPower(speed);
        }else if(Direction == "Backward")
        {
-           Bot.frontLeftDrive.setPower(-speed);
-           Bot.frontRightDrive.setPower(-speed);
-           Bot.backLeftDrive.setPower(-speed);
-           Bot.backRightDrive.setPower(-speed);
+           robot.frontLeftDrive.setPower(-speed);
+           robot.frontRightDrive.setPower(-speed);
+           robot.backLeftDrive.setPower(-speed);
+           robot.backRightDrive.setPower(-speed);
        }
        else if(Direction == "Left")
        {
-           Bot.frontLeftDrive.setPower(-speed);
-           Bot.frontRightDrive.setPower(-speed);
-           Bot.backLeftDrive.setPower(speed);
-           Bot.backRightDrive.setPower(speed);
+           robot.frontLeftDrive.setPower(-speed);
+           robot.frontRightDrive.setPower(-speed);
+           robot.backLeftDrive.setPower(speed);
+           robot.backRightDrive.setPower(speed);
        }else if(Direction == "Right")
        {
-           Bot.frontLeftDrive.setPower(speed);
-           Bot.frontRightDrive.setPower(speed);
-           Bot.backLeftDrive.setPower(-speed);
-           Bot.backRightDrive.setPower(-speed);
+           robot.frontLeftDrive.setPower(speed);
+           robot.frontRightDrive.setPower(speed);
+           robot.backLeftDrive.setPower(-speed);
+           robot.backRightDrive.setPower(-speed);
        }
        else if(Direction == "TurnRight")
        {
-           Bot.frontLeftDrive.setPower(speed);
-           Bot.frontRightDrive.setPower(-speed);
-           Bot.backLeftDrive.setPower(speed);
-           Bot.backRightDrive.setPower(-speed);
+           robot.frontLeftDrive.setPower(speed);
+           robot.frontRightDrive.setPower(-speed);
+           robot.backLeftDrive.setPower(speed);
+           robot.backRightDrive.setPower(-speed);
        }
        else if(Direction == "TurnLeft")
        {
-           Bot.frontLeftDrive.setPower(-speed);
-           Bot.frontRightDrive.setPower(speed);
-           Bot.backLeftDrive.setPower(-speed);
-           Bot.backRightDrive.setPower(speed);
+           robot.frontLeftDrive.setPower(-speed);
+           robot.frontRightDrive.setPower(speed);
+           robot.backLeftDrive.setPower(-speed);
+           robot.backRightDrive.setPower(speed);
        }
     }
 
     public void stopPls()
     {
-        Bot.frontLeftDrive.setPower(0);
-        Bot.frontRightDrive.setPower(0);
-        Bot.backLeftDrive.setPower(0);
-        Bot.backRightDrive.setPower(0);
+        robot.frontLeftDrive.setPower(0);
+        robot.frontRightDrive.setPower(0);
+        robot.backLeftDrive.setPower(0);
+        robot.backRightDrive.setPower(0);
     }
 
 

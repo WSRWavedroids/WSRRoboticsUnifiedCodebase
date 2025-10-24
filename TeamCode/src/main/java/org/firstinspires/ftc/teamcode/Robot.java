@@ -62,6 +62,9 @@ public class Robot {
 
         launchLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        frontRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+
         imuParameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(
                         RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
