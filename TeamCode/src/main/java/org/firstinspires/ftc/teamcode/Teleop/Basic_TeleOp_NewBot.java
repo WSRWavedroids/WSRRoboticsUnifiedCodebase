@@ -132,8 +132,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         if(gamepad2.right_trigger > 0.2)
         {
-            robot.launchLeft.setPower(1);
-            robot.launchRight.setPower(-1);
+            robot.launchLeft.setPower(gamepad2.right_trigger);
+            robot.launchRight.setPower(-gamepad2.right_trigger);
         }
         else
         {
@@ -144,7 +144,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         // Driver 1
 
-
+         if (gamepad2.right_stick_button)
+         {
+             telemetry.addLine("Pedro has a beer");
+         }
         doTelemetryStuff();
 
     }
@@ -155,7 +158,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
     public void stop() {
         telemetry.addData("Status", "Robot Stopped");
     }
-
+//aple sinc please
+//    i praise tmmothy cooker
 
     /*
      * The holding cell for all of the random functions we call above.
