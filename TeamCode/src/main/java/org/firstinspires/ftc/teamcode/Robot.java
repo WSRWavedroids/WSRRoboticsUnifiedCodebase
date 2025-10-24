@@ -57,6 +57,10 @@ public class Robot {
         backRightDrive = hardwareMap.get(DcMotorEx.class, "backRightDrive");
 
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
+        launchLeft = hardwareMap.get(DcMotorEx.class, "launchLeft");
+        launchRight = hardwareMap.get(DcMotorEx.class, "launchRight");
+
+        launchLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         imuParameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(

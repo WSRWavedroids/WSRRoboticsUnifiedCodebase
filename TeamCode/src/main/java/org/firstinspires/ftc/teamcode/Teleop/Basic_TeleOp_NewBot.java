@@ -130,7 +130,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.intakeMotor.setPower(robot.intakeSpeed * robot.intakeTune);
 //launch motors code
 
-        if(gamepad2.right_trigger > 0.2)
+        if(gamepad2.right_trigger > 0.1)
         {
             robot.launchLeft.setPower(gamepad2.right_trigger);
             robot.launchRight.setPower(-gamepad2.right_trigger);
@@ -202,9 +202,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         if (robot.controlMode == "Robot Centric") {
 
-            motorPowers[0] = (leftY - leftX + rightX);//might need inverted back
+            motorPowers[0] = (leftY + leftX + rightX);//might need inverted back
             motorPowers[1] = (leftY - leftX - rightX);
-            motorPowers[2] = (leftY + leftX + rightX);
+            motorPowers[2] = (leftY - leftX + rightX);
             motorPowers[3] = (leftY + leftX - rightX);
 
         } else if (robot.controlMode == "Field Centric") {
