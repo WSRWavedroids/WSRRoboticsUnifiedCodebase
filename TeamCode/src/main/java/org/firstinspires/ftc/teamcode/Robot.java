@@ -80,6 +80,9 @@ public class Robot {
         // This tells the motors to chill when we're not powering them.
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        launchRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        launchLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         //This is new..
         telemetry.addData("Status", "Initialized");
 

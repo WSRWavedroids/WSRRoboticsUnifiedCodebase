@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.Robot;
  * did a horrible job of doing that.
  */
 
-
+//HI this is BotShell the 3rd. I am a legendary turtle. This is my food please make good tasty and not wrong.
 @TeleOp(name = "Shellbot", group = "CompBot")
 public class Basic_TeleOp_NewBot extends OpMode {
 
@@ -132,8 +132,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         if(gamepad2.right_trigger > 0.1)
         {
-            robot.launchLeft.setPower(gamepad2.right_trigger);
-            robot.launchRight.setPower(-gamepad2.right_trigger);
+            robot.launchLeft.setPower(gamepad2.right_trigger - 0.1);
+            robot.launchRight.setPower(-gamepad2.right_trigger - 0.1);
         }
         else
         {
@@ -142,14 +142,17 @@ public class Basic_TeleOp_NewBot extends OpMode {
         }
         //Matthew Was Here
 
-        // Driver 1
 
          if (gamepad2.right_stick_button)
          {
              telemetry.addLine("Pedro has a beer");
+             telemetry.addLine("Pedro has a beer");
+             telemetry.addLine("Pedro has a beer");
+             telemetry.addLine("Deven has a beer");
+             telemetry.addLine("Pedro has a beer");
          }
         doTelemetryStuff();
-
+        //driver 1
     }
 
     /*
