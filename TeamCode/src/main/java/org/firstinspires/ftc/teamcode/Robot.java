@@ -26,7 +26,8 @@ public class Robot {
     public DcMotorEx backRightDrive;
 
     public DcMotorEx intakeMotor;
-    public CRServo intakeServo;
+    //public CRServo intakeServo;
+    public DcMotorEx intakeServo;
 
     public DcMotorEx launchLeft;
     public DcMotorEx launchRight;
@@ -61,7 +62,9 @@ public class Robot {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         launchLeft = hardwareMap.get(DcMotorEx.class, "launchLeft");
         launchRight = hardwareMap.get(DcMotorEx.class, "launchRight");
-        intakeServo = hardwareMap.get(CRServo.class, "servo");
+        //intakeServo = hardwareMap.get(CRServo.class, "servo");
+        intakeServo = hardwareMap.get(DcMotorEx.class, "servo");
+
 
         launchLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
