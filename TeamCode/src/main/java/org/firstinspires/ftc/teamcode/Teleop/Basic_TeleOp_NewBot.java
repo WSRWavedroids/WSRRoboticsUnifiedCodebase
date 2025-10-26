@@ -139,8 +139,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         if(gamepad2.right_trigger > 0.1)
         {
-            robot.launchLeft.setPower(gamepad2.right_trigger * 0.8);
-            robot.launchRight.setPower(-gamepad2.right_trigger * 0.8);
+            robot.launchLeft.setPower(gamepad2.right_trigger - 0.1);
+            robot.launchRight.setPower(-gamepad2.right_trigger - 0.1);
         }
         else
         {
