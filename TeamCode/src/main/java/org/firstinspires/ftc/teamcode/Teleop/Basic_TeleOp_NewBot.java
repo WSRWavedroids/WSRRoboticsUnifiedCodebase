@@ -115,14 +115,14 @@ public class Basic_TeleOp_NewBot extends OpMode {
 //this is intake motor code
         robot.intakeTune = 0.8; // todo tune this when robot is built and motor is determined
         if (gamepad2.a) {
-            robot.intakeSpeed = -1;
+            robot.intakeSpeed = -0.5;
         } else if (gamepad2.b) {
             robot.intakeSpeed = 1;
         }
         if (gamepad2.yWasPressed()) {
             robot.intakeSpeed = 1;
         } else if (gamepad2.xWasPressed())
-            robot.intakeSpeed = -1;
+            robot.intakeSpeed = -0.5;
         {
             if (gamepad2.aWasReleased() || gamepad2.bWasReleased())
                 robot.intakeSpeed = 0;
@@ -132,8 +132,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         if(gamepad2.right_trigger > 0.1)
         {
-            robot.launchLeft.setPower(gamepad2.right_trigger - 0.1);
-            robot.launchRight.setPower(-gamepad2.right_trigger - 0.1);
+            robot.launchLeft.setPower(gamepad2.right_trigger * 0.8);
+            robot.launchRight.setPower(-gamepad2.right_trigger * 0.8);
         }
         else
         {
