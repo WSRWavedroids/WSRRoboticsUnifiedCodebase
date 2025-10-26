@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -25,6 +26,7 @@ public class Robot {
     public DcMotorEx backRightDrive;
 
     public DcMotorEx intakeMotor;
+    public CRServo intakeServo;
 
     public DcMotorEx launchLeft;
     public DcMotorEx launchRight;
@@ -59,6 +61,7 @@ public class Robot {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         launchLeft = hardwareMap.get(DcMotorEx.class, "launchLeft");
         launchRight = hardwareMap.get(DcMotorEx.class, "launchRight");
+        intakeServo = hardwareMap.get(CRServo.class, "servo");
 
         launchLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
