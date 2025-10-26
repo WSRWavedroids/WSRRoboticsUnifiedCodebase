@@ -117,12 +117,12 @@ public class Basic_TeleOp_NewBot extends OpMode {
         if (gamepad2.a) {
             robot.intakeSpeed = -0.5;
         } else if (gamepad2.b) {
-            robot.intakeSpeed = 1;
+            robot.intakeSpeed = 0.5;
         }
         if (gamepad2.yWasPressed()) {
-            robot.intakeSpeed = 1;
+            robot.intakeSpeed = 0.5;
         } else if (gamepad2.xWasPressed())
-            robot.intakeSpeed = -0.5;
+            robot.intakeSpeed = -1;
         {
             if (gamepad2.aWasReleased() || gamepad2.bWasReleased())
                 robot.intakeSpeed = 0;
@@ -130,7 +130,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.intakeMotor.setPower(robot.intakeSpeed * robot.intakeTune);
 
             if (gamepad2.right_bumper)
-                robot.intakeServo.setPower(0.5);
+                robot.intakeServo.setPower(1);
 
         else
             robot.intakeServo.setPower(0);
