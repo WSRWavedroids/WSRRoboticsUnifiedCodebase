@@ -129,11 +129,14 @@ public class Basic_TeleOp_NewBot extends OpMode {
         }
         robot.intakeMotor.setPower(robot.intakeSpeed * robot.intakeTune);
 
-            if (gamepad2.right_bumper)
-                robot.intakeServo.setPower(1);
+        //servo code to move balls to launcher
 
-        else
-            robot.intakeServo.setPower(0);
+        robot.intakeServo.setPower(0);
+        if (gamepad2.right_bumper)
+            robot.intakeServo.setPower(1);
+
+        else if (gamepad2.left_bumper)
+            robot.intakeServo.setPower(-1);
 
 //launch motors code
         robot.launchTune = 0.7;
