@@ -151,21 +151,18 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 robot.launchRight.setPower(0);
             }
             //Matthew Was Here
+        telemetry.addData("launchSpeed" , robot.launchSpeed);
 
 
-
-         if (gamepad2.right_stick_button)
-         {
+         if (gamepad2.right_stick_button) {
              telemetry.addLine("Pedro has a beer");
              telemetry.addLine("Pedro has a beer");
              telemetry.addLine("Pedro has a beer");
              telemetry.addLine("Matthew has not got a beer");
              telemetry.addLine("Pedro has a beer");
          }
-         if (gamepad2.right_stick_button)
-         {
-             telemetry.addData("launchSpeed" , robot.launchSpeed);
-         }
+
+
         doTelemetryStuff();
         //driver 1
     }
