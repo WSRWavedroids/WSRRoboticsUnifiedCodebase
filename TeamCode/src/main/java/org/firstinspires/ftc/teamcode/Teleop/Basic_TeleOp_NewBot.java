@@ -162,6 +162,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
              telemetry.addLine("Matthew has not got a beer");
              telemetry.addLine("Pedro has a beer");
          }
+         if (gamepad2.right_stick_button)
+         {
+             telemetry.addData("launchSpeed" , robot.launchSpeed);
+         }
         doTelemetryStuff();
         //driver 1
     }
