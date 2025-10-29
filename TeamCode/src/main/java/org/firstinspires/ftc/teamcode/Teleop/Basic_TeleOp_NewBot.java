@@ -146,11 +146,12 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.launchRight.setPower(-robot.launchSpeed);
         }
         else
-        {
-            robot.launchLeft.setPower(0);
-            robot.launchRight.setPower(0);
-        }
-        //Matthew Was Here
+            {
+                robot.launchLeft.setPower(0);
+                robot.launchRight.setPower(0);
+            }
+            //Matthew Was Here
+
 
 
          if (gamepad2.right_stick_button)
