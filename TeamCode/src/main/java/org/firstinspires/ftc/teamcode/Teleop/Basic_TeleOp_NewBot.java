@@ -136,11 +136,14 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.intakeServo.setPower(0);
 
 //launch motors code
-
-        if(gamepad2.right_trigger > 0.1)
+        robot.launchTune = 0.7;
+        robot.triggerDeadzone = 0.1;
+        if(gamepad2.right_trigger > robot.triggerDeadzone)
         {
-            robot.launchLeft.setPower(gamepad2.right_trigger - 0.1);
-            robot.launchRight.setPower(-gamepad2.right_trigger - 0.1);
+            robot.launchSpeed = gamepad2.right_trigger - robot.triggerDeadzone;
+            robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * gamepad2.right_trigger;
+            robot.launchLeft.setPower(robot.launchSpeed);
+            robot.launchRight.setPower(-robot.launchSpeed);
         }
         else
         {
@@ -155,7 +158,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
              telemetry.addLine("Pedro has a beer");
              telemetry.addLine("Pedro has a beer");
              telemetry.addLine("Pedro has a beer");
-             telemetry.addLine("Deven has a beer");
+             telemetry.addLine("Matthew has not got a beer");
              telemetry.addLine("Pedro has a beer");
          }
         doTelemetryStuff();

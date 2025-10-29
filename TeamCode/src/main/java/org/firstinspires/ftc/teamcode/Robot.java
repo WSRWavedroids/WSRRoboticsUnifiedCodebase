@@ -44,6 +44,9 @@ public class Robot {
 
     public double intakeSpeed;
     public double intakeTune;
+    public double launchSpeed;
+    public double launchTune;
+    public double triggerDeadzone;
 
 
     //Initialize motors and servos
