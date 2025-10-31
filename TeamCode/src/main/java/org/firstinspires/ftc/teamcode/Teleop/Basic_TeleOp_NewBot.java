@@ -145,7 +145,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         if (gamepad2.dpad_up)
             robot.launchTune = 1;
         else if (gamepad2.dpad_down)
-            robot.launchTune = 0.1;
+            robot.launchTune = 0.3;
 
         //input & launch
         robot.triggerDeadzone = 0.1;
