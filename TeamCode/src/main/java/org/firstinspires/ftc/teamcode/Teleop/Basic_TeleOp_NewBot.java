@@ -139,7 +139,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.intakeServo.setPower(-1);
 
 //launch motors code
-        robot.launchTune = 0.7;
+        robot.launchTune = 0.4;
         robot.triggerDeadzone = 0.1;
         if(gamepad2.right_trigger > robot.triggerDeadzone)
         {
