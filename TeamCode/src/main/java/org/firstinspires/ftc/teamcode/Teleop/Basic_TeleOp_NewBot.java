@@ -143,7 +143,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         //tuning & speed modes
         robot.launchTune = 0.65;
         if (gamepad2.dpad_up)
-            robot.launchTune = 1;
+            robot.launchTune = 0.8;
         else if (gamepad2.dpad_down)
             robot.launchTune = 0.3;
 
