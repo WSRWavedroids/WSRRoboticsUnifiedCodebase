@@ -162,7 +162,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 robot.launchRight.setPower(0);
             }
             //Matthew Was Here
-        telemetry.addData("launchSpeed" , robot.launchSpeed);
+        telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
 
 
 
