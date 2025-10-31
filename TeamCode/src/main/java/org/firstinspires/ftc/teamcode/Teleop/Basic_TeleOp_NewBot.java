@@ -124,7 +124,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         } else if (gamepad2.xWasPressed())
             robot.intakeSpeed = -1;
         {
-            if (gamepad2.aWasReleased() || gamepad2.bWasReleased())
+        if (gamepad2.aWasReleased() || gamepad2.bWasReleased())
                 robot.intakeSpeed = 0;
         }
         robot.intakeMotor.setPower(robot.intakeSpeed * robot.intakeTune);
@@ -139,7 +139,15 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.intakeServo.setPower(-1);
 
 //launch motors code
+
+        //tuning & speed modes
         robot.launchTune = 0.4;
+        if (gamepad2.dpad_up)
+            robot.launchTune = 1;
+        else if (gamepad2.dpad_down)
+            robot.launchTune = 0.1;
+
+        //input & launch
         robot.triggerDeadzone = 0.1;
         if(gamepad2.right_trigger > robot.triggerDeadzone)
         {
