@@ -141,7 +141,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 //launch motors code
 
         //tuning & speed modes
-        robot.launchTune = 0.4;
+        robot.launchTune = 0.65;
         if (gamepad2.dpad_up)
             robot.launchTune = 1;
         else if (gamepad2.dpad_down)
@@ -153,8 +153,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         {
             robot.launchSpeed = gamepad2.right_trigger - robot.triggerDeadzone;
             robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * gamepad2.right_trigger;
-            robot.launchLeft.setPower(robot.launchSpeed);
-            robot.launchRight.setPower(-robot.launchSpeed);
+            robot.launchLeft.setPower(robot.launchSpeed * robot.launchTune);
+            robot.launchRight.setPower(-robot.launchSpeed * robot.launchTune);
         }
         else
             {
