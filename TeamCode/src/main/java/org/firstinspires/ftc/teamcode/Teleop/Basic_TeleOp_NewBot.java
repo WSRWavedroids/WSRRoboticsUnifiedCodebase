@@ -130,20 +130,21 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.intakeMotor.setPower(robot.intakeSpeed * robot.intakeTune);
 
         //servo code to move balls to launcher
+        //secondary intake servo is actually a motor
 
         robot.intakeServo.setPower(0);
         if (gamepad2.right_bumper)
-            robot.intakeServo.setPower(1);
+            robot.intakeServo.setPower(0.6);
 
         else if (gamepad2.left_bumper)
-            robot.intakeServo.setPower(-1);
+            robot.intakeServo.setPower(-0.25);
 
 //launch motors code
 
         //tuning & speed modes
-        robot.launchTune = 0.65;
+        robot.launchTune = 0.62;
         if (gamepad2.dpad_up)
-            robot.launchTune = 0.76;
+            robot.launchTune = 0.73;
         else if (gamepad2.dpad_down)
             robot.launchTune = 0.3;
 

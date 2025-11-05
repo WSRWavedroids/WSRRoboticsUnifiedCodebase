@@ -50,7 +50,6 @@ public class AutonomousPLUS extends LinearOpMode {
     public boolean inMarker;
     public double power;
     public double slidePos;
-
     //DO NOT DELETE THIS LINE! CAPITALIZATION IS VERY IMPORTANT!!!
     public Robot robot = null;
 
@@ -112,12 +111,13 @@ public class AutonomousPLUS extends LinearOpMode {
         moveXY(moveRight,moveForward,0,waitForCompletion,0);
     }
 
-    public void moveRobotForward(int ticks, long pause) {
+    public void moveRobotForward(int ticks, long pause, double spd) {
+
         if (opModeIsActive()) {
             robot.setTargets("Forward", ticks); // Inverted... Lol
             robot.positionRunningMode();
         }
-        robot.powerSet(speed);
+        robot.powerSet(spd);
 
         while (opModeIsActive() && robot.isWheelsBusy()) {
             robot.tellMotorOutput();
@@ -130,11 +130,12 @@ public class AutonomousPLUS extends LinearOpMode {
     }
 
 
-    public void moveRobotBackward(int ticks, long pause) {
+    public void moveRobotBackward(int ticks, long pause, double spd) {
+
         if (opModeIsActive()) {
             robot.setTargets("Backward", ticks);
             robot.positionRunningMode();
-            robot.powerSet(speed);
+            robot.powerSet(spd);
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
                 robot.tellMotorOutput();
@@ -147,12 +148,12 @@ public class AutonomousPLUS extends LinearOpMode {
         }
     }
 
-    public void moveRobotLeft(int ticks, long pause) {
+    public void moveRobotLeft(int ticks, long pause, double spd) {
 
         if (opModeIsActive()) {
             robot.setTargets("Left", ticks);
             robot.positionRunningMode();
-            robot.powerSet(speed);
+            robot.powerSet(spd);
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
                 robot.tellMotorOutput();
@@ -165,12 +166,12 @@ public class AutonomousPLUS extends LinearOpMode {
         }
     }
 
-    public void moveRobotRight(int ticks, long pause) {
+    public void moveRobotRight(int ticks, long pause, double spd) {
 
         if (opModeIsActive()) {
             robot.setTargets("Right", ticks);
             robot.positionRunningMode();
-            robot.powerSet(speed);
+            robot.powerSet(spd);
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
                 robot.tellMotorOutput();
@@ -415,6 +416,38 @@ public class AutonomousPLUS extends LinearOpMode {
     public int convertInchesToTicks(int inches){
         int ticks = (int) ((537.6 * inches) / (3.77953 * 3.1415926535));
         return ticks;
+    }
+
+    public void runLauncherAuto(double launchSpeed){
+        robot.launchLeft.setPower(launchSpeed);
+        robot.launchRight.setPower(-launchSpeed);
+
+    }
+    public void runIntakeAuto(String direction) {
+        if (direction.equals("In")) {
+            robot.intakeMotor.setPower(-1);
+        } else if (direction.equals("out")) {
+            robot.intakeMotor.setPower(1);
+        } else if (direction.equals(("stop"))) {
+            robot.intakeMotor.setPower(0);
+        }
+
+    }
+
+ //   public void runIntake2Auto(String direction) {
+ //       if (direction.equals("In")) {
+ //           robot.intakeServo.setPower(1);
+ //       } else if (direction.equals("out")) {
+ //           robot.intakeServo.setPower(-1);
+ //       } else if (direction.equals(("stop"))) {
+ //           robot.intakeServo.setPower(0);
+ //       }
+//
+ //   }
+
+    public void runIntake2Auto(double motorSpeed){
+        robot.intakeServo.setPower(motorSpeed);
+
     }
 
 

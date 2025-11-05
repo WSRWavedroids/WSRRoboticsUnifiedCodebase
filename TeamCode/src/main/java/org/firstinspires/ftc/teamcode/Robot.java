@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Thread.sleep;
+
 import android.annotation.SuppressLint;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -26,8 +28,8 @@ public class Robot {
     public DcMotorEx backRightDrive;
 
     public DcMotorEx intakeMotor;
-    public CRServo intakeServo;
-    //public DcMotorEx intakeServo;
+    //public CRServo intakeServo;
+    public DcMotorEx intakeServo;
 
     public DcMotorEx launchLeft;
     public DcMotorEx launchRight;
@@ -65,8 +67,8 @@ public class Robot {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         launchLeft = hardwareMap.get(DcMotorEx.class, "launchLeft");
         launchRight = hardwareMap.get(DcMotorEx.class, "launchRight");
-        intakeServo = hardwareMap.get(CRServo.class, "servo");
-        //intakeServo = hardwareMap.get(DcMotorEx.class, "servo");
+        //intakeServo = hardwareMap.get(CRServo.class, "servo");
+        intakeServo = hardwareMap.get(DcMotorEx.class, "servo");
 
 
         launchLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -94,6 +96,7 @@ public class Robot {
 
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeServo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //launchRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //launchLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -230,5 +233,4 @@ public class Robot {
     public void prepareAuto(){
 
     }
-
 }
