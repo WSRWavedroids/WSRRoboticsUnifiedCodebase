@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 
+import kotlin.reflect.KFunction;
+
 /**
  * This file is our iterative (Non-Linear) "OpMode" for TeleOp.
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -142,25 +144,18 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 //launch motors code
 
-        //tuning & speed modes
+        //tuning
         robot.launchTune = 0.62;
 
-        if (gamepad2.dpad_up)
-            robot.launchTune = 0.73;
-        else if (gamepad2.dpad_down)
-            robot.launchTune = 0.3;
 
         //input & launch
         robot.triggerDeadzone = 0.1;
-        if (gamepad2.right_trigger > robot.triggerDeadzone)
-        {
-            robot.launchSpeed = gamepad2.right_trigger - robot.triggerDeadzone;
-            robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * gamepad2.right_trigger;
-            robot.launchLeft.setPower(robot.launchSpeed * robot.launchTune);
-            robot.launchRight.setPower(-robot.launchSpeed * robot.launchTune);
-        }
-        else
-            {
+        if (gamepad2.right_trigger > robot.triggerDeadzone) {
+            setLaunchPower();
+        } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
+            robot.launchTune = robot.launchTune + 0.11;
+            setLaunchPower();
+        } else {
                 robot.launchLeft.setPower(0);
                 robot.launchRight.setPower(0);
             }
@@ -171,6 +166,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 //Access quantum particle and aline with telemtry of the reolvations of the atomic numerical exponetioalation
         //to access the LEGENDARY QUANTUM POCKET COOKIE
+
+
+
+
 
         doTelemetryStuff();
         //driver 1
@@ -324,6 +323,14 @@ public class Basic_TeleOp_NewBot extends OpMode {
         telemetry.addData("Status", "Run Time: " + runtime.toString());
 
         robot.tellMotorOutput(); // Updates telemetry too
+    }
+
+    private void setLaunchPower() {
+        robot.launchSpeed = gamepad2.right_trigger - robot.triggerDeadzone;
+        robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * gamepad2.right_trigger;
+        robot.launchLeft.setPower(robot.launchSpeed * robot.launchTune);
+        robot.launchRight.setPower(-robot.launchSpeed * robot.launchTune);
+
     }
     private float getLargestAbsVal( float[] values){
         // This function does some math!
