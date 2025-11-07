@@ -112,25 +112,25 @@ public class Basic_TeleOp_NewBot extends OpMode {
         //Driver 2
         controlMode();
         driveSpeed();
+
+
 //this is intake code
-        robot.intakeTune = 0.8; // todo tune this when robot is built and motor is determined
-        if (gamepad2.a) {
-            robot.intakeSpeed = -1;
-        } else if (gamepad2.b) {
-            robot.intakeSpeed = 0.5;
-        }
-        if (gamepad2.yWasPressed()) {
-            robot.intakeSpeed = 0.5;
-        } else if (gamepad2.xWasPressed())
-            robot.intakeSpeed = -1;
-        {
+
+        robot.intakeTune = 0.8;
+        if (gamepad2.a || gamepad2.xWasPressed()) {
+            robot.intakeSpeed = 1;
+        } else if (gamepad2.b || gamepad2.yWasPressed()) {
+            robot.intakeSpeed = -0.5; }
+
         if (gamepad2.aWasReleased() || gamepad2.bWasReleased())
-                robot.intakeSpeed = 0;
-        }
-        robot.intakeMotor.setPower(robot.intakeSpeed * robot.intakeTune);
+            { robot.intakeSpeed = 0; }
+
+        robot.intakeMotor.setPower(-robot.intakeSpeed * robot.intakeTune);
+
 
         //servo code to move balls to launcher
-        //secondary intake servo is actually a motor
+
+                //secondary intake servo is actually a motor
 
         robot.intakeServo.setPower(0);
         if (gamepad2.right_bumper)
@@ -138,6 +138,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         else if (gamepad2.left_bumper)
             robot.intakeServo.setPower(-0.25);
+
+
 
 //launch motors code
 
