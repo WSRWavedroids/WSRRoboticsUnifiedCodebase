@@ -539,12 +539,10 @@ public class AutonomousPLUS extends LinearOpMode {
             robot.intakeMotor.setPower(1);
         } else if (direction.equals(("stop"))) {
             robot.intakeMotor.setPower(0);
-        }
-        else;
-            robot.intakeMotor.setPower(0.73);
+        } else ;
+        robot.intakeMotor.setPower(0.73);
 
     }
-
  //   public void runIntake2Auto(String direction) {
  //       if (direction.equals("In")) {
  //           robot.intakeServo.setPower(1);

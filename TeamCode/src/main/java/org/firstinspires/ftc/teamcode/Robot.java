@@ -97,8 +97,8 @@ public class Robot {
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeServo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //launchRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //launchLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        launchRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        launchLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //This is new..
         telemetry.addData("Status", "Initialized");

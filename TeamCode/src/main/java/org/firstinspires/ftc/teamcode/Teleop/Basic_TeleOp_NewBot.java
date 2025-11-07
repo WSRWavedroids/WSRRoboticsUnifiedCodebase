@@ -135,7 +135,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.intakeServo.setPower(0);
         if (gamepad2.right_bumper)
             robot.intakeServo.setPower(0.6);
-
         else if (gamepad2.left_bumper)
             robot.intakeServo.setPower(-0.25);
 
@@ -145,6 +144,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         //tuning & speed modes
         robot.launchTune = 0.62;
+
         if (gamepad2.dpad_up)
             robot.launchTune = 0.73;
         else if (gamepad2.dpad_down)
@@ -152,7 +152,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         //input & launch
         robot.triggerDeadzone = 0.1;
-        if(gamepad2.right_trigger > robot.triggerDeadzone)
+        if (gamepad2.right_trigger > robot.triggerDeadzone)
         {
             robot.launchSpeed = gamepad2.right_trigger - robot.triggerDeadzone;
             robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * gamepad2.right_trigger;
@@ -167,7 +167,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             //Matthew Was Here
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
 
-
+//DEVEN'S NONSENSE
 
 //Access quantum particle and aline with telemtry of the reolvations of the atomic numerical exponetioalation
         //to access the LEGENDARY QUANTUM POCKET COOKIE
