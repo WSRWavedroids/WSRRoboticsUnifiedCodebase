@@ -45,7 +45,6 @@ public class AutonomousPLUS extends LinearOpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
     private ElapsedTime runtime = new ElapsedTime();
-    public double speed = 0.6;
     public int sleepTime;
     public boolean inMarker;
     public double power;
@@ -111,6 +110,21 @@ public class AutonomousPLUS extends LinearOpMode {
         moveXY(moveRight,moveForward,0,waitForCompletion,0);
     }
 
+
+
+
+
+
+
+
+
+//ROBOT MOVEMENT
+
+
+    public double speed = 0.5;
+
+    //MOVE FORWARD
+
     public void moveRobotForward(int ticks, long pause, double spd) {
 
         if (opModeIsActive()) {
@@ -128,7 +142,29 @@ public class AutonomousPLUS extends LinearOpMode {
         sleep(pause);
         robot.encoderReset();
     }
+    public void moveRobotForward(int ticks, long pause) {
 
+        if (opModeIsActive()) {
+            robot.setTargets("Forward", ticks); // Inverted... Lol
+            robot.positionRunningMode();
+        }
+        robot.powerSet(speed);
+
+        while (opModeIsActive() && robot.isWheelsBusy()) {
+            robot.tellMotorOutput();
+        }
+
+        robot.stopAllMotors();
+        robot.encoderRunningMode();
+        sleep(pause);
+        robot.encoderReset();
+    }
+
+
+
+
+
+    //MOVE BACKWARD
 
     public void moveRobotBackward(int ticks, long pause, double spd) {
 
@@ -147,6 +183,28 @@ public class AutonomousPLUS extends LinearOpMode {
             robot.encoderReset();
         }
     }
+    public void moveRobotBackward(int ticks, long pause) {
+
+        if (opModeIsActive()) {
+            robot.setTargets("Backward", ticks);
+            robot.positionRunningMode();
+            robot.powerSet(speed);
+
+            while (opModeIsActive() && robot.isWheelsBusy()) {
+                robot.tellMotorOutput();
+            }
+
+            robot.stopAllMotors();
+            robot.encoderRunningMode();
+            sleep(pause);
+            robot.encoderReset();
+        }
+    }
+
+
+
+
+//MOVE LEFT
 
     public void moveRobotLeft(int ticks, long pause, double spd) {
 
@@ -165,6 +223,28 @@ public class AutonomousPLUS extends LinearOpMode {
             robot.encoderReset();
         }
     }
+    public void moveRobotLeft(int ticks, long pause) {
+
+        if (opModeIsActive()) {
+            robot.setTargets("Left", ticks);
+            robot.positionRunningMode();
+            robot.powerSet(speed);
+
+            while (opModeIsActive() && robot.isWheelsBusy()) {
+                robot.tellMotorOutput();
+            }
+
+            robot.stopAllMotors();
+            robot.encoderRunningMode();
+            sleep(pause);
+            robot.encoderReset();
+        }
+    }
+
+
+
+
+//MOVE RIGHT
 
     public void moveRobotRight(int ticks, long pause, double spd) {
 
@@ -183,6 +263,27 @@ public class AutonomousPLUS extends LinearOpMode {
             robot.encoderReset();
         }
     }
+    public void moveRobotRight(int ticks, long pause) {
+
+        if (opModeIsActive()) {
+            robot.setTargets("Right", ticks);
+            robot.positionRunningMode();
+            robot.powerSet(speed);
+
+            while (opModeIsActive() && robot.isWheelsBusy()) {
+                robot.tellMotorOutput();
+            }
+
+            robot.stopAllMotors();
+            robot.encoderRunningMode();
+            sleep(pause);
+            robot.encoderReset();
+        }
+    }
+
+
+
+    //TURNING
 
     public void turnRobotRight(int ticks, long pause) {
 
@@ -220,6 +321,10 @@ public class AutonomousPLUS extends LinearOpMode {
 
         }
     }
+
+
+
+    //OTHER MOVEMENT STUFF
 
     public void moveDiagonalRight(int ticks, long pause) {
         //This moves along the 45/225 axis, Positive ticks move forward and negative move back
@@ -418,10 +523,14 @@ public class AutonomousPLUS extends LinearOpMode {
         return ticks;
     }
 
+
+//LAUNCHER
     public void runLauncherAuto(double launchSpeed){
         robot.launchLeft.setPower(launchSpeed);
         robot.launchRight.setPower(-launchSpeed);
 
+
+//PRIMARY INTAKE
     }
     public void runIntakeAuto(String direction) {
         if (direction.equals("In")) {
@@ -431,6 +540,8 @@ public class AutonomousPLUS extends LinearOpMode {
         } else if (direction.equals(("stop"))) {
             robot.intakeMotor.setPower(0);
         }
+        else;
+            robot.intakeMotor.setPower(0.73);
 
     }
 
