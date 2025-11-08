@@ -111,42 +111,45 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         //So Begins the input chain. At least try a bit to organise by driver
 
+
+
+
+
+
+
+
+
+
+
         //Driver 2
         controlMode();
         driveSpeed();
 
 
-//this is intake code
+//intake code
 
-        robot.intakeTune = 0.85;
-        if (gamepad2.a || gamepad2.xWasPressed()) {
-            robot.intakeSpeed = 1;
-        } else if (gamepad2.b || gamepad2.yWasPressed()) {
-            robot.intakeSpeed = -0.5; }
-
-        robot.intakeMotor.setPower(-robot.intakeSpeed * robot.intakeTune);
-
-        //secondary intake servo is actually a motor
-        robot.intakeServo.setPower(0);
-        if (gamepad2.right_bumper)
-            robot.intakeServo.setPower(0.6);
-        else if (gamepad2.left_bumper)
-            robot.intakeServo.setPower(-0.2);
-        else if (gamepad2.dpad_up)
-            robot.intakeServo.setPower(-0.2);
-            robot.intakeMotor.setPower(-1 * robot.intakeTune);
-
-        if (gamepad2.aWasReleased() || gamepad2.bWasReleased() || gamepad2.dpadUpWasReleased())
-        { robot.intakeSpeed = 0; }
+        intakes(1 ,0.5 ,0.85 ,0.5, 0.2);
 
 //launch motors code
 
-        launch(0.1,0.62,0.73);
-
-
-
-            //Matthew Was Here
+        launch(0.1 ,0.62 ,0.73 );
+        //Matthew Was Here
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //DEVEN'S NONSENSE
 
@@ -318,14 +321,32 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.launchRight.setPower(-robot.launchSpeed * robot.launchTune);
     }
 
+    private void intakes(double fwdSPEED1, double revSPEED1, double tune1, double fwdSPEED2, double revSPEED2){
+        robot.intakeTune = tune1;
+        if (gamepad2.a || gamepad2.xWasPressed()) {
+            robot.intakeSpeed = -fwdSPEED1 * robot.intakeTune;
+        } else if (gamepad2.b || gamepad2.yWasPressed()) {
+            robot.intakeSpeed = revSPEED1 * robot.intakeTune; }
+        //secondary intake servo is actually a motor
+        robot.intakeServo.setPower(0);
+        if (gamepad2.right_bumper)
+            robot.intakeServo.setPower(-fwdSPEED2);
+        else if (gamepad2.left_bumper)
+            robot.intakeServo.setPower(revSPEED2);
+        else if (gamepad2.dpad_up)
+            robot.intakeServo.setPower(revSPEED2);
+        robot.intakeMotor.setPower(-fwdSPEED1 * robot.intakeTune);
+        if (gamepad2.aWasReleased() || gamepad2.bWasReleased() || gamepad2.dpadUpWasReleased())
+        { robot.intakeSpeed = 0; }
+    }
 
-    private void launch(double deadzone, double power1, double power2) {
-        robot.launchTune = power1;
+    private void launch(double deadzone, double pwrNormal, double pwrHigh) {
+        robot.launchTune = pwrNormal;
         robot.triggerDeadzone = deadzone;
         if (gamepad2.right_trigger > robot.triggerDeadzone) {
             setLaunchPower();
         } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
-            robot.launchTune = power2;
+            robot.launchTune = pwrHigh;
             setLaunchPower();
         } else {
             robot.launchLeft.setPower(0);
