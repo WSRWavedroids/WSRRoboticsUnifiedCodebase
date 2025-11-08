@@ -37,24 +37,18 @@ public class Basic_TeleOp_NewBot extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private double speed = 0.75;
     private boolean spinTargetAquired = false;
-
     int SpinTargetFrontLeft;
     int SpinTargetFrontRight;
     int SpinTargetBackLeft;
     int SpinTargetBackRight;
 
-
     //private double storedSpeed;
     public Robot robot = null;
     public IMU imu;
-
     public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
     public static final String PATTERN_KEY = "Pattern";
-
     public boolean canManuallyControlVerticalSlides = true;
-
     ElapsedTime outtakeTimer = new ElapsedTime();
-
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -79,9 +73,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
             imu.initialize(parameters);
         }
         //if using field centric youl need this lolzeez
-
-
-
     }
 
     /*
@@ -98,7 +89,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         runtime.reset();
         telemetry.addData("HYPE", "Let's do this!!!");
         gamepad1.setLedColor(0, 0, 255, 100000000);
-        gamepad2.setLedColor(0, 0, 255, 100000000);
+        gamepad2.setLedColor(255, 0, 240, 100000000);
     }
 
     /*
