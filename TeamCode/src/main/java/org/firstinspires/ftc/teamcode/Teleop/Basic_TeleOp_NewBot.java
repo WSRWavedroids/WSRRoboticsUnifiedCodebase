@@ -75,6 +75,17 @@ public class Basic_TeleOp_NewBot extends OpMode {
         //if using field centric youl need this lolzeez
     }
 
+
+
+
+
+
+
+
+
+
+
+
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
@@ -105,23 +116,30 @@ public class Basic_TeleOp_NewBot extends OpMode {
         //So Begins the input chain. At least try a bit to organise by driver
 
         //Driver 2
+
         controlMode();
         driveSpeed();
 
 
+
+
 //intakes and launcher
 
-        intake1(1 ,0.5 ,0.85 ,0.5, 0.2);
+        intake1(1 ,0.5 ,0.85);
+        intake2(0.5 ,0.2 ,1);
         launch(0.1 ,0.62 ,0.73 );
 
         //Matthew Was Here
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
 
 
-//DEVEN'S NONSENSE
 
-//Access quantum particle and aline with telemtry of the reolvations of the atomic numerical exponetioalation
-        //to access the LEGENDARY QUANTUM POCKET COOKIE
+
+
+                            //DEVEN'S NONSENSE
+
+                                //Access quantum particle and aline with telemtry of the reolvations of the atomic
+                                // numerical exponetioalation to access the LEGENDARY QUANTUM POCKET COOKIE
 
 
 
@@ -139,6 +157,16 @@ public class Basic_TeleOp_NewBot extends OpMode {
     }
 //aple sinc please
 //    i praise tmmothy cooker
+
+
+
+
+
+
+
+
+
+
 
     /*
      * The holding cell for all of the random functions we call above.
