@@ -118,47 +118,33 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 //this is intake code
 
-        robot.intakeTune = 0.8;
+        robot.intakeTune = 0.85;
         if (gamepad2.a || gamepad2.xWasPressed()) {
             robot.intakeSpeed = 1;
         } else if (gamepad2.b || gamepad2.yWasPressed()) {
             robot.intakeSpeed = -0.5; }
 
-        if (gamepad2.aWasReleased() || gamepad2.bWasReleased())
-            { robot.intakeSpeed = 0; }
-
         robot.intakeMotor.setPower(-robot.intakeSpeed * robot.intakeTune);
 
-
-        //servo code to move balls to launcher
-
-                //secondary intake servo is actually a motor
-
+        //secondary intake servo is actually a motor
         robot.intakeServo.setPower(0);
         if (gamepad2.right_bumper)
             robot.intakeServo.setPower(0.6);
         else if (gamepad2.left_bumper)
-            robot.intakeServo.setPower(-0.25);
+            robot.intakeServo.setPower(-0.2);
+        else if (gamepad2.dpad_up)
+            robot.intakeServo.setPower(-0.2);
+            robot.intakeMotor.setPower(-1 * robot.intakeTune);
 
-
+        if (gamepad2.aWasReleased() || gamepad2.bWasReleased() || gamepad2.dpadUpWasReleased())
+        { robot.intakeSpeed = 0; }
 
 //launch motors code
 
-        //tuning
-        robot.launchTune = 0.62;
+        launch(0.1,0.62,0.73);
 
 
-        //input & launch
-        robot.triggerDeadzone = 0.1;
-        if (gamepad2.right_trigger > robot.triggerDeadzone) {
-            setLaunchPower();
-        } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
-            robot.launchTune = robot.launchTune + 0.11;
-            setLaunchPower();
-        } else {
-                robot.launchLeft.setPower(0);
-                robot.launchRight.setPower(0);
-            }
+
             //Matthew Was Here
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
 
@@ -330,8 +316,24 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * gamepad2.right_trigger;
         robot.launchLeft.setPower(robot.launchSpeed * robot.launchTune);
         robot.launchRight.setPower(-robot.launchSpeed * robot.launchTune);
-
     }
+
+
+    private void launch(double deadzone, double power1, double power2) {
+        robot.launchTune = power1;
+        robot.triggerDeadzone = deadzone;
+        if (gamepad2.right_trigger > robot.triggerDeadzone) {
+            setLaunchPower();
+        } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
+            robot.launchTune = power2;
+            setLaunchPower();
+        } else {
+            robot.launchLeft.setPower(0);
+            robot.launchRight.setPower(0);
+        }
+    }
+
+
     private float getLargestAbsVal( float[] values){
         // This function does some math!
         float max = 0;
