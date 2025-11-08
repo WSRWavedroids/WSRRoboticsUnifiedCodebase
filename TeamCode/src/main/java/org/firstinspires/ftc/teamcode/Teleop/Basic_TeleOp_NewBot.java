@@ -92,54 +92,30 @@ public class Basic_TeleOp_NewBot extends OpMode {
         gamepad2.setLedColor(255, 0, 240, 100000000);
     }
 
+
+
+
+
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     public void loop() {
 
         singleJoystickDrive();
-
-
         //So Begins the input chain. At least try a bit to organise by driver
-
-
-
-
-
-
-
-
-
-
 
         //Driver 2
         controlMode();
         driveSpeed();
 
 
-//intake code
+//intakes and launcher
 
-        intakes(1 ,0.5 ,0.85 ,0.5, 0.2);
-
-//launch motors code
-
+        intake1(1 ,0.5 ,0.85 ,0.5, 0.2);
         launch(0.1 ,0.62 ,0.73 );
+
         //Matthew Was Here
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //DEVEN'S NONSENSE
@@ -312,24 +288,30 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.launchRight.setPower(-robot.launchSpeed * robot.launchTune);
     }
 
-    private void intakes(double fwdSPEED1, double revSPEED1, double tune1, double fwdSPEED2, double revSPEED2){
-        robot.intakeTune = tune1;
-        if (gamepad2.a || gamepad2.xWasPressed()) {
-            robot.intakeSpeed = -fwdSPEED1 * robot.intakeTune;
+    private void intake1(double fwdSPEED, double revSPEED, double master){
+        robot.intakeTune = master;
+        if (gamepad2.a || gamepad2.xWasPressed() || gamepad2.dpad_up) {
+            robot.intakeSpeed = -fwdSPEED * robot.intakeTune;
         } else if (gamepad2.b || gamepad2.yWasPressed()) {
-            robot.intakeSpeed = revSPEED1 * robot.intakeTune; }
+            robot.intakeSpeed = revSPEED * robot.intakeTune;
+        } if (gamepad2.aWasReleased() || gamepad2.bWasReleased() || gamepad2.dpadUpWasReleased())
+            robot.intakeSpeed = 0;
+        robot.intakeMotor.setPower(robot.intakeSpeed);
+    }
+
+
+    private void intake2(double fwdSPEED, double revSPEED, double master){
         //secondary intake servo is actually a motor
         robot.intakeServo.setPower(0);
         if (gamepad2.right_bumper)
-            robot.intakeServo.setPower(-fwdSPEED2);
+            robot.intakeServo.setPower(-fwdSPEED);
         else if (gamepad2.left_bumper)
-            robot.intakeServo.setPower(revSPEED2);
+            robot.intakeServo.setPower(revSPEED);
         else if (gamepad2.dpad_up)
-            robot.intakeServo.setPower(revSPEED2);
-        robot.intakeMotor.setPower(-fwdSPEED1 * robot.intakeTune);
-        if (gamepad2.aWasReleased() || gamepad2.bWasReleased() || gamepad2.dpadUpWasReleased())
-        { robot.intakeSpeed = 0; }
+            robot.intakeServo.setPower(revSPEED);
+        robot.intakeServo.setPower(robot.intakeServo.getPower() * master);
     }
+
 
     private void launch(double deadzone, double pwrNormal, double pwrHigh) {
         robot.launchTune = pwrNormal;
