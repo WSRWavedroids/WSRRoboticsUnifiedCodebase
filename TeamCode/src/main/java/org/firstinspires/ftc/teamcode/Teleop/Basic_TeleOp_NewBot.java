@@ -129,7 +129,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         intake1(1 ,0.5 ,0.85);
         intake2(1 ,1 ,1); //this is a servo
-        intake3(1 ,1 ,1);
+        intake3(0.6 ,1 ,1);
 
         launch(0.1 ,0.61 ,0.72);
 
@@ -333,11 +333,11 @@ public class Basic_TeleOp_NewBot extends OpMode {
     private void intake2(double fwdSPEED, double revSPEED, double master){
         robot.intake2.setPower(0);
         if (gamepad2.right_bumper)
-            robot.intake2.setPower(-fwdSPEED);
+            robot.intake2.setPower(-revSPEED);
         else if (gamepad2.left_bumper)
-            robot.intake2.setPower(revSPEED);
+            robot.intake2.setPower(fwdSPEED);
         else if (gamepad2.dpad_up)
-            robot.intake2.setPower(revSPEED);
+            robot.intake2.setPower(fwdSPEED);
         robot.intake2.setPower(robot.intake2.getPower() * master);
     }
 
@@ -345,11 +345,11 @@ public class Basic_TeleOp_NewBot extends OpMode {
     private void intake3(double fwdSPEED, double revSPEED, double master){
         robot.intake3.setPower(0);
         if (gamepad2.right_bumper)
-            robot.intake3.setPower(-fwdSPEED);
+            robot.intake3.setPower(-revSPEED);
         else if (gamepad2.left_bumper)
-            robot.intake3.setPower(revSPEED);
+            robot.intake3.setPower(fwdSPEED);
         else if (gamepad2.dpad_up)
-            robot.intake3.setPower(revSPEED);
+            robot.intake3.setPower(fwdSPEED);
         robot.intake3.setPower(robot.intake3.getPower() * master);
     }
 
