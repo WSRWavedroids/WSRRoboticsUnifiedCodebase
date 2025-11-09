@@ -128,8 +128,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 //intakes and launcher
 
         intake1(1 ,0.5 ,0.85);
-        intake2(1 ,0.5 ,1); //this is a servo
-        intake3(0.5 ,0.2 ,1);
+        intake2(1 ,1 ,1); //this is a servo
+        intake3(0.5 ,0.25 ,1);
 
         launch(0.1 ,0.6 ,0.7);
 
@@ -310,9 +310,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.tellMotorOutput(); // Updates telemetry too
     }
 
-    private void setLaunchPower() {
-        robot.launchSpeed = gamepad2.right_trigger - robot.triggerDeadzone;
-        robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * gamepad2.right_trigger;
+    private void setLaunchPower(double input) {
+        robot.launchSpeed = input - robot.triggerDeadzone;
+        robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
         robot.launchLeft.setPower(robot.launchSpeed * robot.launchTune);
         robot.launchRight.setPower(-robot.launchSpeed * robot.launchTune);
     }
@@ -357,10 +357,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.launchTune = pwrNormal;
         robot.triggerDeadzone = deadzone;
         if (gamepad2.right_trigger > robot.triggerDeadzone) {
-            setLaunchPower();
+            setLaunchPower(gamepad2.right_trigger);
         } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrHigh;
-            setLaunchPower();
+            setLaunchPower(gamepad2.left_trigger);
         } else {
             robot.launchLeft.setPower(0);
             robot.launchRight.setPower(0);
