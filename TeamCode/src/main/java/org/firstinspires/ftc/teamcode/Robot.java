@@ -28,8 +28,8 @@ public class Robot {
     public DcMotorEx backRightDrive;
 
     public DcMotorEx intakeMotor;
-    //public CRServo intakeServo;
-    public DcMotorEx intakeServo;
+    public CRServo intake2;
+    public DcMotorEx intake3;
 
     public DcMotorEx launchLeft;
     public DcMotorEx launchRight;
@@ -67,8 +67,8 @@ public class Robot {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         launchLeft = hardwareMap.get(DcMotorEx.class, "launchLeft");
         launchRight = hardwareMap.get(DcMotorEx.class, "launchRight");
-        //intakeServo = hardwareMap.get(CRServo.class, "servo");
-        intakeServo = hardwareMap.get(DcMotorEx.class, "servo");
+        intake3 = hardwareMap.get(DcMotorEx.class, "intake3");
+        intake2 = hardwareMap.get(CRServo.class, "servo");
 
 
         launchLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -85,7 +85,7 @@ public class Robot {
 
         // This section sets the direction of all of the motors. Depending on the motor, this may change later in the program.
 
-        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD); //TODO Add direction
+        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
         // This tells the motors to chill when we're not powering them.
@@ -96,7 +96,7 @@ public class Robot {
 
 
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intakeServo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake3.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         launchRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         launchLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

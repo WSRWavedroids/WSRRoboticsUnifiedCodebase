@@ -555,7 +555,7 @@ public class AutonomousPLUS extends LinearOpMode {
  //   }
 
     public void runIntake2Auto(double motorSpeed){
-        robot.intakeServo.setPower(motorSpeed);
+        robot.intake2.setPower(motorSpeed);
 
     }
 

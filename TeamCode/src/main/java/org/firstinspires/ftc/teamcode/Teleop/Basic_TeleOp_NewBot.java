@@ -107,6 +107,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
+
+
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
@@ -126,9 +128,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
 //intakes and launcher
 
         intake1(1 ,0.5 ,0.85);
-        intake2(0.5 ,0.2 ,1);
+        intake2(1 ,0.5 ,1); //this is a servo
+        intake3(0.5 ,0.2 ,1);
 
-        launch(0.1 ,0.62 ,0.73 );
+        launch(0.1 ,0.6 ,0.7);
 
         //Matthew Was Here
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
@@ -137,10 +140,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
-                            //DEVEN'S NONSENSE
 
-                                //Access quantum particle and aline with telemtry of the reolvations of the atomic
-                                // numerical exponetioalation to access the LEGENDARY QUANTUM POCKET COOKIE
 
 
 
@@ -330,15 +330,26 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
     private void intake2(double fwdSPEED, double revSPEED, double master){
-        //secondary intake servo is actually a motor
-        robot.intakeServo.setPower(0);
+        robot.intake2.setPower(0);
         if (gamepad2.right_bumper)
-            robot.intakeServo.setPower(-fwdSPEED);
+            robot.intake2.setPower(-fwdSPEED);
         else if (gamepad2.left_bumper)
-            robot.intakeServo.setPower(revSPEED);
+            robot.intake2.setPower(revSPEED);
         else if (gamepad2.dpad_up)
-            robot.intakeServo.setPower(revSPEED);
-        robot.intakeServo.setPower(robot.intakeServo.getPower() * master);
+            robot.intake2.setPower(revSPEED);
+        robot.intake2.setPower(robot.intake2.getPower() * master);
+    }
+
+
+    private void intake3(double fwdSPEED, double revSPEED, double master){
+        robot.intake3.setPower(0);
+        if (gamepad2.right_bumper)
+            robot.intake3.setPower(-fwdSPEED);
+        else if (gamepad2.left_bumper)
+            robot.intake3.setPower(revSPEED);
+        else if (gamepad2.dpad_up)
+            robot.intake3.setPower(revSPEED);
+        robot.intake3.setPower(robot.intake3.getPower() * master);
     }
 
 
