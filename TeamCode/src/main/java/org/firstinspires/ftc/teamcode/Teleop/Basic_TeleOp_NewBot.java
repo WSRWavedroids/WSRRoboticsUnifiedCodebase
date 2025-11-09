@@ -313,8 +313,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
     private void setLaunchPower(double input) {
         robot.launchSpeed = input - robot.triggerDeadzone;
         robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
-        robot.launchLeft.setPower(robot.launchSpeed * robot.launchTune);
-        robot.launchRight.setPower(-robot.launchSpeed * robot.launchTune);
+        robot.launchLeft.setPower(-robot.launchSpeed * robot.launchTune);
+        robot.launchRight.setPower(robot.launchSpeed * robot.launchTune);
     }
 
     private void intake1(double fwdSPEED, double revSPEED, double master){
