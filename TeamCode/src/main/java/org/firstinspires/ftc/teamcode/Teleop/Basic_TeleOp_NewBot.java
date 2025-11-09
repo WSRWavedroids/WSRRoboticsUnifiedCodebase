@@ -129,9 +129,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         intake1(1 ,0.5 ,0.85);
         intake2(1 ,1 ,1); //this is a servo
-        intake3(0.5 ,0.25 ,1);
+        intake3(1 ,1 ,1);
 
-        launch(0.1 ,0.6 ,0.7);
+        launch(0.1 ,0.61 ,0.72);
 
         //Matthew Was Here
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
