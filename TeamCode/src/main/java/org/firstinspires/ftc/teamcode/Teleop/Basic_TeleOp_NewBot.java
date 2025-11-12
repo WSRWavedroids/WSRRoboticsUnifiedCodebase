@@ -124,7 +124,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
-
 //intakes and launcher
 
         intake1(1 ,0.5 ,0.85);
