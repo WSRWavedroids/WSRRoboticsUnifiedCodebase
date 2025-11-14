@@ -316,16 +316,21 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
         robot.launchLeft.setPower(-robot.launchSpeed * robot.launchTune);
         robot.launchRight.setPower(robot.launchSpeed * robot.launchTune);
+        if (gamepad2.right_stick_button);
+            telemetry.addLine("noahguywashere");
+            telemetry.addLine("DevenWasHere");
+            telemetry.addLine("MatthewWasHere");
     }
-
+//noahguy was also here
     private void intake1(double fwdSPEED, double revSPEED, double master){
         robot.intakeTune = master;
         if (gamepad2.a || gamepad2.xWasPressed() || gamepad2.dpad_up) {
             robot.intakeSpeed = -fwdSPEED * robot.intakeTune;
         } else if (gamepad2.b || gamepad2.yWasPressed()) {
             robot.intakeSpeed = revSPEED * robot.intakeTune;
-        } if (gamepad2.aWasReleased() || gamepad2.bWasReleased() || gamepad2.dpadUpWasReleased())
+        } if (gamepad2.aWasReleased() || gamepad2.bWasReleased() || gamepad2.dpadUpWasReleased()) {
             robot.intakeSpeed = 0;
+        }
         robot.intakeMotor.setPower(robot.intakeSpeed);
     }
 
@@ -346,8 +351,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.intake3.setPower(0);
         if (gamepad2.right_bumper)
             robot.intake3.setPower(-revSPEED);
-        else if (gamepad2.left_bumper)
-            robot.intake3.setPower(fwdSPEED);
         else if (gamepad2.dpad_up)
             robot.intake3.setPower(fwdSPEED);
         robot.intake3.setPower(robot.intake3.getPower() * master);
