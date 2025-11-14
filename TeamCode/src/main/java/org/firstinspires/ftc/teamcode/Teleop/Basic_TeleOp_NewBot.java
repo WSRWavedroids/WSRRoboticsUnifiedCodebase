@@ -128,7 +128,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 //intakes and launcher
 
         intake1(1 ,0.5 ,0.85);
-        intake2(1 ,0.6 ,1); //this is a servo
+        intake2(1 ,1 ,1); //this is a servo
         intake3(0.6 ,0.3 ,1);
 
         launch(0.1 ,0.3 ,.75);
@@ -366,13 +366,15 @@ public class Basic_TeleOp_NewBot extends OpMode {
         if (gamepad2.right_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrNormal;
             setLaunchPower(gamepad2.right_trigger);
-            if (robot.launchRight.getPower() == pwrNormal);
+            if (robot.launchRight.getPower() == pwrNormal) {
                 gamepad2.rumble(100);
+            }
         } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrHigh;
             setLaunchPower(gamepad2.left_trigger);
-            if (robot.launchRight.getPower() == pwrNormal);
+            if (robot.launchRight.getPower() == pwrNormal) {
                 gamepad2.rumble(100);
+            }
         } else {
             robot.launchLeft.setPower(0);
             robot.launchRight.setPower(0);
