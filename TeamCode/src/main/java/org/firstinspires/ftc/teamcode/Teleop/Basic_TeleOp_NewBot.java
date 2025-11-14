@@ -351,6 +351,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.intake3.setPower(0);
         if (gamepad2.right_bumper)
             robot.intake3.setPower(-revSPEED);
+        else if (gamepad2.dpad_down)
+            robot.intake3.setPower(fwdSPEED);
         else if (gamepad2.dpad_up)
             robot.intake3.setPower(fwdSPEED);
         robot.intake3.setPower(robot.intake3.getPower() * master);
@@ -358,17 +360,23 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
     private void launch(double deadzone, double pwrNormal, double pwrHigh) {
-        robot.launchTune = pwrNormal;
+
         robot.triggerDeadzone = deadzone;
         if (gamepad2.right_trigger > robot.triggerDeadzone) {
+            robot.launchTune = pwrNormal;
             setLaunchPower(gamepad2.right_trigger);
+            if (robot.launchRight.getPower() == pwrNormal);
+                gamepad2.rumble(100);
         } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrHigh;
             setLaunchPower(gamepad2.left_trigger);
+            if (robot.launchRight.getPower() == pwrNormal);
+                gamepad2.rumble(100);
         } else {
             robot.launchLeft.setPower(0);
             robot.launchRight.setPower(0);
         }
+
     }
 
 
