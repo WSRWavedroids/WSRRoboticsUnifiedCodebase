@@ -20,7 +20,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         //550 ticks = about 90 degrees right
         //6 second pause after everything
         moveRobotBackward(1400, 6, 0.4);
-        runLauncherAuto(0.33);
+        runLauncherAuto(0.32);
         sleep(1500);
         runIntake2Auto(0.5);
         runIntakeAuto("In");
