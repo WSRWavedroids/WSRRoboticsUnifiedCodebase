@@ -316,12 +316,13 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
         robot.launchLeft.setPower(-robot.launchSpeed * robot.launchTune);
         robot.launchRight.setPower(robot.launchSpeed * robot.launchTune);
-        if (gamepad2.right_stick_button);
+        if (gamepad2.right_stick_button) {
             telemetry.addLine("noahguywashere");
             telemetry.addLine("DevenWasHere");
             telemetry.addLine("MatthewWasHere");
+        }
     }
-//noahguy was also here
+//noahguy was here also
     private void intake1(double fwdSPEED, double revSPEED, double master){
         robot.intakeTune = master;
         if (gamepad2.a || gamepad2.xWasPressed() || gamepad2.dpad_up) {
