@@ -316,7 +316,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
         robot.launchLeft.setPower(-robot.launchSpeed * robot.launchTune);
         robot.launchRight.setPower(robot.launchSpeed * robot.launchTune);
-        if (gamepad2.right_stick_button) {
+        if (gamepad2.right_stick_button || gamepad2.left_stick_button) {
             telemetry.addLine("noahguywashere");
             telemetry.addLine("DevenWasHere");
             telemetry.addLine("MatthewWasHere");
@@ -372,6 +372,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
         } else {
             robot.launchLeft.setPower(0);
             robot.launchRight.setPower(0);
+        } if (gamepad2.right_trigger == 1 & gamepad2.left_trigger == 1 & gamepad2.left_stick_button) {
+            robot.launchTune = 1;
+            setLaunchPower(1);
         }
 
     }
