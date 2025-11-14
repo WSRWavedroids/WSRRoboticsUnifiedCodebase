@@ -131,7 +131,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         intake2(1 ,1 ,1); //this is a servo
         intake3(0.6 ,0.3 ,1);
 
-        launch(0.1 ,0.32 ,.75);
+        launch(0.1 ,0.32 ,0.6);
 
 
         //Matthew Was Here
@@ -325,9 +325,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
 //noahguy was here also
     private void intake1(double fwdSPEED, double revSPEED, double master){
         robot.intakeTune = master;
-        if (gamepad2.a || gamepad2.xWasPressed() || gamepad2.dpad_up) {
+        if (gamepad2.a || gamepad2.dpad_up) {
             robot.intakeSpeed = -fwdSPEED * robot.intakeTune;
-        } else if (gamepad2.b || gamepad2.yWasPressed()) {
+        } else if (gamepad2.b || gamepad2.dpad_down) {
             robot.intakeSpeed = revSPEED * robot.intakeTune;
         } if (gamepad2.aWasReleased() || gamepad2.bWasReleased() || gamepad2.dpadUpWasReleased()) {
             robot.intakeSpeed = 0;
@@ -366,15 +366,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
         if (gamepad2.right_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrNormal;
             setLaunchPower(gamepad2.right_trigger);
-            if (robot.launchRight.getPower() == pwrNormal) {
-                gamepad2.rumble(100);
-            }
         } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrHigh;
             setLaunchPower(gamepad2.left_trigger);
-            if (robot.launchRight.getPower() == pwrNormal) {
-                gamepad2.rumble(100);
-            }
         } else {
             robot.launchLeft.setPower(0);
             robot.launchRight.setPower(0);
