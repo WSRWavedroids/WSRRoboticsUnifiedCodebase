@@ -351,7 +351,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.intake3.setPower(0);
         if (gamepad2.right_bumper)
             robot.intake3.setPower(-revSPEED);
-        else if (gamepad2.dpad_down)
+        else if (gamepad2.left_bumper)
             robot.intake3.setPower(fwdSPEED);
         else if (gamepad2.dpad_up)
             robot.intake3.setPower(fwdSPEED);
