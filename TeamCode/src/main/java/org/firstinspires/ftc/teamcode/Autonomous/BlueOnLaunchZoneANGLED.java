@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Robot;
 
-@Autonomous(group =  "Auto", name = "RedOnLaunchZoneANGLED")
-public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
+@Autonomous(group =  "Auto", name = "BlueOnLaunchZoneANGLED")
+public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
 
     private Robot robot;
 
@@ -30,7 +30,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntake2Auto(0);
         runIntakeAuto("Stop");
         prepareNextAction(6);
-        moveRobotRight(1200,6,0.2); 
+        moveRobotLeft(1200,6,0.2);
         //turnRobotLeft(1650, 6);
         //moveRobotLeft(900,6,0.4);
         //runIntakeAuto(In);          //this is intake

@@ -29,10 +29,8 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runLauncherAuto(0);
         runIntake2Auto(0);
         runIntakeAuto("Stop");
-        prepareNextAction(6);          //Untuned
-
+        prepareNextAction(6);
         moveRobotRight(1200,6,0.2);
-
         //turnRobotLeft(1650, 6);
         //moveRobotLeft(900,6,0.4);
         //runIntakeAuto(In);          //this is intake
