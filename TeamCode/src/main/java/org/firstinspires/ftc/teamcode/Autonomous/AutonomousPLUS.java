@@ -556,11 +556,13 @@ public class AutonomousPLUS extends LinearOpMode {
 
     public void runIntake2Auto(double motorSpeed){
         robot.intake2.setPower(motorSpeed * 1.5);
-        robot.intake3.setPower((motorSpeed * 2));
 
     }
 
+    public void runIntake3Auto(double motorSpeed){
+        robot.intake3.setPower((motorSpeed * 2));
 
+    }
     /**
      * This is the autonomous mode. It moves the robot without us having to touch the controller.
      * Previous programmers really sucked at explaining what any of this meant, so we're trying to do better.
