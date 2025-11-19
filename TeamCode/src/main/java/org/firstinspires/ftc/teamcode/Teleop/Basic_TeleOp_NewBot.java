@@ -36,6 +36,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
     private ElapsedTime runtime = new ElapsedTime();
     private double speed = 0.75;
+    private double launcherLimit = 0.5;
     private boolean spinTargetAquired = false;
     int SpinTargetFrontLeft;
     int SpinTargetFrontRight;
@@ -312,19 +313,25 @@ public class Basic_TeleOp_NewBot extends OpMode {
         // This little section updates the driver hub on the runtime and the motor powers.
         // It's mostly used for troubleshooting.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-
+        telemetry.addData("robot.launchTune", robot.launchTune);
+        telemetry.addData("robot.launchSpeed", robot.launchSpeed);
+        telemetry.addData("robot.launchSpeed * robot.launchTune", robot.launchSpeed * robot.launchTune);
         robot.tellMotorOutput(); // Updates telemetry too
+
     }
 
     private void setLaunchPower(double input) {
-        robot.launchLeft.setPower(1);
-        robot.launchRight.setPower(1);
-        robot.launchSpeed = input - robot.triggerDeadzone;
-        robot.launchRight.setPower(1);
-        robot.launchLeft.setPower(1);
-        robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
-        robot.launchLeft.setVelocity(-robot.launchSpeed * robot.launchTune);
-        robot.launchRight.setVelocity(robot.launchSpeed * robot.launchTune);
+        //robot.launchSpeed = input - robot.triggerDeadzone;
+        //robot.launchRight.setPower(1);
+        //robot.launchLeft.setPower(1);
+        //robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
+        //robot.launchLeft.setVelocity(-robot.launchSpeed * robot.launchTune * 6000);
+        //robot.launchRight.setVelocity(robot.launchSpeed * robot.launchTune * 6000);
+        robot.launchLeft.setVelocity(launcherLimit * -2000 * input);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        robot.launchRight.setVelocity(launcherLimit * 2000 * input);
+        telemetry.addLine("left launch"+ robot.launchLeft.getVelocity());
+        telemetry.addLine("right launch"+ robot.launchRight.getVelocity());
+
         if (gamepad2.right_stick_button || gamepad2.left_stick_button) {
             telemetry.addLine("noahguywashere");
             telemetry.addLine("DevenWasHere");
