@@ -319,6 +319,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.launchLeft.setPower(1);
         robot.launchRight.setPower(1);
         robot.launchSpeed = input - robot.triggerDeadzone;
+        robot.launchRight.setPower(1);
+        robot.launchLeft.setPower(1);
         robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
         robot.launchLeft.setVelocity(-robot.launchSpeed * robot.launchTune);
         robot.launchRight.setVelocity(robot.launchSpeed * robot.launchTune);
