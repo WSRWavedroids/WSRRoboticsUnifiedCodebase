@@ -138,6 +138,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune * 6000);
         telemetry.addData("launchRight" , robot.launchRight.getVelocity());
         telemetry.addData("launchLeft" , robot.launchRight.getVelocity());
+        telemetry.addData("pwrLeft" , robot.launchRight.getPower());
+        telemetry.addData("pwrRight" , robot.launchRight.getPower());
 
 
 
