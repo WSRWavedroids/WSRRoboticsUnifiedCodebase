@@ -131,11 +131,11 @@ public class Basic_TeleOp_NewBot extends OpMode {
         intake2(1 ,1 ,1); //this is a servo
         intake3(0.6 ,0.3 ,1);
 
-        launch(0.1 ,0.32 ,0.44);
+        launch(0.1 ,0.06 ,0.14);
 
 
         //Matthew Was Here
-        telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
+        telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune * 6000);
 
 
 
@@ -316,12 +316,14 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.launchRight.setPower(1);
         robot.launchSpeed = input - robot.triggerDeadzone;
         robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
-        robot.launchLeft.setVelocity(-robot.launchSpeed * robot.launchTune * 1920);
-        robot.launchRight.setVelocity(robot.launchSpeed * robot.launchTune * 1920);
+        robot.launchLeft.setVelocity(-robot.launchSpeed * robot.launchTune * 6000);
+        robot.launchRight.setVelocity(robot.launchSpeed * robot.launchTune * 6000);
         if (gamepad2.right_stick_button || gamepad2.left_stick_button) {
             telemetry.addLine("noahguywashere");
             telemetry.addLine("DevenWasHere");
             telemetry.addLine("MatthewWasHere");
+            robot.launchLeft.setVelocity(-6000);
+            robot.launchRight.setVelocity(6000);
         }
     }
 //noahguy was here also
