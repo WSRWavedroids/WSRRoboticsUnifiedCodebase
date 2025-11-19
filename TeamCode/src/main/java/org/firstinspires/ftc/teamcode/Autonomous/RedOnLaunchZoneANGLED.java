@@ -22,16 +22,13 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         moveRobotBackward(1400, 6, 0.4);
         runLauncherAuto(0.32);
         sleep(1500);
-        runIntake3Auto(0.5);
-        sleep(2000);
         runIntake2Auto(0.5);
-        sleep(2000);
+        sleep(1000);
         runIntakeAuto("In");
         sleep(3000);
         prepareNextAction(4);
         runLauncherAuto(0);
         runIntake2Auto(0);
-        runIntake3Auto(0);
         runIntakeAuto("Stop");
         prepareNextAction(6);
         moveRobotRight(1200,6,0.2);

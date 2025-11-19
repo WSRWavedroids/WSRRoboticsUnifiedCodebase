@@ -23,7 +23,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         runLauncherAuto(0.32);
         sleep(1500);
         runIntake2Auto(0.5);
-        sleep(2000);
+        sleep(1000);
         runIntakeAuto("In");
         sleep(3000);
         prepareNextAction(4);
