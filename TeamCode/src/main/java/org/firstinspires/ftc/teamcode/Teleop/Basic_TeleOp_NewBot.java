@@ -322,8 +322,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
             telemetry.addLine("noahguywashere");
             telemetry.addLine("DevenWasHere");
             telemetry.addLine("MatthewWasHere");
-            robot.launchLeft.setVelocity(-6000);
-            robot.launchRight.setVelocity(6000);
         }
     }
 //noahguy was here also
@@ -374,8 +372,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.launchTune = pwrHigh;
             setLaunchPower(gamepad2.left_trigger);
         } else {
-            robot.launchLeft.setPower(0);
-            robot.launchRight.setPower(0);
+            robot.launchLeft.setVelocity(0);
+            robot.launchRight.setVelocity(0);
         } if (gamepad2.right_trigger == 1 & gamepad2.left_trigger == 1 & gamepad2.left_stick_button) {
             robot.launchTune = 1;
             setLaunchPower(1);
