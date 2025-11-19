@@ -18,7 +18,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         //Under This Is Were You Put Stuff
         //900 tick = about 20 in
         //550 ticks = about 90 degrees right
-        //6 second pause after everything
+        //6 millisecond pause after everything
         moveRobotBackward(1400, 6, 0.4);
         runLauncherAuto(0.32);
         sleep(1500);
