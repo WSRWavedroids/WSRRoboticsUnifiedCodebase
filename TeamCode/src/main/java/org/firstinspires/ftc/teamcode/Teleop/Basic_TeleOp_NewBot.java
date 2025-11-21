@@ -320,13 +320,14 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
     }
 
-    private void setLaunchPower(double input) {
+    private void setLaunchPower(double input, double velocity) {
         robot.launchSpeed = input - robot.triggerDeadzone;
-        robot.launchRight.setPower(1);
-        robot.launchLeft.setPower(1);
+        robot.launchRight.setVelocity(velocity);
+        robot.launchLeft.setVelocity(velocity);
         robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
         robot.launchLeft.setVelocity(-robot.launchSpeed * robot.launchTune );
         robot.launchRight.setVelocity(robot.launchSpeed * robot.launchTune);
+
         telemetry.addLine("left launch"+ robot.launchLeft.getVelocity());
         telemetry.addLine("right launch"+ robot.launchRight.getVelocity());
 
@@ -379,16 +380,16 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.triggerDeadzone = deadzone;
         if (gamepad2.right_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrNormal * 6000;
-            setLaunchPower(gamepad2.right_trigger);
+            setLaunchPower(gamepad2.right_trigger, 2000);
         } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrHigh * 6000;
-            setLaunchPower(gamepad2.left_trigger);
+            setLaunchPower(gamepad2.left_trigger, 2000);
         } else {
             robot.launchLeft.setVelocity(0);
             robot.launchRight.setVelocity(0);
         } if (gamepad2.right_trigger == 1 & gamepad2.left_trigger == 1 & gamepad2.left_stick_button) {
             robot.launchTune = 1;
-            setLaunchPower(1);
+            setLaunchPower(1, 6000);
         }
 
     }
