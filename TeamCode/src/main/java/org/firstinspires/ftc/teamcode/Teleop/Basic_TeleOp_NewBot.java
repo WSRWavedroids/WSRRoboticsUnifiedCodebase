@@ -5,11 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCaptureSequence;
 import org.firstinspires.ftc.teamcode.Robot;
 
 import kotlin.reflect.KFunction;
@@ -103,7 +101,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
         telemetry.addData("HYPE", "Let's do this!!!");
         gamepad1.setLedColor(0, 0, 255, 100000000);
         gamepad2.setLedColor(255, 0, 240, 100000000);
-        robot.intake2.setPosition(0.8);
     }
 
 
@@ -131,23 +128,14 @@ public class Basic_TeleOp_NewBot extends OpMode {
 //intakes and launcher
 
         intake1(1 ,0.5 ,0.85);
-        intake2(0.8 ,0.6); //this is a servo
-        intake3(1 ,0.6 ,1);
+        intake2(1 ,1 ,1); //this is a servo
+        intake3(0.6 ,0.3 ,1);
 
         launch(0.1 ,0.32 ,0.44);
 
 
-
-
-    //add telemetry stuffs
-
         //Matthew Was Here
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
-
-        //JackWuzHere
-        telemetry.addLine("JackWuzHere");
-
-        telemetry.addData("motorPosition" , robot.intake2.getPosition());
 
 
 
@@ -348,15 +336,15 @@ public class Basic_TeleOp_NewBot extends OpMode {
     }
 
 
-    private void intake2(double posOPEN, double posCLOSED){
-        if (gamepad2.xWasPressed()) {
-            if (robot.intake2.getPosition() < posOPEN) {
-                robot.intake2.setPosition(posOPEN);
-            }
-            else {
-                robot.intake2.setPosition(posCLOSED);
-            }
-        }
+    private void intake2(double fwdSPEED, double revSPEED, double master){
+        robot.intake2.setPower(0);
+        if (gamepad2.right_bumper)
+            robot.intake2.setPower(-revSPEED);
+        else if (gamepad2.left_bumper)
+            robot.intake2.setPower(fwdSPEED);
+        else if (gamepad2.dpad_up)
+            robot.intake2.setPower(fwdSPEED);
+        robot.intake2.setPower(robot.intake2.getPower() * master);
     }
 
 
