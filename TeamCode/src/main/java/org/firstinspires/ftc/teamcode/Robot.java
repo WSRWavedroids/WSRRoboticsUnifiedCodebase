@@ -28,7 +28,7 @@ public class Robot {
     public DcMotorEx backRightDrive;
 
     public DcMotorEx intakeMotor;
-    public CRServo intake2;
+    public Servo intake2;
     public DcMotorEx intake3;
 
     public DcMotorEx launchLeft;
@@ -68,7 +68,7 @@ public class Robot {
         launchLeft = hardwareMap.get(DcMotorEx.class, "launchLeft");
         launchRight = hardwareMap.get(DcMotorEx.class, "launchRight");
         intake3 = hardwareMap.get(DcMotorEx.class, "intake3");
-        intake2 = hardwareMap.get(CRServo.class, "servo");
+        intake2 = hardwareMap.get(Servo.class, "servo");
 
 
         launchLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -186,6 +186,9 @@ public class Robot {
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        launchRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        launchLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void powerSet(double speed) {
         frontLeftDrive.setPower(speed);
