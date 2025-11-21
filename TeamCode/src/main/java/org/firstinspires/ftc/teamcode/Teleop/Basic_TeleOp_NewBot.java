@@ -130,7 +130,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         intake1(1 ,0.5 ,0.85);
         intake2(1 ,1 ,1); //this is a servo
-        intake3(0.6 ,0.3 ,1);
+        intake3(1 ,0.6 ,1);
 
         launch(0.1 ,0.06 ,0.14);
 
@@ -321,14 +321,12 @@ public class Basic_TeleOp_NewBot extends OpMode {
     }
 
     private void setLaunchPower(double input) {
-        //robot.launchSpeed = input - robot.triggerDeadzone;
-        //robot.launchRight.setPower(1);
-        //robot.launchLeft.setPower(1);
-        //robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
-        //robot.launchLeft.setVelocity(-robot.launchSpeed * robot.launchTune * 6000);
-        //robot.launchRight.setVelocity(robot.launchSpeed * robot.launchTune * 6000);
-        robot.launchLeft.setVelocity(launcherLimit * -2000 * input);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-        robot.launchRight.setVelocity(launcherLimit * 2000 * input);
+        robot.launchSpeed = input - robot.triggerDeadzone;
+        robot.launchRight.setPower(1);
+        robot.launchLeft.setPower(1);
+        robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
+        robot.launchLeft.setVelocity(-robot.launchSpeed * robot.launchTune );
+        robot.launchRight.setVelocity(robot.launchSpeed * robot.launchTune);
         telemetry.addLine("left launch"+ robot.launchLeft.getVelocity());
         telemetry.addLine("right launch"+ robot.launchRight.getVelocity());
 
