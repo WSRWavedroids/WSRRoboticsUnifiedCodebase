@@ -100,8 +100,8 @@ public class Robot {
         launchRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         launchLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        launchRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        launchRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        launchRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        launchRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         //This is new..

@@ -526,14 +526,15 @@ public class AutonomousPLUS extends LinearOpMode {
 
 //LAUNCHER
     public void runLauncherAuto(double launchSpeed) {
-        robot.launchLeft.setPower(-launchSpeed);
-        robot.launchRight.setPower(launchSpeed);
+        robot.launchLeft.setPower(-launchSpeed * 1000);
+        robot.launchRight.setPower(-launchSpeed * 1000);
 
     }
     public void runLauncherstop() {
         robot.launchLeft.setPower(0);
         robot.launchRight.setPower(0);
-
+        robot.launchLeft.setVelocity(0);
+        robot.launchRight.setVelocity(0);
     }
 //PRIMARY INTAKE
 
