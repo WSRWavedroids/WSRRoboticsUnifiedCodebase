@@ -19,36 +19,29 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         //900 tick = about 20 in
         //550 ticks = about 90 degrees right
         //6 millisecond pause after everything
-        moveRobotBackward(1400, 6, 0.4);
-        runLauncherAuto(0.32);
-        sleep(1500);
-        runIntake2Auto(0.5);
-        sleep(1000);
-        runIntakeAuto("In");
-        sleep(3000);
-        prepareNextAction(4);
-        runLauncherAuto(0);
+        moveRobotBackward(1370, 6, 0.38);
+        runLauncherAuto(0.39);
+        sleep(3200);
+        runIntake2Auto(1);
+        runIntakeAuto("in");
+        sleep(110);
         runIntake2Auto(0);
-        runIntakeAuto("Stop");
+        runIntakeAuto("stop");
+        sleep(1200);
+        runIntake2Auto(1);
+        runIntakeAuto("in");
+        sleep(125);
+        runIntake2Auto(0);
+        runIntakeAuto("stop");
+        sleep(1200);
+        runIntake2Auto(1);
+        runIntakeAuto("in");
+        sleep(300);
+        runIntake2Auto(0);
+        runIntakeAuto("stop");
+        runLauncherstop();
         prepareNextAction(6);
-        moveRobotLeft(1200,6,0.2);
-        //turnRobotLeft(1650, 6);
-        //moveRobotLeft(900,6,0.4);
-        //runIntakeAuto(In);          //this is intake
-        //moveRobotForward(750,6,40);
-        //sleep(2000);
-        //runIntakeAuto(Stop);
-        //moveRobotBackward(750,6,40);         //this is launch
-        //moveRobotLeft(450,6,40);
-        //turnRobotRight(1650,6,40);
-        //runLauncherAuto(0.7);
-        //sleep(1500);
-        //runIntake2Auto(1);
-        //runIntakeAuto(In);
-        //sleep(4000);
-        //runLauncherAuto(0);
-        //runIntake2Auto(0);
-        //runIntakeAuto(Stop);
+        moveRobotLeft(740,6,0.2);
     }
 }
 //whatever i want

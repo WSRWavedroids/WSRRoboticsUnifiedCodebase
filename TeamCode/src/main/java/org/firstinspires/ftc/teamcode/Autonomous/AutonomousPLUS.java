@@ -525,15 +525,20 @@ public class AutonomousPLUS extends LinearOpMode {
 
 
 //LAUNCHER
-    public void runLauncherAuto(double launchSpeed){
+    public void runLauncherAuto(double launchSpeed) {
         robot.launchLeft.setPower(-launchSpeed);
         robot.launchRight.setPower(launchSpeed);
 
-
-//PRIMARY INTAKE
     }
+    public void runLauncherstop() {
+        robot.launchLeft.setPower(0);
+        robot.launchRight.setPower(0);
+
+    }
+//PRIMARY INTAKE
+
     public void runIntakeAuto(String direction) {
-        if (direction.equals("In")) {
+        if (direction.equals("in")) {
             robot.intakeMotor.setPower(1);
         } else if (direction.equals("out")) {
             robot.intakeMotor.setPower(-1);
@@ -555,11 +560,6 @@ public class AutonomousPLUS extends LinearOpMode {
  //   }
 
     public void runIntake2Auto(double motorSpeed){
-        robot.intake2.setPower(motorSpeed * 1.5);
-
-    }
-
-    public void runIntake3Auto(double motorSpeed){
         robot.intake3.setPower((motorSpeed * 2));
 
     }

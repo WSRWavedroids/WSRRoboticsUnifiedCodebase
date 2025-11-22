@@ -41,6 +41,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
     int SpinTargetFrontRight;
     int SpinTargetBackLeft;
     int SpinTargetBackRight;
+    private double launcherLimit = 0.42;
+    private double launcherLimit2 = 0.50;
 
     //private double storedSpeed;
     public Robot robot = null;
@@ -101,6 +103,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         telemetry.addData("HYPE", "Let's do this!!!");
         gamepad1.setLedColor(0, 0, 255, 100000000);
         gamepad2.setLedColor(255, 0, 240, 100000000);
+        robot.intake2.setPosition(0.5);
     }
 
 
@@ -129,10 +132,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
 //intakes and launcher
 
         intake1(1 ,0.5 ,0.85);
-        intake2(1 ,1 ,1); //this is a servo
-        intake3(0.6 ,0.3 ,1);
+        intake2(1 ,0.5); //this is a servo
+        intake3(1 ,0.6 ,1);
 
-        launch(0.1 ,0.32 ,0.44);
+        launch(0.1 ,0.39 ,0.5);
 
 
         //Matthew Was Here
@@ -337,15 +340,14 @@ public class Basic_TeleOp_NewBot extends OpMode {
     }
 
 
-    private void intake2(double fwdSPEED, double revSPEED, double master){
-        robot.intake2.setPower(0);
-        if (gamepad2.right_bumper)
-            robot.intake2.setPower(-revSPEED);
-        else if (gamepad2.left_bumper)
-            robot.intake2.setPower(fwdSPEED);
-        else if (gamepad2.dpad_up)
-            robot.intake2.setPower(fwdSPEED);
-        robot.intake2.setPower(robot.intake2.getPower() * master);
+    private void intake2(double posOPEN, double posCLOSED){
+        if (gamepad2.xWasPressed()){
+            if (robot.intake2.getPosition() == posCLOSED){
+                robot.intake2.setPosition(posOPEN);
+            }else {
+                robot.intake2.setPosition(posCLOSED);
+            }
+        }
     }
 
 
