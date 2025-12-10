@@ -28,6 +28,8 @@ package org.firstinspires.ftc.teamcode.Autonomous;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import static org.firstinspires.ftc.teamcode.Autonomous.David.in;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -526,8 +528,10 @@ public class AutonomousPLUS extends LinearOpMode {
 
 //LAUNCHER
     public void runLauncherAuto(double launchSpeed) {
-        robot.launchLeft.setPower(-launchSpeed * 1000);
-        robot.launchRight.setPower(-launchSpeed * 1000);
+        robot.launchLeft.setPower(1);
+        robot.launchRight.setPower(1);
+        robot.launchLeft.setVelocity(-launchSpeed * 2000);
+        robot.launchRight.setVelocity(-launchSpeed * 2000);
 
     }
     public void runLauncherstop() {
@@ -570,4 +574,8 @@ public class AutonomousPLUS extends LinearOpMode {
      * This is our third year now of using this file. It's kind of poetic and also adorable.
      */
 
+}
+
+enum David {
+    in, stop
 }

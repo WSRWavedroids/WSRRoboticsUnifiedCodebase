@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import static org.firstinspires.ftc.teamcode.Teleop.Basic_TeleOp_NewBot.AutoLaunchSteps.*;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -131,10 +133,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 //intakes and launcher
 
-        intake1(1 ,0.5 ,0.85);
+        intake1(1 ,0.5 ,0.9);
         intake2(1 ,0.5); //this is a servo
         intake3(1 ,0.6 ,1);
-
         launch(0.1 ,0.39 ,0.5);
 
 
@@ -365,7 +366,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
     }
 
 
-    private void launch(double deadzone, double pwrNormal, double pwrHigh) {
+    private void launch(double deadzone, double pwrNormal, double pwrHigh){
 
         robot.triggerDeadzone = deadzone;
         if (gamepad2.right_trigger > robot.triggerDeadzone) {
@@ -375,15 +376,94 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.launchTune = pwrHigh;
             setLaunchPower(gamepad2.left_trigger);
         } else {
-            robot.launchLeft.setPower(0);
-            robot.launchRight.setPower(0);
-        } if (gamepad2.right_trigger == 1 & gamepad2.left_trigger == 1 & gamepad2.left_stick_button) {
+            setLaunchPower(0);
+        }
+        autoLaunch();
+        override();
+    }
+
+    protected enum AutoLaunchSteps{
+        INPUT, ON, GET_BALL_1, CHARGE_LAUNCH_2, GET_BALL_2, CHARGE_LAUNCH_3, GET_BALL_3, END
+    }
+    private AutoLaunchSteps currentStep = INPUT;
+
+    private double pwr;
+    private double time;
+
+    private void autoLaunch(){
+        switch (currentStep){
+            case INPUT:
+                if (gamepad2.dpadLeftWasPressed()) {
+                    robot.launchTune = 0.39;
+                    currentStep = ON;
+                } else if (gamepad2.dpadRightWasPressed()) {
+                    robot.launchTune = 0.5;
+                    currentStep = ON;
+                }
+                break;
+            case ON:
+                setLaunchPower(1);
+                time = runtime.milliseconds();
+                currentStep = GET_BALL_1;
+                break;
+            case GET_BALL_1:
+                if (runtime.milliseconds() >= time + 1800){
+                    robot.intake3.setPower(1);
+                    time = runtime.milliseconds();
+                    currentStep = CHARGE_LAUNCH_2;
+                }
+                break;
+            case CHARGE_LAUNCH_2:
+                if (runtime.milliseconds() >= time + 400) {
+                    robot.intake3.setPower(0);
+                    time = runtime.milliseconds();
+                    currentStep = GET_BALL_2;
+                }
+                break;
+            case GET_BALL_2:
+                if (runtime.milliseconds() >= time + 500){
+                    robot.intake3.setPower(1);
+                    time = runtime.milliseconds();
+                    currentStep = CHARGE_LAUNCH_3;
+                }
+                break;
+            case CHARGE_LAUNCH_3:
+                if (runtime.milliseconds() >= time + 400){
+                    robot.intake3.setPower(0);
+                    time = runtime.milliseconds();
+                    currentStep = GET_BALL_3;
+                }
+                break;
+            case GET_BALL_3:
+                if (runtime.milliseconds() >= time + 500){
+                    robot.intake3.setPower(1);
+                    robot.intakeMotor.setPower(1);
+                    time = runtime.milliseconds();
+                    currentStep = END;
+                }
+                break;
+            case END:
+                if (runtime.milliseconds() >= time + 500){
+                    robot.intake3.setPower(0);
+                    robot.intakeMotor.setPower(0);
+                    setLaunchPower(0);
+                    currentStep = INPUT;
+                }
+                break;
+        }
+    }
+
+
+    private void override() {
+        if (gamepad2.right_trigger == 1 & gamepad2.left_trigger == 1 & gamepad2.left_stick_button & gamepad2.right_stick_button) {
             robot.launchRight.setPower(1);
             robot.launchLeft.setPower(1);
             robot.launchRight.setVelocity(6000);
             robot.launchLeft.setVelocity(6000);
+            telemetry.addLine("! CAUTION, LAUNCH OVERRIDE ACTIVE !");
+            telemetry.addLine("! CAUTION, LAUNCH OVERRIDE ACTIVE !");
+            telemetry.addLine("! CAUTION, LAUNCH OVERRIDE ACTIVE !");
         }
-
     }
 
 
