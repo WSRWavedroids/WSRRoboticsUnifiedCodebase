@@ -141,6 +141,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         //Matthew Was Here
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
+        telemetry.addData("launchTune" , robot.launchTune);
 
 
 
@@ -316,20 +317,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.tellMotorOutput(); // Updates telemetry too
     }
 
-    private void setLaunchPower(double input) {
-        robot.launchLeft.setPower(1);
-        robot.launchRight.setPower(1);
-        robot.launchSpeed = input - robot.triggerDeadzone;
-        robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
-            robot.launchLeft.setVelocity(-robot.launchSpeed * robot.launchTune * 2000);
-            robot.launchRight.setVelocity(-robot.launchSpeed * robot.launchTune * 2000);
-        if (gamepad2.right_stick_button || gamepad2.left_stick_button) {
-            telemetry.addLine("noahguywashere");
-            telemetry.addLine("DevenWasHere");
-            telemetry.addLine("MatthewWasHere");
-        }
-    }
-//noahguy was here also
+    //noahguy was here also
     private void intake1(double fwdSPEED, double revSPEED, double master){
         robot.intakeTune = master;
         if (gamepad2.a || gamepad2.dpad_up) {
@@ -337,11 +325,11 @@ public class Basic_TeleOp_NewBot extends OpMode {
         } else if (gamepad2.b) {
             robot.intakeSpeed = revSPEED * robot.intakeTune;
         } if (gamepad2.aWasReleased() || gamepad2.bWasReleased() || gamepad2.dpadUpWasReleased()) {
-            robot.intakeSpeed = 0;
+            if (currentStep == INPUT)
+                robot.intakeSpeed = 0;
         }
         robot.intakeMotor.setPower(robot.intakeSpeed);
     }
-
 
     private void intake2(double posOPEN, double posCLOSED){
         if (gamepad2.xWasPressed()){
@@ -355,7 +343,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
     private void intake3(double fwdSPEED, double revSPEED, double master){
-        robot.intake3.setPower(0);
+        if (currentStep == INPUT)
+            robot.intake3.setPower(0);
         if (gamepad2.right_bumper || gamepad2.dpad_down)
             robot.intake3.setPower(-revSPEED);
         else if (gamepad2.left_bumper)
@@ -366,8 +355,22 @@ public class Basic_TeleOp_NewBot extends OpMode {
     }
 
 
-    private void launch(double deadzone, double pwrNormal, double pwrHigh){
+    private void setLaunchPower(double input) {
+        robot.launchSpeed = input - robot.triggerDeadzone;
+        robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
+        robot.launchSpeed = robot.launchSpeed * robot.launchTune;
+        robot.launchLeft.setVelocity(-robot.launchSpeed * 2000);
+        robot.launchRight.setVelocity(-robot.launchSpeed * 2000);
+        if (gamepad2.right_stick_button) {
+            telemetry.addLine("noahguywashere");
+            telemetry.addLine("DevenWasHere");
+            telemetry.addLine("MatthewWasHere");
+        }
+    }
 
+    private void launch(double deadzone, double pwrNormal, double pwrHigh){
+        robot.launchLeft.setPower(1);
+        robot.launchRight.setPower(1);
         robot.triggerDeadzone = deadzone;
         if (gamepad2.right_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrNormal;
@@ -375,10 +378,11 @@ public class Basic_TeleOp_NewBot extends OpMode {
         } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrHigh;
             setLaunchPower(gamepad2.left_trigger);
-        } else {
+        } else if (currentStep == INPUT){
+            robot.launchTune = 0;
             setLaunchPower(0);
         }
-        autoLaunch();
+        autoLaunch(pwrNormal, pwrHigh);
         override();
     }
 
@@ -387,17 +391,17 @@ public class Basic_TeleOp_NewBot extends OpMode {
     }
     private AutoLaunchSteps currentStep = INPUT;
 
-    private double pwr;
     private double time;
 
-    private void autoLaunch(){
+    private void autoLaunch(double pwrLow, double pwrHigh){
+        telemetry.addLine(String.valueOf(currentStep));
         switch (currentStep){
             case INPUT:
                 if (gamepad2.dpadLeftWasPressed()) {
-                    robot.launchTune = 0.39;
+                    robot.launchTune = pwrLow;
                     currentStep = ON;
                 } else if (gamepad2.dpadRightWasPressed()) {
-                    robot.launchTune = 0.5;
+                    robot.launchTune = pwrHigh;
                     currentStep = ON;
                 }
                 break;
@@ -447,6 +451,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
                     robot.intake3.setPower(0);
                     robot.intakeMotor.setPower(0);
                     setLaunchPower(0);
+                    time = runtime.milliseconds();
                     currentStep = INPUT;
                 }
                 break;
@@ -455,9 +460,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
     private void override() {
-        if (gamepad2.right_trigger == 1 & gamepad2.left_trigger == 1 & gamepad2.left_stick_button & gamepad2.right_stick_button) {
-            robot.launchRight.setPower(1);
-            robot.launchLeft.setPower(1);
+        if (gamepad2.right_trigger == 1 & gamepad2.left_trigger == 1 & gamepad2.right_stick_button) {
             robot.launchRight.setVelocity(6000);
             robot.launchLeft.setVelocity(6000);
             telemetry.addLine("! CAUTION, LAUNCH OVERRIDE ACTIVE !");
