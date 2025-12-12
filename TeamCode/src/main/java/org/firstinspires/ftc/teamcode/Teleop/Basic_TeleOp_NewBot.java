@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
 import static org.firstinspires.ftc.teamcode.Teleop.Basic_TeleOp_NewBot.AutoLaunchSteps.*;
-
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -141,7 +140,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         //Matthew Was Here
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
-        telemetry.addData("launchTune" , robot.launchTune);
 
 
 
