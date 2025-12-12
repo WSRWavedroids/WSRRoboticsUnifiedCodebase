@@ -393,7 +393,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
     private AutoLaunchSteps currentStep = INPUT;
 
     private double time;
-
+//TODO make the secondary intake reverse during launch charge up and lengthen wait times
     private void autoLaunch(double pwrLow, double pwrHigh){
         telemetry.addLine(String.valueOf(currentStep));
         switch (currentStep){
