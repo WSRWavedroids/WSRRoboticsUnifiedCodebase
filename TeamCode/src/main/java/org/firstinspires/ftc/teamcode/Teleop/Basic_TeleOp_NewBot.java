@@ -136,11 +136,16 @@ public class Basic_TeleOp_NewBot extends OpMode {
         intake1(1 ,0.5 ,0.9);
         intake2(1 ,0.5); //this is a servo
         intake3(1 ,0.6 ,1);
-        launch(0.1 ,0.39 ,0.5);
+        launch(0.1 ,0.45 ,0.53);
 
 
         //Matthew Was Here
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
+        telemetry.addData("LR Power", robot.launchRight.getPower());
+        telemetry.addData("LL Power", robot.launchLeft.getPower());
+        telemetry.addData("LR Velocity", robot.launchRight.getVelocity());
+        telemetry.addData("LL Velocity", robot.launchLeft.getVelocity());
+        telemetry.addData("Launch Tune", robot.launchTune);
 
 
 
@@ -200,9 +205,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
     private void singleJoystickDrive() {
         // We don't really know how this function works, but it makes the wheels drive, so we don't question it.
         // Don't mess with this function unless you REALLY know what you're doing.
-        float leftY = this.gamepad1.left_stick_y;
+        float leftY = -this.gamepad1.left_stick_y;
         float rightX = this.gamepad1.right_stick_x;
-        float leftX = -this.gamepad1.left_stick_x;
+        float leftX = this.gamepad1.left_stick_x;
 
         double leftStickAngle = Math.atan2(leftY, leftX);
         double leftStickMagnitude = Math.sqrt(leftX * 2.0 + leftY * 2.0);
@@ -355,6 +360,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
     private void setLaunchPower(double input) {
+
         robot.launchSpeed = input - robot.triggerDeadzone;
         robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
         robot.launchSpeed = robot.launchSpeed * robot.launchTune;
@@ -367,9 +373,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
         }
     }
 
+
+
     private void launch(double deadzone, double pwrNormal, double pwrHigh){
-        robot.launchLeft.setPower(1);
-        robot.launchRight.setPower(1);
         robot.triggerDeadzone = deadzone;
         if (gamepad2.right_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrNormal;
@@ -380,8 +386,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
         } else if (currentStep == INPUT){
             robot.launchTune = 0;
             setLaunchPower(0);
-            robot.launchLeft.setPower(0);
-            robot.launchRight.setPower(0);
         }
         autoLaunch(pwrNormal, pwrHigh);
         override();
@@ -412,35 +416,35 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 currentStep = GET_BALL_1;
                 break;
             case GET_BALL_1:
-                if (runtime.milliseconds() >= time + 1800){
+                if (runtime.milliseconds() >= time + 2500){
                     robot.intake3.setPower(1);
                     time = runtime.milliseconds();
                     currentStep = CHARGE_LAUNCH_2;
                 }
                 break;
             case CHARGE_LAUNCH_2:
-                if (runtime.milliseconds() >= time + 400) {
-                    robot.intake3.setPower(0);
+                if (runtime.milliseconds() >= time + 110) {
+                    robot.intake3.setPower(-1);
                     time = runtime.milliseconds();
                     currentStep = GET_BALL_2;
                 }
                 break;
             case GET_BALL_2:
-                if (runtime.milliseconds() >= time + 500){
+                if (runtime.milliseconds() >= time + 1500){
                     robot.intake3.setPower(1);
                     time = runtime.milliseconds();
                     currentStep = CHARGE_LAUNCH_3;
                 }
                 break;
             case CHARGE_LAUNCH_3:
-                if (runtime.milliseconds() >= time + 400){
-                    robot.intake3.setPower(0);
+                if (runtime.milliseconds() >= time + 180){
+                    robot.intake3.setPower(-1);
                     time = runtime.milliseconds();
                     currentStep = GET_BALL_3;
                 }
                 break;
             case GET_BALL_3:
-                if (runtime.milliseconds() >= time + 500){
+                if (runtime.milliseconds() >= time + 1500){
                     robot.intake3.setPower(1);
                     robot.intakeMotor.setPower(1);
                     time = runtime.milliseconds();
@@ -448,7 +452,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 }
                 break;
             case END:
-                if (runtime.milliseconds() >= time + 500){
+                if (runtime.milliseconds() >= time + 400){
                     robot.intake3.setPower(0);
                     robot.intakeMotor.setPower(0);
                     setLaunchPower(0);

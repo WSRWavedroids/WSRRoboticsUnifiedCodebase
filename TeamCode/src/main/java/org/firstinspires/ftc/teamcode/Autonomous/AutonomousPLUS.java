@@ -130,7 +130,7 @@ public class AutonomousPLUS extends LinearOpMode {
     public void moveRobotForward(int ticks, long pause, double spd) {
 
         if (opModeIsActive()) {
-            robot.setTargets("Forward", ticks); // Inverted... Lol
+            robot.setTargets("Forward", -ticks); // Inverted... Lol
             robot.positionRunningMode();
         }
         robot.powerSet(spd);
@@ -147,7 +147,7 @@ public class AutonomousPLUS extends LinearOpMode {
     public void moveRobotForward(int ticks, long pause) {
 
         if (opModeIsActive()) {
-            robot.setTargets("Forward", ticks); // Inverted... Lol
+            robot.setTargets("Forward", -ticks); // Inverted... Lol
             robot.positionRunningMode();
         }
         robot.powerSet(speed);
@@ -171,7 +171,7 @@ public class AutonomousPLUS extends LinearOpMode {
     public void moveRobotBackward(int ticks, long pause, double spd) {
 
         if (opModeIsActive()) {
-            robot.setTargets("Backward", ticks);
+            robot.setTargets("Backward", -ticks);
             robot.positionRunningMode();
             robot.powerSet(spd);
 
@@ -188,7 +188,7 @@ public class AutonomousPLUS extends LinearOpMode {
     public void moveRobotBackward(int ticks, long pause) {
 
         if (opModeIsActive()) {
-            robot.setTargets("Backward", ticks);
+            robot.setTargets("Backward", -ticks);
             robot.positionRunningMode();
             robot.powerSet(speed);
 
@@ -211,7 +211,7 @@ public class AutonomousPLUS extends LinearOpMode {
     public void moveRobotLeft(int ticks, long pause, double spd) {
 
         if (opModeIsActive()) {
-            robot.setTargets("Left", ticks);
+            robot.setTargets("Left", -ticks);
             robot.positionRunningMode();
             robot.powerSet(spd);
 
@@ -228,7 +228,7 @@ public class AutonomousPLUS extends LinearOpMode {
     public void moveRobotLeft(int ticks, long pause) {
 
         if (opModeIsActive()) {
-            robot.setTargets("Left", ticks);
+            robot.setTargets("Left", -ticks);
             robot.positionRunningMode();
             robot.powerSet(speed);
 
@@ -251,7 +251,7 @@ public class AutonomousPLUS extends LinearOpMode {
     public void moveRobotRight(int ticks, long pause, double spd) {
 
         if (opModeIsActive()) {
-            robot.setTargets("Right", ticks);
+            robot.setTargets("Right", -ticks);
             robot.positionRunningMode();
             robot.powerSet(spd);
 
@@ -268,7 +268,7 @@ public class AutonomousPLUS extends LinearOpMode {
     public void moveRobotRight(int ticks, long pause) {
 
         if (opModeIsActive()) {
-            robot.setTargets("Right", ticks);
+            robot.setTargets("Right", -ticks);
             robot.positionRunningMode();
             robot.powerSet(speed);
 
@@ -568,6 +568,19 @@ public class AutonomousPLUS extends LinearOpMode {
         robot.intake3.setPower((motorSpeed * 2));
 
     }
+    public double distance;
+    public void getAbsDistance(double target){
+        if (distance<0){
+            distance = distance * -1;
+        }
+    }
+    public void posIntake2Auto(int position){
+            robot.intake3.setTargetPosition(position);
+
+    }
+
+
+
     /**
      * This is the autonomous mode. It moves the robot without us having to touch the controller.
      * Previous programmers really sucked at explaining what any of this meant, so we're trying to do better.
