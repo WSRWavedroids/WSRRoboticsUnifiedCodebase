@@ -1,25 +1,46 @@
 package org.firstinspires.ftc.teamcode.Core;
 
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
+import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherSteps.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.FIRE;
+import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
 
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class BetaLauncherHardware extends LauncherHardware {
+public class BetaLauncherHardware {
 
     private Robot robot;
+    public DcMotorEx motor;
+    public Servo hammerServo;
+
+
     public BetaLauncherHardware(Robot robotFile) {
-        super(robotFile);
-        this.robot = super.robot;
-        launcherCooldownDuration = 0.5;
+        robot = robotFile;
+        motor = robot.launcherMotor;
+        // motor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(P, I, D, F));
+        motor.setDirection(REVERSE);
+        waitingToFire = false;
     }
 
+    public static double launcherCooldownDuration = 0.5;
+
+    public boolean waitingToFire = false;
     boolean lockControls = false;
     boolean stopMotorAfter;
     boolean doneFiring = false;
 
+    public static final int ticksPerRevolution = 28;
+    public static final int revolutionsPerSecond = 100;
+    public static final double toleranceRange = 350;
+
+    public double velocityTarget;
+
+    public boolean onCooldown = false;
+
+    public boolean wantToOpenDoor;
 
     enum LauncherSteps {
         READY_FOR_COMMANDS, STALLING_UNTIL_SAFE, CHECK_IF_SAFE, REV_MOTOR,
@@ -30,7 +51,7 @@ public class BetaLauncherHardware extends LauncherHardware {
         currentLauncherStep = nextStep;
     }
     private ElapsedTime cooldownTimer = new ElapsedTime();
-    @Override
+
     public void updateLauncherHardware() {
         robot.telemetry.addLine("Untested launcher hardware, I choose you!");
         robot.telemetry.addData("Launcher step", currentLauncherStep);
@@ -64,7 +85,7 @@ public class BetaLauncherHardware extends LauncherHardware {
                 onCooldown = true;
                 wantToOpenDoor = true;
                 robot.sorterHardware.moveDoor(OPEN);
-                if (robot.sorterHardware.openCheck()) {
+                if (robot.sorterHardware.doorIs(OPEN)) {
                     cooldownTimer.reset();
                     nextStep(LAUNCHING);
                 }
@@ -99,21 +120,32 @@ public class BetaLauncherHardware extends LauncherHardware {
         else return false;
     }
 
-    @Override
     public void readyFire(double speedTarget, boolean useSpeedTarget) {
         if (lockControls) return;
 
         if (useSpeedTarget) velocityTarget = speedTarget;
         else velocityTarget = 1;
 
-        super.waitingToFire = true;
+        waitingToFire = true;
     }
-    @Override
+
     public void readyFire() {
         this.readyFire(0, false, true);
     }
     public void readyFire(double speedTarget, boolean useSpeedTarget, boolean stopMotorAfter) {
         this.stopMotorAfter = stopMotorAfter;
         readyFire(speedTarget, useSpeedTarget);
+    }
+
+    public void setLauncherSpeed(double targetspeed) {
+        velocityTarget = ticksPerRevolution * (revolutionsPerSecond * targetspeed);
+        motor.setVelocity(velocityTarget);
+    }
+
+    public boolean motorSpeedCheck(double speedTarget) {
+        return (motor.getVelocity() > (-speedTarget - toleranceRange)) && (motor.getVelocity() < (-speedTarget + toleranceRange));
+    }
+    public boolean motorSpeedCheck() {
+        return motorSpeedCheck(velocityTarget);
     }
 }

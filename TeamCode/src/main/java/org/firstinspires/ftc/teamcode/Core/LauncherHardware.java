@@ -2,14 +2,15 @@ package org.firstinspires.ftc.teamcode.Core;
 
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.*;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.*;
-import static org.firstinspires.ftc.teamcode.Core.fireQueue.firingQueue.SMART;
+import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
+import static org.firstinspires.ftc.teamcode.Core.fireQueue.firingQueue.*;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Deprecated
 @Configurable
 public class LauncherHardware {
 

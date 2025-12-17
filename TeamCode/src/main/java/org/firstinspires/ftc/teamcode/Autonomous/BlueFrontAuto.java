@@ -206,11 +206,6 @@ public class BlueFrontAuto extends AutonomousPLUS {
         while(!condition)
         {
             robot.updateAllDaThings();
-            robot.sorterHardware.moveDoor();
-            robot.sorterHardware.updateSorterHardware();
-            robot.sorterHardware.runPIDMotorStuffLol();
-            robot.launcher.updateLauncherHardware();
-            robot.launcher.timerCheck();
 
             if(condition)
             {
@@ -251,16 +246,6 @@ public class BlueFrontAuto extends AutonomousPLUS {
         while(stupidTimer.seconds() < time)
         {
             robot.updateAllDaThings();
-            robot.sorterHardware.moveDoor();
-            robot.sorterHardware.updateSorterHardware();
-            robot.sorterHardware.runPIDMotorStuffLol();
-
-            robot.launcher.updateLauncherHardware();
-            robot.launcher.timerCheck();
-            //robot.launcher.runHammer();
-            {
-
-            }
         }
     }
 
@@ -269,12 +254,6 @@ public class BlueFrontAuto extends AutonomousPLUS {
         while(!condition)
         {
             robot.updateAllDaThings();
-            robot.sorterHardware.moveDoor();
-            robot.sorterHardware.updateSorterHardware();
-            robot.sorterHardware.runPIDMotorStuffLol();
-            robot.launcher.updateLauncherHardware();
-            robot.launcher.timerCheck();
-            robot.launcher.runHammer();
 
             if(condition)
             {

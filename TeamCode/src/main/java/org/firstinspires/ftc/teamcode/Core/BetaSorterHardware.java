@@ -2,15 +2,74 @@ package org.firstinspires.ftc.teamcode.Core;
 
 import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.BlenderSteps.*;
 import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.*;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.FIRE;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.LOAD;
+import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
+import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 
-public class BetaSorterHardware extends SorterHardware {
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-    public Robot robot;
+public class BetaSorterHardware  {
+
+    private final Robot robot;
+    private final BetaLauncherHardware launcher;
+    public DcMotor motor;
+    public Servo doorServo;
+    public CRServo feedServoL;
+    public CRServo feedServoR;
+    public enum positionState {FIRE, LOAD, SWITCH}
+
+    public int[] positions;
+    public static final int ticksPerRotation = 8192;
+    public int currentTickCount;
+    public static int tickTolerance = 100;
+    public boolean legalToSpin = false;
+
+    public double doorClosedPosition = 1;
+    public double doorOpenPosition = 0.75;
+
+    public Robot.OpenClosed doorState;
+
+    public ElapsedTime cooldownTimer = new ElapsedTime();
+    public boolean onCooldown = false;
+    private ElapsedTime pidfTime = new ElapsedTime();
+
+    public static double kneecap = .4;
+    public static double kp = 0.001;
+    public static double ki = 0.0000002;//maybe try 275 where 275 is
+    public static double kd = 0.0;
+    public static double kf = 0.0;
+    double lastError = 0;
+    double integralSum = 0;
+
+    public final static double feederIntakeSpeed = 1;
+    public final static double feederRotateSpeed = 1;
+    public final static double passiveFeederSpeed = 1;
+
+    public double reference;
+    public BetaSorterHardware.positionState currentPositionState;
+
     public BetaSorterHardware(Robot robot) {
-        super(robot);
-        this.robot = super.disRobot;
+        this.robot = robot;
+        motor = robot.sorterMotor;
+        doorServo = robot.doorServo;
+        launcher = robot.launcher;
+        feedServoL = robot.feedServoL;
+        feedServoR = robot.feedServoR;
+
+
+
+        positions = new int[6];
+        positions[0] = 0; //Slot A load
+        positions[1] = ticksPerRotation / 2; //Slot A launch
+        positions[2] = (2 * ticksPerRotation/3); //Slot B load
+        positions[3] = ticksPerRotation / 6; // Slot B launch
+        positions[4] = ticksPerRotation / 3; //Slot C load
+        positions[5] = 5 * ticksPerRotation / 6; //Slot C launch
+
+        //reference = 0;
+
     }
 
     private boolean tryToMove = false;
@@ -23,10 +82,10 @@ public class BetaSorterHardware extends SorterHardware {
     }
     private BlenderSteps currentBlenderStep = READY_FOR_COMMANDS;
 
-    enum FeederState {PASSIVE, ROTATE, INTAKE, REVERSE}
+    public enum FeederState {PASSIVE, ROTATE, INTAKE, OUTTAKE}
     private FeederState currentFeederState = PASSIVE;
     private int ensureBlenderPosition = 0;
-    @Override
+
     public void updateSorterHardware() {
         robot.telemetry.addLine("Untested sorter hardware, I choose you!");
         robot.telemetry.addData("Blender step", currentBlenderStep);
@@ -50,7 +109,7 @@ public class BetaSorterHardware extends SorterHardware {
                 break;
             case MOVING:
                 setFeeders(ROTATE);
-                spin();
+                runPIDMotorStuffLol();
                 if (this.positionedCheck()) {
                     ensureBlenderPosition += 1;
                 }
@@ -73,7 +132,7 @@ public class BetaSorterHardware extends SorterHardware {
             case ROTATE:
                 runFeeders(feederRotateSpeed);
                 break;
-            case REVERSE:
+            case OUTTAKE:
                 runFeeders(-1);
                 break;
             case PASSIVE:
@@ -93,44 +152,34 @@ public class BetaSorterHardware extends SorterHardware {
             return true;
         }
         else return false;
-
-
     }
 
-    @Override
     public void prepareNewMovement(int targetTickPose) {
         this.prepareNewMovement(motor.getCurrentPosition(), targetTickPose);
     }
 
-    @Override
     public void prepareNewMovement(int currentTickPose, int targetTickPose) {
-        lastSafePosition = currentTickPose;
+        //lastSafePosition = currentTickPose;
         reference = (findFastestRotationInTicks(currentTickPose, targetTickPose));
         tryToMove = true;
     }
 
-    public void intake() {
-
-    }
-
-    @Override
     public boolean positionedCheck() {
         int currentMotorPosition = motor.getCurrentPosition();
 
         if(currentMotorPosition > reference - tickTolerance && currentMotorPosition < reference + tickTolerance)
         {
-            currentlyMoving = false;
             return true;
         }
         else return false;
     }
 
-    private void setFeeders(FeederState newState) {
+    public void setFeeders(FeederState newState) {
         currentFeederState = newState;
     }
 
     private void updateState() {
-        switch (disRobot.sorterLogic.getCurrentOffset()) {
+        switch (robot.sorterLogic.getCurrentOffset()) {
             // Firing positions
             case 1:
             case 3:
@@ -145,8 +194,120 @@ public class BetaSorterHardware extends SorterHardware {
                 currentPositionState = LOAD;
                 break;
 
-            // Not in a position (-1)
+            // Not in a position (-1, -2)
             default: currentPositionState = positionState.SWITCH;
         }
+    }
+
+    public void runPIDMotorStuffLol()
+    {
+        // obtain the encoder position
+        double encoderPosition = motor.getCurrentPosition();
+        // calculate the error
+        double error = reference - encoderPosition;
+
+        double derivative;
+        // rate of change of the error
+        if(pidfTime.seconds()!= 0)
+        {
+            derivative = (error - lastError) / pidfTime.seconds();
+        }
+        else
+        {
+            derivative = (error - lastError);
+        }
+
+
+        double feedforward = kf * reference;
+
+
+
+        if(pidfTime.seconds() != 0)
+        {
+            // sum of all error over time
+            integralSum = integralSum + (error * pidfTime.seconds());
+        }
+
+        double out = kneecap * ((kp * error) + (ki * integralSum) + (kd * derivative) + feedforward);
+
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setPower(out);
+
+        lastError = error;
+
+        // reset the timer for next time
+        pidfTime.reset();
+
+    }
+
+    public boolean closedCheck()
+    {
+        return !onCooldown && doorIs(CLOSED);
+    }
+    public void runFeeders(double speed)
+    {
+        feedServoR.setPower(-speed);
+        feedServoL.setPower( speed);
+    }
+
+    public int findFastestRotationInTicks(int currentPosition, int targetPosition) {
+        int howManyCycles = currentPosition / ticksPerRotation;
+
+        int[] slotSpaces = new int[3];
+        slotSpaces[0] = targetPosition + (howManyCycles - 1) * ticksPerRotation;
+        slotSpaces[1] = targetPosition + howManyCycles * ticksPerRotation;
+        slotSpaces[2] = targetPosition + (howManyCycles + 1) * ticksPerRotation;
+
+        int bestPosition = slotSpaces[0];
+        int smallestDistance = Math.abs(slotSpaces[0] - currentPosition);
+
+        for (int potentialPosition : slotSpaces) {
+            int distance = Math.abs(potentialPosition - currentPosition);
+            if (distance < smallestDistance) {
+                smallestDistance = distance;
+                bestPosition = potentialPosition;
+            }
+        }
+
+        return makeSureFastestRotationIsOK(bestPosition);
+    }
+
+    private int makeSureFastestRotationIsOK(int position) {
+        double rotation = (double) position / ticksPerRotation;
+        rotation = Math.round(rotation * 6) / 6.0;
+        return (int) (rotation * ticksPerRotation);
+    }
+
+    public void moveDoor(Robot.OpenClosed doorTarget)
+    {
+        switch (doorTarget) {
+            case CLOSED:
+                doorServo.setPosition(doorClosedPosition);
+                break;
+            case OPEN:
+                doorServo.setPosition(doorOpenPosition);
+                break;
+        }
+        doorState = doorTarget;
+    }
+
+    public boolean doorIs(Robot.OpenClosed target) {
+        return doorState == target;
+    }
+
+    public boolean inStateCheck(BetaSorterHardware.positionState targetState){
+        return currentPositionState == targetState;
+    }
+
+    public boolean fireSafeCheck()
+    {
+        //if not on servo timeout and there and open, fire
+        return positionedCheck() && inStateCheck(FIRE);
+    }
+
+    public void resetSorterEncoder()
+    {
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 }

@@ -22,7 +22,7 @@
 package org.firstinspires.ftc.teamcode.Core;
 
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.*;
+import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
 
 import android.annotation.SuppressLint;
 
@@ -236,8 +236,8 @@ public class ArtifactLocator {
      *                       load position.
      * @return A Slot, if there's one in position. If there isn't, will return noSlot.
      */
-    public Slot findCurrentSlotInPosition(SorterHardware.positionState targetPosition) {
-        SorterHardware.positionState actualPositionState;
+    public Slot findCurrentSlotInPosition(BetaSorterHardware.positionState targetPosition) {
+        BetaSorterHardware.positionState actualPositionState;
         Slot foundSlot;
 
         switch (getCurrentOffset()) {

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Core;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.*;
+import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 
@@ -329,8 +330,7 @@ public class Robot {
 
 
     public void prepareAuto(){
-        sorterHardware.triggerServo(CLOSED);
-        launcher.hammerServo.setPosition(launcher.hammerBackPosition);
+        sorterHardware.moveDoor(CLOSED);
     }
 
     /**
@@ -365,7 +365,6 @@ public class Robot {
         telemetry.addData("Sorter Position: ", sorterHardware.motor.getCurrentPosition());
         telemetry.addData("Reference", sorterHardware.reference);
         telemetry.addData("Launcher Velocity: ", launcher.motor.getVelocity());
-        telemetry.addData("DOOR: ", sorterHardware.doorTarget);
         telemetry.addData("Sorter In Position", sorterHardware.positionedCheck());
         telemetry.addData("Sorter State: ", sorterLogic.getCurrentOffset());
         telemetry.addData("Limelight angleX: ", targetTag.angleX);
@@ -388,25 +387,20 @@ public class Robot {
     {
         //Find first empty
         runBasicIntake(1);
-        sorterHardware.tryingToFeed = true;
+        sorterHardware.setFeeders(INTAKE);
         //sorterHardware.prepareNewMovement(sorterHardware.motor.getCurrentPosition(), sorterLogic.findFirstType(EMPTY).getLoadPosition());/*replace with first empty*/
-        sorterHardware.feederIntakeSpeed = 1;
     }
 
     public void cancelAutoIntake()
     {
-        sorterHardware.feederIntakeSpeed = 0;
-        sorterHardware.tryingToFeed = false;
+        sorterHardware.setFeeders(PASSIVE);
         runBasicIntake(0);
     }
 
     public void readyHardware(boolean resetEncoder)
     {
-
-        launcher.hammerServo.setPosition(launcher.hammerBackPosition);
-        sorterHardware.doorServo.setPosition(sorterHardware.doorClosedPosition);
-        sorterHardware.alreadyClosed = true;
-        sorterHardware.doorTarget = CLOSED;
+        sorterHardware.doorServo.setPosition(1);
+        sorterHardware.moveDoor(CLOSED);
         launcher.setLauncherSpeed(0);
         inventoryCam.updateBlockScan();
 

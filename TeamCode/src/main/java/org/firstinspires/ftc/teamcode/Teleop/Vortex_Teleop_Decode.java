@@ -2,9 +2,10 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
+import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.CardinalDirections.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.*;
+import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
 import static org.firstinspires.ftc.teamcode.Core.fireQueue.firingQueue.*;
 
 import com.bylazar.panels.Panels;
@@ -228,15 +229,14 @@ public class Vortex_Teleop_Decode extends OpMode {
                 robot.runAutoIntakeSequence();
             }
         }
-        else if(gamepad2.circle) // dave spits out artifact
+        if(gamepad2.circle) // dave spits out artifact
         {
             robot.runBasicIntake(-1);
-            robot.sorterHardware.overidingFeeders = true;
+            robot.sorterHardware.setFeeders(OUTTAKE);
         }
         else //dont run intake if we not pulling trigger
         {
            robot.cancelAutoIntake();
-           robot.sorterHardware.overidingFeeders = false;
            robot.runBasicIntake(0.01); //Always keep a slight power flow to servos to prevent input delay from module
         }
 
@@ -246,7 +246,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         {
            gamepad2.rumble(0.5, 0, 50);
         }
-        if(robot.launcher.inSpeedRange)
+        if(robot.launcher.motorSpeedCheck())
         {
             gamepad2.rumble(0, 0.5, 50);
         }
@@ -622,11 +622,9 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Reference", robot.sorterHardware.reference);
         telemetry.addData("Current Reference Acceptable", robot.sorterLogic.isCurrentReferenceLogical((int) robot.sorterHardware.reference));
 
-        telemetry.addData("Blender in position", robot.sorterHardware.inProperTickPosition());
+        telemetry.addData("Blender in position", robot.sorterHardware.positionedCheck());
         telemetry.addData("Closed Check", robot.sorterHardware.closedCheck());
         telemetry.addData("Equalized Target Position", robot.sorterLogic.offsetPositions.get(targetOffset));
-        telemetry.addData("Door Open", robot.sorterHardware.open);
-        telemetry.addData("Door Target", robot.sorterHardware.doorTarget);
         telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
         telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
         telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));

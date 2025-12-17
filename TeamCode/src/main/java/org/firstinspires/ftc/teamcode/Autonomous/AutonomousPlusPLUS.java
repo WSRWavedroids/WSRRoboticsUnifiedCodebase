@@ -468,11 +468,6 @@ public class AutonomousPlusPLUS {
         while(!condition)
         {
             robot.updateAllDaThings();
-            robot.sorterHardware.moveDoor();
-            robot.sorterHardware.updateSorterHardware();
-            robot.sorterHardware.runPIDMotorStuffLol();
-            robot.launcher.updateLauncherHardware();
-            robot.launcher.timerCheck();
 
             if(condition)
             {
@@ -491,12 +486,6 @@ public class AutonomousPlusPLUS {
             robot.sorterHardware.reference  = robot.sorterHardware.findFastestRotationInTicks(robot.sorterHardware.motor.getCurrentPosition(), ticks);
             robot.updateAllDaThings();
 
-            robot.sorterHardware.reference = shortTermRef;
-            robot.sorterHardware.updateSorterHardware();
-            robot.sorterHardware.runPIDMotorStuffLol();
-            robot.launcher.updateLauncherHardware();
-            robot.launcher.timerCheck();
-            robot.launcher.runHammer();
             robot.telemetry.addData("Spinning...", "Or stuck in loop :(");
             robot.telemetry.addData("we in?", robot.sorterHardware.positionedCheck());
             if(robot.sorterHardware.positionedCheck())
@@ -517,16 +506,6 @@ public class AutonomousPlusPLUS {
         while(stupidTimer.seconds() < time)
         {
             robot.updateAllDaThings();
-            robot.sorterHardware.moveDoor();
-            robot.sorterHardware.updateSorterHardware();
-            robot.sorterHardware.runPIDMotorStuffLol();
-
-            robot.launcher.updateLauncherHardware();
-            robot.launcher.timerCheck();
-            //robot.launcher.runHammer();
-            {
-
-            }
         }
     }
 
@@ -535,12 +514,6 @@ public class AutonomousPlusPLUS {
         while(!condition)
         {
             robot.updateAllDaThings();
-            robot.sorterHardware.moveDoor();
-            robot.sorterHardware.updateSorterHardware();
-            robot.sorterHardware.runPIDMotorStuffLol();
-            robot.launcher.updateLauncherHardware();
-            robot.launcher.timerCheck();
-            robot.launcher.runHammer();
 
             if(condition)
             {
