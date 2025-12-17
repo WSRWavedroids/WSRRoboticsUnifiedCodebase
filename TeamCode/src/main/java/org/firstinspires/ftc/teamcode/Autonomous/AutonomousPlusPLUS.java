@@ -551,7 +551,7 @@ public class AutonomousPlusPLUS {
         }
     }
 
-    private void fireOne(ArtifactLocator.Slot slot) {
+    public  void fireOne(ArtifactLocator.Slot slot) {
         switch (fireInSequenceStallingState) {
             case READY:
                 robot.launcher.setLauncherSpeed(1);

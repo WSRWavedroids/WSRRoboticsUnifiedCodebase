@@ -18,7 +18,7 @@ import java.util.Objects;
  * too, allowing us to keep both autos up to date in a single file. BetaRedFrontAuto is a shell that
  * basically just hijacks this file to work, which is neat.
  */
-@Autonomous(group = "Basic", name = "Brennan Click Here ---> New Blue Front")
+@Autonomous(group = "Basic", name = "Blue Front")
 public class BetaBlueFrontAuto extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
@@ -38,8 +38,16 @@ public class BetaBlueFrontAuto extends OpMode {
         START,
         CHECK_MOVE_1, CHECK_MOVE_2, CHECK_TAG, TAG_TELEMETRY, SET_APRILTAG_PIPELINE,
         FIRST_SPIN, LAUNCHER_ON, TURN_BACK_TOWARDS_GOAL, FINE_TUNE_TARGETING, DRIVE_CLOSER_TO_GOAL,
-        FIRE_FIRST_PATTERN, RESET_BLENDER,
-        UNPARK_1, UNPARK_2, UNPARK_3,
+        FIRE_FIRST_PATTERN, RESET_BLENDER1, RESET_BLENDER2,
+        UNPARK_1, UNPARK_2,
+
+        ENABLEINTAKE, YOINK, DISABLEINTAKE, UNYOINK,
+
+        STRAFEBACK, UNTURN,
+
+        FIRE2,
+
+        RETURN, UNSTRAFEBACK, FINALINTAKERESET,
         YAY
     }
     private Step currentStep = START;
@@ -206,20 +214,20 @@ public class BetaBlueFrontAuto extends OpMode {
                     }
 
                     if (auto.fireInSequenceComplete()) {
-                        nextStep(RESET_BLENDER);
+                        nextStep(RESET_BLENDER1);
                     }
                 }
                 break;
-            case RESET_BLENDER:
+            case RESET_BLENDER1:
                 robot.sorterHardware.prepareNewMovement(robot.sorterHardware.motor.getCurrentPosition(),
                         robot.sorterLogic.slotA.getLoadPosition());
                 nextStep(UNPARK_1);
                 break;
             case UNPARK_1:
                 if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                    auto.turnRobotRight(-1200);
+                    auto.turnRobotLeft(1200);
                 } else {
-                    auto.turnRobotLeft(-1200);
+                    auto.turnRobotRight(1200);
                 }
 
                 nextStep(UNPARK_2);
@@ -233,21 +241,97 @@ public class BetaBlueFrontAuto extends OpMode {
                         auto.moveRobotRight(900);
                     }
 
-                    nextStep(YAY);
+                    nextStep(ENABLEINTAKE);
                 }
                 break;
-            case UNPARK_3:
+            case ENABLEINTAKE:
+                robot.runBasicIntake(1);
+                nextStep(YOINK);
+                break;
+            case YOINK:
                 if (auto.checkMovement()) {
+                    robot.launcher.setLauncherSpeed(0);
                     auto.moveRobotForward(200);
+                    nextStep(DISABLEINTAKE);
+                }
+                break;
+            case DISABLEINTAKE:
+                robot.runBasicIntake(0);
+                nextStep(UNYOINK);
+                break;
+            case UNYOINK:
+                robot.launcher.setLauncherSpeed(0);
+                auto.moveRobotBackward(200);
+                nextStep(STRAFEBACK);
+                break;
+            case STRAFEBACK:
+                if (auto.checkMovement()) {
+                    robot.launcher.setLauncherSpeed(0);
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.moveRobotRight(900);
+                    } else {
+                        auto.moveRobotLeft(900);
+                    }
+
+                    nextStep(UNTURN);
+                }
+                break;
+            case UNTURN:
+                if (auto.checkMovement())
+                {
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.turnRobotRight(1200);
+                    } else {
+                        auto.turnRobotLeft(1200);
+                    }
+
+                    nextStep(FIRE2);
+                }
+                break;
+            case FIRE2:
+                if (auto.checkMovement())
+                {
+                    auto.fireOne(robot.sorterLogic.slotA);
+
+                    if (auto.fireInSequenceComplete()) {
+                        nextStep(RETURN);
+                    }
+                }
+                break;
+            case RETURN:
+                if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                    auto.turnRobotRight(-1200);
+                } else {
+                    auto.turnRobotLeft(-1200);
+                }
+
+                nextStep(UNSTRAFEBACK);
+                break;
+            case UNSTRAFEBACK:
+                if (auto.checkMovement())
+                {
+                    robot.launcher.setLauncherSpeed(0);
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.moveRobotLeft(900);
+                    } else {
+                        auto.moveRobotRight(900);
+                    }
+
+                    nextStep(FINALINTAKERESET);
+                }
+                break;
+            case FINALINTAKERESET:
+                if(auto.checkMovement())
+                {
+                    robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotA.getLoadPosition());
                     nextStep(YAY);
                 }
                 break;
             case YAY:
-                if (auto.checkMovement()) {
+                if(auto.checkMovement())
+                {
                     super.requestOpModeStop();
-                    robot.telemetry.addLine("YAY");
                 }
-
                 break;
         }
 
