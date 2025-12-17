@@ -228,8 +228,6 @@ public class RedFrontAuto extends AutonomousPLUS {
             robot.sorterHardware.updateSorterHardware();
             robot.sorterHardware.runPIDMotorStuffLol();
             robot.launcher.updateLauncherHardware();
-            robot.launcher.timerCheck();
-            robot.launcher.runHammer();
             telemetry.addData("Spinning...", "Or stuck in loop :(");
             telemetry.addData("we in?", robot.sorterHardware.positionedCheck());
             if(robot.sorterHardware.positionedCheck())

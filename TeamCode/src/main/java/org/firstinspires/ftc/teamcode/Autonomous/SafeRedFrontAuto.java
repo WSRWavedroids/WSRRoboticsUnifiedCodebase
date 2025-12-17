@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * in BetaBlueFrontAuto. Your problem is probably there.
  */
 @Autonomous(group = "Basic", name = "Red Front 4 Ball")
-public class BetaRedFrontAuto extends BetaBlueFrontAuto {
+public class SafeRedFrontAuto extends SafeBlueFrontAuto {
 
     public void init() {
         super.init();

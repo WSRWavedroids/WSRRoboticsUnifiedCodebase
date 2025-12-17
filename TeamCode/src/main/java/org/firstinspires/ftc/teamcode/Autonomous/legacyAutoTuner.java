@@ -5,6 +5,8 @@ import com.bylazar.panels.Panels;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+import org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware;
+import org.firstinspires.ftc.teamcode.Core.BetaSorterHardware;
 import org.firstinspires.ftc.teamcode.Core.LauncherHardware;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.SorterHardware;
@@ -27,8 +29,8 @@ public class legacyAutoTuner extends AutonomousPLUS {
     //static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
     public WaveTag targetData = null;
-    public LauncherHardware launcher;
-    public SorterHardware sorter;
+    public BetaLauncherHardware launcher;
+    public BetaSorterHardware sorter;
 
     private Robot robot;
 
