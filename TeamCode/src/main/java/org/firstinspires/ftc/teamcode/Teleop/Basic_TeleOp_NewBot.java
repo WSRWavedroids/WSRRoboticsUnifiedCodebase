@@ -136,7 +136,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         intake1(1 ,0.5 ,0.9);
         intake2(1 ,0.5); //this is a servo
         intake3(0.85 ,0.6 ,1);
-        launch(0.05 ,0.43 ,0.52 ,4000);
+        launch(0.05 ,0.4 ,0.5 ,2000);
 
 
 
@@ -427,13 +427,15 @@ public class Basic_TeleOp_NewBot extends OpMode {
             case GET_BALL_1:
                 if (runtime.milliseconds() >= time + 2500){
                     robot.intake3.setPower(1);
+                    robot.intakeMotor.setPower(-0.9);
                     time = runtime.milliseconds();
                     currentStep = CHARGE_LAUNCH_2;
                 }
                 break;
             case CHARGE_LAUNCH_2:
-                if (runtime.milliseconds() >= time + 110) {
+                if (runtime.milliseconds() >= time + 120) {
                     robot.intake3.setPower(-1);
+                    robot.intakeMotor.setPower(0);
                     time = runtime.milliseconds();
                     currentStep = GET_BALL_2;
                 }
@@ -441,13 +443,15 @@ public class Basic_TeleOp_NewBot extends OpMode {
             case GET_BALL_2:
                 if (runtime.milliseconds() >= time + 1500){
                     robot.intake3.setPower(1);
+                    robot.intakeMotor.setPower(-0.9);
                     time = runtime.milliseconds();
                     currentStep = CHARGE_LAUNCH_3;
                 }
                 break;
             case CHARGE_LAUNCH_3:
-                if (runtime.milliseconds() >= time + 180){
+                if (runtime.milliseconds() >= time + 300){
                     robot.intake3.setPower(-1);
+                    robot.intakeMotor.setPower(0);
                     time = runtime.milliseconds();
                     currentStep = GET_BALL_3;
                 }
@@ -455,13 +459,13 @@ public class Basic_TeleOp_NewBot extends OpMode {
             case GET_BALL_3:
                 if (runtime.milliseconds() >= time + 1500){
                     robot.intake3.setPower(1);
-                    robot.intakeMotor.setPower(1);
+                    robot.intakeMotor.setPower(-0.9);
                     time = runtime.milliseconds();
                     currentStep = END;
                 }
                 break;
             case END:
-                if (runtime.milliseconds() >= time + 400){
+                if (runtime.milliseconds() >= time + 500){
                     robot.intake3.setPower(0);
                     robot.intakeMotor.setPower(0);
                     setLaunchPower(0, 0);

@@ -21,7 +21,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         //6 millisecond pause after everything
         moveRobotBackward(1370, 6, 0.4);
         runLauncherAuto(0.46); //Launch
-        sleep(4000);
+        sleep(1700);
         runIntake2Auto(1);
         runIntakeAuto("in");
         sleep(70);
@@ -32,7 +32,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runLauncherAuto(0.40);
         sleep(120);
         runIntake2Auto(0);
-        sleep(1400);
+        sleep(1000);
         runIntake2Auto(1);
         runIntakeAuto("in");
         sleep(120);
@@ -43,7 +43,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runLauncherAuto(0.39);
         sleep(120);
         runIntake2Auto(0);
-        sleep(1700);
+        sleep(1200);
         runIntake2Auto(1);
         runIntakeAuto("in");
         sleep(800);
@@ -54,7 +54,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         sleep(75); //Launch
         runLauncherstop();
         prepareNextAction(6);
-        moveRobotRight(740,6,0.2);
+        moveRobotRight(740,6,0.2);     //mirror
 
     }
 }
