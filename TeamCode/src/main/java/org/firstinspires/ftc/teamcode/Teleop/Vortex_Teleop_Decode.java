@@ -31,15 +31,11 @@ import java.util.Objects;
  * The names of OpModes appear on the menu of the FTC Driver Station.
  * When an selection is made from the menu, the corresponding OpMode
  * class is selected on the Robot Controller and executed.
- * This particular one is called "Lean Mean TeleOp Machine". I had a little too much fun with naming this.
- * <p>
  * This OpMode controls the functions of the robot during the driver-controlled period.
  * <p>
  * If the "@Disabled" line is not commented out, the program will not show up on the driver hub.
  * If you ever have problems with the program not showing up on the driver hub, it's probably because of that.
  * <p>
- * Throughout this program, there are comments explaining what everything does because previous programmers
- * did a horrible job of doing that.
  */
 @TeleOp(name = "DAVE", group = "CompBot")
 public class Vortex_Teleop_Decode extends OpMode {
@@ -135,7 +131,7 @@ public class Vortex_Teleop_Decode extends OpMode {
     public void start() {
         runtime.reset();
         telemetry.addData("HYPE", "Let's do this!!!");
-        gamepad1.setLedColor(0, 0, 255, 100000000);
+        gamepad1.setLedColor(0, 0, 255, 10);
         gamepad2.setLedColor(0, 0, 255, 10);
         robot.sorterHardware.resetSorterEncoder();//REMOVE ONCE AUTO -> TELE IS FIGURED OUT
         robot.sorterHardware.legalToSpin = true;
@@ -159,10 +155,18 @@ public class Vortex_Teleop_Decode extends OpMode {
             //gamepad1.rumble(100);
         }
 
-        if (gamepad1.left_bumper || gamepad1.right_bumper || gamepad1.triangle) {
-            //autoWheel(robot.targetTag.currentlyDetected, robot.targetTag.angleX);
-            int angle = (int) ((robot.targetTag.angleX +robot.limelightSideOffsetAngle) * ( (double) 1660 / 360));
-            robot.setTargets(TURN_RIGHT, angle);
+        if(gamepad1.squareWasPressed())//Holds in place... might need moved outside of the function
+        {
+            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();
+            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition();
+            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition();
+            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition();
+            spinTargetAcquired = true;
+            speed = 1;
+        }
+
+        if (gamepad1.left_bumper || gamepad1.right_bumper || gamepad1.square) {
+            autoWheel(robot.targetTag.currentlyDetected, robot.targetTag.angleX);
             robot.setRunMode(RUN_TO_POSITION);
             robot.powerSet(speed);
         } else {
@@ -200,12 +204,12 @@ public class Vortex_Teleop_Decode extends OpMode {
         if(gamepad2.squareWasPressed() && gamepad2.left_bumper)
         {
             robot.queue.addToNextSpotColor(PURPLE);
-            gamepad2.setLedColor(152, 7, 224,500);
+            gamepad2.setLedColor(152, 7, 224,100);
         }
         else if(gamepad2.triangleWasPressed() && gamepad2.left_bumper)
         {
             robot.queue.addToNextSpotColor(GREEN);
-            gamepad2.setLedColor(0, 255, 0, 500);
+            gamepad2.setLedColor(0, 255, 0, 100);
         }
 
 
@@ -362,22 +366,30 @@ public class Vortex_Teleop_Decode extends OpMode {
 
     private void autoWheel(boolean detected, double anglex) {
 
-
-        if (gamepad1.triangle) {//180
+        if(gamepad1.left_bumper)//Does 180
+        {
             SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition() + 830*2;
             SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition() - 830*2;
             SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition() + 830*2;
             SpinTargetBackRight = robot.backRightDrive.getCurrentPosition() - 830*2;
             spinTargetAcquired = true;
             speed = 1;
-        }//we so cool if this works
+        }
 
-        if(gamepad1.left_bumper)
+        if(gamepad1.squareWasPressed())//Holds in place... might need moved outside of the function
         {
-            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition() + 830*2;
-            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition() - 830*2;
-            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition() + 830*2;
-            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition() - 830*2;
+            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();
+            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition();
+            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition();
+            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition();
+            spinTargetAcquired = true;
+            speed = 1;
+        }if(gamepad1.squareWasPressed())//Holds in place... might need moved outside of the function
+        {
+            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();
+            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition();
+            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition();
+            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition();
             spinTargetAcquired = true;
             speed = 1;
         }
