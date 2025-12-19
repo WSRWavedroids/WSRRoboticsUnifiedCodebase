@@ -40,7 +40,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.405);
+        runLauncherAuto(0.39);
         sleep(120);
         runIntake2Auto(0);
         sleep(1700);
@@ -51,7 +51,6 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.405);
         sleep(75); //Launch
         runLauncherstop();
         prepareNextAction(6);

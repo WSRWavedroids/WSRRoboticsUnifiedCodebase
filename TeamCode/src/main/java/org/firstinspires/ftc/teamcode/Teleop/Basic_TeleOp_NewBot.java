@@ -135,8 +135,11 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         intake1(1 ,0.5 ,0.9);
         intake2(1 ,0.5); //this is a servo
-        intake3(1 ,0.6 ,1);
-        launch(0.1 ,0.45 ,0.53);
+        intake3(0.85 ,0.6 ,1);
+        launch(0.05 ,0.43 ,0.52 ,4000);
+
+
+
 
 
         //Matthew Was Here
@@ -326,8 +329,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.intakeTune = master;
         if (gamepad2.a || gamepad2.dpad_up) {
             robot.intakeSpeed = -fwdSPEED * robot.intakeTune;
+            currentStep = INPUT;
         } else if (gamepad2.b) {
             robot.intakeSpeed = revSPEED * robot.intakeTune;
+            currentStep = INPUT;
         } if (gamepad2.aWasReleased() || gamepad2.bWasReleased() || gamepad2.dpadUpWasReleased()) {
             if (currentStep == INPUT)
                 robot.intakeSpeed = 0;
@@ -347,25 +352,27 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
     private void intake3(double fwdSPEED, double revSPEED, double master){
-        if (currentStep == INPUT)
+        if (currentStep == INPUT) {
             robot.intake3.setPower(0);
-        if (gamepad2.right_bumper || gamepad2.dpad_down)
+        }
+        if (gamepad2.right_bumper || gamepad2.dpad_down) {
             robot.intake3.setPower(-revSPEED);
-        else if (gamepad2.left_bumper)
+            currentStep = INPUT;
+        }  else if (gamepad2.left_bumper || gamepad2.dpad_up) {
             robot.intake3.setPower(fwdSPEED);
-        else if (gamepad2.dpad_up)
-            robot.intake3.setPower(fwdSPEED);
+            currentStep = INPUT;
+        }
         robot.intake3.setPower(robot.intake3.getPower() * master);
     }
 
 
-    private void setLaunchPower(double input) {
+    private void setLaunchPower(double input, double velocity) {
 
         robot.launchSpeed = input - robot.triggerDeadzone;
         robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
         robot.launchSpeed = robot.launchSpeed * robot.launchTune;
-        robot.launchLeft.setVelocity(-robot.launchSpeed * 2000);
-        robot.launchRight.setVelocity(-robot.launchSpeed * 2000);
+        robot.launchLeft.setVelocity(-robot.launchSpeed * velocity);
+        robot.launchRight.setVelocity(-robot.launchSpeed * velocity);
         if (gamepad2.right_stick_button) {
             telemetry.addLine("noahguywashere");
             telemetry.addLine("DevenWasHere");
@@ -375,19 +382,21 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
-    private void launch(double deadzone, double pwrNormal, double pwrHigh){
+    private void launch(double deadzone, double pwrNormal, double pwrHigh, double baseRPM){
         robot.triggerDeadzone = deadzone;
         if (gamepad2.right_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrNormal;
-            setLaunchPower(gamepad2.right_trigger);
+            setLaunchPower(gamepad2.right_trigger, baseRPM);
+            currentStep = INPUT;
         } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrHigh;
-            setLaunchPower(gamepad2.left_trigger);
+            currentStep = INPUT;
+            setLaunchPower(gamepad2.left_trigger, baseRPM);
         } else if (currentStep == INPUT){
             robot.launchTune = 0;
-            setLaunchPower(0);
+            setLaunchPower(0, 0);
         }
-        autoLaunch(pwrNormal, pwrHigh);
+        autoLaunch(pwrNormal, pwrHigh, baseRPM);
         override();
     }
 
@@ -398,7 +407,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
     private double time;
 //TODO make the secondary intake reverse during launch charge up and lengthen wait times
-    private void autoLaunch(double pwrLow, double pwrHigh){
+    private void autoLaunch(double pwrLow, double pwrHigh, double velocity){
         telemetry.addLine(String.valueOf(currentStep));
         switch (currentStep){
             case INPUT:
@@ -411,7 +420,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 }
                 break;
             case ON:
-                setLaunchPower(1);
+                setLaunchPower(1, velocity);
                 time = runtime.milliseconds();
                 currentStep = GET_BALL_1;
                 break;
@@ -455,7 +464,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 if (runtime.milliseconds() >= time + 400){
                     robot.intake3.setPower(0);
                     robot.intakeMotor.setPower(0);
-                    setLaunchPower(0);
+                    setLaunchPower(0, 0);
                     time = runtime.milliseconds();
                     currentStep = INPUT;
                 }
@@ -466,8 +475,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
     private void override() {
         if (gamepad2.right_trigger == 1 & gamepad2.left_trigger == 1 & gamepad2.right_stick_button) {
-            robot.launchRight.setVelocity(6000);
-            robot.launchLeft.setVelocity(6000);
+            robot.launchRight.setVelocity(-6000);
+            robot.launchLeft.setVelocity(-6000);
             telemetry.addLine("! CAUTION, LAUNCH OVERRIDE ACTIVE !");
             telemetry.addLine("! CAUTION, LAUNCH OVERRIDE ACTIVE !");
             telemetry.addLine("! CAUTION, LAUNCH OVERRIDE ACTIVE !");
