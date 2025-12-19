@@ -143,9 +143,7 @@ public class LauncherHardware {
             robot.sorterLogic.findCurrentSlotInPosition(FIRE).setOccupied(EMPTY);
         }
 
-        if (robot.queue.wantToFireQueue == SMART) {
-            robot.queue.fireAllSmart(1, true);
-        }
+
     }
 
     public boolean spikeable = false;

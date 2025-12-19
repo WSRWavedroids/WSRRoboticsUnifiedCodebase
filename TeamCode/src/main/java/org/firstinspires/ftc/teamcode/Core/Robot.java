@@ -81,7 +81,7 @@ public class Robot {
     public SensorHuskyLens inventoryCam;
     public Limelight_Randomization_Scanner randomizationScanner;
     public Limelight_Target_Scanner targetScanner;
-    public fireQueue queue;
+    public fireQueueWithStates queue;
 
 
     public Panels panels;
@@ -174,7 +174,7 @@ public class Robot {
         launcher = new BetaLauncherHardware(this);
         sorterLogic = new ArtifactLocator(this);
         inventoryCam = new SensorHuskyLens(this);
-        queue = new fireQueue(this);
+        queue = new fireQueueWithStates(this);
         targetScanner = new Limelight_Target_Scanner(this);
         randomizationScanner = new Limelight_Randomization_Scanner(this);
     }

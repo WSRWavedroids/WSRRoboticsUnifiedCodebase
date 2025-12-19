@@ -73,7 +73,7 @@ public class BetaSorterHardware  {
     }
 
     private boolean tryToMove = false;
-    private boolean doneMoving = false;
+    public boolean doneMoving = false;
 
     enum BlenderSteps {
         READY_FOR_COMMANDS,

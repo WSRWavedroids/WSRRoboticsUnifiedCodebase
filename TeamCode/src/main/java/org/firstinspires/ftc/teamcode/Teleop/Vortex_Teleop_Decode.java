@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Core.FramerateCalculator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
+import org.firstinspires.ftc.teamcode.Core.fireQueueWithStates;
 
 
 import java.util.Objects;
@@ -199,13 +200,11 @@ public class Vortex_Teleop_Decode extends OpMode {
         if(gamepad2.squareWasPressed() && gamepad2.left_bumper)
         {
             robot.queue.addToNextSpotColor(PURPLE);
-            robot.queue.wantToFireQueue = SMART;
             gamepad2.setLedColor(152, 7, 224,500);
         }
         else if(gamepad2.triangleWasPressed() && gamepad2.left_bumper)
         {
             robot.queue.addToNextSpotColor(GREEN);
-            robot.queue.wantToFireQueue = SMART;
             gamepad2.setLedColor(0, 255, 0, 500);
         }
 
@@ -278,7 +277,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             cadenHoldingReady = false;
         }
 
-        if(gamepad2.right_trigger > 0.50 && !robot.launcher.wantToOpenDoor) {
+        if(gamepad2.right_trigger > 0.50 && !robot.launcher.wantToOpenDoor && robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE) {
             if(!cadenHoldingFire)
             {
                 cadenHoldingFire = true;
@@ -292,31 +291,28 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         if(gamepad2.rightBumperWasPressed())
         {
-            robot.queue.clearList();
-            robot.queue.fillSimple(); // replace with the if when cam ready
-
-
-            /*
-            //automatically sets up the pattern in the queue if its possible to do so...
-            //... and if caden hasn't already made a list of his own
-
-            if(robot.sorterLogic.inventory.purpleCount == 2 && robot.sorterLogic.inventory.greenCount == 1 && !robot.queue.checkForExistingQueue())
+            if(robot.queue.checkForExistingQueue())
             {
-                robot.queue.addPattern(blackboard.get(PATTERN_KEY));
-            }*/
+                robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.SMART;
+            }
+            else if(robot.sorterLogic.inventory.canMakePattern())
+            {
+                robot.queue.clearList();
+                robot.queue.addPattern(robot.pattern);
+                robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.SMART;
+            }
+            else
+            {
+                robot.queue.clearList();
+                robot.queue.fillSimple(); // replace with the if when cam ready
+                robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.DUMB;
+            }
+
+
+
 
         }
-        if(gamepad2.right_bumper)
-        {
-            robot.queue.fireAllDumb(1);//Replace with following line once cam done
-            //robot.queue.fireAllSmart(1);
-
-
-        }
-
-
-        magicFixEverything();
-
+        robot.queue.updateQueueStates(1);
         incrementThroughPositions();
 
 
@@ -586,17 +582,6 @@ public class Vortex_Teleop_Decode extends OpMode {
         return oldNewOffset;
     }
 
-    private void magicFixEverything() {
-        if (gamepad2.shareWasPressed()) {
-            robot.sorterHardware.onCooldown = false;
-            robot.launcher.onCooldown = false;
-            /// These might fix things but are untested
-            robot.launcher.waitingToFire = false;
-            //robot.sorterHardware.doorTarget = CLOSED;
-            //robot.sorterHardware.wantToMoveDoor = true;
-
-        }
-    }
 
     private void doTelemetryStuff() {
         // This little section updates the driver hub on the runtime and the motor powers.
