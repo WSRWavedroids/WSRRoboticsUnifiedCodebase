@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
 
     private Robot robot;
-
+    private double spd = 0.43;
     @Override
     public void runOpMode() {
         super.runOpMode();
@@ -24,7 +24,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         //550 ticks = about 90 degrees right
         //6 millisecond pause after everything
         moveRobotBackward(1400, 6, 0.5);
-        runLauncherAuto(0.36); //Launch
+        runLauncherAuto(spd - 0.05); //Launch
         sleep(1200);
         runIntake2Auto(0.6);
         runIntakeAuto("in");
@@ -33,7 +33,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.41); //Launch
+        runLauncherAuto(spd); //Launch
         sleep(300);
 
         runIntake2Auto(0);
@@ -45,7 +45,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.41); //Launch
+        runLauncherAuto(spd); //Launch
         sleep(300);
 
         runIntake2Auto(-0.3);
@@ -81,7 +81,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.41); //Launch
+        runLauncherAuto(spd); //Launch
         sleep(300);
 
         runIntake2Auto(0);
@@ -93,7 +93,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.41); //Launch
+        runLauncherAuto(spd); //Launch
         sleep(300);
 
         runIntake2Auto(-0.3);
@@ -105,7 +105,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        sleep(75); //Launch
+        sleep(75);
         runLauncherstop();
 
         moveRobotRight(800, 6, 0.3);        //mirror
