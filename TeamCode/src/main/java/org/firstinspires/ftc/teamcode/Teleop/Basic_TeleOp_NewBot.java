@@ -135,8 +135,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         intake1(1 ,0.5 ,0.9);
         intake2(1 ,0.5); //this is a servo
-        intake3(0.8 ,0.6 ,1);
-        launch(0.05 ,0.37 ,0.5 ,2000);
+        intake3(1 ,0.6 ,1);
+        launch(0.05 ,0.40 ,0.5 ,2000);
 
 
 
@@ -426,8 +426,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 break;
             case GET_BALL_1:
                 if (runtime.milliseconds() >= time + 1200){
-                    robot.intake3.setPower(0.7);
-                    robot.intakeMotor.setPower(-0.9);
+                    robot.intake3.setPower(1);
+                    robot.intakeMotor.setPower(-1);
                     time = runtime.milliseconds();
                     currentStep = CHARGE_LAUNCH_2;
                 }
@@ -435,7 +435,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             case CHARGE_LAUNCH_2:
                 if (runtime.milliseconds() >= time + 120) {
                     robot.launchTune = robot.launchTune + 0.03;
-                    robot.intake3.setPower(-1);
+                    robot.intake3.setPower(-0.5);
                     robot.intakeMotor.setPower(0);
                     time = runtime.milliseconds();
                     currentStep = GET_BALL_2;
@@ -444,7 +444,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             case GET_BALL_2:
                 if (runtime.milliseconds() >= time + 1500){
                     robot.intake3.setPower(1);
-                    robot.intakeMotor.setPower(-0.9);
+                    robot.intakeMotor.setPower(-1);
                     time = runtime.milliseconds();
                     currentStep = CHARGE_LAUNCH_3;
                 }
@@ -452,7 +452,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             case CHARGE_LAUNCH_3:
                 if (runtime.milliseconds() >= time + 250){
                     robot.launchTune = robot.launchTune - 0.01;
-                    robot.intake3.setPower(-1);
+                    robot.intake3.setPower(-0.5);
                     robot.intakeMotor.setPower(0);
                     time = runtime.milliseconds();
                     currentStep = GET_BALL_3;
@@ -461,7 +461,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             case GET_BALL_3:
                 if (runtime.milliseconds() >= time + 1500){
                     robot.intake3.setPower(1);
-                    robot.intakeMotor.setPower(-0.9);
+                    robot.intakeMotor.setPower(-1);
                     time = runtime.milliseconds();
                     currentStep = END;
                 }
