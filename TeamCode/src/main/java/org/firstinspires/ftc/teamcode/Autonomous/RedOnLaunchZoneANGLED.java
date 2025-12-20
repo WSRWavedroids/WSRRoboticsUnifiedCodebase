@@ -13,6 +13,10 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
     public void runOpMode() {
         super.runOpMode();
         robot = new Robot(hardwareMap, telemetry, this);
+        robot.backRightDrive.setTargetPositionTolerance(8);
+        robot.frontRightDrive.setTargetPositionTolerance(8);
+        robot.backLeftDrive.setTargetPositionTolerance(8);
+        robot.frontLeftDrive.setTargetPositionTolerance(8);
 
         waitForStart();
         //Under This Is Were You Put Stuff
