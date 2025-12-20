@@ -26,31 +26,31 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         moveRobotBackward(1400, 6, 0.5);
         runLauncherAuto(0.33); //Launch
         sleep(1200);
-        runIntake2Auto(0.8);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(70);
         runIntake2Auto(0);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.37);
+        runLauncherAuto(0.38);
         sleep(300);
 
         runIntake2Auto(0);
-        sleep(300);
-        runIntake2Auto(0.8);
+        sleep(500);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(140);
         runIntake2Auto(0.4);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.37);
+        runLauncherAuto(0.38);
         sleep(300);
 
         runIntake2Auto(-0.3);
-        sleep(300);
-        runIntake2Auto(0.8);
+        sleep(500);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(450);
         runIntake2Auto(0);
@@ -74,31 +74,31 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
 
         runLauncherAuto(0.33); //Launch
         sleep(1200);
-        runIntake2Auto(0.8);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(70);
         runIntake2Auto(0);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.37);
+        runLauncherAuto(0.38);
         sleep(300);
 
         runIntake2Auto(0);
-        sleep(300);
-        runIntake2Auto(0.8);
+        sleep(500);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(140);
         runIntake2Auto(0.4);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.37);
+        runLauncherAuto(0.38);
         sleep(300);
 
         runIntake2Auto(-0.3);
-        sleep(300);
-        runIntake2Auto(0.8);
+        sleep(500);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(450);
         runIntake2Auto(0);

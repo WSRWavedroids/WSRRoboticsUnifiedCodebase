@@ -31,7 +31,7 @@ public class FarLaunch extends AutonomousPLUS {
         runIntake2Auto(-0.3);
         sleep(75);
         runIntake2Auto(0);
-        runLauncherAuto(0.52);
+        runLauncherAuto(0.49);
         sleep(1400);
         runIntake2Auto(1);
         runIntakeAuto("in");
@@ -42,7 +42,7 @@ public class FarLaunch extends AutonomousPLUS {
         runIntake2Auto(-0.3);
         sleep(75);
         runIntake2Auto(0);
-        runLauncherAuto(0.52);
+        runLauncherAuto(0.48);
         sleep(1500);
         runIntake2Auto(1);
         runIntakeAuto("in");
