@@ -24,7 +24,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         //550 ticks = about 90 degrees right
         //6 millisecond pause after everything
         moveRobotBackward(1400, 6, 0.5);
-        runLauncherAuto(0.33); //Launch
+        runLauncherAuto(0.36); //Launch
         sleep(1200);
         runIntake2Auto(0.6);
         runIntakeAuto("in");
@@ -33,7 +33,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.38);
+        runLauncherAuto(0.41); //Launch
         sleep(300);
 
         runIntake2Auto(0);
@@ -45,7 +45,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.38);
+        runLauncherAuto(0.41); //Launch
         sleep(300);
 
         runIntake2Auto(-0.3);
@@ -57,7 +57,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        sleep(75); //Launch
+        sleep(75);
         runLauncherstop();
 
         prepareNextAction(6);
@@ -72,7 +72,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntake2Auto(0);
         turnRobotLeft(750,6);               //mirror
 
-        runLauncherAuto(0.33); //Launch
+        runLauncherAuto(0.36); //Launch
         sleep(1200);
         runIntake2Auto(0.6);
         runIntakeAuto("in");
@@ -81,7 +81,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.38);
+        runLauncherAuto(0.41); //Launch
         sleep(300);
 
         runIntake2Auto(0);
@@ -93,7 +93,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.38);
+        runLauncherAuto(0.41); //Launch
         sleep(300);
 
         runIntake2Auto(-0.3);

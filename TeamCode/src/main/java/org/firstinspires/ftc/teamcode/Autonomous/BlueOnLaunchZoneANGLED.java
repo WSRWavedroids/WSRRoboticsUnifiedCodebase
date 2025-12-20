@@ -24,44 +24,44 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         //550 ticks = about 90 degrees right
         //6 millisecond pause after everything
         moveRobotBackward(1400, 6, 0.5);
-        runLauncherAuto(0.33); //Launch
+        runLauncherAuto(0.36); //Launch
         sleep(1200);
-        runIntake2Auto(0.8);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(70);
         runIntake2Auto(0);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.37);
+        runLauncherAuto(0.41); //Launch
         sleep(300);
 
         runIntake2Auto(0);
-        sleep(300);
-        runIntake2Auto(0.8);
+        sleep(500);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(140);
         runIntake2Auto(0.4);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.37);
+        runLauncherAuto(0.41); //Launch
         sleep(300);
 
         runIntake2Auto(-0.3);
-        sleep(300);
-        runIntake2Auto(0.8);
+        sleep(500);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(450);
         runIntake2Auto(0);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        sleep(75); //Launch
+        sleep(75);
         runLauncherstop();
 
         prepareNextAction(6);
-        runLauncherAuto(-0.2);
+        runLauncherAuto(-0.6);
         runIntake2Auto(0.6);
         turnRobotLeft(777,6);               //mirror
         moveRobotRight(675, 6, 0.5);     //mirror
@@ -72,33 +72,33 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntake2Auto(0);
         turnRobotRight(750,6);               //mirror
 
-        runLauncherAuto(0.33); //Launch
+        runLauncherAuto(0.36); //Launch
         sleep(1200);
-        runIntake2Auto(0.8);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(70);
         runIntake2Auto(0);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.37);
+        runLauncherAuto(0.41); //Launch
         sleep(300);
 
         runIntake2Auto(0);
-        sleep(300);
-        runIntake2Auto(0.8);
+        sleep(500);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(140);
         runIntake2Auto(0.4);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.37);
+        runLauncherAuto(0.41); //Launch
         sleep(300);
 
         runIntake2Auto(-0.3);
-        sleep(300);
-        runIntake2Auto(0.8);
+        sleep(500);
+        runIntake2Auto(0.6);
         runIntakeAuto("in");
         sleep(450);
         runIntake2Auto(0);
@@ -108,7 +108,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         sleep(75); //Launch
         runLauncherstop();
 
-        moveRobotLeft(800, 6, 0.3);     //mirror
+        moveRobotLeft(800, 6, 0.3);        //mirror
 
     }
 }
