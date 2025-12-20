@@ -108,6 +108,8 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         sleep(75); //Launch
         runLauncherstop();
 
+        moveRobotRight(800, 6, 0.3);        //mirror
+
     }
 }
 //whatever i want
