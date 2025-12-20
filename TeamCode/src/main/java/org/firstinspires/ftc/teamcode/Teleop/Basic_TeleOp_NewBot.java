@@ -133,10 +133,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 //intakes and launcher
 
-        intake1(1 ,0.5 ,0.9);
+        intake1(1 ,0.5 ,0.85);
         intake2(1 ,0.5); //this is a servo
         intake3(1 ,0.6 ,1);
-        launch(0.05 ,0.40 ,0.5 ,2000);
+        launch(0.05 ,0.46 ,0.53 ,2000);
 
 
 
