@@ -13,10 +13,10 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
     public void runOpMode() {
         super.runOpMode();
         robot = new Robot(hardwareMap, telemetry, this);
-        robot.backRightDrive.setTargetPositionTolerance(8);
-        robot.frontRightDrive.setTargetPositionTolerance(8);
-        robot.backLeftDrive.setTargetPositionTolerance(8);
-        robot.frontLeftDrive.setTargetPositionTolerance(8);
+        robot.backRightDrive.setTargetPositionTolerance(11);
+        robot.frontRightDrive.setTargetPositionTolerance(11);
+        robot.backLeftDrive.setTargetPositionTolerance(11);
+        robot.frontLeftDrive.setTargetPositionTolerance(11);
 
         waitForStart();
         //Under This Is Were You Put Stuff
@@ -61,7 +61,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         runLauncherstop();
 
         prepareNextAction(6);
-        runLauncherAuto(-0.2);
+        runLauncherAuto(-0.6);
         runIntake2Auto(1);
         turnRobotRight(777,6);               //mirror
         moveRobotLeft(675, 6, 0.5);     //mirror
