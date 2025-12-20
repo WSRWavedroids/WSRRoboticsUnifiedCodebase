@@ -37,6 +37,7 @@ public class BetaLauncherHardware {
     public static final double toleranceRange = 350;
 
     public double velocityTarget;
+    public double percentSpeed;
 
     public boolean onCooldown = false;
 
@@ -71,12 +72,12 @@ public class BetaLauncherHardware {
             case CHECK_IF_SAFE:
                 break;
             case REV_MOTOR:
-                setLauncherSpeed(velocityTarget);
+                setLauncherSpeed(percentSpeed);
                 cooldownTimer.reset();
                 nextStep(STALL_WHILE_MOTOR_REVVING);
                 break;
             case STALL_WHILE_MOTOR_REVVING:
-                if (motorSpeedCheck(velocityTarget) || cooldownTimer.seconds() >= 1) {
+                if (motorSpeedCheck(velocityTarget) || cooldownTimer.seconds() >= .75) {
                     nextStep(OPEN_DOOR);
                 }
                 break;
@@ -123,8 +124,8 @@ public class BetaLauncherHardware {
     public void readyFire(double speedTarget, boolean useSpeedTarget) {
         if (lockControls) return;
 
-        if (useSpeedTarget) velocityTarget = speedTarget;
-        else velocityTarget = 1;
+        if (useSpeedTarget) percentSpeed = speedTarget;
+        else percentSpeed = 1;
 
         waitingToFire = true;
     }
@@ -143,9 +144,18 @@ public class BetaLauncherHardware {
     }
 
     public boolean motorSpeedCheck(double speedTarget) {
+        if (atMaxSpeed()) {
+            return true;
+        }
         return (motor.getVelocity() > (-speedTarget - toleranceRange)) && (motor.getVelocity() < (-speedTarget + toleranceRange));
     }
     public boolean motorSpeedCheck() {
         return motorSpeedCheck(velocityTarget);
+    }
+
+    public boolean atMaxSpeed() {
+        double voltageMax = -138.3958 * robot.voltageSensor.getVoltage() - 836.5097;
+        return motor.getVelocity() > (voltageMax - toleranceRange) &&
+                motor.getVelocity() < (voltageMax + toleranceRange);
     }
 }

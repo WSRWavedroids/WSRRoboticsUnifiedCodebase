@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware;
+import org.firstinspires.ftc.teamcode.Core.BetaSorterHardware;
 import org.firstinspires.ftc.teamcode.Core.LauncherHardware;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.SorterHardware;
@@ -20,8 +22,8 @@ public class redFrontUnpark extends AutonomousPLUS {
     public static final String PATTERN_KEY = "Pattern";
 
     public WaveTag targetData = null;
-    public LauncherHardware launcher;
-    public SorterHardware sorter;
+    public BetaLauncherHardware launcher;
+    public BetaSorterHardware sorter;
 
     private Robot robot;
 

@@ -155,7 +155,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             //gamepad1.rumble(100);
         }
 
-        if(gamepad1.squareWasPressed())//Holds in place... might need moved outside of the function
+        if(gamepad1.squareWasPressed())//Holds in place...
         {
             SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();
             SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition();
@@ -167,15 +167,11 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         if (gamepad1.left_bumper || gamepad1.right_bumper || gamepad1.square) {
             autoWheel(robot.targetTag.currentlyDetected, robot.targetTag.angleX);
-            robot.setRunMode(RUN_TO_POSITION);
-            robot.powerSet(speed);
         } else {
             singleJoystickDrive();
             spinTargetAcquired = false;
         }
 
-
-        /// This will work once we have inventory Cam
         /// Preps color of choice
 
         if(gamepad2.square && !gamepad2.left_bumper)
@@ -232,7 +228,7 @@ public class Vortex_Teleop_Decode extends OpMode {
                 robot.runAutoIntakeSequence();
             }
         }
-        if(gamepad2.circle) // dave spits out artifact
+        else if(gamepad2.circle) // dave spits out artifact
         {
             robot.runBasicIntake(-1);
             robot.sorterHardware.setFeeders(OUTTAKE);
@@ -320,7 +316,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         incrementThroughPositions();
 
 
-        telemetry.addData("currentSlot target: ", slot);
+        //telemetry.addData("currentSlot target: ", slot);
 
         if (gamepad1.touchpad || gamepad2.touchpad) {
             requestOpModeStop();
@@ -376,26 +372,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             speed = 1;
         }
 
-        if(gamepad1.squareWasPressed())//Holds in place... might need moved outside of the function
-        {
-            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();
-            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition();
-            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition();
-            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition();
-            spinTargetAcquired = true;
-            speed = 1;
-        }if(gamepad1.squareWasPressed())//Holds in place... might need moved outside of the function
-        {
-            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();
-            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition();
-            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition();
-            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition();
-            spinTargetAcquired = true;
-            speed = 1;
-        }
-
-
-        if (gamepad1.right_bumper && !detected) {
+        if ((gamepad1.right_bumper && !detected) || gamepad1.square) {
             robot.frontLeftDrive.setTargetPosition(SpinTargetFrontLeft);
             robot.frontRightDrive.setTargetPosition(SpinTargetFrontRight);
             robot.backLeftDrive.setTargetPosition(SpinTargetBackLeft);
@@ -412,16 +389,8 @@ public class Vortex_Teleop_Decode extends OpMode {
             robot.backRightDrive.setTargetPosition(robot.backRightDrive.getCurrentPosition() - turnTicks);
         }
 
-
-        robot.frontLeftDrive.setPower(speed);
-        robot.frontRightDrive.setPower(speed);
-        robot.backLeftDrive.setPower(speed);
-        robot.backRightDrive.setPower(speed);
-
-        robot.frontLeftDrive.setMode(RUN_TO_POSITION);
-        robot.frontRightDrive.setMode(RUN_TO_POSITION);
-        robot.backLeftDrive.setMode(RUN_TO_POSITION);
-        robot.backRightDrive.setMode(RUN_TO_POSITION);
+        robot.setRunMode(RUN_TO_POSITION);
+        robot.powerSet(speed);
     }
 
     private void singleJoystickDrive() {
@@ -534,25 +503,9 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
     }
 
-    public void incrementThroughPositions() {
+    private void incrementThroughPositions() {
 
         telemetry.addData("Current Offset (by logic)", robot.sorterLogic.getCurrentOffset());
-        //int newOffset = sorterLogic.getCurrentOffset();
-
-        /*if (newOffset < 0) {
-            return;
-        }*/
-
-        // This section of code increments by 1
-        /*if (gamepad2.leftBumperWasPressed()) {
-            targetOffset = makeSureNewOffsetIsOK(targetOffset - 1);
-            robot.sorterHardware.prepareNewMovement(robot.sorterHardware.motor.getCurrentPosition(), sorterLogic.offsetPositions.get(targetOffset));
-        }
-
-        else if (gamepad2.rightBumperWasPressed()) {
-            targetOffset = makeSureNewOffsetIsOK(targetOffset + 1);
-            robot.sorterHardware.prepareNewMovement(robot.sorterHardware.motor.getCurrentPosition(), sorterLogic.offsetPositions.get(targetOffset));
-        }*/
 
         // Fire positions
         if (gamepad2.dpadLeftWasPressed()) {
@@ -575,13 +528,13 @@ public class Vortex_Teleop_Decode extends OpMode {
         int potentialNewPosition = targetOffset + go;
         if (!isEven(potentialNewPosition)) {potentialNewPosition += go;}
         targetOffset = makeSureNewOffsetIsOK(potentialNewPosition);
-        robot.sorterHardware.prepareNewMovement(robot.sorterHardware.motor.getCurrentPosition(), robot.sorterLogic.offsetPositions.get(targetOffset));
+        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.offsetPositions.get(targetOffset));
     }
     private void goNextFirePosition(int go) {
         int potentialNewPosition = targetOffset + go;
         if (isEven(potentialNewPosition)) {potentialNewPosition += go;}
         targetOffset = makeSureNewOffsetIsOK(potentialNewPosition);
-        robot.sorterHardware.prepareNewMovement(robot.sorterHardware.motor.getCurrentPosition(), robot.sorterLogic.offsetPositions.get(targetOffset));
+        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.offsetPositions.get(targetOffset));
     }
 
     private int makeSureNewOffsetIsOK(int oldNewOffset) {
@@ -594,13 +547,11 @@ public class Vortex_Teleop_Decode extends OpMode {
         return oldNewOffset;
     }
 
-
     private void doTelemetryStuff() {
         // This little section updates the driver hub on the runtime and the motor powers.
         // It's mostly used for troubleshooting.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Framerate (last 15 seconds)", fps.getFramerate(30) + " fps");
-
 
         if(robot.targetTag.currentlyDetected)
         {

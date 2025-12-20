@@ -1,14 +1,12 @@
 package org.firstinspires.ftc.teamcode.Core;
 
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.UNKNOWN;
-import static org.firstinspires.ftc.teamcode.Core.fireQueueWithStates.firingQueue;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
+import static org.firstinspires.ftc.teamcode.Core.fireQueueWithStates.QueueState.*;
+import static org.firstinspires.ftc.teamcode.Core.fireQueueWithStates.firingQueue.*;
 
 import com.bylazar.configurables.annotations.Configurable;
 
-import org.firstinspires.ftc.teamcode.Vision.SensorHuskyLens;
+import java.util.ArrayList;
 
 
 @Configurable
@@ -22,15 +20,15 @@ public class fireQueueWithStates {
     private ArtifactLocator sorterLogic;
     private BetaLauncherHardware launcherHardware;
     public enum firingQueue{NONE, SMART, DUMB}
-    public fireQueueWithStates.firingQueue wantToFireQueue = firingQueue.NONE;
+    public fireQueueWithStates.firingQueue wantToFireQueue = NONE;
 
     public boolean noBallsQueued = true;
     int currentSlot = 0;
-    public queueBall[] balls;
+    public ArrayList<ArtifactLocator.SlotState> ballQueue;
 
     //State Machine innovation here
-    private enum QueueState {IDLE, POSITIONING, FIRING, COOLDOWN}
-    private QueueState state = QueueState.IDLE;
+    enum QueueState {IDLE, POSITIONING, FIRING, COOLDOWN}
+    private QueueState state = IDLE;
     //public firingQueue wantToFire = firingQueue.NONE;
 
     public fireQueueWithStates(Robot robotFile) {
@@ -39,73 +37,46 @@ public class fireQueueWithStates {
         sorterLogic = robot.sorterLogic;
         launcherHardware = robot.launcher;
 
-        balls = new queueBall[3];
-
-        for(int i = 0; i < 3; i++)
-        {
-           balls[i] = new queueBall();
-           balls[i].color = EMPTY;
-        }
-
+        ballQueue = new ArrayList<>();
     }
 
     public void addToNextSpotColor(ArtifactLocator.SlotState color)
     {
-        if(currentSlot < 3)
-        {
-            balls[currentSlot].color = color;
-            currentSlot++;
-            noBallsQueued = false;
-        }
+        ballQueue.add(color);
+        noBallsQueued = false;
     }
 
     public void addToNextSpotSimple()
     {
-        if(currentSlot < 3)
-        {
-            noBallsQueued = false;
-            balls[currentSlot].color = UNKNOWN;
-            currentSlot++;
-        }
+        noBallsQueued = false;
+        ballQueue.add(UNKNOWN);
     }
 
     public void addToListDirectly(int positionInList, ArtifactLocator.SlotState color)
     {
-        balls[positionInList].color = color;
+        ballQueue.add(positionInList, color);
         noBallsQueued = false;
     }
 
     public void clearList()
     {
         noBallsQueued = true;
-        currentSlot = 0;
-        for(int i = 0; i < 3; i++)
-        {
-            balls[i].color = EMPTY;
-        }
+        ballQueue.clear();
     }
 
 
     public boolean checkForExistingQueue()
     {
-        for(int i = 0; i < 3; i++)
-        {
-            if(!balls[i].color.equals(EMPTY))
-            {
-                return  noBallsQueued = false;
-            }
-        }
-        return noBallsQueued = true;
-
+        return !ballQueue.isEmpty();
     }
 
 
     public void fillSimple()
     {
-        robot.queue.wantToFireQueue = firingQueue.DUMB;
-        balls[0].color = UNKNOWN;
-        balls[1].color = UNKNOWN;
-        balls[2].color = UNKNOWN;
+        ballQueue.add(UNKNOWN);
+        ballQueue.add(UNKNOWN);
+        ballQueue.add(UNKNOWN);
+        robot.queue.wantToFireQueue = DUMB;
         noBallsQueued = false;
     }
 
@@ -113,23 +84,23 @@ public class fireQueueWithStates {
     {
         if(Pattern == "PGP")
         {
-            balls[0].color = PURPLE;
-            balls[1].color = GREEN;
-            balls[2].color = PURPLE;
+            ballQueue.add(PURPLE);
+            ballQueue.add(GREEN);
+            ballQueue.add(PURPLE);
             noBallsQueued = false;
         }
         else if(Pattern == "PPG")
         {
-            balls[0].color = PURPLE;
-            balls[1].color = PURPLE;
-            balls[2].color = GREEN;
+            ballQueue.add(PURPLE);
+            ballQueue.add(PURPLE);
+            ballQueue.add(GREEN);
             noBallsQueued = false;
         }
         else if(Pattern == "GPP")
         {
-            balls[0].color = GREEN;
-            balls[1].color = PURPLE;
-            balls[2].color = PURPLE;
+            ballQueue.add(GREEN);
+            ballQueue.add(PURPLE);
+            ballQueue.add(PURPLE);
             noBallsQueued = false;
         }
         else
@@ -141,77 +112,68 @@ public class fireQueueWithStates {
     public void updateQueueStates(double speedTarget)
     {
             // If the driver isn't requesting a fire sequence, stay IDLE and reset index
-            if (wantToFireQueue == firingQueue.NONE) {state = QueueState.IDLE;
-                currentSlot = 0; // Reset index to the first ball
-                return;
+            if (wantToFireQueue == NONE) {
+                state = IDLE;
             }
 
             switch (state) {
                 case IDLE:
                     currentSlot = 0;
                     // If we have balls to fire, start the process
-                    if (!noBallsQueued) {
-                        state = QueueState.POSITIONING;
+                    if (!ballQueue.isEmpty()) {
+                        state = POSITIONING;
                     } else {
                         // Fallback: if triggered but empty, reset
-                        wantToFireQueue = firingQueue.NONE;
+                        wantToFireQueue = NONE;
                     }
                     break;
 
                 case POSITIONING:
                     // Check if we've reached the end of our list or hit an empty slot
-                    if (currentSlot >= 3 || balls[currentSlot].color == EMPTY) {
+                    if (ballQueue.isEmpty()) {
                         finishQueue();
                         break;
                     }
 
                     int targetPosition;
-                    if (wantToFireQueue == firingQueue.SMART) {
-                        // Look up where this specific color is physically located
-                        ArtifactLocator.Slot targetSlot = sorterLogic.findFirstType(balls[currentSlot].color);
+                    ArtifactLocator.SlotState currentColor = ballQueue.get(0);
+                    ArtifactLocator.Slot targetSlot;
 
-                        if (targetSlot == sorterLogic.noSlot) {
-                            // If we can't find that color, skip to next ball to avoid "locking up"
-                            currentSlot++;
-                            break;
-                        }
-                        targetPosition = targetSlot.getFirePosition();
+                    if(currentColor == UNKNOWN) {
+                        targetSlot = sorterLogic.findFirstNotType(EMPTY);
                     } else {
-                        // DUMB fire: assume balls are in slots 1, 3, and 5 (index 1, 3, 5 in positions array)
-                        // Logic: 0 -> pos[1], 1 -> pos[3], 2 -> pos[5]
-                        targetPosition = sorterHardware.positions[(currentSlot * 2) + 1];
+                        targetSlot = sorterLogic.findFirstType(currentColor);
                     }
+
+                    if (!targetSlot.exists()) {
+                        ballQueue.remove(0);
+                        break;
+                    }
+                    targetPosition = targetSlot.getFirePosition();
 
                     // Move the hardware
-                    sorterHardware.prepareNewMovement(sorterHardware.motor.getCurrentPosition(), targetPosition);
-                    state = QueueState.FIRING;
+                    sorterHardware.prepareNewMovement(targetPosition);
+                    state = FIRING;
                     break;
-
                 case FIRING:
-                    // WAIT for hardware to be ready.
-                    // We check that the sorter isn't moving AND launcher isn't busy.
-                    boolean sorterReady = robot.sorterHardware.doneMoving();
-                    boolean launcherReady = !launcherHardware.waitingToFire && !launcherHardware.onCooldown;
-
-                    if (sorterReady && launcherReady) {
+                    // stall until moved, then fire
+                    if (robot.sorterHardware.doneMoving()) {
                         launcherHardware.readyFire(speedTarget, false);
-                        state = QueueState.COOLDOWN;
+                        state = COOLDOWN;
                     }
                     break;
-
                 case COOLDOWN:
                     // Wait for the launcher to finish its physical movement before moving the sorter again
                     // This prevents the sorter from rotating while the ball is still in the launcher path
-                    if (!launcherHardware.waitingToFire && !launcherHardware.onCooldown) {
-                        balls[currentSlot].color = EMPTY; // Clear the ball we just fired
-                        currentSlot++;
-
-                        if (currentSlot >= 3) {
+                    if (launcherHardware.doneFiring()) {
+                        if (ballQueue.isEmpty()) {
                             finishQueue();
                         } else {
                             // Go back to position the next ball
-                            state = QueueState.POSITIONING;
+                            state = POSITIONING;
                         }
+
+                        ballQueue.remove(0); // Clear the ball we just fired
                     }
                     break;
             }
@@ -222,8 +184,8 @@ public class fireQueueWithStates {
          */
         private void finishQueue() {
         clearList();
-        wantToFireQueue = firingQueue.NONE;
-        state = QueueState.IDLE;
+        wantToFireQueue = NONE;
+        state = IDLE;
 
         // Return sorter to neutral/home position (usually index 0)
         sorterHardware.prepareNewMovement(sorterHardware.motor.getCurrentPosition(), sorterHardware.positions[0]);

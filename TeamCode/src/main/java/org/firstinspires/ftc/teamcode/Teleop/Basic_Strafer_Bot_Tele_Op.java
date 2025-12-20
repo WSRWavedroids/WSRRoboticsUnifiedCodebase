@@ -37,6 +37,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware;
+import org.firstinspires.ftc.teamcode.Core.BetaSorterHardware;
 import org.firstinspires.ftc.teamcode.Core.LauncherHardware;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.SorterHardware;
@@ -67,8 +69,8 @@ public class Basic_Strafer_Bot_Tele_Op extends OpMode {
     private double speed = 0.75;
     //private double storedSpeed;
     public Robot Bot;
-    public SorterHardware sorter;
-    public LauncherHardware launcher;
+    public BetaSorterHardware sorter;
+    public BetaLauncherHardware launcher;
 
 
     /*
@@ -132,7 +134,6 @@ public class Basic_Strafer_Bot_Tele_Op extends OpMode {
 
         if(gamepad2.touchpad)
         {
-            telemetry.addData("Mag Count: ", sorter.inMagPosition);
             telemetry.addData("Mag Count: ", sorter.currentTickCount);
         }else{//
            // sorter.resetMagCountAndTarget(false);

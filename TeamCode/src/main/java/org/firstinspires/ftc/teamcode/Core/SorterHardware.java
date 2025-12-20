@@ -49,7 +49,7 @@ public class SorterHardware {
 
     public Robot disRobot;
     public DcMotorEx motor;
-    public LauncherHardware launcher;
+    public BetaLauncherHardware launcher;
 
     public Robot.OpenClosed doorTarget = CLOSED;
 

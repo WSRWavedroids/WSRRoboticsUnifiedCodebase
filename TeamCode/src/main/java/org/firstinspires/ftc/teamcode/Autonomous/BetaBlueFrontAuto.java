@@ -231,9 +231,9 @@ public class BetaBlueFrontAuto extends OpMode {
                     } else {
                         auto.turnRobotRight(1200);
                     }
+                    nextStep(UNPARK_2);
                 }
 
-                nextStep(UNPARK_2);
                 break;
             case UNPARK_2:
                 if (auto.checkMovement()) {
@@ -287,9 +287,9 @@ public class BetaBlueFrontAuto extends OpMode {
                 if (auto.checkMovement())
                 {
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.turnRobotRight(1200);
-                    } else {
                         auto.turnRobotLeft(1200);
+                    } else {
+                        auto.turnRobotRight(1200);
                     }
 
                     nextStep(FIRE2);
@@ -298,7 +298,7 @@ public class BetaBlueFrontAuto extends OpMode {
             case FIRE2:
                 if (auto.checkMovement())
                 {
-                    auto.fireOne(robot.sorterLogic.slotA);
+                    auto.fireOneArtifact(robot.sorterLogic.slotA);
 
                     if (auto.fireInSequenceComplete()) {
                         nextStep(RETURN);
@@ -307,9 +307,9 @@ public class BetaBlueFrontAuto extends OpMode {
                 break;
             case RETURN:
                 if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                    auto.turnRobotRight(-1200);
-                } else {
                     auto.turnRobotLeft(-1200);
+                } else {
+                    auto.turnRobotRight(-1200);
                 }
 
                 nextStep(UNSTRAFEBACK);
@@ -319,9 +319,9 @@ public class BetaBlueFrontAuto extends OpMode {
                 {
                     robot.launcher.setLauncherSpeed(0);
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.moveRobotLeft(900);
-                    } else {
                         auto.moveRobotRight(900);
+                    } else {
+                        auto.moveRobotLeft(900);
                     }
 
                     nextStep(FINALINTAKERESET);

@@ -23,6 +23,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -58,6 +59,8 @@ public class Robot {
     public DigitalChannel magsense;
 
     public Limelight3A limelight;
+
+    public VoltageSensor voltageSensor;
 
    // public WebcamName CamCam;
 
@@ -138,6 +141,8 @@ public class Robot {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
         husky = hardwareMap.get(HuskyLens.class, "evenBetterMason");
+
+        voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         imuParameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(

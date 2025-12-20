@@ -5,11 +5,12 @@ import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState
 import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+@Configurable
 public class BetaSorterHardware  {
 
     private final Robot robot;
@@ -38,7 +39,7 @@ public class BetaSorterHardware  {
     public static double kneecap = .4;
     public static double kp = 0.001;
     public static double ki = 0.0000002;//maybe try 275 where 275 is
-    public static double kd = 0.0;
+    public static double kd = 0.0000002;
     public static double kf = 0.0;
     double lastError = 0;
     double integralSum = 0;
@@ -113,7 +114,7 @@ public class BetaSorterHardware  {
                 if (this.positionedCheck()) {
                     ensureBlenderPosition += 1;
                 }
-                if (ensureBlenderPosition >= 10) {
+                if (ensureBlenderPosition >= 5) {
                     nextStep(RESET);
                 }
                 break;
