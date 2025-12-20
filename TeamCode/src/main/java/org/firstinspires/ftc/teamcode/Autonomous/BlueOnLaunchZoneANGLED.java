@@ -19,9 +19,9 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         //900 tick = about 20 in
         //550 ticks = about 90 degrees right
         //6 millisecond pause after everything
-        moveRobotBackward(1370, 6, 0.38);
-        runLauncherAuto(0.46); //Launch
-        sleep(4000);
+        moveRobotBackward(1370, 6, 0.5);
+        runLauncherAuto(0.33); //Launch
+        sleep(1200);
         runIntake2Auto(1);
         runIntakeAuto("in");
         sleep(70);
@@ -29,32 +29,80 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.40);
-        sleep(120);
+        runLauncherAuto(0.38);
+        sleep(300);
+
         runIntake2Auto(0);
-        sleep(1400);
+        sleep(300);
         runIntake2Auto(1);
         runIntakeAuto("in");
-        sleep(120);
-        runIntake2Auto(0);
+        sleep(140);
+        runIntake2Auto(0.4);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(0.39);
-        sleep(120);
-        runIntake2Auto(0);
-        sleep(1700);
+        runLauncherAuto(0.38);
+        sleep(300);
+
+        runIntake2Auto(-0.3);
+        sleep(300);
         runIntake2Auto(1);
         runIntakeAuto("in");
-        sleep(800);
+        sleep(450);
         runIntake2Auto(0);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
         sleep(75); //Launch
         runLauncherstop();
+
         prepareNextAction(6);
-        moveRobotLeft(740,6,0.2);
+        runLauncherAuto(-0.1);
+        runIntake2Auto(1);
+        turnRobotLeft(777,6);               //mirror
+        moveRobotRight(675, 6, 0.5);     //mirror
+        moveRobotBackward(1050, 6, 0.4);
+        turnRobotLeft(100, 6);
+        runIntake2Auto(-0.2);
+        moveRobotForward(1100, 6, 0.5);
+        runIntake2Auto(0);
+        turnRobotRight(750,6);               //mirror
+
+        runLauncherAuto(0.33); //Launch
+        sleep(1200);
+        runIntake2Auto(1);
+        runIntakeAuto("in");
+        sleep(70);
+        runIntake2Auto(0);
+        runIntakeAuto("stop");
+        sleep(75);
+        runIntake2Auto(-0.3);
+        runLauncherAuto(0.38);
+        sleep(300);
+
+        runIntake2Auto(0);
+        sleep(300);
+        runIntake2Auto(1);
+        runIntakeAuto("in");
+        sleep(140);
+        runIntake2Auto(0.4);
+        runIntakeAuto("stop");
+        sleep(75);
+        runIntake2Auto(-0.3);
+        runLauncherAuto(0.38);
+        sleep(300);
+
+        runIntake2Auto(-0.3);
+        sleep(300);
+        runIntake2Auto(1);
+        runIntakeAuto("in");
+        sleep(450);
+        runIntake2Auto(0);
+        runIntakeAuto("stop");
+        sleep(75);
+        runIntake2Auto(-0.3);
+        sleep(75); //Launch
+        runLauncherstop();
     }
 }
 //whatever i want
