@@ -13,6 +13,10 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
     public void runOpMode() {
         super.runOpMode();
         robot = new Robot(hardwareMap, telemetry, this);
+        robot.backRightDrive.setTargetPositionTolerance(8);
+        robot.frontRightDrive.setTargetPositionTolerance(8);
+        robot.backLeftDrive.setTargetPositionTolerance(8);
+        robot.frontLeftDrive.setTargetPositionTolerance(8);
 
         waitForStart();
         //Under This Is Were You Put Stuff
@@ -22,7 +26,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         moveRobotBackward(1370, 6, 0.5);
         runLauncherAuto(0.33); //Launch
         sleep(1200);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(70);
         runIntake2Auto(0);
@@ -34,7 +38,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
 
         runIntake2Auto(0);
         sleep(300);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(140);
         runIntake2Auto(0.4);
@@ -46,7 +50,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
 
         runIntake2Auto(-0.3);
         sleep(300);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(450);
         runIntake2Auto(0);
@@ -58,7 +62,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
 
         prepareNextAction(6);
         runLauncherAuto(-0.2);
-        runIntake2Auto(1);
+        runIntake2Auto(0.6);
         turnRobotLeft(777,6);               //mirror
         moveRobotRight(675, 6, 0.5);     //mirror
         moveRobotBackward(1100, 6, 0.4);
@@ -70,7 +74,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
 
         runLauncherAuto(0.33); //Launch
         sleep(1200);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(70);
         runIntake2Auto(0);
@@ -82,7 +86,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
 
         runIntake2Auto(0);
         sleep(300);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(140);
         runIntake2Auto(0.4);
@@ -94,7 +98,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
 
         runIntake2Auto(-0.3);
         sleep(300);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(450);
         runIntake2Auto(0);

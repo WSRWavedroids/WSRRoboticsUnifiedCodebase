@@ -13,10 +13,10 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
     public void runOpMode() {
         super.runOpMode();
         robot = new Robot(hardwareMap, telemetry, this);
-        robot.backRightDrive.setTargetPositionTolerance(11);
-        robot.frontRightDrive.setTargetPositionTolerance(11);
-        robot.backLeftDrive.setTargetPositionTolerance(11);
-        robot.frontLeftDrive.setTargetPositionTolerance(11);
+        robot.backRightDrive.setTargetPositionTolerance(8);
+        robot.frontRightDrive.setTargetPositionTolerance(8);
+        robot.backLeftDrive.setTargetPositionTolerance(8);
+        robot.frontLeftDrive.setTargetPositionTolerance(8);
 
         waitForStart();
         //Under This Is Were You Put Stuff
@@ -26,7 +26,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         moveRobotBackward(1370, 6, 0.5);
         runLauncherAuto(0.33); //Launch
         sleep(1200);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(70);
         runIntake2Auto(0);
@@ -38,7 +38,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
 
         runIntake2Auto(0);
         sleep(300);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(140);
         runIntake2Auto(0.4);
@@ -50,7 +50,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
 
         runIntake2Auto(-0.3);
         sleep(300);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(450);
         runIntake2Auto(0);
@@ -62,7 +62,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
 
         prepareNextAction(6);
         runLauncherAuto(-0.6);
-        runIntake2Auto(1);
+        runIntake2Auto(0.6);
         turnRobotRight(777,6);               //mirror
         moveRobotLeft(675, 6, 0.5);     //mirror
         moveRobotBackward(1100, 6, 0.4);
@@ -74,7 +74,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
 
         runLauncherAuto(0.33); //Launch
         sleep(1200);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(70);
         runIntake2Auto(0);
@@ -86,7 +86,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
 
         runIntake2Auto(0);
         sleep(300);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(140);
         runIntake2Auto(0.4);
@@ -98,7 +98,7 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
 
         runIntake2Auto(-0.3);
         sleep(300);
-        runIntake2Auto(1);
+        runIntake2Auto(0.8);
         runIntakeAuto("in");
         sleep(450);
         runIntake2Auto(0);
