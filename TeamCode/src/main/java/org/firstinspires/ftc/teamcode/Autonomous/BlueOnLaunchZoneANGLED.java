@@ -57,11 +57,11 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         runLauncherstop();
 
         prepareNextAction(6);
-        runLauncherAuto(-0.1);
+        runLauncherAuto(-0.2);
         runIntake2Auto(1);
         turnRobotLeft(777,6);               //mirror
         moveRobotRight(675, 6, 0.5);     //mirror
-        moveRobotBackward(1050, 6, 0.4);
+        moveRobotBackward(1100, 6, 0.4);
         turnRobotLeft(100, 6);
         runIntake2Auto(-0.2);
         moveRobotForward(1100, 6, 0.5);
