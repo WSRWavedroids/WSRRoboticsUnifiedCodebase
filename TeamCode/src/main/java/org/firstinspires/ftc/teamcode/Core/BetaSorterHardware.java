@@ -168,11 +168,7 @@ public class BetaSorterHardware  {
     public boolean positionedCheck() {
         int currentMotorPosition = motor.getCurrentPosition();
 
-        if(currentMotorPosition > reference - tickTolerance && currentMotorPosition < reference + tickTolerance)
-        {
-            return true;
-        }
-        else return false;
+        return currentMotorPosition > reference - tickTolerance && currentMotorPosition < reference + tickTolerance;
     }
 
     public void setFeeders(FeederState newState) {

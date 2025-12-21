@@ -228,9 +228,9 @@ public class SafeBlueFrontAuto extends OpMode {
                 if (auto.checkMovement()) {
                     robot.launcher.setLauncherSpeed(0);
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.moveRobotLeft(900);
+                        auto.moveRobotRight(750);
                     } else {
-                        auto.moveRobotRight(900);
+                        auto.moveRobotLeft(750);
                     }
 
                     nextStep(YAY);

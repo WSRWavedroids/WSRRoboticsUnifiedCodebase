@@ -18,6 +18,8 @@ public class ezPID {
 
     private Robot robot;
     private DcMotorEx motor;
+
+    private PIDMotorGroup motorGroup;
     public double  p;
     public double i;
     public double d;
@@ -34,6 +36,8 @@ public class ezPID {
 
     movementType mode;
 
+    int numberOfMotorsInGroup;
+
     public ezPID(DcMotorEx motorIn, double ticksPerRotationIN, double inP, double inI, double inD, double inF, double kneecapIN, double toleranceIN, movementType modeIN) {
         motor = motorIn;
         p = inP;
@@ -48,6 +52,24 @@ public class ezPID {
         withinTolerance = false;
 
     }
+
+    public ezPID(PIDMotorGroup motorsIN, double ticksPerRotationIN, double inP, double inI, double inD, double inF, double kneecapIN, double toleranceIN, movementType modeIN) {
+        motorGroup = motorsIN;
+        p = inP;
+        i = inI;
+        d = inD;
+        f = inF;
+        kneecap = kneecapIN;
+        Timer = new ElapsedTime();
+        ticksPerRotation = ticksPerRotationIN;
+        mode = modeIN;
+        tolerance = toleranceIN;
+        withinTolerance = false;
+
+    }
+
+
+
 
     public PIDDUMP shareInfo() {
         /// This function dumps it's info for another PID to use
@@ -153,6 +175,96 @@ public class ezPID {
             Timer.reset();
         }
     }
+
+
+public void runCalledPIDGroup(double reference)
+{
+    /// CALL THIS ONCE PER LOOP IN ANOTHER SCRIPT
+    /// PIDNAME.runCalledPID(Target position(Ticks) or speed (Ticks/s));
+    for (int i = 0; i < motorGroup.motorGroup.length; i++)
+    {
+        if(mode == movementType.POSITION)
+        {
+
+            // obtain the encoder position
+            double encoderPosition = motor.getCurrentPosition();
+            // calculate the error
+            double error = reference - encoderPosition;
+
+            if(Math.abs(error) > tolerance)
+            {
+                withinTolerance = false;
+            }
+            else
+            {
+                withinTolerance = true;
+            }
+
+            double derivative;
+            // rate of change of the error
+            if(Timer.seconds()!= 0)
+            {
+                derivative = (error - lastError) / Timer.seconds();
+            }
+            else
+            {
+                derivative = (error - lastError);
+            }
+
+
+            double feedforward = f * reference;
+
+            if(Timer.seconds() != 0)
+            {
+                // sum of all error over time
+                integralSum = integralSum + (error * Timer.seconds());
+            }
+
+            double out = kneecap * ((p * error) + (i * integralSum) + (d * derivative) + feedforward);
+
+            motorGroup.motorGroup[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorGroup.motorGroup[i].setPower(out);
+
+            lastError = error;
+
+            // reset the timer for next time
+            Timer.reset();
+
+        }
+        else if(mode == movementType.SPEED)
+        {
+            // obtain the encoder position
+            double encoderSpeed = motor.getVelocity();
+            // calculate the error
+            double error = reference - encoderSpeed;
+
+            if(Math.abs(error) > tolerance)
+            {
+                withinTolerance = false;
+            }
+            else
+            {
+                withinTolerance = true;
+            }
+
+            // rate of change of the error
+            double derivative = (error - lastError) / Timer.seconds();
+
+            // sum of all error over time
+            integralSum = integralSum + (error * Timer.seconds());
+
+            double out = (p * error) + (i * integralSum) + (d * derivative);
+
+            motorGroup.motorGroup[i].setPower(out);
+
+            lastError = error;
+
+            // reset the timer for next time
+            Timer.reset();
+        }
+    }
+    }
+
 }
 
 class PIDDUMP {

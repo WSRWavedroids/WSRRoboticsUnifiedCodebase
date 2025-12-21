@@ -28,10 +28,12 @@ public class BetaBlueFrontAuto extends OpMode {
     int slot = 0; // temp for testing lol
 
     int targetOffset = 0;
+    int patternCorrectedStrafeDistance;
 
     //private double storedSpeed;
     public Robot robot = null;
     public AutonomousPlusPLUS auto = null;
+    public ElapsedTime stallTimer;
     public IMU imu;
 
     enum Step {
@@ -39,11 +41,11 @@ public class BetaBlueFrontAuto extends OpMode {
         CHECK_MOVE_1, CHECK_MOVE_2, CHECK_TAG, TAG_TELEMETRY, SET_APRILTAG_PIPELINE,
         FIRST_SPIN, LAUNCHER_ON, TURN_BACK_TOWARDS_GOAL, FINE_TUNE_TARGETING, DRIVE_CLOSER_TO_GOAL,
         FIRE_FIRST_PATTERN, RESET_BLENDER1, RESET_BLENDER2,
-        UNPARK_1, UNPARK_2,
+        UNPARK_0, UNPARK_1, UNPARK_2,
 
         ENABLEINTAKE, YOINK, DISABLEINTAKE, UNYOINK,
 
-        STRAFEBACK, UNTURN,
+        STRAFEBACK, UNTURN, FINE_TUNE_TARGETING_AGAIN,
 
         FIRE2,
 
@@ -70,6 +72,7 @@ public class BetaBlueFrontAuto extends OpMode {
 
         robot.randomizationScanner.InitLimeLight(0);
         blackboard.put(ALLIANCE_KEY, "BLUE");
+        stallTimer = new ElapsedTime();
 
     }
 
@@ -92,6 +95,7 @@ public class BetaBlueFrontAuto extends OpMode {
         telemetry.addData("HYPE", "Let's do this!!!");
         robot.readyHardware(true);
         robot.sorterHardware.legalToSpin = true;
+        speed = 1;
     }
 
     /**
@@ -103,8 +107,12 @@ public class BetaBlueFrontAuto extends OpMode {
                 nextStep(CHECK_MOVE_1);
                 break;
             case CHECK_MOVE_1:
-                auto.moveRobotForward(1000);
-                nextStep(CHECK_MOVE_2);
+                if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                    auto.moveRobotLeft(700);
+                } else {
+                    auto.moveRobotRight(700);
+                }
+                nextStep(CHECK_TAG);
                 break;
             case CHECK_MOVE_2:
                 if (auto.checkMovement()) {
@@ -130,14 +138,17 @@ public class BetaBlueFrontAuto extends OpMode {
                     case "PPG":
                         telemetry.addData("We doin", " PPG now");
                         blackboard.put(PATTERN_KEY, "PPG");
+                        patternCorrectedStrafeDistance = 450;
                         break;
                     case "GPP":
                         telemetry.addData("We doin", " GPP now");
                         blackboard.put(PATTERN_KEY, "GPP");
+                        patternCorrectedStrafeDistance = 1500;
                         break;
                     case "PGP":
                         telemetry.addData("We doin", " PGP now");
                         blackboard.put(PATTERN_KEY, "PGP");
+                        patternCorrectedStrafeDistance = 450;
                         break;
                     default:
                         telemetry.addData("It failed ", "cry time");
@@ -195,13 +206,13 @@ public class BetaBlueFrontAuto extends OpMode {
                     {
                         auto.turnRobotRight((int) ((robot.targetTag.angleX +robot.limelightSideOffsetAngle) * ( (double) 1660 / 360)));
                     }
-                    nextStep(DRIVE_CLOSER_TO_GOAL);
+                    nextStep(FIRE_FIRST_PATTERN);
                 }
                 break;
             case DRIVE_CLOSER_TO_GOAL:
                 if (auto.checkMovement()) {
                     auto.moveRobotBackward(200);
-                    nextStep(FIRE_FIRST_PATTERN);
+                    nextStep(FINE_TUNE_TARGETING);
                 }
             case FIRE_FIRST_PATTERN:
                 if (auto.checkMovement()) {
@@ -221,27 +232,41 @@ public class BetaBlueFrontAuto extends OpMode {
             case RESET_BLENDER1:
                 robot.sorterHardware.prepareNewMovement(robot.sorterHardware.motor.getCurrentPosition(),
                         robot.sorterLogic.slotA.getLoadPosition());
-                nextStep(UNPARK_1);
+                nextStep(UNPARK_0);
+                break;
+            case UNPARK_0:
+                if(robot.sorterHardware.doneMoving()) {
+                    auto.moveRobotForward(400);
+                    nextStep(UNPARK_1);
+                }
                 break;
             case UNPARK_1:
-                if(robot.sorterHardware.doneMoving())
+                if(auto.checkMovement())
                 {
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.turnRobotLeft(1200);
+                        auto.turnRobotLeft(1000);
                     } else {
-                        auto.turnRobotRight(1200);
+                        auto.turnRobotRight(1000);
                     }
                     nextStep(UNPARK_2);
                 }
 
                 break;
             case UNPARK_2:
+                speed = 1;
                 if (auto.checkMovement()) {
                     robot.launcher.setLauncherSpeed(0);
-                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.moveRobotLeft(900);
+
+                    if (false /*robot.pattern.equals("GPP")*/) {
+                        patternCorrectedStrafeDistance = 1400;
                     } else {
-                        auto.moveRobotRight(900);
+                        patternCorrectedStrafeDistance = 750;
+                    }
+
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.moveRobotLeft(patternCorrectedStrafeDistance);
+                    } else {
+                        auto.moveRobotRight(patternCorrectedStrafeDistance);
                     }
 
                     nextStep(ENABLEINTAKE);
@@ -251,68 +276,93 @@ public class BetaBlueFrontAuto extends OpMode {
                 if(auto.checkMovement())
                 {
                     robot.runBasicIntake(1);
+                    stallTimer.reset();
                     nextStep(YOINK);
                 }
 
                 break;
             case YOINK:
-                robot.launcher.setLauncherSpeed(0);
-                auto.moveRobotForward(200);
-                nextStep(DISABLEINTAKE);
+                if(stallTimer.seconds() > 0.5)
+                {
+                    speed = 0.5;
+                    robot.launcher.setLauncherSpeed(0);
+                    auto.moveRobotForward(200);
+                    nextStep(UNYOINK);
+
+                }
                 break;
             case DISABLEINTAKE:
                 if(auto.checkMovement()) {
                     robot.runBasicIntake(0);
-                    nextStep(UNYOINK);
+                    nextStep(FINE_TUNE_TARGETING_AGAIN);
                 }
                 break;
             case UNYOINK:
-                robot.launcher.setLauncherSpeed(0);
-                auto.moveRobotBackward(200);
-                nextStep(STRAFEBACK);
+                if (auto.checkMovement()) {
+                    robot.launcher.setLauncherSpeed(0);
+                    auto.moveRobotBackward(200);
+                    nextStep(STRAFEBACK);
+                }
                 break;
             case STRAFEBACK:
+                speed = 1;
                 if (auto.checkMovement()) {
                     robot.launcher.setLauncherSpeed(0);
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.moveRobotRight(900);
+                        auto.moveRobotRight(patternCorrectedStrafeDistance);
                     } else {
-                        auto.moveRobotLeft(900);
+                        auto.moveRobotLeft(patternCorrectedStrafeDistance);
                     }
 
                     nextStep(UNTURN);
                 }
                 break;
             case UNTURN:
+                speed = 0.5;
                 if (auto.checkMovement())
                 {
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.turnRobotLeft(1200);
+                        auto.turnRobotRight(1000);
                     } else {
-                        auto.turnRobotRight(1200);
+                        auto.turnRobotLeft(1000);
                     }
 
-                    nextStep(FIRE2);
+                    nextStep(DISABLEINTAKE);
                 }
                 break;
+            case FINE_TUNE_TARGETING_AGAIN:
+                if (auto.checkMovement()) {
+                    if (robot.targetTag.currentlyDetected) //Angle detect if possible / needed
+                    {
+                        auto.turnRobotRight((int) ((robot.targetTag.angleX +robot.limelightSideOffsetAngle) * ( (double) 1660 / 360)));
+                    }
+                    nextStep(FIRE2);
+                }
             case FIRE2:
                 if (auto.checkMovement())
                 {
                     auto.fireOneArtifact(robot.sorterLogic.slotA);
 
                     if (auto.fireInSequenceComplete()) {
-                        nextStep(RETURN);
+                        nextStep(FINALINTAKERESET);
                     }
                 }
                 break;
-            case RETURN:
-                if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                    auto.turnRobotLeft(-1200);
-                } else {
-                    auto.turnRobotRight(-1200);
-                }
-
+            case FINALINTAKERESET:
+                robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotA.getLoadPosition());
                 nextStep(UNSTRAFEBACK);
+                break;
+            case RETURN:
+                if (robot.sorterHardware.doneMoving()) {
+                    speed = 1;
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.turnRobotLeft(-1200);
+                    } else {
+                        auto.turnRobotRight(-1200);
+                    }
+
+                    nextStep(UNSTRAFEBACK);
+                }
                 break;
             case UNSTRAFEBACK:
                 if (auto.checkMovement())
@@ -324,13 +374,6 @@ public class BetaBlueFrontAuto extends OpMode {
                         auto.moveRobotLeft(900);
                     }
 
-                    nextStep(FINALINTAKERESET);
-                }
-                break;
-            case FINALINTAKERESET:
-                if(auto.checkMovement())
-                {
-                    robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotA.getLoadPosition());
                     nextStep(YAY);
                 }
                 break;

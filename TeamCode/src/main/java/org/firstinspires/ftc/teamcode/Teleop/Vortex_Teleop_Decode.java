@@ -193,18 +193,18 @@ public class Vortex_Teleop_Decode extends OpMode {
         /// Without this we have no way to empty it without firing
         if(gamepad2.leftBumperWasPressed())
         {
-           robot.queue.clearList();
+           //robot.queue.clearList();
         }
 
         /// Adds color to queue
         if(gamepad2.squareWasPressed() && gamepad2.left_bumper)
         {
-            robot.queue.addToNextSpotColor(PURPLE);
+            //robot.queue.addToNextSpotColor(PURPLE);
             gamepad2.setLedColor(152, 7, 224,100);
         }
         else if(gamepad2.triangleWasPressed() && gamepad2.left_bumper)
         {
-            robot.queue.addToNextSpotColor(GREEN);
+            //robot.queue.addToNextSpotColor(GREEN);
             gamepad2.setLedColor(0, 255, 0, 100);
         }
 
@@ -277,9 +277,10 @@ public class Vortex_Teleop_Decode extends OpMode {
             cadenHoldingReady = false;
         }
 
-        if(gamepad2.right_trigger > 0.50 && !robot.launcher.wantToOpenDoor && robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE) {
+        if(gamepad2.right_trigger > 0.50 && !robot.launcher.wantToOpenDoor /*&& robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE*/) {
             if(!cadenHoldingFire)
             {
+                cadenON = true;
                 cadenHoldingFire = true;
                 robot.launcher.readyFire(1, false, false);
             }
@@ -289,7 +290,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             cadenHoldingFire = false;
         }
 
-        if(gamepad2.rightBumperWasPressed())
+        /*if(gamepad2.rightBumperWasPressed())
         {
             if(robot.queue.checkForExistingQueue())
             {
@@ -306,13 +307,13 @@ public class Vortex_Teleop_Decode extends OpMode {
                 robot.queue.clearList();
                 robot.queue.fillSimple(); // replace with the if when cam ready
                 robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.DUMB;
-            }
+            }*/
 
 
 
 
-        }
-        robot.queue.updateQueueStates(1);
+       // }
+        //robot.queue.updateQueueStates(1);
         incrementThroughPositions();
 
 

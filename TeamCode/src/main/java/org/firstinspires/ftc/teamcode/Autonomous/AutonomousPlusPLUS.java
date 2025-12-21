@@ -552,6 +552,7 @@ public class AutonomousPlusPLUS {
     }
 
     public void fireOneArtifact(ArtifactLocator.Slot slot) {
+        firingInSequence = true;
         fireOne(slot);
         if (fireInSequenceStep >= 1) {
             firingInSequence = false;

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * efficient, at least. But this class is basically just a button on the control hub. The auto is
  * in BetaBlueFrontAuto. Your problem is probably there.
  */
-@Autonomous(group = "Basic", name = "Red Front 4 Ball")
+@Autonomous(group = "Basic", name = "Red Front 3 Ball")
 public class SafeRedFrontAuto extends SafeBlueFrontAuto {
 
     public void init() {
