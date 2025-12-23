@@ -4,6 +4,9 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 @Configurable
 public class PIDMotorGroup {
@@ -18,24 +21,24 @@ public class PIDMotorGroup {
 
 
     int numberOfMotorsInGroup;
-    DcMotorEx[] motorGroup;
+    ArrayList<DcMotorEx> motorGroup;
 
-    public PIDMotorGroup(int numberOfMotorsIN, DcMotorEx[] motorsIN) {
+    public PIDMotorGroup(int numberOfMotorsIN, DcMotorEx... motorsIN) {
         numberOfMotorsInGroup = numberOfMotorsIN;
-        motorGroup = new DcMotorEx[numberOfMotorsIN];
+        motorGroup.addAll(Arrays.asList(motorsIN));
     }
 
-    void setDirections(int[] listOfDirectionsIN)
+    void setDirections(int... listOfDirectionsIN)
     {
         for (int i = 0; i < listOfDirectionsIN.length; i++)
         {
             if(listOfDirectionsIN[i] == -1)
             {
-               motorGroup[i].setDirection(DcMotorSimple.Direction.REVERSE);
+               motorGroup.get(i).setDirection(DcMotorSimple.Direction.REVERSE);
             }
             else
             {
-                motorGroup[i].setDirection(DcMotorSimple.Direction.FORWARD);
+                motorGroup.get(i).setDirection(DcMotorSimple.Direction.FORWARD);
             }
         }
     }

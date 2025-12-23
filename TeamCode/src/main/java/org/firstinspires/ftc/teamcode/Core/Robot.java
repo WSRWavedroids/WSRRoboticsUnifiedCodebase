@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 
 import android.annotation.SuppressLint;
+import android.text.method.Touch;
 
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -23,6 +24,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -56,7 +58,7 @@ public class Robot {
     public CRServo transferServoL;
     public CRServo transferServoR;
 
-    public DigitalChannel magsense;
+    public TouchSensor magsense;
 
     public Limelight3A limelight;
 
@@ -120,7 +122,7 @@ public class Robot {
         sorterMotor = hardwareMap.get(DcMotorEx.class, "sorterMotor");
         launcherMotor =  hardwareMap.get(DcMotorEx.class, "launcherMotor");
 
-        hammerServo = hardwareMap.get(Servo.class, "hammerServo");
+        //hammerServo = hardwareMap.get(Servo.class, "hammerServo");
         doorServo = hardwareMap.get(Servo.class, "doorServo");
 
         expandyServo = hardwareMap.get(CRServo.class, "expandyServo");
@@ -132,8 +134,8 @@ public class Robot {
         transferServoL = hardwareMap.get(CRServo.class, "transferServoL");
         transferServoR = hardwareMap.get(CRServo.class, "transferServoR");
 
-        magsense = hardwareMap.get(DigitalChannel.class, "magsense");
-        magsense.setMode(DigitalChannel.Mode.INPUT);
+        magsense = hardwareMap.get(TouchSensor.class, "magsense");
+
 
         //CamCam = hardwareMap.get(WebcamName.class, "CamCam");
         //expandyServo = hardwareMap.get(CRServo.class, "expandyServo");

@@ -26,6 +26,8 @@ import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionSta
 
 import android.annotation.SuppressLint;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import java.util.ArrayList;
 
 public class ArtifactLocator {
@@ -57,6 +59,8 @@ public class ArtifactLocator {
 
     public Robot robot;
 
+    private ElapsedTime sortCooldown = new ElapsedTime();
+
     public ArtifactLocator(Robot robotFile) {
         robot = robotFile;
         initLogic();
@@ -67,11 +71,11 @@ public class ArtifactLocator {
      * iterate through them.
      */
     public void initLogic() {
-        int ticksPerRotation = robot.sorterHardware.ticksPerRotation;
+        double ticksPerRotation = BetaSorterHardware.ticksPerRotation;
         //Define slots
-        slotA = new Slot(0, ticksPerRotation / 2, "A");
-        slotB = new Slot(2 * ticksPerRotation / 3, ticksPerRotation / 6, "B");
-        slotC = new Slot(ticksPerRotation / 3, 5 * ticksPerRotation / 6, "C");
+        slotA = new Slot(0, (int) (ticksPerRotation / 2), "A");
+        slotB = new Slot((int) (2 * ticksPerRotation / 3), (int) (ticksPerRotation / 6), "B");
+        slotC = new Slot((int) (ticksPerRotation / 3), (int) (5 * ticksPerRotation / 6), "C");
         noSlot = new NoSlot();
 
         zone1 = new Zone(140, 180, 0, 120);
@@ -127,6 +131,7 @@ public class ArtifactLocator {
      */
     public void sortOutBlobs(int state) {
         SlotState newState;
+        Slot loadSlot;
 
         switch (state) {
             case 1: newState = PURPLE; break;
@@ -135,7 +140,16 @@ public class ArtifactLocator {
             default: newState = UNKNOWN;
         }
 
-        this.findCurrentSlotInPosition(LOAD).setOccupied(newState);
+        loadSlot = this.findCurrentSlotInPosition(LOAD);
+
+        if(!loadSlot.contains(newState)) {
+            loadSlot.setOccupied(newState);
+            sortCooldown.reset();
+        }
+    }
+
+    public boolean artifactSortCooldown() {
+        return sortCooldown.seconds() > .5;
     }
 
     /**
@@ -291,7 +305,7 @@ public class ArtifactLocator {
             }
         }
         // Check the high offset 0
-        currentDistanceCheck = Math.abs(robot.sorterHardware.ticksPerRotation - ticks);
+        currentDistanceCheck = (int) Math.abs(BetaSorterHardware.ticksPerRotation - ticks);
         if (currentDistanceCheck < lowestDistance) {
             offset = 0;
         }
@@ -306,17 +320,17 @@ public class ArtifactLocator {
      * @return The equalized position, between 0-8192.
      */
     public int equalizeMotorPositions(int ticks) {
-        while (ticks > robot.sorterHardware.ticksPerRotation) {
-            ticks -= robot.sorterHardware.ticksPerRotation;
+        while (ticks > BetaSorterHardware.ticksPerRotation) {
+            ticks -= BetaSorterHardware.ticksPerRotation;
         }
         while (ticks < 0) {
-            ticks += robot.sorterHardware.ticksPerRotation;
+            ticks += BetaSorterHardware.ticksPerRotation;
         }
         return ticks;
     }
 
     public boolean isCurrentReferenceLogical(int reference) {
-        return reference % ((double) robot.sorterHardware.ticksPerRotation / 6) == 0;
+        return reference % ((double) BetaSorterHardware.ticksPerRotation / 6) == 0;
     }
 
     /**

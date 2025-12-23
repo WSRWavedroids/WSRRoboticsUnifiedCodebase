@@ -101,7 +101,7 @@ public class SorterHardware {
 
     public boolean getLimitSwitch()
     {
-        return !disRobot.magsense.getState(); //defaults to true if empty so flip
+        return !disRobot.magsense.isPressed(); //defaults to true if empty so flip
     }
 
     public void runFeeders(double speed)

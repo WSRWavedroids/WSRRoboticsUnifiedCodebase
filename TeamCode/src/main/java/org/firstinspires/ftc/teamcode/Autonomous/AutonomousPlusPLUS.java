@@ -425,16 +425,11 @@ public class AutonomousPlusPLUS {
         sleep(pause);
     }
 
-
-
-
-
-
-    public void calibrateDriveTrain(int tollerance, double pValue) {
-        robot.frontLeftDrive.setTargetPositionTolerance(tollerance);
-        robot.frontRightDrive.setTargetPositionTolerance(tollerance);
-        robot.backLeftDrive.setTargetPositionTolerance(tollerance);
-        robot.backRightDrive.setTargetPositionTolerance(tollerance);
+    public void calibrateDriveTrain(int tolerance, double pValue) {
+        robot.frontLeftDrive.setTargetPositionTolerance(tolerance);
+        robot.frontRightDrive.setTargetPositionTolerance(tolerance);
+        robot.backLeftDrive.setTargetPositionTolerance(tolerance);
+        robot.backRightDrive.setTargetPositionTolerance(tolerance);
 
         robot.frontLeftDrive.setPositionPIDFCoefficients(pValue);
         robot.frontRightDrive.setPositionPIDFCoefficients(pValue);
@@ -453,73 +448,6 @@ public class AutonomousPlusPLUS {
     public int convertInchesToTicks(int inches){
         int ticks = (int) ((537.6 * inches) / (3.77953 * 3.1415926535));
         return ticks;
-    }
-
-    public void stallTillFalse(boolean condition) {
-        while (condition)
-        {
-            robot.updateAllDaThings();
-            robot.telemetry.update();
-        }
-    }
-
-    public void stallTillTrue(boolean condition)
-    {
-        while(!condition)
-        {
-            robot.updateAllDaThings();
-
-            if(condition)
-            {
-                break;
-            }
-        }
-    }
-
-    void stallForSpin(boolean condition, int ticks)
-    {
-        int shortTermRef = robot.sorterHardware.findFastestRotationInTicks(robot.sorterHardware.motor.getCurrentPosition(), ticks);
-        robot.sorterHardware.reference = shortTermRef;
-        while(!condition)
-        {
-
-            robot.sorterHardware.reference  = robot.sorterHardware.findFastestRotationInTicks(robot.sorterHardware.motor.getCurrentPosition(), ticks);
-            robot.updateAllDaThings();
-
-            robot.telemetry.addData("Spinning...", "Or stuck in loop :(");
-            robot.telemetry.addData("we in?", robot.sorterHardware.positionedCheck());
-            if(robot.sorterHardware.positionedCheck())
-            {
-                sleep(100);
-                if(robot.sorterHardware.positionedCheck())
-                {
-                    break;
-                }
-            }
-            robot.telemetry.update();
-        }
-    }
-
-    void stallForTime(double time)
-    {
-        stupidTimer.reset();
-        while(stupidTimer.seconds() < time)
-        {
-            robot.updateAllDaThings();
-        }
-    }
-
-    void stallForCondition(boolean condition)
-    {
-        while(!condition)
-        {
-            robot.updateAllDaThings();
-
-            if(condition)
-            {
-                break;
-            }
-        }
     }
 
     enum fireInSequenceStalling {READY, FIRE, FIRING}
@@ -588,23 +516,13 @@ public class AutonomousPlusPLUS {
         return !firingInSequence && !robot.launcher.onCooldown;
     }
 
-    public void safeSorterSpin(int targetPosition)
-    {
-        while(robot.sorterHardware.motor.getCurrentPosition() > targetPosition - robot.sorterHardware.tickTolerance  && robot.sorterHardware.motor.getCurrentPosition() < targetPosition + robot.sorterHardware.tickTolerance)
-        {
-            //
-        }
+    public void setSpeed(double newSpeed) {
+        speed = newSpeed;
     }
-
-
-
-
-
-
-    /**
-     * This is the autonomous mode. It moves the robot without us having to touch the controller.
-     * Previous programmers really sucked at explaining what any of this meant, so we're trying to do better.
-     * This is our third year now of using this file. It's kind of poetic and also adorable.
-     */
-
+    public void setTolerances(int tolerance) {
+        robot.frontLeftDrive.setTargetPositionTolerance(tolerance);
+        robot.frontRightDrive.setTargetPositionTolerance(tolerance);
+        robot.backLeftDrive.setTargetPositionTolerance(tolerance);
+        robot.backRightDrive.setTargetPositionTolerance(tolerance);
+    }
 }

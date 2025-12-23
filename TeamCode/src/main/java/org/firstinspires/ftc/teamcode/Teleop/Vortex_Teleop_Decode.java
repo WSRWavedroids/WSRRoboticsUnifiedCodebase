@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.FramerateCalculator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.fireQueueWithStates;
@@ -118,14 +119,16 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot.readyHardware(true);
     }
 
-    /*
+    /**
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
     public void init_loop() {
         telemetry.addData("HYPE", "ARE! YOU! READY?!?!?!?!");
+        doTelemetryStuff();
+        telemetry.update();
     }
 
-    /*
+    /**
      * Code to run ONCE when the driver hits PLAY
      */
     public void start() {
@@ -133,12 +136,12 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("HYPE", "Let's do this!!!");
         gamepad1.setLedColor(0, 0, 255, 10);
         gamepad2.setLedColor(0, 0, 255, 10);
-        robot.sorterHardware.resetSorterEncoder();//REMOVE ONCE AUTO -> TELE IS FIGURED OUT
+        robot.sorterHardware.calibrate();
         robot.sorterHardware.legalToSpin = true;
 
     }
 
-    /*
+    /**
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     public void loop() {
@@ -208,18 +211,24 @@ public class Vortex_Teleop_Decode extends OpMode {
             gamepad2.setLedColor(0, 255, 0, 100);
         }
 
+        // If there are unknown slots, go meet them
+        /*if(robot.sorterLogic.findFirstType(UNKNOWN).exists() && robot.sorterLogic.artifactSortCooldown()) {
+            robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(UNKNOWN).getLoadPosition());
+        }*/
 
         if(gamepad2.cross)
         {
-            if(robot.sorterHardware.inStateCheck(FIRE))
+            if(robot.sorterHardware.inStateCheck(SWITCH))
+            {
+                //dont jam while spinning to load
+                robot.cancelAutoIntake();
+            }
+            else if(robot.sorterHardware.inStateCheck(FIRE) ||
+                    (robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
+                            robot.sorterLogic.artifactSortCooldown()))
             {
                 //if not in load position, go there and make sure we don't jam in the process
                 robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(EMPTY).getLoadPosition());
-                robot.cancelAutoIntake();
-            }
-            else if(robot.sorterHardware.inStateCheck(SWITCH))
-            {
-                //dont jam while spinning to load
                 robot.cancelAutoIntake();
             }
             else
@@ -282,7 +291,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             {
                 cadenON = true;
                 cadenHoldingFire = true;
-                robot.launcher.readyFire(1, false, false);
+                robot.launcher.fireNowIfSafe(1, false, false);
             }
         }
         else

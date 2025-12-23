@@ -43,13 +43,13 @@ public class BetaBlueFrontAuto extends OpMode {
         FIRE_FIRST_PATTERN, RESET_BLENDER1, RESET_BLENDER2,
         UNPARK_0, UNPARK_1, UNPARK_2,
 
-        ENABLEINTAKE, YOINK, DISABLEINTAKE, UNYOINK,
+        ENABLE_INTAKE, YOINK, DISABLE_INTAKE, UNYOINK,
 
-        STRAFEBACK, UNTURN, FINE_TUNE_TARGETING_AGAIN,
+        STRAFE_BACK, UN_TURN, FINE_TUNE_TARGETING_AGAIN,
 
         FIRE2,
 
-        RETURN, UNSTRAFEBACK, FINALINTAKERESET,
+        RE_TURN, UNSTRAFE_BACK, FINAL_INTAKE_RESET,
         YAY
     }
     private Step currentStep = START;
@@ -104,13 +104,15 @@ public class BetaBlueFrontAuto extends OpMode {
     public void loop() {
         switch (currentStep) {
             case START:
+                auto.setTolerances(7);
                 nextStep(CHECK_MOVE_1);
                 break;
             case CHECK_MOVE_1:
+                auto.setSpeed(1);
                 if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                    auto.moveRobotLeft(700);
+                    auto.moveRobotLeft(1000);
                 } else {
-                    auto.moveRobotRight(700);
+                    auto.moveRobotRight(1000);
                 }
                 nextStep(CHECK_TAG);
                 break;
@@ -138,17 +140,17 @@ public class BetaBlueFrontAuto extends OpMode {
                     case "PPG":
                         telemetry.addData("We doin", " PPG now");
                         blackboard.put(PATTERN_KEY, "PPG");
-                        patternCorrectedStrafeDistance = 450;
+                        //patternCorrectedStrafeDistance = 425;
                         break;
                     case "GPP":
                         telemetry.addData("We doin", " GPP now");
                         blackboard.put(PATTERN_KEY, "GPP");
-                        patternCorrectedStrafeDistance = 1500;
+                        //patternCorrectedStrafeDistance = 1500;
                         break;
                     case "PGP":
                         telemetry.addData("We doin", " PGP now");
                         blackboard.put(PATTERN_KEY, "PGP");
-                        patternCorrectedStrafeDistance = 450;
+                        //patternCorrectedStrafeDistance = 425;
                         break;
                     default:
                         telemetry.addData("It failed ", "cry time");
@@ -172,6 +174,7 @@ public class BetaBlueFrontAuto extends OpMode {
                 nextStep(FIRST_SPIN);
                 break;
             case FIRST_SPIN:
+
                 if (robot.pattern.equals("PGP") || robot.pattern.equals("PPG")) {
                     robot.sorterHardware.prepareNewMovement(
                             robot.sorterHardware.motor.getCurrentPosition(),
@@ -192,6 +195,7 @@ public class BetaBlueFrontAuto extends OpMode {
                 }
                 break;
             case TURN_BACK_TOWARDS_GOAL:
+                auto.setSpeed(.6);
                 if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
                     auto.turnRobotRight(600);
                 } else {
@@ -210,6 +214,7 @@ public class BetaBlueFrontAuto extends OpMode {
                 }
                 break;
             case DRIVE_CLOSER_TO_GOAL:
+                auto.setSpeed(.5);
                 if (auto.checkMovement()) {
                     auto.moveRobotBackward(200);
                     nextStep(FINE_TUNE_TARGETING);
@@ -235,6 +240,7 @@ public class BetaBlueFrontAuto extends OpMode {
                 nextStep(UNPARK_0);
                 break;
             case UNPARK_0:
+                auto.setSpeed(1);
                 if(robot.sorterHardware.doneMoving()) {
                     auto.moveRobotForward(400);
                     nextStep(UNPARK_1);
@@ -243,24 +249,25 @@ public class BetaBlueFrontAuto extends OpMode {
             case UNPARK_1:
                 if(auto.checkMovement())
                 {
+                    auto.setSpeed(.4);
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.turnRobotLeft(1000);
+                        auto.turnRobotLeft(1100);
                     } else {
-                        auto.turnRobotRight(1000);
+                        auto.turnRobotRight(1100);
                     }
                     nextStep(UNPARK_2);
                 }
 
                 break;
             case UNPARK_2:
-                speed = 1;
                 if (auto.checkMovement()) {
+                    auto.setSpeed(.8);
                     robot.launcher.setLauncherSpeed(0);
 
                     if (false /*robot.pattern.equals("GPP")*/) {
                         patternCorrectedStrafeDistance = 1400;
                     } else {
-                        patternCorrectedStrafeDistance = 750;
+                        patternCorrectedStrafeDistance = 600;
                     }
 
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
@@ -269,10 +276,10 @@ public class BetaBlueFrontAuto extends OpMode {
                         auto.moveRobotRight(patternCorrectedStrafeDistance);
                     }
 
-                    nextStep(ENABLEINTAKE);
+                    nextStep(ENABLE_INTAKE);
                 }
                 break;
-            case ENABLEINTAKE:
+            case ENABLE_INTAKE:
                 if(auto.checkMovement())
                 {
                     robot.runBasicIntake(1);
@@ -284,29 +291,29 @@ public class BetaBlueFrontAuto extends OpMode {
             case YOINK:
                 if(stallTimer.seconds() > 0.5)
                 {
-                    speed = 0.5;
+                    auto.setSpeed(0.4);
                     robot.launcher.setLauncherSpeed(0);
-                    auto.moveRobotForward(200);
+                    auto.moveRobotForward(400);
                     nextStep(UNYOINK);
 
                 }
                 break;
-            case DISABLEINTAKE:
+            case DISABLE_INTAKE:
                 if(auto.checkMovement()) {
                     robot.runBasicIntake(0);
-                    nextStep(FINE_TUNE_TARGETING_AGAIN);
+                    nextStep(UN_TURN);
                 }
                 break;
             case UNYOINK:
                 if (auto.checkMovement()) {
                     robot.launcher.setLauncherSpeed(0);
-                    auto.moveRobotBackward(200);
-                    nextStep(STRAFEBACK);
+                    auto.moveRobotBackward(400);
+                    nextStep(STRAFE_BACK);
                 }
                 break;
-            case STRAFEBACK:
-                speed = 1;
+            case STRAFE_BACK:
                 if (auto.checkMovement()) {
+                    auto.setSpeed(1);
                     robot.launcher.setLauncherSpeed(0);
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
                         auto.moveRobotRight(patternCorrectedStrafeDistance);
@@ -314,20 +321,21 @@ public class BetaBlueFrontAuto extends OpMode {
                         auto.moveRobotLeft(patternCorrectedStrafeDistance);
                     }
 
-                    nextStep(UNTURN);
+                    nextStep(DISABLE_INTAKE);
                 }
                 break;
-            case UNTURN:
-                speed = 0.5;
+            case UN_TURN:
                 if (auto.checkMovement())
                 {
+                    auto.setSpeed(0.6);
+                    robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotA.getFirePosition());
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.turnRobotRight(1000);
+                        auto.turnRobotRight(1100);
                     } else {
-                        auto.turnRobotLeft(1000);
+                        auto.turnRobotLeft(1100);
                     }
 
-                    nextStep(DISABLEINTAKE);
+                    nextStep(FINE_TUNE_TARGETING_AGAIN);
                 }
                 break;
             case FINE_TUNE_TARGETING_AGAIN:
@@ -344,34 +352,34 @@ public class BetaBlueFrontAuto extends OpMode {
                     auto.fireOneArtifact(robot.sorterLogic.slotA);
 
                     if (auto.fireInSequenceComplete()) {
-                        nextStep(FINALINTAKERESET);
+                        nextStep(FINAL_INTAKE_RESET);
                     }
                 }
                 break;
-            case FINALINTAKERESET:
+            case FINAL_INTAKE_RESET:
                 robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotA.getLoadPosition());
-                nextStep(UNSTRAFEBACK);
+                nextStep(UNSTRAFE_BACK);
                 break;
-            case RETURN:
+            case RE_TURN:
                 if (robot.sorterHardware.doneMoving()) {
-                    speed = 1;
+                    auto.setSpeed(1);
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
                         auto.turnRobotLeft(-1200);
                     } else {
                         auto.turnRobotRight(-1200);
                     }
 
-                    nextStep(UNSTRAFEBACK);
+                    nextStep(UNSTRAFE_BACK);
                 }
                 break;
-            case UNSTRAFEBACK:
+            case UNSTRAFE_BACK:
                 if (auto.checkMovement())
                 {
                     robot.launcher.setLauncherSpeed(0);
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.moveRobotRight(900);
+                        auto.moveRobotLeft(600);
                     } else {
-                        auto.moveRobotLeft(900);
+                        auto.moveRobotRight(600);
                     }
 
                     nextStep(YAY);

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Vision.Limelight_Target_Scanner;
 import org.firstinspires.ftc.teamcode.Vision.Limelight_Randomization_Scanner;
 import org.firstinspires.ftc.teamcode.Vision.WaveTag;
 
-@Disabled
+
 @Configurable
 @Autonomous(group = "Basic", name = "Legacy Auto Tuner")
 public class legacyAutoTuner extends AutonomousPLUS {
@@ -34,8 +34,10 @@ public class legacyAutoTuner extends AutonomousPLUS {
 
     private Robot robot;
 
-    public static double p;
+    public static double p = 5;
     public static int tollerance;
+
+    public static long timeBetweenMovements = 200;
     public static int movementDistance = 900;
     public enum mode {FB, LR, TRN, DGNL};
     public double modularSpeed = 0.5;
@@ -78,15 +80,14 @@ public class legacyAutoTuner extends AutonomousPLUS {
             {
                 calibrateDriveTrain(tollerance, p);
                 speed = modularSpeed;
-                moveRobotForward(movementDistance, 12);
-                prepareNextAction(500);
+                moveRobotForward(movementDistance, timeBetweenMovements);
                 calibrateDriveTrain(tollerance, p);
                 speed = modularSpeed;
-                moveRobotBackward(movementDistance, 12);
+                moveRobotBackward(movementDistance, timeBetweenMovements);
 
                 if(gamepad1.dpad_right)
                 {
-                   current = mode. LR;
+                   current = mode.LR;
                 }
                 else if(gamepad1.dpad_left)
                 {
@@ -98,11 +99,10 @@ public class legacyAutoTuner extends AutonomousPLUS {
             {
                 calibrateDriveTrain(tollerance, p);
                 speed = modularSpeed;
-                moveRobotLeft(movementDistance, 12);
-                prepareNextAction(12);
+                moveRobotLeft(movementDistance, timeBetweenMovements);
                 calibrateDriveTrain(tollerance, p);
                 speed = modularSpeed;
-                moveRobotRight(movementDistance, 12);
+                moveRobotRight(movementDistance, timeBetweenMovements);
 
                 if(gamepad1.dpad_right)
                 {
@@ -118,11 +118,10 @@ public class legacyAutoTuner extends AutonomousPLUS {
             {
                 calibrateDriveTrain(tollerance, p);
                 speed = modularSpeed;
-                turnRobotLeft(movementDistance, 12);
-                prepareNextAction(12);
+                turnRobotLeft(movementDistance, timeBetweenMovements);
                 calibrateDriveTrain(tollerance, p);
                 speed = modularSpeed;
-                turnRobotRight(movementDistance, 12);
+                turnRobotRight(movementDistance, timeBetweenMovements);
 
                 if(gamepad1.dpad_right)
                 {
@@ -134,15 +133,13 @@ public class legacyAutoTuner extends AutonomousPLUS {
                 }
             }
 
-            else if(current == mode.DGNL)
-            {
+            else {
                 calibrateDriveTrain(tollerance, p);
                 speed = modularSpeed;
-                moveDiagonalLeft(movementDistance, 12);
-                prepareNextAction(12);
+                moveDiagonalLeft(movementDistance, timeBetweenMovements);
                 calibrateDriveTrain(tollerance, p);
                 speed = modularSpeed;
-                moveDiagonalRight(movementDistance, 12);
+                moveDiagonalRight(movementDistance, timeBetweenMovements);
 
                 if(gamepad1.dpad_right)
                 {

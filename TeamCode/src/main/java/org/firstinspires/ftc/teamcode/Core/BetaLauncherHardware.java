@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherSteps.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
+import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.SPEED;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -14,7 +15,7 @@ public class BetaLauncherHardware {
 
     private Robot robot;
     public DcMotorEx motor;
-    public Servo hammerServo;
+    private static ezPID launcherPID;
 
 
     public BetaLauncherHardware(Robot robotFile) {
@@ -25,7 +26,7 @@ public class BetaLauncherHardware {
         waitingToFire = false;
     }
 
-    public static double launcherCooldownDuration = 0.5;
+    public static double launcherCooldownDuration = 0.3;
 
     public boolean waitingToFire = false;
     boolean lockControls = false;
@@ -42,6 +43,8 @@ public class BetaLauncherHardware {
     public boolean onCooldown = false;
 
     public boolean wantToOpenDoor;
+
+    public boolean waitUntilSafe;
 
     enum LauncherSteps {
         READY_FOR_COMMANDS, STALLING_UNTIL_SAFE, CHECK_IF_SAFE, REV_MOTOR,
@@ -61,7 +64,11 @@ public class BetaLauncherHardware {
                 if (waitingToFire) {
                     waitingToFire = false;
                     doneFiring = false;
-                    nextStep(STALLING_UNTIL_SAFE);
+                    if (waitUntilSafe){
+                        nextStep(STALLING_UNTIL_SAFE);
+                    } else {
+                        nextStep(CHECK_IF_SAFE);
+                    }
                 }
                 break;
             case STALLING_UNTIL_SAFE:
@@ -70,6 +77,11 @@ public class BetaLauncherHardware {
                 }
                 break;
             case CHECK_IF_SAFE:
+                if (robot.sorterHardware.fireSafeCheck()) {
+                    nextStep(REV_MOTOR);
+                } else {
+                    nextStep(READY_FOR_COMMANDS);
+                }
                 break;
             case REV_MOTOR:
                 setLauncherSpeed(percentSpeed);
@@ -77,7 +89,7 @@ public class BetaLauncherHardware {
                 nextStep(STALL_WHILE_MOTOR_REVVING);
                 break;
             case STALL_WHILE_MOTOR_REVVING:
-                if (motorSpeedCheck(velocityTarget) || cooldownTimer.seconds() >= .75) {
+                if (motorSpeedCheck(velocityTarget) /*|| cooldownTimer.seconds() >= .75*/) {
                     nextStep(OPEN_DOOR);
                 }
                 break;
@@ -121,6 +133,11 @@ public class BetaLauncherHardware {
         else return false;
     }
 
+    public void fireNowIfSafe(double speedTarget, boolean useSpeedTarget, boolean stopMotorAfter){
+        readyFire(speedTarget, useSpeedTarget, stopMotorAfter);
+        waitUntilSafe = false;
+    }
+
     public void readyFire(double speedTarget, boolean useSpeedTarget) {
         if (lockControls) return;
 
@@ -128,6 +145,7 @@ public class BetaLauncherHardware {
         else percentSpeed = 1;
 
         waitingToFire = true;
+        waitUntilSafe = true;
     }
 
     public void readyFire() {

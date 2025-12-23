@@ -4,27 +4,31 @@ import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.BlenderStep
 import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
+import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.*;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 @Configurable
 public class BetaSorterHardware  {
 
     private final Robot robot;
+    public ezPID blenderPID;
     private final BetaLauncherHardware launcher;
-    public DcMotor motor;
+    public DcMotorEx motor;
     public Servo doorServo;
     public CRServo feedServoL;
     public CRServo feedServoR;
     public enum positionState {FIRE, LOAD, SWITCH}
 
     public int[] positions;
-    public static final int ticksPerRotation = 8192;
+    public static final Double ticksPerRotation = 8192.0;
     public int currentTickCount;
-    public static int tickTolerance = 100;
+    public static Double tickTolerance = 100.0;
     public boolean legalToSpin = false;
 
     public double doorClosedPosition = 1;
@@ -36,7 +40,7 @@ public class BetaSorterHardware  {
     public boolean onCooldown = false;
     private ElapsedTime pidfTime = new ElapsedTime();
 
-    public static double kneecap = .4;
+    public static Double kneecap = .4;
     public static double kp = 0.001;
     public static double ki = 0.0000002;//maybe try 275 where 275 is
     public static double kd = 0.0000002;
@@ -63,12 +67,13 @@ public class BetaSorterHardware  {
 
         positions = new int[6];
         positions[0] = 0; //Slot A load
-        positions[1] = ticksPerRotation / 2; //Slot A launch
-        positions[2] = (2 * ticksPerRotation/3); //Slot B load
-        positions[3] = ticksPerRotation / 6; // Slot B launch
-        positions[4] = ticksPerRotation / 3; //Slot C load
-        positions[5] = 5 * ticksPerRotation / 6; //Slot C launch
+        positions[1] = (int) (ticksPerRotation / 2); //Slot A launch
+        positions[2] = (int) (2 * ticksPerRotation/3); //Slot B load
+        positions[3] = (int) (ticksPerRotation / 6); // Slot B launch
+        positions[4] = (int) (ticksPerRotation / 3); //Slot C load
+        positions[5] = (int) (5 * ticksPerRotation / 6); //Slot C launch
 
+        blenderPID = new ezPID(motor, ticksPerRotation, kp, ki, kd, kf, kneecap, tickTolerance, POSITION);
         //reference = 0;
 
     }
@@ -79,7 +84,7 @@ public class BetaSorterHardware  {
     enum BlenderSteps {
         READY_FOR_COMMANDS,
         STALLING_UNTIL_SAFE_OR_NEEDED, CHECK_IF_SAFE, MOVING, RESET,
-        INTAKE, OUTTAKE
+        CALIBRATE, CALIBRATING
     }
     private BlenderSteps currentBlenderStep = READY_FOR_COMMANDS;
 
@@ -92,7 +97,7 @@ public class BetaSorterHardware  {
         robot.telemetry.addData("Blender step", currentBlenderStep);
         switch (currentBlenderStep) {
             case READY_FOR_COMMANDS:
-                if (tryToMove) {
+                if (tryToMove || !positionedCheck()) {
                     tryToMove = false;
                     doneMoving = false;
                     nextStep(STALLING_UNTIL_SAFE_OR_NEEDED);
@@ -110,7 +115,6 @@ public class BetaSorterHardware  {
                 break;
             case MOVING:
                 setFeeders(ROTATE);
-                runPIDMotorStuffLol();
                 if (this.positionedCheck()) {
                     ensureBlenderPosition += 1;
                 }
@@ -124,7 +128,24 @@ public class BetaSorterHardware  {
                 setFeeders(PASSIVE);
                 nextStep(READY_FOR_COMMANDS);
                 break;
+            case CALIBRATE:
+                tryToMove = false;
+                doneMoving = false;
+                nextStep(CALIBRATING);
+                break;
+            case CALIBRATING:
+                motor.setPower(.15);
+                if(robot.magsense.isPressed()) {
+                    motor.setPower(0);
+                    resetSorterEncoder();
+                    nextStep(RESET);
+                }
+                break;
         }
+        if (!isCalibrating()) {
+            blenderPID.runCalledPID(reference);
+        }
+
 
         switch (currentFeederState) {
             case INTAKE:
@@ -166,10 +187,11 @@ public class BetaSorterHardware  {
     }
 
     public boolean positionedCheck() {
-        int currentMotorPosition = motor.getCurrentPosition();
+        //int currentMotorPosition = motor.getCurrentPosition();
 
-        return currentMotorPosition > reference - tickTolerance && currentMotorPosition < reference + tickTolerance;
+        return blenderPID.withinTolerance; //currentMotorPosition > reference - tickTolerance && currentMotorPosition < reference + tickTolerance;
     }
+
 
     public void setFeeders(FeederState newState) {
         currentFeederState = newState;
@@ -194,6 +216,14 @@ public class BetaSorterHardware  {
             // Not in a position (-1, -2)
             default: currentPositionState = positionState.SWITCH;
         }
+    }
+
+    public void calibrate() {
+        nextStep(CALIBRATE);
+    }
+
+    public boolean isCalibrating() {
+        return currentBlenderStep == CALIBRATE || currentBlenderStep == CALIBRATING;
     }
 
     public void runPIDMotorStuffLol()
@@ -248,12 +278,12 @@ public class BetaSorterHardware  {
     }
 
     public int findFastestRotationInTicks(int currentPosition, int targetPosition) {
-        int howManyCycles = currentPosition / ticksPerRotation;
+        int howManyCycles = (int) (currentPosition / ticksPerRotation);
 
         int[] slotSpaces = new int[3];
-        slotSpaces[0] = targetPosition + (howManyCycles - 1) * ticksPerRotation;
-        slotSpaces[1] = targetPosition + howManyCycles * ticksPerRotation;
-        slotSpaces[2] = targetPosition + (howManyCycles + 1) * ticksPerRotation;
+        slotSpaces[0] = (int) (targetPosition + (howManyCycles - 1) * ticksPerRotation);
+        slotSpaces[1] = (int) (targetPosition + howManyCycles * ticksPerRotation);
+        slotSpaces[2] = (int) (targetPosition + (howManyCycles + 1) * ticksPerRotation);
 
         int bestPosition = slotSpaces[0];
         int smallestDistance = Math.abs(slotSpaces[0] - currentPosition);

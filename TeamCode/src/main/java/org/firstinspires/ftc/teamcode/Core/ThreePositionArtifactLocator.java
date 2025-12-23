@@ -66,11 +66,11 @@ public class ThreePositionArtifactLocator extends ArtifactLocator {
      * iterate through them.
      */
     public void initLogic() {
-        int ticksPerRotation = robot.sorterHardware.ticksPerRotation;
+        double ticksPerRotation = BetaSorterHardware.ticksPerRotation;
         // Define slots
-        slotA = new Slot(0, ticksPerRotation / 3, "A");
-        slotB = new Slot(2 * ticksPerRotation / 3, 0, "B");
-        slotC = new Slot(ticksPerRotation / 3, 2 * ticksPerRotation / 3, "C");
+        slotA = new Slot(0, (int) (ticksPerRotation / 3), "A");
+        slotB = new Slot((int) (2 * ticksPerRotation / 3), 0, "B");
+        slotC = new Slot((int) (ticksPerRotation / 3), (int) (2 * ticksPerRotation / 3), "C");
         noSlot = new NoSlot();
 
         zone1 = new Zone(140, 180, 0, 120);
@@ -267,7 +267,7 @@ public class ThreePositionArtifactLocator extends ArtifactLocator {
             }
         }
         // Check the high offset 0
-        currentDistanceCheck = Math.abs(BetaSorterHardware.ticksPerRotation - ticks);
+        currentDistanceCheck = (int) Math.abs(BetaSorterHardware.ticksPerRotation - ticks);
         if (currentDistanceCheck < lowestDistance) {
             offset = 0;
         }
