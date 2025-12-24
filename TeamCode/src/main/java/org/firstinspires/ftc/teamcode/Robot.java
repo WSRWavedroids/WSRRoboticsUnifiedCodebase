@@ -4,6 +4,9 @@ import static java.lang.Thread.sleep;
 
 import android.annotation.SuppressLint;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -17,6 +20,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -33,6 +37,8 @@ public class Robot {
 
     public DcMotorEx launchLeft;
     public DcMotorEx launchRight;
+
+    public Limelight3A limelight;
 
     public Telemetry telemetry;
     //public BNO055IMU imu;
@@ -69,6 +75,7 @@ public class Robot {
         launchRight = hardwareMap.get(DcMotorEx.class, "launchRight");
         intake3 = hardwareMap.get(DcMotorEx.class, "intake3");
         intake2 = hardwareMap.get(Servo.class, "servo");
+        limelight = hardwareMap.get(Limelight3A.class, "Limelight");
 
 
         launchLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -240,5 +247,17 @@ public class Robot {
 
     public void prepareAuto(){
 
+    }
+    public void initLimelight(){
+        limelight.pipelineSwitch(0);
+        limelight.start();
+    }
+
+    public double getApriltagDistance(){
+        List<LLResultTypes.FiducialResult> results = limelight.getLatestResult().getFiducialResults();
+        if (!results.isEmpty()) {
+            return results.get(0).getTargetPoseCameraSpace().getPosition().z;
+        }
+        return 0;
     }
 }

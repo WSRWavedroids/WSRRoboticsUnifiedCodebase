@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
 
     private Robot robot;
-    private double spd = 0.43;
+    private double spd = 0.46;
     @Override
     public void runOpMode() {
         super.runOpMode();
@@ -28,7 +28,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         sleep(1200);
         runIntake2Auto(0.6);
         runIntakeAuto("in");
-        sleep(70);
+        sleep(95);
         runIntake2Auto(0);
         runIntakeAuto("stop");
         sleep(75);
@@ -65,7 +65,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntake2Auto(0.6);
         turnRobotLeft(777,6);               //mirror
         moveRobotRight(675, 6, 0.5);     //mirror
-        moveRobotBackward(1100, 6, 0.4);
+        moveRobotBackward(1250, 6, 0.3);
         turnRobotLeft(100, 6);
         runIntake2Auto(-0.2);
         moveRobotForward(1100, 6, 0.5);
@@ -76,7 +76,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         sleep(1200);
         runIntake2Auto(0.6);
         runIntakeAuto("in");
-        sleep(70);
+        sleep(95);
         runIntake2Auto(0);
         runIntakeAuto("stop");
         sleep(75);

@@ -106,6 +106,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         gamepad1.setLedColor(0, 0, 255, 100000000);
         gamepad2.setLedColor(255, 0, 240, 100000000);
         robot.intake2.setPosition(0.5);
+        robot.initLimelight();
     }
 
 
@@ -136,7 +137,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         intake1(1 ,0.5 ,0.85);
         intake2(1 ,0.5); //this is a servo
         intake3(1 ,0.6 ,1);
-        launch(0.05 ,0.43 ,0.53 ,2000);
+        launch(0.05 ,0.5 ,0.64 ,2000);
+
 
 
 
@@ -149,6 +151,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         telemetry.addData("LR Velocity", robot.launchRight.getVelocity());
         telemetry.addData("LL Velocity", robot.launchLeft.getVelocity());
         telemetry.addData("Launch Tune", robot.launchTune);
+
+        telemetry.addData("cam dist to apriltag", robot.getApriltagDistance());
 
 
 

@@ -20,7 +20,7 @@ public class FarLaunch extends AutonomousPLUS {
         //550 ticks = about 90 degrees right
         //6 millisecond pause after everything
         sleep(9500);
-        runLauncherAuto(0.54); //Launch
+        runLauncherAuto(0.7); //Launch
         sleep(1500);
         runIntake2Auto(1);
         runIntakeAuto("in");
@@ -32,7 +32,7 @@ public class FarLaunch extends AutonomousPLUS {
         runIntake2Auto(-0.3);
         sleep(75);
         runIntake2Auto(0);
-        runLauncherAuto(0.54);
+        runLauncherAuto(0.7);
         sleep(600);
         runIntake2Auto(1);
         runIntakeAuto("in");
@@ -44,7 +44,7 @@ public class FarLaunch extends AutonomousPLUS {
         runIntake2Auto(-0.3);
         sleep(75);
         runIntake2Auto(0);
-        runLauncherAuto(0.54);
+        runLauncherAuto(0.7);
         sleep(600);
         runIntake2Auto(1);
         runIntakeAuto("in");
