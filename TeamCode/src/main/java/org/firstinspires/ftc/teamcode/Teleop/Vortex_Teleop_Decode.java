@@ -291,7 +291,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             {
                 cadenON = true;
                 cadenHoldingFire = true;
-                robot.launcher.fireNowIfSafe(1, false, false);
+                robot.launcher.fireWithinTimeIfSafe(1, false, false, 0.5);
             }
         }
         else

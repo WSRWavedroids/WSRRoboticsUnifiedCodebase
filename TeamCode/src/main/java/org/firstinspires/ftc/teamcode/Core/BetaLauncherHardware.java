@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.Core;
 
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
+import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherMode.IF_SAFE_NOW;
+import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherMode.WAIT_FOREVER;
+import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherMode.WAIT_FOR_TIME;
 import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherSteps.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
@@ -44,11 +47,17 @@ public class BetaLauncherHardware {
 
     public boolean wantToOpenDoor;
 
-    public boolean waitUntilSafe;
+    LauncherMode mode;
+    private double waitTime;
+    private ElapsedTime waitForSafeTimer = new ElapsedTime();
 
     enum LauncherSteps {
-        READY_FOR_COMMANDS, STALLING_UNTIL_SAFE, CHECK_IF_SAFE, REV_MOTOR,
-        STALL_WHILE_MOTOR_REVVING, OPEN_DOOR, LAUNCHING, CLOSE_DOOR, RESET
+        READY_FOR_COMMANDS,
+        STALLING_UNTIL_SAFE, CHECK_IF_SAFE, WAIT_FOR_TIME_FOR_SAFE,
+        REV_MOTOR, STALL_WHILE_MOTOR_REVVING, OPEN_DOOR, LAUNCHING, CLOSE_DOOR, RESET
+    }
+    public enum LauncherMode {
+        WAIT_FOREVER, WAIT_FOR_TIME, IF_SAFE_NOW
     }
     LauncherSteps currentLauncherStep = READY_FOR_COMMANDS;
     private void nextStep(LauncherSteps nextStep) {
@@ -64,16 +73,31 @@ public class BetaLauncherHardware {
                 if (waitingToFire) {
                     waitingToFire = false;
                     doneFiring = false;
-                    if (waitUntilSafe){
-                        nextStep(STALLING_UNTIL_SAFE);
-                    } else {
-                        nextStep(CHECK_IF_SAFE);
+                    switch (mode) {
+                        case IF_SAFE_NOW:
+                            nextStep(CHECK_IF_SAFE);
+                            break;
+                        case WAIT_FOREVER:
+                            nextStep(STALLING_UNTIL_SAFE);
+                            break;
+                        case WAIT_FOR_TIME:
+                            nextStep(WAIT_FOR_TIME_FOR_SAFE);
+                            break;
                     }
                 }
                 break;
             case STALLING_UNTIL_SAFE:
                 if (robot.sorterHardware.fireSafeCheck()) {
                     nextStep(REV_MOTOR);
+                }
+                break;
+            case WAIT_FOR_TIME_FOR_SAFE:
+                if (robot.sorterHardware.fireSafeCheck()) {
+                    // All good
+                    nextStep(REV_MOTOR);
+                } else if (waitForSafeTimer.seconds() >= waitTime) {
+                    // Command timed out
+                    nextStep(READY_FOR_COMMANDS);
                 }
                 break;
             case CHECK_IF_SAFE:
@@ -135,7 +159,13 @@ public class BetaLauncherHardware {
 
     public void fireNowIfSafe(double speedTarget, boolean useSpeedTarget, boolean stopMotorAfter){
         readyFire(speedTarget, useSpeedTarget, stopMotorAfter);
-        waitUntilSafe = false;
+        mode = IF_SAFE_NOW;
+    }
+    public void fireWithinTimeIfSafe(double speedTarget, boolean useSpeedTarget, boolean stopMotorAfter, double waitTime){
+        readyFire(speedTarget, useSpeedTarget, stopMotorAfter);
+        this.waitTime = waitTime;
+        mode = WAIT_FOR_TIME;
+        waitForSafeTimer.reset();
     }
 
     public void readyFire(double speedTarget, boolean useSpeedTarget) {
@@ -145,7 +175,7 @@ public class BetaLauncherHardware {
         else percentSpeed = 1;
 
         waitingToFire = true;
-        waitUntilSafe = true;
+        mode = WAIT_FOREVER;
     }
 
     public void readyFire() {
