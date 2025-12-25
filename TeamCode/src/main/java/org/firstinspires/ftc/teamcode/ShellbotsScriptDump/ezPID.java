@@ -1,9 +1,11 @@
-package org.firstinspires.ftc.teamcode.Core;
+package org.firstinspires.ftc.teamcode.ShellbotsScriptDump;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.Core.Robot;
 
 
 @Configurable
@@ -20,7 +22,7 @@ public class ezPID {
     private DcMotorEx motor;
 
     private PIDMotorGroup motorGroup;
-    public double p;
+    public double  p;
     public double i;
     public double d;
     public double f;
@@ -38,21 +40,6 @@ public class ezPID {
 
     int numberOfMotorsInGroup;
 
-    ///
-    /**
-     * This is the constructor for a regular motor PID.
-     * Pass in your values and stuff in your script as so
-     * private ezPID singleMotorPID(motor, encoderResolutionValue, p, i, d, f, kneecap, toleranceInTicks, motorMode)
-     * @param motorIn The motor controlled by the PID
-     * @param ticksPerRotationIN The number of ticks in a full rotation
-     * @param inP The P value
-     * @param inI The I value
-     * @param inD The D value
-     * @param inF The F value
-     * @param kneecapIN A kneecap value, to limit the total possible power of the motor.
-     * @param toleranceIN The tolerance in ticks for the checking function/
-     * @param modeIN SPEED mode or POSITION mode.
-     */
     public ezPID(DcMotorEx motorIn, double ticksPerRotationIN, double inP, double inI, double inD, double inF, double kneecapIN, double toleranceIN, movementType modeIN) {
         motor = motorIn;
         p = inP;
@@ -68,11 +55,7 @@ public class ezPID {
 
     }
 
-    /// This is the constructor for a motor group
-    /// Check out that file's comments to understand setting it up better
-    /// To make a PID for the motor group, use the following line
-    /// private exPID singleMotorPID(PIDMotorGroup(numberOfMotorsIn, DcMotorEx["motors you want here without the "" "]), encoderResolutionValue, p, i, d, f, kneecap, tolleranceInTicks, motorMode)
-    public ezPID(PIDMotorGroup motorsIN, Double ticksPerRotationIN, Double inP, Double inI, Double inD, Double inF, Double kneecapIN, Double toleranceIN, movementType modeIN) {
+    public ezPID(PIDMotorGroup motorsIN, double ticksPerRotationIN, double inP, double inI, double inD, double inF, double kneecapIN, double toleranceIN, movementType modeIN) {
         motorGroup = motorsIN;
         p = inP;
         i = inI;
@@ -91,8 +74,7 @@ public class ezPID {
 
 
     public PIDDUMP shareInfo() {
-        /// This function dumps it's info for another PID to pick up and use
-        /// Only hot-swap PIDs if you understand the logic and what might happen with your motor
+        /// This function dumps it's info for another PID to use
         PIDDUMP temp = new PIDDUMP() ;
         temp.lastErrorFromOld = lastError;
         temp.timerFromOld = Timer;
@@ -103,7 +85,6 @@ public class ezPID {
     public void grabInfoFromPID(PIDDUMP otherPIDINFO)
     {
         /// This function grabs dumped info to allow for seamless controller switching
-        /// Only hot-swap PIDs if you understand the logic and what might happen with your motor
         lastError = otherPIDINFO.lastErrorFromOld;
         Timer = otherPIDINFO.timerFromOld;
         integralSum = otherPIDINFO.lastErrorFromOld;
@@ -113,13 +94,12 @@ public class ezPID {
     
     public void runCalledPID(double reference)
     {
-        /// CALL THIS ONCE PER LOOP IN ANOTHER SCRIPT OR MOTOR WON'T MOVE
-        /// ONLY USE FOR ONE MOTOR ezPID INSTANCES OR WILL THROW ERRORS!
-        /// Use the following line to call this properly FOR ONE MOTOR
-        /// PIDINSTANCENAME.runCalledPID(Target position(Ticks) or speed (Ticks/s));
+        /// CALL THIS ONCE PER LOOP IN ANOTHER SCRIPT
+        /// PIDNAME.runCalledPID(Target position(Ticks) or speed (Ticks/s));
 
         if(mode == movementType.POSITION)
         {
+
             // obtain the encoder position
             double encoderPosition = motor.getCurrentPosition();
             // calculate the error
@@ -201,11 +181,9 @@ public class ezPID {
 
 public void runCalledPIDGroup(double reference)
 {
-    /// CALL THIS ONCE PER LOOP IN ANOTHER SCRIPT OR MOTOR WON'T MOVE
-    /// ONLY USE FOR ONE MOTOR ezPID INSTANCES OR WILL THROW ERRORS!
-    /// Use the following line to call this properly FOR MOTOR GROUPS ONLY
-    /// PIDGROUPINSTANCENAME.runCalledPID(Target position(Ticks) or speed (Ticks/s));
-    for (int i = 0; i < motorGroup.motorGroup.size(); i++)
+    /// CALL THIS ONCE PER LOOP IN ANOTHER SCRIPT
+    /// PIDNAME.runCalledPID(Target position(Ticks) or speed (Ticks/s));
+    for (int i = 0; i < motorGroup.motorGroup.length; i++)
     {
         if(mode == movementType.POSITION)
         {
@@ -246,8 +224,8 @@ public void runCalledPIDGroup(double reference)
 
             double out = kneecap * ((p * error) + (i * integralSum) + (d * derivative) + feedforward);
 
-            motorGroup.motorGroup.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motorGroup.motorGroup.get(i).setPower(out);
+            motorGroup.motorGroup[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motorGroup.motorGroup[i].setPower(out);
 
             lastError = error;
 
@@ -279,7 +257,7 @@ public void runCalledPIDGroup(double reference)
 
             double out = (p * error) + (i * integralSum) + (d * derivative);
 
-            motorGroup.motorGroup.get(i).setPower(out);
+            motorGroup.motorGroup[i].setPower(out);
 
             lastError = error;
 

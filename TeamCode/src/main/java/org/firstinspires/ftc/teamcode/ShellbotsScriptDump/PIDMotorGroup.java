@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.Core;
+package org.firstinspires.ftc.teamcode.ShellbotsScriptDump;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import org.firstinspires.ftc.teamcode.Core.Robot;
 
 
 @Configurable
@@ -22,24 +21,24 @@ public class PIDMotorGroup {
 
 
     int numberOfMotorsInGroup;
-    ArrayList<DcMotorEx> motorGroup;
+    DcMotorEx[] motorGroup;
 
-    public PIDMotorGroup(int numberOfMotorsIN, DcMotorEx... motorsIN) {
+    public PIDMotorGroup(int numberOfMotorsIN, DcMotorEx[] motorsIN) {
         numberOfMotorsInGroup = numberOfMotorsIN;
-        motorGroup.addAll(Arrays.asList(motorsIN));
+        motorGroup = new DcMotorEx[numberOfMotorsIN];
     }
 
-    void setDirections(int... listOfDirectionsIN)
+    void setDirections(int[] listOfDirectionsIN)
     {
         for (int i = 0; i < listOfDirectionsIN.length; i++)
         {
             if(listOfDirectionsIN[i] == -1)
             {
-               motorGroup.get(i).setDirection(DcMotorSimple.Direction.REVERSE);
+               motorGroup[i].setDirection(DcMotorSimple.Direction.REVERSE);
             }
             else
             {
-                motorGroup.get(i).setDirection(DcMotorSimple.Direction.FORWARD);
+                motorGroup[i].setDirection(DcMotorSimple.Direction.FORWARD);
             }
         }
     }

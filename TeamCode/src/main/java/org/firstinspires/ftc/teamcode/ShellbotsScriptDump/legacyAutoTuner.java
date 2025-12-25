@@ -1,20 +1,13 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.ShellbotsScriptDump;
 
 import static org.firstinspires.ftc.teamcode.Autonomous.legacyAutoTuner.mode.PAUSE;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.panels.Panels;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware;
-import org.firstinspires.ftc.teamcode.Core.BetaSorterHardware;
-import org.firstinspires.ftc.teamcode.Core.LauncherHardware;
+import org.firstinspires.ftc.teamcode.Autonomous.AutonomousPLUS;
 import org.firstinspires.ftc.teamcode.Core.Robot;
-import org.firstinspires.ftc.teamcode.Core.SorterHardware;
-import org.firstinspires.ftc.teamcode.Vision.Limelight_Target_Scanner;
-import org.firstinspires.ftc.teamcode.Vision.Limelight_Randomization_Scanner;
-import org.firstinspires.ftc.teamcode.Vision.WaveTag;
 
 @Configurable
 @Autonomous(group = "Basic", name = "Legacy Auto Tuner")
@@ -65,7 +58,7 @@ public class legacyAutoTuner extends AutonomousPLUS {
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = PAUSE;
+                    current = mode.PAUSE;
                 }
             }
             else if(current == mode.LR)
@@ -79,7 +72,7 @@ public class legacyAutoTuner extends AutonomousPLUS {
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = PAUSE;
+                    current = mode.PAUSE;
                 }
             }
             else if(current == mode.TRN)
@@ -93,7 +86,7 @@ public class legacyAutoTuner extends AutonomousPLUS {
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = PAUSE;
+                    current = mode.PAUSE;
                 }
             }
             else if(current == mode.DGNL)
@@ -107,7 +100,7 @@ public class legacyAutoTuner extends AutonomousPLUS {
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = PAUSE;
+                    current = mode.PAUSE;
                 }
             }
             else if(current == mode.TRI)
@@ -124,7 +117,7 @@ public class legacyAutoTuner extends AutonomousPLUS {
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = PAUSE;
+                    current = mode.PAUSE;
                 }
             }
             if(current == mode.PAUSE)
@@ -135,7 +128,7 @@ public class legacyAutoTuner extends AutonomousPLUS {
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = PAUSE;
+                    current = mode.PAUSE;
                 }
             }
             telemetry.addData("Current Mode is:", savedMode);
