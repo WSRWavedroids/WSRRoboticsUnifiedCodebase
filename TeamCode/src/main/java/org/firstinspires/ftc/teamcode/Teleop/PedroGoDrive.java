@@ -1,5 +1,14 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import static org.firstinspires.ftc.robotcore.internal.system.Misc.isEven;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
+import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.OUTTAKE;
+import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.FIRE;
+import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.LOAD;
+import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.SWITCH;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
@@ -11,6 +20,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Vision.Limelight_Target_Scanner;
@@ -58,6 +68,17 @@ public class PedroGoDrive extends OpMode {
 
     private Pose tagPosition;
 
+
+    private boolean cadenRecording = false;
+    private boolean contTwoBumpersPressed = false;
+    boolean cadenON = false;
+    boolean cadenHoldingReady = false;
+    boolean cadenHoldingFire = false;
+
+    int targetOffset = 0;
+
+    private ElapsedTime runtime = new ElapsedTime();
+
     @Override
     public void init() {
 
@@ -93,6 +114,14 @@ public class PedroGoDrive extends OpMode {
                 .build());*/
     }
 
+    public void init_loop() {
+        telemetry.addData("HYPE", "ARE! YOU! READY?!?!?!?!");
+        telemetry.addData("Saved Pattern:", robot.pattern);
+        telemetry.addData("Saved Alliance:", robot.alliance);
+        doTelemetryStuff();
+        telemetry.update();
+    }
+
     @Override
     public void start() {
         //The parameter controls whether the Follower should use break mode on the motors (using it is recommended).
@@ -107,15 +136,17 @@ public class PedroGoDrive extends OpMode {
     @Override
     public void loop() {
         //Call this once per loop
+        runDriverTwo();
+        driveSpeed();
+        robot.updateAllDaThings();
         targetData = scanner.tagInfo();
         follower.update();
         telemetryM.update();
-        driveSpeed();
+
 
 
         if (targetData.currentlyDetected) {
             gamepad1.rumble(0.25, 0.25, 100);
-            //gamepad1.rumble(100);
         }
 
         if(gamepad1.touchpad_finger_1)
@@ -245,6 +276,128 @@ public class PedroGoDrive extends OpMode {
                  // Build the PathChain after adding all paths
     }
 
+    private void runDriverTwo()
+    {
+        if(gamepad2.square && !gamepad2.left_bumper)
+        {
+            robot.sorterHardware.prepareNewMovement(
+                    robot.sorterLogic.findFirstType(PURPLE).getFirePosition());
+        }
+        else if(gamepad2.triangle && !gamepad2.left_bumper)
+        {
+            robot.sorterHardware.prepareNewMovement(
+                    robot.sorterLogic.findFirstType(GREEN).getFirePosition());
+        }
+
+
+        /// Clears list each time the button is deliberately pressed, so ready for queueing
+        /// Without this we have no way to empty it without firing
+        if(gamepad2.leftBumperWasPressed())
+        {
+            //robot.queue.clearList();
+        }
+
+        /// Adds color to queue
+        if(gamepad2.squareWasPressed() && gamepad2.left_bumper)
+        {
+            //robot.queue.addToNextSpotColor(PURPLE);
+            gamepad2.setLedColor(152, 7, 224,100);
+        }
+        else if(gamepad2.triangleWasPressed() && gamepad2.left_bumper)
+        {
+            //robot.queue.addToNextSpotColor(GREEN);
+            gamepad2.setLedColor(0, 255, 0, 100);
+        }
+
+
+        if(gamepad2.cross)
+        {
+            if(robot.sorterHardware.inStateCheck(SWITCH))
+            {
+                //dont jam while spinning to load
+                robot.cancelAutoIntake();
+            }
+            else if(robot.sorterHardware.inStateCheck(FIRE) ||
+                    (robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
+                            robot.sorterLogic.artifactSortCooldown()))
+            {
+                //if not in load position, go there and make sure we don't jam in the process
+                robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(EMPTY).getLoadPosition());
+                robot.cancelAutoIntake();
+            }
+            else
+            {
+                //intake if we good
+                robot.runAutoIntakeSequence();
+            }
+        }
+        else if(gamepad2.circle) // dave spits out artifact
+        {
+            robot.runBasicIntake(-1);
+            robot.sorterHardware.setFeeders(OUTTAKE);
+        }
+        else //dont run intake if we not pulling trigger
+        {
+            robot.cancelAutoIntake();
+            robot.runBasicIntake(0.01); //Always keep a slight power flow to servos to prevent input delay from module
+        }
+
+        //WSeñorMichael
+
+        if(robot.sorterHardware.fireSafeCheck())
+        {
+            gamepad2.rumble(0.5, 0, 50);
+        }
+        if(robot.launcher.motorSpeedCheck())
+        {
+            gamepad2.rumble(0, 0.5, 50);
+        }
+
+
+        if(gamepad2.left_trigger > 0.50)
+        {
+
+            if (!cadenHoldingReady) {
+                cadenHoldingReady = true;
+                if (cadenON) {
+                    cadenON = false;
+                } else {
+                    cadenON = true;
+                }
+            }
+
+            if (cadenON) {
+                robot.launcher.setLauncherSpeed(1);
+            }
+            else
+            {
+                robot.launcher.setLauncherSpeed(0);
+            }
+
+        }
+        else
+        {
+            cadenHoldingReady = false;
+        }
+
+        if(gamepad2.right_trigger > 0.50 && !robot.launcher.wantToOpenDoor /*&& robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE*/) {
+            if(!cadenHoldingFire)
+            {
+                cadenON = true;
+                cadenHoldingFire = true;
+                robot.launcher.fireWithinTimeIfSafe(1, false, false, 0.5);
+            }
+        }
+        else
+        {
+            cadenHoldingFire = false;
+        }
+
+        incrementThroughPositions();
+
+
+    }
+
     private void driveSpeed() {
         if (gamepad1.dpad_up || gamepad1.right_trigger >= 0.5) {
             speed = 1;
@@ -268,6 +421,94 @@ public class PedroGoDrive extends OpMode {
     }
 
 
+    private void incrementThroughPositions() {
+
+        telemetry.addData("Current Offset (by logic)", robot.sorterLogic.getCurrentOffset());
+
+        // Fire positions
+        if (gamepad2.dpadLeftWasPressed()) {
+            goNextFirePosition(-1);
+        } else if (gamepad2.dpadUpWasReleased()) {
+            goNextFirePosition(1);
+        }
+
+        // Load positions
+        else if (gamepad2.dpadDownWasPressed()){
+            goNextLoadPosition(-1);
+        } else if (gamepad2.dpadRightWasPressed()) {
+            goNextLoadPosition(1);
+        }
+
+        telemetry.addData("Target Offset", targetOffset);
+    }
+
+    private void goNextLoadPosition(int go) {
+        int potentialNewPosition = targetOffset + go;
+        if (!isEven(potentialNewPosition)) {potentialNewPosition += go;}
+        targetOffset = makeSureNewOffsetIsOK(potentialNewPosition);
+        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.offsetPositions.get(targetOffset));
+    }
+    private void goNextFirePosition(int go) {
+        int potentialNewPosition = targetOffset + go;
+        if (isEven(potentialNewPosition)) {potentialNewPosition += go;}
+        targetOffset = makeSureNewOffsetIsOK(potentialNewPosition);
+        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.offsetPositions.get(targetOffset));
+    }
+
+    private int makeSureNewOffsetIsOK(int oldNewOffset) {
+        while (oldNewOffset < 0) {
+            oldNewOffset += 6;
+        }
+        while (oldNewOffset > 5) {
+            oldNewOffset -= 6;
+        }
+        return oldNewOffset;
+    }
+
+    private void doTelemetryStuff() {
+        // This little section updates the driver hub on the runtime and the motor powers.
+        // It's mostly used for troubleshooting.
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        //telemetry.addData("Framerate (last 15 seconds)", fps.getFramerate(30) + " fps");
+
+        if(robot.targetTag.currentlyDetected)
+        {
+            telemetry.addData("last detected x angle: ", robot.targetTag.angleX);
+            telemetry.addData("last detected y angle: ", robot.targetTag.angleY);
+
+            telemetry.addData("last distance x: ", robot.targetTag.distanceX);
+            telemetry.addData("last detected distance y: ", robot.targetTag.distanceY);
+            telemetry.addData("last detected distance z: ", robot.targetTag.distanceZ);
+        }
+
+        telemetry.addData("Last saved pattern: ", blackboard.get(PATTERN_KEY));
+
+        telemetry.addData("Last saved Alliance: ", blackboard.get(ALLIANCE_KEY));
+
+        telemetry.addData("Reference", robot.sorterHardware.reference);
+        telemetry.addData("Current Reference Acceptable", robot.sorterLogic.isCurrentReferenceLogical((int) robot.sorterHardware.reference));
+
+        telemetry.addData("Blender in position", robot.sorterHardware.positionedCheck());
+        telemetry.addData("Closed Check", robot.sorterHardware.closedCheck());
+        telemetry.addData("Equalized Target Position", robot.sorterLogic.offsetPositions.get(targetOffset));
+        telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
+        telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
+        telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
+        telemetry.addData("Launcher on Cooldown", robot.launcher.onCooldown);
+        telemetry.addData("Blender State", robot.sorterHardware.currentPositionState);
+        telemetry.addData("Current Load Slot", robot.sorterLogic.findCurrentSlotInPosition(LOAD).getName());
+        telemetry.addData("Current Fire Slot", robot.sorterLogic.findCurrentSlotInPosition(FIRE).getName());
+
+        telemetry.addLine("Artifact Storage:");
+        telemetry.addData("Total Inventory", robot.sorterLogic.inventory.getTotalCount());
+        telemetry.addLine("Purple: " + robot.sorterLogic.inventory.getPurpleCount() +
+                " Green: " + robot.sorterLogic.inventory.getGreenCount());
+        telemetry.addData("Slot A", robot.sorterLogic.slotA.getOccupied());
+        telemetry.addData("Slot B", robot.sorterLogic.slotB.getOccupied());
+        telemetry.addData("Slot C", robot.sorterLogic.slotC.getOccupied());
 
 
-}
+
+
+
+    }}

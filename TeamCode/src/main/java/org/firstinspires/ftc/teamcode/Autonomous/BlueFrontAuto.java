@@ -64,18 +64,18 @@ public class BlueFrontAuto extends AutonomousPLUS {
         robot.pattern = robot.randomizationScanner.GetRandomization();
 
 
-        telemetry.addData("Our pattern is: ", robot.pattern, " ...yay");
+        telemetry.addData("Our pattern is: ", String.valueOf(robot.pattern), " ...yay");
 
         switch (robot.pattern) {
-            case "PPG":
+            case PPG:
                 telemetry.addData("We doin", " PPG now");
                 blackboard.put(PATTERN_KEY, "PPG");
                 break;
-            case "GPP":
+            case GPP:
                 telemetry.addData("We doin", " GPP now");
                 blackboard.put(PATTERN_KEY, "GPP");
                 break;
-            case "PGP":
+            case PGP:
                 telemetry.addData("We doin", " PGP now");
                 blackboard.put(PATTERN_KEY, "PGP");
                 break;
@@ -98,7 +98,7 @@ public class BlueFrontAuto extends AutonomousPLUS {
         }
 
         switch (robot.pattern) {
-            case "PPG":
+            case PPG:
                 robot.launcher.setLauncherSpeed(1);
                 robot.targetTag = robot.targetScanner.tagInfo();
                 turnRobotRight(550, 1);
@@ -110,7 +110,7 @@ public class BlueFrontAuto extends AutonomousPLUS {
                 fireInSequence(robot.sorterHardware.positions[3], robot.sorterHardware.positions[5], robot.sorterHardware.positions[1]);
                 //goGrabAPurple();
                 break;
-            case "PGP":
+            case PGP:
                 robot.launcher.setLauncherSpeed(1);
                 robot.targetTag = robot.targetScanner.tagInfo();
                 turnRobotRight(550, 1);
@@ -122,7 +122,7 @@ public class BlueFrontAuto extends AutonomousPLUS {
                 //goGrabAPurple();
 
                 break;
-            case "GPP":
+            case GPP:
                 robot.launcher.setLauncherSpeed(1);
                 robot.targetTag = robot.targetScanner.tagInfo();
                 turnRobotRight(550, 1);

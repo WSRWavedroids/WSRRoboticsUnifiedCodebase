@@ -456,6 +456,8 @@ public class AutonomousPlusPLUS {
     int fireInSequenceStep = 0;
     boolean firingInSequence;
 
+
+
     public void fireInSequence(ArtifactLocator.Slot one, ArtifactLocator.Slot two, ArtifactLocator.Slot three) {
         firingInSequence = true;
         switch (fireInSequenceStep) {

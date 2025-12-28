@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.RED;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 /**
@@ -14,6 +16,7 @@ public class SafeRedFrontAuto extends SafeBlueFrontAuto {
         super.init();
         // Override the alliance key set in the blue auto to run the red one
         blackboard.put(ALLIANCE_KEY, "RED");
+        robot.alliance = RED;
     }
 
     public void init_loop() {

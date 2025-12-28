@@ -31,13 +31,13 @@ public class BlueBackAuto extends AutonomousPLUS {
             while(opModeInInit())
             {
                 robot.pattern = robot.randomizationScanner.GetRandomization();
-                telemetry.addData(robot.pattern, " Works!");
+                telemetry.addData(String.valueOf(robot.pattern), " Works!");
                 telemetry.update();
 
             }
         }
 
         waitForStart();
-        telemetry.addData("Our pattern is: ", robot.pattern, " ...yay");
+        telemetry.addData("Our pattern is: ", String.valueOf(robot.pattern), " ...yay");
         moveRobotForward(250, 12);
 }}

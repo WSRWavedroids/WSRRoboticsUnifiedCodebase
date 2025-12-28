@@ -32,6 +32,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode.Vision;
 
+import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.GPP;
+import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PGP;
+import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PPG;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
@@ -90,9 +94,9 @@ public class Limelight_Randomization_Scanner /*extends org.firstinspires.ftc.tea
         limelight.start();
     }
 
-    public String GetRandomization()
+    public Robot.patternColors GetRandomization()
     {
-        String current = "GPP";
+        Robot.patternColors current = PPG;
 
         LLStatus status = limelight.getStatus();
         robot.telemetry.addData("Name", "%s",
@@ -112,21 +116,21 @@ public class Limelight_Randomization_Scanner /*extends org.firstinspires.ftc.tea
                 if(fr.getFiducialId() == 21)
                 {
                     robot.telemetry.addData("Pattern: ", "GPP");
-                    current = "GPP";
+                    current = GPP;
                 }
                 else if (fr.getFiducialId() == 22)
                 {
                     robot.telemetry.addData("Pattern: ", "PGP");
-                    current = "PGP";
+                    current = PGP;
                 }
                 else if (fr.getFiducialId() == 23)
                 {
                     robot.telemetry.addData("Pattern: ", "PPG");
-                    current = "PPG";
+                    current = PPG;
                 }
                 else
                 {
-                    current = "GPP";
+                    current = PPG;
                 }
             }
 

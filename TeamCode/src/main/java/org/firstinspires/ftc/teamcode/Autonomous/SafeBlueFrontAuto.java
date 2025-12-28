@@ -72,7 +72,7 @@ public class SafeBlueFrontAuto extends OpMode {
         telemetry.addData("HYPE", "ARE! YOU! READY?!?!?!?!");
 
         robot.pattern = robot.randomizationScanner.GetRandomization();
-        telemetry.addData(robot.pattern, " Works!");
+        telemetry.addData(String.valueOf(robot.pattern), " Works!");
         telemetry.update();
     }
 
@@ -116,18 +116,18 @@ public class SafeBlueFrontAuto extends OpMode {
                 }
                 break;
             case TAG_TELEMETRY: // Skipped
-                telemetry.addData("Our pattern is: ", robot.pattern, " ...yay");
+                telemetry.addData("Our pattern is: ", String.valueOf(robot.pattern), " ...yay");
 
                 switch (robot.pattern) {
-                    case "PPG":
+                    case PPG:
                         telemetry.addData("We doin", " PPG now");
                         blackboard.put(PATTERN_KEY, "PPG");
                         break;
-                    case "GPP":
+                    case GPP:
                         telemetry.addData("We doin", " GPP now");
                         blackboard.put(PATTERN_KEY, "GPP");
                         break;
-                    case "PGP":
+                    case PGP:
                         telemetry.addData("We doin", " PGP now");
                         blackboard.put(PATTERN_KEY, "PGP");
                         break;

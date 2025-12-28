@@ -28,6 +28,8 @@ import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.opencv.ml.EM;
+
 import java.util.ArrayList;
 
 public class ArtifactLocator {
@@ -183,6 +185,30 @@ public class ArtifactLocator {
         for (Slot currentSlot : allSlots) {
             if (currentSlot.contains(slotType)) {
                 return currentSlot;
+            }
+        }
+        return noSlot;
+    }
+
+    /**
+     * searches for the nth ball of a certain type within the inventory.
+     * Can be used to find a ball of type past the first of the type
+     * @param slotType The target state of the Slot. Can be EMPTY, GREEN, PURPLE, or UNKNOWN
+     *      *                 in the form of a SlotState enum.
+     * @param nthBall
+     * @return
+     */
+    public Slot findXOfType(SlotState slotType, int nthBall)
+    {
+        int counter = 0;
+        if((slotType == GREEN && inventory.greenCount >= nthBall) || (slotType == PURPLE && inventory.purpleCount >= nthBall)) {
+            for (Slot currentSlot : allSlots) {
+                if (currentSlot.contains(slotType)) {
+                    counter++;
+                    if (counter == nthBall) {
+                        return currentSlot;
+                    }
+                }
             }
         }
         return noSlot;

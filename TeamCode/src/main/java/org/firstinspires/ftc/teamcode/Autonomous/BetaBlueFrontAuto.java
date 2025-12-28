@@ -83,7 +83,7 @@ public class BetaBlueFrontAuto extends OpMode {
         telemetry.addData("HYPE", "ARE! YOU! READY?!?!?!?!");
 
         robot.pattern = robot.randomizationScanner.GetRandomization();
-        telemetry.addData(robot.pattern, " Works!");
+        telemetry.addData(String.valueOf(robot.pattern), " Works!");
         telemetry.update();
     }
 
@@ -134,20 +134,20 @@ public class BetaBlueFrontAuto extends OpMode {
                 }
                 break;
             case TAG_TELEMETRY: // Skipped
-                telemetry.addData("Our pattern is: ", robot.pattern, " ...yay");
+                telemetry.addData("Our pattern is: ", String.valueOf(robot.pattern), " ...yay");
 
                 switch (robot.pattern) {
-                    case "PPG":
+                    case PPG:
                         telemetry.addData("We doin", " PPG now");
                         blackboard.put(PATTERN_KEY, "PPG");
                         //patternCorrectedStrafeDistance = 425;
                         break;
-                    case "GPP":
+                    case GPP:
                         telemetry.addData("We doin", " GPP now");
                         blackboard.put(PATTERN_KEY, "GPP");
                         //patternCorrectedStrafeDistance = 1500;
                         break;
-                    case "PGP":
+                    case PGP:
                         telemetry.addData("We doin", " PGP now");
                         blackboard.put(PATTERN_KEY, "PGP");
                         //patternCorrectedStrafeDistance = 425;

@@ -78,7 +78,13 @@ public class Robot {
     public DriveMode controlMode = ROBOT_CENTRIC;
     public IMU.Parameters imuParameters;
     public WaveTag targetTag = new WaveTag();
-    public String pattern;
+    public enum patternColors {PPG, GPP, PGP}
+    public patternColors pattern;
+
+    public enum allianceSides {BLUE, RED}
+    public allianceSides alliance;
+
+
 
     public BetaSorterHardware sorterHardware;
     public BetaLauncherHardware launcher;

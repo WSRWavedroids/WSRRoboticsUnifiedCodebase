@@ -58,18 +58,18 @@ public class blueFrontUnpark extends AutonomousPLUS {
         moveRobotForward(250, 12);
 
 
-        telemetry.addData("Our pattern is: ", robot.pattern, " ...yay");
+        telemetry.addData("Our pattern is: ", String.valueOf(robot.pattern), " ...yay");
 
         switch (robot.pattern) {
-            case "PPG":
+            case PPG:
                 telemetry.addData("We doin", " PPG now");
                 blackboard.put(PATTERN_KEY, "PPG");
                 break;
-            case "GPP":
+            case GPP:
                 telemetry.addData("We doin", " GPP now");
                 blackboard.put(PATTERN_KEY, "GPP");
                 break;
-            case "PGP":
+            case PGP:
                 telemetry.addData("We doin", " PGP now");
                 blackboard.put(PATTERN_KEY, "PGP");
                 break;
