@@ -1,9 +1,29 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import static org.firstinspires.ftc.teamcode.Autonomous.BetaBlueFrontAuto.Step.*;
-import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.GPP;
-import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PGP;
-import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PPG;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.CHECK_MOVE_1;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.CHECK_TAG;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.DISABLE_INTAKE;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.ENABLE_INTAKE;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.FINAL_INTAKE_RESET;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.FINE_TUNE_TARGETING;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.FINE_TUNE_TARGETING_AGAIN;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.FIRE2;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.FIRE_FIRST_PATTERN;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.FIRST_SPIN;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.LAUNCHER_ON;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.RESET_BLENDER1;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.SET_APRILTAG_PIPELINE;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.START;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.STRAFE_BACK;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.TURN_BACK_TOWARDS_GOAL;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.UNPARK_0;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.UNPARK_1;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.UNPARK_2;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.UNSTRAFE_BACK;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.UNYOINK;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.UN_TURN;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.YAY;
+import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.YOINK;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -21,8 +41,8 @@ import java.util.Objects;
  * too, allowing us to keep both autos up to date in a single file. BetaRedFrontAuto is a shell that
  * basically just hijacks this file to work, which is neat.
  */
-@Autonomous(group = "Basic", name = "Blue Front 4 Ball")
-public class BetaBlueFrontAuto extends OpMode {
+@Autonomous(group = "Basic", name = "SUPERBETA Blue Front 4 Ball")
+public class ExtraBetaBlueFrontAuto extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
     private ElapsedTime runtime = new ElapsedTime();
@@ -111,7 +131,7 @@ public class BetaBlueFrontAuto extends OpMode {
                 nextStep(CHECK_MOVE_1);
                 break;
             case CHECK_MOVE_1:
-                auto.setSpeed(0.7);
+                auto.setSpeed(1);
                 if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
                     auto.moveRobotLeft(1000);
                 } else {
@@ -178,7 +198,7 @@ public class BetaBlueFrontAuto extends OpMode {
                 break;
             case FIRST_SPIN:
 
-                if (robot.pattern == PGP || robot.pattern == PPG){
+                if (robot.pattern.equals(Robot.patternColors.PGP) || robot.pattern.equals(Robot.patternColors.PPG)) {
                     robot.sorterHardware.prepareNewMovement(
                             robot.sorterHardware.motor.getCurrentPosition(),
                             robot.sorterLogic.slotB.getFirePosition());
@@ -224,9 +244,9 @@ public class BetaBlueFrontAuto extends OpMode {
                 }
             case FIRE_FIRST_PATTERN:
                 if (auto.checkMovement()) {
-                    if (robot.pattern == PPG) {
+                    if (robot.pattern.equals("PPG")) {
                         auto.fireInSequence(robot.sorterLogic.slotB, robot.sorterLogic.slotC, robot.sorterLogic.slotA);
-                    } else if (robot.pattern == PGP) {
+                    } else if (robot.pattern.equals("PGP")) {
                         auto.fireInSequence(robot.sorterLogic.slotB, robot.sorterLogic.slotA, robot.sorterLogic.slotC);
                     } else {
                         auto.fireInSequence(robot.sorterLogic.slotA, robot.sorterLogic.slotB, robot.sorterLogic.slotC);
@@ -243,34 +263,25 @@ public class BetaBlueFrontAuto extends OpMode {
                 nextStep(UNPARK_0);
                 break;
             case UNPARK_0:
-                auto.setSpeed(0.7);
+                auto.setSpeed(1);
                 if(robot.sorterHardware.doneMoving()) {
-                    auto.moveRobotForward(400);
-                    nextStep(UNPARK_1);
+                    auto.setSpeed(.4);
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.turnRobotLeft(500);
+                    } else {
+                        auto.turnRobotRight(500);
+                    }
                 }
                 break;
             case UNPARK_1:
-                if(auto.checkMovement())
-                {
-                    auto.setSpeed(.4);
-                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.turnRobotLeft(1100);
-                    } else {
-                        auto.turnRobotRight(1100);
-                    }
-                    nextStep(UNPARK_2);
-                }
-
-                break;
-            case UNPARK_2:
                 if (auto.checkMovement()) {
                     auto.setSpeed(1);
                     robot.launcher.setLauncherSpeed(0);
 
-                    if (robot.pattern == GPP) {
-                        patternCorrectedStrafeDistance = 1400;
+                    if (robot.pattern.equals("GPP")) {
+                        patternCorrectedStrafeDistance = 300;
                     } else {
-                        patternCorrectedStrafeDistance = 600;
+                        patternCorrectedStrafeDistance = 100;
                     }
 
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
@@ -333,9 +344,9 @@ public class BetaBlueFrontAuto extends OpMode {
                     auto.setSpeed(0.6);
                     robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotA.getFirePosition());
                     if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
-                        auto.turnRobotRight(1100);
+                        auto.turnRobotRight(500);
                     } else {
-                        auto.turnRobotLeft(1100);
+                        auto.turnRobotLeft(500);
                     }
 
                     nextStep(FINE_TUNE_TARGETING_AGAIN);
