@@ -132,13 +132,13 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
-
+        robot.limelightAdjustedSpeed = 601.10974 * Math.pow(1.19606,  robot.getApriltagDistance());
 //intakes and launcher
 
         intake1(1 ,0.5 ,0.85);
         intake2(1 ,0.5); //this is a servo
         intake3(1 ,0.7 ,1);
-        launch(0.05 ,robot.tuningspd ,0.64 ,2000);
+        launch(0.05 ,robot.limelightAdjustedSpeed / 2000 , robot.tuningspd,2000);
 
         if (gamepad1.leftBumperWasPressed()){
             robot.tuningspd = robot.tuningspd + 0.01;

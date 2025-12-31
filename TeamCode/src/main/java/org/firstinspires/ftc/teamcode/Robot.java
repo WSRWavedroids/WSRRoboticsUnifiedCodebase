@@ -248,6 +248,7 @@ public class Robot {
     ElapsedTime timer = new ElapsedTime();
 
     public double tuningspd = 0.5;
+    public double limelightAdjustedSpeed;
 
     public void prepareAuto(){
 
