@@ -4,6 +4,7 @@ import static java.lang.Thread.sleep;
 
 import android.annotation.SuppressLint;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -18,6 +19,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorGoBildaPinpoint;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.List;
@@ -41,6 +43,8 @@ public class Robot {
     public Limelight3A limelight;
 
     public Telemetry telemetry;
+
+    public GoBildaPinpointDriver pinpoint;
     //public BNO055IMU imu;
 
     //init and declare war
@@ -76,7 +80,7 @@ public class Robot {
         intake3 = hardwareMap.get(DcMotorEx.class, "intake3");
         intake2 = hardwareMap.get(Servo.class, "servo");
         limelight = hardwareMap.get(Limelight3A.class, "Limelight");
-
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
 
         launchLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -243,7 +247,7 @@ public class Robot {
 
     ElapsedTime timer = new ElapsedTime();
 
-
+    public double tuningspd = 0.5;
 
     public void prepareAuto(){
 

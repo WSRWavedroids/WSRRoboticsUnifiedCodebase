@@ -107,6 +107,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         gamepad2.setLedColor(255, 0, 240, 100000000);
         robot.intake2.setPosition(0.5);
         robot.initLimelight();
+        robot.tuningspd = 0.55;
     }
 
 
@@ -136,8 +137,15 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         intake1(1 ,0.5 ,0.85);
         intake2(1 ,0.5); //this is a servo
-        intake3(1 ,0.6 ,1);
-        launch(0.05 ,0.5 ,0.64 ,2000);
+        intake3(1 ,0.7 ,1);
+        launch(0.05 ,robot.tuningspd ,0.64 ,2000);
+
+        if (gamepad1.leftBumperWasPressed()){
+            robot.tuningspd = robot.tuningspd + 0.01;
+        }
+        if (gamepad1.rightBumperWasPressed()){
+            robot.tuningspd = robot.tuningspd - 0.01;
+        }
 
 
 
@@ -145,6 +153,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
         //Matthew Was Here
+        telemetry.addData("tuningspd", robot.tuningspd);
         telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
         telemetry.addData("LR Power", robot.launchRight.getPower());
         telemetry.addData("LL Power", robot.launchLeft.getPower());
@@ -338,8 +347,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.intakeSpeed = revSPEED * robot.intakeTune;
             currentStep = INPUT;
         } if (gamepad2.aWasReleased() || gamepad2.bWasReleased() || gamepad2.dpadUpWasReleased()) {
-            if (currentStep == INPUT)
+            if (currentStep == INPUT) {
                 robot.intakeSpeed = 0;
+            }
         }
         robot.intakeMotor.setPower(robot.intakeSpeed);
     }
@@ -371,10 +381,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
     private void setLaunchPower(double input, double velocity) {
-
-        robot.launchSpeed = input - robot.triggerDeadzone;
-        robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
-        robot.launchSpeed = robot.launchSpeed * robot.launchTune;
+        robot.launchSpeed = robot.launchTune;
+        //robot.launchSpeed = input - robot.triggerDeadzone;
+        //robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
+        //robot.launchSpeed = robot.launchSpeed * robot.launchTune;
         robot.launchLeft.setVelocity(-robot.launchSpeed * velocity);
         robot.launchRight.setVelocity(-robot.launchSpeed * velocity);
         if (gamepad2.right_stick_button) {
@@ -410,13 +420,13 @@ public class Basic_TeleOp_NewBot extends OpMode {
     private AutoLaunchSteps currentStep = INPUT;
 
     private double time;
-//TODO make the secondary intake reverse during launch charge up and lengthen wait times
+//TODO make it not broken
     private void autoLaunch(double pwrLow, double pwrHigh, double velocity){
         telemetry.addLine(String.valueOf(currentStep));
         switch (currentStep){
             case INPUT:
                 if (gamepad2.dpadLeftWasPressed()) {
-                    robot.launchTune = pwrLow - 0.04;
+                    robot.launchTune = pwrLow - 0.03;
                     currentStep = ON;
                 } else if (gamepad2.dpadRightWasPressed()) {
                     robot.launchTune = pwrHigh;
@@ -429,7 +439,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 currentStep = GET_BALL_1;
                 break;
             case GET_BALL_1:
-                if (runtime.milliseconds() >= time + 1600){
+                if (runtime.milliseconds() >= time + 1800){
                     robot.intake3.setPower(1);
                     robot.intakeMotor.setPower(-1);
                     time = runtime.milliseconds();
@@ -437,41 +447,36 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 }
                 break;
             case CHARGE_LAUNCH_2:
-                if (runtime.milliseconds() >= time + 90) {
+                if (runtime.milliseconds() >= time + 200) {
                     robot.launchTune = robot.launchTune + 0.03;
-                    robot.intake3.setPower(-0.5);
-                    robot.intakeMotor.setPower(0);
+                    robot.intake3.setPower(-0.4);
                     time = runtime.milliseconds();
                     currentStep = GET_BALL_2;
                 }
                 break;
             case GET_BALL_2:
-                if (runtime.milliseconds() >= time + 1000){
+                if (runtime.milliseconds() >= time + 1200){
                     robot.intake3.setPower(1);
-                    robot.intakeMotor.setPower(-1);
                     time = runtime.milliseconds();
                     currentStep = CHARGE_LAUNCH_3;
                 }
                 break;
             case CHARGE_LAUNCH_3:
-                if (runtime.milliseconds() >= time + 230){
-                    robot.launchTune = robot.launchTune - 0.01;
-                    robot.intake3.setPower(-0.5);
-                    robot.intakeMotor.setPower(0);
+                if (runtime.milliseconds() >= time + 320){
+                    robot.intake3.setPower(-0.4);
                     time = runtime.milliseconds();
                     currentStep = GET_BALL_3;
                 }
                 break;
             case GET_BALL_3:
-                if (runtime.milliseconds() >= time + 1000){
+                if (runtime.milliseconds() >= time + 1200){
                     robot.intake3.setPower(1);
-                    robot.intakeMotor.setPower(-1);
                     time = runtime.milliseconds();
                     currentStep = END;
                 }
                 break;
             case END:
-                if (runtime.milliseconds() >= time + 600){
+                if (runtime.milliseconds() >= time + 700){
                     robot.intake3.setPower(0);
                     robot.intakeMotor.setPower(0);
                     setLaunchPower(0, 0);

@@ -1,12 +1,9 @@
-package org.firstinspires.ftc.teamcode.ShellbotsScriptDump;
+package org.firstinspires.ftc.teamcode;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.Core.PIDMotorGroup;
-import org.firstinspires.ftc.teamcode.Core.Robot;
 
 
 @Configurable
@@ -22,7 +19,7 @@ public class ezPID {
     private Robot robot;
     private DcMotorEx motor;
 
-    private org.firstinspires.ftc.teamcode.Core.PIDMotorGroup motorGroup;
+    private org.firstinspires.ftc.teamcode.PIDMotorGroup motorGroup;
     public double p;
     public double i;
     public double d;

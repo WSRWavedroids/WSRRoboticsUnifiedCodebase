@@ -1,14 +1,15 @@
-package org.firstinspires.ftc.teamcode.ShellbotsScriptDump;
+package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.Autonomous.legacyAutoTuner.mode.PAUSE;
+//import static org.firstinspires.ftc.teamcode.legacyAutoTuner.mode.PAUSE;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.panels.Panels;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Autonomous.AutonomousPLUS;
-import org.firstinspires.ftc.teamcode.Core.Robot;
-
+import org.firstinspires.ftc.teamcode.Robot;
+@Disabled
 @Configurable
 @Autonomous(group = "Basic", name = "Legacy Auto Tuner")
 public class legacyAutoTuner extends AutonomousPLUS {
@@ -26,7 +27,7 @@ public class legacyAutoTuner extends AutonomousPLUS {
     ///
     /// Yes, I know this would be better as a state machine, but this way works with more robots / codebases
     /// This script was written by Clay Kramer, FTC 13206 🌊🤖, 2025
-
+/*
     private Robot robot;
     //modes
     public enum mode {FB, LR, TRN, DGNL, TRI, PAUSE};
@@ -179,5 +180,5 @@ public class legacyAutoTuner extends AutonomousPLUS {
                 savedMode = current;
             }
         }
-    }
+    }*/
 }
