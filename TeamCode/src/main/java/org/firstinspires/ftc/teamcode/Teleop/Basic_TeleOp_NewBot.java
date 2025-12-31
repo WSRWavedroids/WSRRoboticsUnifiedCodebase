@@ -131,8 +131,12 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
-
-        robot.limelightAdjustedSpeed = 601.10974 * Math.pow(1.19606,  robot.getApriltagDistance());
+        //TODO move this to Robot.java as a global function
+        //robot.limelightAdjustedSpeed = 601.10974 * Math.pow(1.19606,  robot.getApriltagDistance()); //OLD FUNCTION
+        robot.limelightAdjustedSpeed = 27.85376*Math.pow(robot.getApriltagDistance(),4);
+        robot.limelightAdjustedSpeed = robot.limelightAdjustedSpeed - 293.02611*Math.pow(robot.getApriltagDistance(),3);
+        robot.limelightAdjustedSpeed = robot.limelightAdjustedSpeed + 1128.02147*Math.pow(robot.getApriltagDistance(),2);
+        robot.limelightAdjustedSpeed = robot.limelightAdjustedSpeed - 1701.73705*robot.getApriltagDistance() + 1643.19775;
 //intakes and launcher
 
         intake1(1 ,0.5 ,0.85);
