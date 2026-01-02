@@ -151,7 +151,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
-
         //Matthew Was Here
         telemetry.addData("tuningspd", robot.tuningspd);
         telemetry.addData("LR Power", robot.launchRight.getPower());
