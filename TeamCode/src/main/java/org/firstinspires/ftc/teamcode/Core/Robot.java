@@ -357,6 +357,7 @@ public class Robot {
         sorterLogic.update();
         sorterHardware.updateSorterHardware();
         launcher.updateLauncherHardware();
+        queue.updateQueueStates();
 
         if(scanningForTargetTag)
         {

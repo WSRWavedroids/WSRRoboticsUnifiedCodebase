@@ -196,18 +196,18 @@ public class Vortex_Teleop_Decode extends OpMode {
         /// Without this we have no way to empty it without firing
         if(gamepad2.leftBumperWasPressed())
         {
-           //robot.queue.clearList();
+           robot.queue.clearList();
         }
 
         /// Adds color to queue
         if(gamepad2.squareWasPressed() && gamepad2.left_bumper)
         {
-            //robot.queue.addToNextSpotColor(PURPLE);
+            robot.queue.addToNextSpotColor(PURPLE);
             gamepad2.setLedColor(152, 7, 224,100);
         }
         else if(gamepad2.triangleWasPressed() && gamepad2.left_bumper)
         {
-            //robot.queue.addToNextSpotColor(GREEN);
+            robot.queue.addToNextSpotColor(GREEN);
             gamepad2.setLedColor(0, 255, 0, 100);
         }
 
@@ -229,6 +229,9 @@ public class Vortex_Teleop_Decode extends OpMode {
             {
                 //if not in load position, go there and make sure we don't jam in the process
                 robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(EMPTY).getLoadPosition());
+                robot.cancelAutoIntake();
+            }
+            else if (robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY)) {
                 robot.cancelAutoIntake();
             }
             else
@@ -299,7 +302,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             cadenHoldingFire = false;
         }
 
-        /*if(gamepad2.rightBumperWasPressed())
+        if(gamepad2.rightBumperWasPressed())
         {
             if(robot.queue.checkForExistingQueue())
             {
@@ -316,7 +319,8 @@ public class Vortex_Teleop_Decode extends OpMode {
                 robot.queue.clearList();
                 robot.queue.fillSimple(); // replace with the if when cam ready
                 robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.DUMB;
-            }*/
+            }
+        }
 
 
 
