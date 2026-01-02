@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
 
     private Robot robot;
-    private double spd = 0.46;
     @Override
     public void runOpMode() {
         super.runOpMode();
@@ -24,7 +23,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         //550 ticks = about 90 degrees right
         //6 millisecond pause after everything
         moveRobotBackward(1400, 6, 0.5);
-        runLauncherAuto(spd - 0.05); //Launch
+        runLauncherAuto(); //Launch
         sleep(1200);
         runIntake2Auto(0.6);
         runIntakeAuto("in");
@@ -33,7 +32,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(spd); //Launch
+        runLauncherAuto(); //Launch
         sleep(300);
 
         runIntake2Auto(0);
@@ -45,7 +44,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(spd); //Launch
+        runLauncherAuto(); //Launch
         sleep(300);
 
         runIntake2Auto(-0.3);
@@ -58,7 +57,41 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         sleep(75);
         runIntake2Auto(-0.3);
         sleep(75);
-        runLauncherstop();
+        runLauncherstop();runLauncherAuto();                                     //Launch sequence start
+        sleep(1200);
+        runIntake2Auto(0.6);
+        runIntakeAuto("in");
+        sleep(105);
+        runIntake2Auto(0);
+        runIntakeAuto("stop");
+        sleep(75);
+        runIntake2Auto(-0.3);
+        runLauncherAuto(); //Launch
+        sleep(300);
+
+        runIntake2Auto(0);
+        sleep(500);
+        runIntake2Auto(0.6);
+        runIntakeAuto("in");
+        sleep(150);
+        runIntake2Auto(0.4);
+        runIntakeAuto("stop");
+        sleep(75);
+        runIntake2Auto(-0.3);
+        runLauncherAuto(); //Launch
+        sleep(300);
+
+        runIntake2Auto(-0.3);
+        sleep(500);
+        runIntake2Auto(0.6);
+        runIntakeAuto("in");
+        sleep(450);
+        runIntake2Auto(0);
+        runIntakeAuto("stop");
+        sleep(75);
+        runIntake2Auto(-0.3);
+        sleep(75);
+        runLauncherstop();                            //Launch sequence end
 
         prepareNextAction(6);
         runLauncherAuto(-0.6);
@@ -72,28 +105,28 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         runIntake2Auto(0);
         turnRobotRight(750,6);               //mirror
 
-        runLauncherAuto(0.36); //Launch
+        runLauncherAuto();                                     //Launch sequence start
         sleep(1200);
         runIntake2Auto(0.6);
         runIntakeAuto("in");
-        sleep(95);
+        sleep(105);
         runIntake2Auto(0);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(spd); //Launch
+        runLauncherAuto(); //Launch
         sleep(300);
 
         runIntake2Auto(0);
         sleep(500);
         runIntake2Auto(0.6);
         runIntakeAuto("in");
-        sleep(140);
+        sleep(150);
         runIntake2Auto(0.4);
         runIntakeAuto("stop");
         sleep(75);
         runIntake2Auto(-0.3);
-        runLauncherAuto(spd); //Launch
+        runLauncherAuto(); //Launch
         sleep(300);
 
         runIntake2Auto(-0.3);
@@ -106,7 +139,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         sleep(75);
         runIntake2Auto(-0.3);
         sleep(75);
-        runLauncherstop();
+        runLauncherstop();                            //Launch sequence end
 
         moveRobotLeft(800, 6, 0.3);        //mirror
 

@@ -56,7 +56,6 @@ public class Robot {
 
     public double intakeSpeed;
     public double intakeTune;
-    public double launchSpeed;
     public double launchTune;
     public double triggerDeadzone;
 
@@ -244,13 +243,25 @@ public class Robot {
         return ((inches/12.25) * 537.6 / .5);
         //todo Reference that 1 inch ~= 50 ticks
     }
+    public void setupLaunchers() {
 
+        launcherMath(getApriltagDistance(),
+                49.51302,
+                494.92453,
+                1797.82372,
+                2628.41788,
+                2090.19686);
+    }
+
+    public void launcherMath(double x,double m1, double m2, double m3, double m4, double add){
+        limelightAdjustedSpeed = m1*Math.pow(x,4) - m2*Math.pow(x,3) + m3*Math.pow(x,2) - m4*x + add;
+    }
     ElapsedTime timer = new ElapsedTime();
 
     public double tuningspd = 0.5;
-    public double limelightAdjustedSpeed;
+    public double limelightAdjustedSpeed = 0;
 
-    public void prepareAuto(){
+    public void prepareAuto() {
 
     }
     public void initLimelight(){

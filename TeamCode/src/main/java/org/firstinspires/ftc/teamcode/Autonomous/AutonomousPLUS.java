@@ -52,6 +52,7 @@ public class AutonomousPLUS extends LinearOpMode {
     public boolean inMarker;
     public double power;
     public double slidePos;
+
     //DO NOT DELETE THIS LINE! CAPITALIZATION IS VERY IMPORTANT!!!
     public Robot robot = null;
 
@@ -61,8 +62,9 @@ public class AutonomousPLUS extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry, this);
+        spd = robot.limelightAdjustedSpeed;
     }
-
+    public double spd; // if it dosn't work use 0.46
     //These are the basic functions for mechnum movement during auto... Don't mess with these unless something is inverted
     // Remember Without ODO pods there will be some inconsistency due to mechnum slippage
 
@@ -528,18 +530,20 @@ public class AutonomousPLUS extends LinearOpMode {
 
 
 //LAUNCHER
-    public void runLauncherAuto(double launchSpeed) {
-        robot.launchLeft.setPower(1);
-        robot.launchRight.setPower(1);
-        robot.launchLeft.setVelocity(-launchSpeed * 2000);
-        robot.launchRight.setVelocity(-launchSpeed * 2000);
+    public void runLauncherAuto() {
+        robot.setupLaunchers();
+        spd = robot.limelightAdjustedSpeed;
+        robot.launchLeft.setVelocity(-spd);
+        robot.launchRight.setVelocity(-spd);
 
     }
     public void runLauncherstop() {
-        robot.launchLeft.setPower(0);
-        robot.launchRight.setPower(0);
         robot.launchLeft.setVelocity(0);
         robot.launchRight.setVelocity(0);
+    }
+    public void runLauncherAuto(double LaunchSpd){
+        robot.launchLeft.setVelocity(-LaunchSpd * 2000);
+        robot.launchRight.setVelocity(-LaunchSpd * 2000);
     }
 //PRIMARY INTAKE
 

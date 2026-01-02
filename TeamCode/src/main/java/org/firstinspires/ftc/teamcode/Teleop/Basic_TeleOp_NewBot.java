@@ -131,18 +131,14 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
-        //TODO move this to Robot.java as a global function
-        //robot.limelightAdjustedSpeed = 601.10974 * Math.pow(1.19606,  robot.getApriltagDistance()); //OLD FUNCTION
-        robot.limelightAdjustedSpeed = 27.85376*Math.pow(robot.getApriltagDistance(),4);
-        robot.limelightAdjustedSpeed = robot.limelightAdjustedSpeed - 293.02611*Math.pow(robot.getApriltagDistance(),3);
-        robot.limelightAdjustedSpeed = robot.limelightAdjustedSpeed + 1128.02147*Math.pow(robot.getApriltagDistance(),2);
-        robot.limelightAdjustedSpeed = robot.limelightAdjustedSpeed - 1701.73705*robot.getApriltagDistance() + 1643.19775;
+
 //intakes and launcher
+        robot.setupLaunchers();
 
         intake1(1 ,0.5 ,0.85);
         intake2(1 ,0.5); //this is a servo
         intake3(1 ,0.7 ,1);
-        launch(0.05 ,robot.limelightAdjustedSpeed / 2000 , robot.tuningspd,2000);
+        launch(0.05, robot.tuningspd);
 
         if (gamepad1.leftBumperWasPressed()){
             robot.tuningspd = robot.tuningspd + 0.01;
@@ -158,7 +154,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         //Matthew Was Here
         telemetry.addData("tuningspd", robot.tuningspd);
-        telemetry.addData("launchSpeed" , robot.launchSpeed * robot.launchTune);
         telemetry.addData("LR Power", robot.launchRight.getPower());
         telemetry.addData("LL Power", robot.launchLeft.getPower());
         telemetry.addData("LR Velocity", robot.launchRight.getVelocity());
@@ -384,13 +379,12 @@ public class Basic_TeleOp_NewBot extends OpMode {
     }
 
 
-    private void setLaunchPower(double input, double velocity) {
-        robot.launchSpeed = robot.launchTune;
+    private void setLaunchPower(double input, double velocity) {;
         //robot.launchSpeed = input - robot.triggerDeadzone;
         //robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
         //robot.launchSpeed = robot.launchSpeed * robot.launchTune;
-        robot.launchLeft.setVelocity(-robot.launchSpeed * velocity);
-        robot.launchRight.setVelocity(-robot.launchSpeed * velocity);
+        robot.launchLeft.setVelocity(-velocity);
+        robot.launchRight.setVelocity(-velocity);
         if (gamepad2.right_stick_button) {
             telemetry.addLine("noahguywashere");
             telemetry.addLine("DevenWasHere");
@@ -400,21 +394,21 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
-    private void launch(double deadzone, double pwrNormal, double pwrHigh, double baseRPM){
+    private void launch(double deadzone, double pwrtuning){
         robot.triggerDeadzone = deadzone;
         if (gamepad2.right_trigger > robot.triggerDeadzone) {
-            robot.launchTune = pwrNormal;
-            setLaunchPower(gamepad2.right_trigger, baseRPM);
+            robot.launchTune = robot.limelightAdjustedSpeed;
+            setLaunchPower(gamepad2.right_trigger, robot.limelightAdjustedSpeed);
             currentStep = INPUT;
         } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
-            robot.launchTune = pwrHigh;
+            robot.launchTune = pwrtuning * 2000;
+            setLaunchPower(gamepad2.left_trigger, pwrtuning * 2000);
             currentStep = INPUT;
-            setLaunchPower(gamepad2.left_trigger, baseRPM);
         } else if (currentStep == INPUT){
             robot.launchTune = 0;
             setLaunchPower(0, 0);
         }
-        autoLaunch(pwrNormal, pwrHigh, baseRPM);
+        autoLaunch(robot.limelightAdjustedSpeed, pwrtuning);
         override();
     }
 
@@ -425,20 +419,20 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
     private double time;
 //TODO make it not broken
-    private void autoLaunch(double pwrLow, double pwrHigh, double velocity){
+    private void autoLaunch(double pwrLow, double pwrHigh){
         telemetry.addLine(String.valueOf(currentStep));
         switch (currentStep){
             case INPUT:
                 if (gamepad2.dpadLeftWasPressed()) {
-                    robot.launchTune = pwrLow - 0.03;
+                    robot.launchTune = pwrLow;
                     currentStep = ON;
-                } else if (gamepad2.dpadRightWasPressed()) {
-                    robot.launchTune = pwrHigh;
-                    currentStep = ON;
-                }
+                } //else if (gamepad2.dpadRightWasPressed()) {
+                    //robot.launchTune = pwrHigh * 2000;
+                    //currentStep = ON;
+                //}
                 break;
             case ON:
-                setLaunchPower(1, velocity);
+                setLaunchPower(1, robot.launchTune);
                 time = runtime.milliseconds();
                 currentStep = GET_BALL_1;
                 break;
@@ -451,8 +445,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 }
                 break;
             case CHARGE_LAUNCH_2:
-                if (runtime.milliseconds() >= time + 200) {
-                    robot.launchTune = robot.launchTune + 0.03;
+                if (runtime.milliseconds() >= time + 300) {
                     robot.intake3.setPower(-0.4);
                     time = runtime.milliseconds();
                     currentStep = GET_BALL_2;
@@ -466,7 +459,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 }
                 break;
             case CHARGE_LAUNCH_3:
-                if (runtime.milliseconds() >= time + 320){
+                if (runtime.milliseconds() >= time + 450){
                     robot.intake3.setPower(-0.4);
                     time = runtime.milliseconds();
                     currentStep = GET_BALL_3;
