@@ -146,8 +146,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
         if (gamepad1.rightBumperWasPressed()){
             robot.tuningspd = robot.tuningspd - 0.01;
         }
-
-
+        if (robot.upToSpeed()){
+            gamepad2.rumble(6);
+        }
 
 
 

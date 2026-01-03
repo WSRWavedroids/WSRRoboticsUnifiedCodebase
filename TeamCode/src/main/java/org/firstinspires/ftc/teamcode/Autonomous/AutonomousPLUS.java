@@ -28,9 +28,6 @@ package org.firstinspires.ftc.teamcode.Autonomous;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import static org.firstinspires.ftc.teamcode.Autonomous.David.in;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -62,7 +59,6 @@ public class AutonomousPLUS extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry, this);
-        spd = robot.limelightAdjustedSpeed;
     }
     public double spd; // if it dosn't work use 0.46
     //These are the basic functions for mechnum movement during auto... Don't mess with these unless something is inverted
@@ -526,6 +522,22 @@ public class AutonomousPLUS extends LinearOpMode {
     public int convertInchesToTicks(int inches){
         int ticks = (int) ((537.6 * inches) / (3.77953 * 3.1415926535));
         return ticks;
+    }
+
+
+
+    public void launchBall(double sleep1, double sleep2){
+        runLauncherAuto();
+        while (!robot.upToSpeed()){
+            sleep(1);
+        }
+        runIntake2Auto(0);
+        sleep((long)sleep1);
+        runIntake2Auto(1);
+        runIntakeAuto("in");
+        sleep((long)sleep2);
+        runIntake2Auto(0);
+        runIntakeAuto("stop");
     }
 
 

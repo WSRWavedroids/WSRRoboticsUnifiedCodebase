@@ -245,7 +245,12 @@ public class Robot {
     }
     public void setupLaunchers() {
 
-        launcherMath(getApriltagDistance(),
+        double dist = getApriltagDistance();
+        if (dist == 0){
+            dist = 1.6;
+        }
+
+        launcherMath(dist,
                 49.51302,
                 494.92453,
                 1797.82372,
@@ -256,6 +261,13 @@ public class Robot {
     public void launcherMath(double x,double m1, double m2, double m3, double m4, double add){
         limelightAdjustedSpeed = m1*Math.pow(x,4) - m2*Math.pow(x,3) + m3*Math.pow(x,2) - m4*x + add;
     }
+
+    public boolean upToSpeed(){
+        double velocity = launchLeft.getVelocity();
+        return (velocity > -limelightAdjustedSpeed - 20) && (velocity < -limelightAdjustedSpeed + 20);
+    }
+
+
     ElapsedTime timer = new ElapsedTime();
 
     public double tuningspd = 0.5;

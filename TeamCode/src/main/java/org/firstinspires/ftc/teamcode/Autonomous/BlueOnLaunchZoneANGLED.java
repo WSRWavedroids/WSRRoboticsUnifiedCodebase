@@ -16,6 +16,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         robot.frontRightDrive.setTargetPositionTolerance(8);
         robot.backLeftDrive.setTargetPositionTolerance(8);
         robot.frontLeftDrive.setTargetPositionTolerance(8);
+        robot.initLimelight();
 
         waitForStart();
         //Under This Is Were You Put Stuff
