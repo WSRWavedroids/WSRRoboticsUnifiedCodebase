@@ -545,8 +545,8 @@ public class AutonomousPLUS extends LinearOpMode {
     public void runLauncherAuto() {
         robot.setupLaunchers();
         spd = robot.limelightAdjustedSpeed;
-        robot.launchLeft.setVelocity(-spd);
-        robot.launchRight.setVelocity(-spd);
+        robot.launchLeft.setVelocity(spd);
+        robot.launchRight.setVelocity(spd);
 
     }
     public void runLauncherstop() {

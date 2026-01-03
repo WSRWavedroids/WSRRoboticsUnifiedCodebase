@@ -107,7 +107,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         gamepad2.setLedColor(255, 0, 240, 100000000);
         robot.intake2.setPosition(0.5);
         robot.initLimelight();
-        robot.tuningspd = 0.55;
+        robot.tuningspd = 0.43;
     }
 
 
@@ -402,7 +402,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             currentStep = INPUT;
         } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrtuning * 2000;
-            setLaunchPower(gamepad2.left_trigger, pwrtuning * 2000);
+            setLaunchPower(gamepad2.left_trigger, pwrtuning * -2000);
             currentStep = INPUT;
         } else if (currentStep == INPUT){
             robot.launchTune = 0;

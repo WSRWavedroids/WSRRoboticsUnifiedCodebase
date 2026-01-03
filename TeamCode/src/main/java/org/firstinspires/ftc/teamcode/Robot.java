@@ -264,7 +264,7 @@ public class Robot {
 
     public boolean upToSpeed(){
         double velocity = launchLeft.getVelocity();
-        return (velocity > -limelightAdjustedSpeed - 20) && (velocity < -limelightAdjustedSpeed + 20);
+        return (velocity > -limelightAdjustedSpeed - 60) && (velocity < -limelightAdjustedSpeed + 60);
     }
 
 
