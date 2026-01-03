@@ -24,41 +24,8 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         //550 ticks = about 90 degrees right
         //6 millisecond pause after everything
         moveRobotBackward(1400, 6, 0.5);
-        runLauncherAuto(); //Launch
-        sleep(1200);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
-        sleep(95);
-        runIntake2Auto(0);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        runLauncherAuto(); //Launch
-        sleep(300);
 
-        runIntake2Auto(0);
-        sleep(500);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
-        sleep(140);
-        runIntake2Auto(0.4);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        runLauncherAuto(); //Launch
-        sleep(300);
-
-        runIntake2Auto(-0.3);
-        sleep(500);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
-        sleep(450);
-        runIntake2Auto(0);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        sleep(75);
-        runLauncherstop();runLauncherAuto();                                     //Launch sequence start
+        runLauncherAuto();                                     //Launch sequence start
         sleep(1200);
         runIntake2Auto(0.6);
         runIntakeAuto("in");
