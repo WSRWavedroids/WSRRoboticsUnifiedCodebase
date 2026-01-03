@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 
 @Autonomous(group =  "Auto", name = "BlueOnLaunchZoneANGLED")
 public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
-
+    public static final String ALLIANCE_KEY = "Alliance";
     private Robot robot;
     @Override
     public void runOpMode() {
@@ -17,6 +17,7 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         robot.backLeftDrive.setTargetPositionTolerance(8);
         robot.frontLeftDrive.setTargetPositionTolerance(8);
         robot.initLimelight();
+        blackboard.put(ALLIANCE_KEY, "BLUE");
 
         waitForStart();
         //Under This Is Were You Put Stuff
@@ -24,126 +25,48 @@ public class BlueOnLaunchZoneANGLED extends AutonomousPLUS {
         //550 ticks = about 90 degrees right
         //6 millisecond pause after everything
         moveRobotBackward(1400, 6, 0.5);
-        runLauncherAuto(); //Launch
-        sleep(1200);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
-        sleep(95);
-        runIntake2Auto(0);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        runLauncherAuto(); //Launch
-        sleep(300);
 
-        runIntake2Auto(0);
-        sleep(500);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
-        sleep(140);
-        runIntake2Auto(0.4);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        runLauncherAuto(); //Launch
-        sleep(300);
-
-        runIntake2Auto(-0.3);
-        sleep(500);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
-        sleep(450);
-        runIntake2Auto(0);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        sleep(75);
-        runLauncherstop();runLauncherAuto();                                     //Launch sequence start
-        sleep(1200);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
-        sleep(105);
-        runIntake2Auto(0);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        runLauncherAuto(); //Launch
-        sleep(300);
-
-        runIntake2Auto(0);
-        sleep(500);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
+        launchBall(100, 450);
         sleep(150);
-        runIntake2Auto(0.4);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        runLauncherAuto(); //Launch
-        sleep(300);
-
-        runIntake2Auto(-0.3);
-        sleep(500);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
-        sleep(450);
-        runIntake2Auto(0);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        sleep(75);
-        runLauncherstop();                            //Launch sequence end
+        launchBall(100, 500);
+        sleep(150);
+        launchBall(100, 800);
+        sleep(150);
+        runLauncherstop();
 
         prepareNextAction(6);
         runLauncherAuto(-0.6);
-        runIntake2Auto(0.6);
-        turnRobotLeft(777,6);               //mirror
-        moveRobotRight(675, 6, 0.5);     //mirror
-        moveRobotBackward(1250, 6, 0.3);
+        runIntake2Auto(1);
+        if (blackboard.get(ALLIANCE_KEY) == "RED"){
+            turnRobotRight(777,6); }
+        else {
+            turnRobotLeft(777,6); }
+        if (blackboard.get(ALLIANCE_KEY) == "RED"){
+            moveRobotLeft(675,6, 0.5); }
+        else {
+            moveRobotRight(675,6, 0.5); }
+        moveRobotBackward(1200, 6, 0.2);
         turnRobotLeft(100, 6);
         runIntake2Auto(-0.2);
-        moveRobotForward(1100, 6, 0.5);
+        moveRobotForward(1250, 6, 0.4);
         runIntake2Auto(0);
-        turnRobotRight(750,6);               //mirror
+        if (blackboard.get(ALLIANCE_KEY) == "RED"){
+            turnRobotLeft(750,6); }
+        else {
+            turnRobotRight(750,6); }
 
-        runLauncherAuto();                                     //Launch sequence start
-        sleep(1200);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
-        sleep(105);
-        runIntake2Auto(0);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        runLauncherAuto(); //Launch
-        sleep(300);
-
-        runIntake2Auto(0);
-        sleep(500);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
+        launchBall(100, 450);
         sleep(150);
-        runIntake2Auto(0.4);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        runLauncherAuto(); //Launch
-        sleep(300);
+        launchBall(100, 500);
+        sleep(150);
+        launchBall(100, 800);
+        sleep(150);
+        runLauncherstop();
 
-        runIntake2Auto(-0.3);
-        sleep(500);
-        runIntake2Auto(0.6);
-        runIntakeAuto("in");
-        sleep(450);
-        runIntake2Auto(0);
-        runIntakeAuto("stop");
-        sleep(75);
-        runIntake2Auto(-0.3);
-        sleep(75);
-        runLauncherstop();                            //Launch sequence end
-
-        moveRobotLeft(800, 6, 0.3);        //mirror
-
+        if (blackboard.get(ALLIANCE_KEY) == "RED"){
+            moveRobotRight(800,6, 0.3); }
+        else {
+            moveRobotLeft(800,6, 0.3); }
     }
 }
 //whatever i want
