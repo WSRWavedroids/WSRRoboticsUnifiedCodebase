@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
-import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -38,7 +37,6 @@ public class BasicDriveTrain extends OpMode {
 
     @Override
     public void loop() {
-
         singleJoystickDrive();
 
         telemetry.addData("Left Stick X", gamepad1.left_stick_x);
