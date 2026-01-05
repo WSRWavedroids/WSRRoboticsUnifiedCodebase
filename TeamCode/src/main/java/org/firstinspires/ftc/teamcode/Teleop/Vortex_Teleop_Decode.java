@@ -368,10 +368,10 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot.backLeftDrive.setMode(RUN_WITHOUT_ENCODER);
         robot.backRightDrive.setMode(RUN_WITHOUT_ENCODER);
 
-        robot.frontLeftDrive.setPower(-motorPowers[0]);
-        robot.frontRightDrive.setPower(-motorPowers[1]);
-        robot.backLeftDrive.setPower(-motorPowers[2]);
-        robot.backRightDrive.setPower(-motorPowers[3]);
+        robot.frontLeftDrive.setPower(motorPowers[0]);
+        robot.frontRightDrive.setPower(motorPowers[1]);
+        robot.backLeftDrive.setPower(motorPowers[2]);
+        robot.backRightDrive.setPower(motorPowers[3]);
     }
 
     private void autoWheel(boolean detected, double anglex) {
@@ -411,14 +411,18 @@ public class Vortex_Teleop_Decode extends OpMode {
         // We don't really know how this function works, but it makes the wheels drive, so we don't question it.
         // Don't mess with this function unless you REALLY know what you're doing.
         float leftY = this.gamepad1.left_stick_y;
-        float rightX = -this.gamepad1.right_stick_x;
-        float leftX = -this.gamepad1.left_stick_x;
+        float rightX = this.gamepad1.right_stick_x;
+        float leftX = this.gamepad1.left_stick_x;
+
+        if (leftY < 0.1) leftY = 0;
+        if (leftX < 0.1) leftX = 0;
+        if (rightX < 0.1) rightX = 0;
 
         double leftStickAngle = Math.atan2(leftY, leftX);
         double leftStickMagnitude = Math.sqrt(leftX * 2.0 + leftY * 2.0);
         //double robotAngle = robot.imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
 
-        if (leftStickMagnitude > 1){
+        if (leftStickMagnitude > 1) {
             leftStickMagnitude = 1;
         }
 
