@@ -380,7 +380,7 @@ public class PedroGoDrive extends OpMode {
             cadenHoldingReady = false;
         }
 
-        if(gamepad2.right_trigger > 0.50 && !robot.launcher.wantToOpenDoor /*&& robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE*/) {
+        if(gamepad2.right_trigger > 0.50 && !robot.launcher.isFiring() /*&& robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE*/) {
             if(!cadenHoldingFire)
             {
                 cadenON = true;

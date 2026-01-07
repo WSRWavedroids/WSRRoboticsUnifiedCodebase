@@ -32,7 +32,8 @@ public class LauncherHardware {
     public boolean waitingToFire = false;
     boolean lockControls = false;
     boolean stopMotorAfter;
-    boolean doneFiring = false;
+    boolean firing = false;
+    boolean activeFiring = false;
 
     public static final int ticksPerRevolution = 28;
     public static final int revolutionsPerSecond = 100;
@@ -43,8 +44,6 @@ public class LauncherHardware {
 
     public boolean onCooldown = false;
 
-    public boolean wantToOpenDoor;
-
     LauncherMode mode;
     private double waitTime;
     private ElapsedTime waitForSafeTimer = new ElapsedTime();
@@ -52,7 +51,7 @@ public class LauncherHardware {
     enum LauncherSteps {
         READY_FOR_COMMANDS,
         STALLING_UNTIL_SAFE, CHECK_IF_SAFE, WAIT_FOR_TIME_FOR_SAFE,
-        REV_MOTOR, STALL_WHILE_MOTOR_REVVING, OPEN_DOOR, LAUNCHING, CLOSE_DOOR, RESET
+        REV_MOTOR, STALL_WHILE_MOTOR_REVVING, FLICK, UNFLICK, OPEN_DOOR, LAUNCHING, CLOSE_DOOR, RESET
     }
     public enum LauncherMode {
         WAIT_FOREVER, WAIT_FOR_TIME, IF_SAFE_NOW
@@ -70,7 +69,7 @@ public class LauncherHardware {
             case READY_FOR_COMMANDS:
                 if (waitingToFire) {
                     waitingToFire = false;
-                    doneFiring = false;
+                    firing = true;
                     switch (mode) {
                         case IF_SAFE_NOW:
                             nextStep(CHECK_IF_SAFE);
@@ -115,44 +114,44 @@ public class LauncherHardware {
                     nextStep(OPEN_DOOR);
                 }
                 break;
-            case OPEN_DOOR:
+            case FLICK:
                 lockControls = true;
+                activeFiring = true;
                 onCooldown = true;
-                wantToOpenDoor = true;
-                robot.sorterHardware.moveDoor(OPEN);
-                if (robot.sorterHardware.doorIs(OPEN)) {
-                    cooldownTimer.reset();
+                //TODO Flick
+                cooldownTimer.reset();
+                nextStep(UNFLICK);
+                break;
+            case UNFLICK:
+                if(cooldownTimer.seconds() >= 0.25){
+                    //TODO Unflick
                     nextStep(LAUNCHING);
                 }
-                break;
             case LAUNCHING:
                 if (cooldownTimer.seconds() >= launcherCooldownDuration) {
-                    nextStep(CLOSE_DOOR);
+                    nextStep(RESET);
                 }
-                break;
-            case CLOSE_DOOR:
-                wantToOpenDoor = false;
-                robot.sorterHardware.moveDoor(CLOSED);
-                nextStep(RESET);
-
                 break;
             case RESET:
                 if (stopMotorAfter) setLauncherSpeed(0);
                 robot.sorterLogic.findCurrentSlotInPosition(FIRE).setOccupied(EMPTY);
                 lockControls = false;
+                activeFiring = false;
                 onCooldown = false;
-                doneFiring = true;
+                firing = false;
                 nextStep(READY_FOR_COMMANDS);
                 break;
         }
     }
 
     public boolean doneFiring() {
-        if (doneFiring) {
-            doneFiring = false;
-            return true;
-        }
-        else return false;
+        return !firing;
+    }
+    public boolean isInFireSequence() {
+        return firing;
+    }
+    public boolean isActivelyFiring() {
+        return activeFiring;
     }
 
     public void fireNowIfSafe(double speedTarget, boolean useSpeedTarget, boolean stopMotorAfter){
