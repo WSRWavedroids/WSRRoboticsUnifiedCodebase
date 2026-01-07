@@ -383,8 +383,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         //robot.launchSpeed = input - robot.triggerDeadzone;
         //robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
         //robot.launchSpeed = robot.launchSpeed * robot.launchTune;
-        robot.launchLeft.setVelocity(velocity);
-        robot.launchRight.setVelocity(velocity);
+        robot.launchLeft.setVelocity(-velocity);
+        robot.launchRight.setVelocity(-velocity);
         if (gamepad2.right_stick_button) {
             telemetry.addLine("noahguywashere");
             telemetry.addLine("DevenWasHere");
