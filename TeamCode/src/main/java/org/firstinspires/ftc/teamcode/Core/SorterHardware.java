@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Core;
 
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.BlenderSteps.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.*;
 
@@ -23,7 +23,13 @@ public class SorterHardware {
     public Servo flicky;
     public CRServo feedServoL;
     public CRServo feedServoR;
-    public enum positionState {FIRE, LOAD, SWITCH}
+    public enum PositionState {
+        FIRE(1), LOAD(0), STORE(2), SWITCH(-1);
+        public final int offset;
+        PositionState(int offset) {
+            this.offset = offset;
+        }
+    }
 
     public int[] positions;
     public static final int ticksPerRotation = 8192;
@@ -53,7 +59,7 @@ public class SorterHardware {
     public final static double passiveFeederSpeed = 1;
 
     public double reference;
-    public SorterHardware.positionState currentPositionState;
+    public PositionState currentPositionState;
 
     public SorterHardware(Robot robot) {
         this.robot = robot;
@@ -209,7 +215,7 @@ public class SorterHardware {
                 break;
 
             // Not in a position (-1, -2)
-            default: currentPositionState = positionState.SWITCH;
+            default: currentPositionState = PositionState.SWITCH;
         }
     }
 
@@ -325,7 +331,7 @@ public class SorterHardware {
         return doorState == target;
     }
 
-    public boolean inStateCheck(SorterHardware.positionState targetState){
+    public boolean inStateCheck(PositionState targetState){
         return currentPositionState == targetState;
     }
 

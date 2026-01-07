@@ -64,6 +64,10 @@ public class Robot {
 
     public Limelight3A limelight;
 
+    public Servo fireRGB;
+    public Servo loadRGB;
+    public Servo storeRGB;
+
     public VoltageSensor voltageSensor;
 
    // public WebcamName CamCam;

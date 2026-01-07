@@ -4,7 +4,7 @@ import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;

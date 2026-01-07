@@ -6,8 +6,7 @@ import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.
 import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.WAIT_FOREVER;
 import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.WAIT_FOR_TIME;
 import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherSteps.*;
-import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;

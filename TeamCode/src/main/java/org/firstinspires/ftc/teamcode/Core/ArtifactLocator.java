@@ -22,7 +22,7 @@
 package org.firstinspires.ftc.teamcode.Core;
 
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -38,7 +38,16 @@ public class ArtifactLocator {
     //private VisionPortal portal;
     //private List<ColorBlobLocatorProcessor.Blob> purpleBlobList;
     //private List<ColorBlobLocatorProcessor.Blob> greenBlobList;
-    public enum SlotState {EMPTY, PURPLE, GREEN, UNKNOWN}
+    public enum SlotState {
+        EMPTY(1),
+        PURPLE(0.71),
+        GREEN(0.475),
+        UNKNOWN(0);
+        public final double lightColor;
+        SlotState(double lightColor){
+            this.lightColor = lightColor;
+        }
+    }
 
     public Slot slotA;
     public Slot slotB;
@@ -247,22 +256,22 @@ public class ArtifactLocator {
      *                       load position.
      * @return A Slot, if there's one in position. If there isn't, will return noSlot.
      */
-    public Slot findCurrentSlotInPosition(SorterHardware.positionState targetPosition) {
-        Slot foundLoadSlot;
-        Slot foundFireSlot;
+    public Slot findCurrentSlotInPosition(SorterHardware.PositionState targetPosition) {
+        if (targetPosition == SWITCH) return noSlot;
 
-        switch (getCurrentOffset()) {
-            case 0:  foundLoadSlot = slotA; foundFireSlot = slotB; break;
-            case 1:  foundLoadSlot = slotB; foundFireSlot = slotC; break;
-            case 2:  foundLoadSlot = slotC; foundFireSlot = slotA; break;
-            default: foundLoadSlot = noSlot; foundFireSlot = noSlot;
+        switch (getCurrentOffset() + targetPosition.offset) {
+            case 0:
+            case 3:
+                return slotA;
+            case 1:
+            case 4:
+                return slotB;
+            case 2:
+            case 5:
+                return slotC;
+            default:
+                return noSlot;
         }
-
-        if (targetPosition == LOAD) {
-            return foundLoadSlot;
-        } else if (targetPosition == FIRE) {
-            return foundFireSlot;
-        } else return noSlot;
     }
 
     //TODO Move to LauncherHardware???
