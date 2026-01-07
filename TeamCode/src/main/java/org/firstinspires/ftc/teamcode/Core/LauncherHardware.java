@@ -28,6 +28,7 @@ public class LauncherHardware {
     }
 
     public static double launcherCooldownDuration = 0.3;
+    public static double flickTime = 0.3; //TODO Optimize
 
     public boolean waitingToFire = false;
     boolean lockControls = false;
@@ -63,7 +64,6 @@ public class LauncherHardware {
     private ElapsedTime cooldownTimer = new ElapsedTime();
 
     public void updateLauncherHardware() {
-        robot.telemetry.addLine("Untested launcher hardware, I choose you!");
         robot.telemetry.addData("Launcher step", currentLauncherStep);
         switch (currentLauncherStep) {
             case READY_FOR_COMMANDS:
@@ -118,27 +118,37 @@ public class LauncherHardware {
                 lockControls = true;
                 activeFiring = true;
                 onCooldown = true;
-                //TODO Flick
+                robot.sorterHardware.flick();
                 cooldownTimer.reset();
                 nextStep(UNFLICK);
                 break;
             case UNFLICK:
-                if(cooldownTimer.seconds() >= 0.25){
-                    //TODO Unflick
+                if(cooldownTimer.seconds() >= flickTime) {
+                    robot.sorterHardware.resetFlicky();
                     nextStep(LAUNCHING);
                 }
             case LAUNCHING:
-                if (cooldownTimer.seconds() >= launcherCooldownDuration) {
+                if (stopMotorAfter && cooldownTimer.seconds() >= launcherCooldownDuration) {
+                    nextStep(RESET);
+                }
+                else if (cooldownTimer.seconds() >= flickTime * 2) {
                     nextStep(RESET);
                 }
                 break;
             case RESET:
+                // Stop the motor if requested
                 if (stopMotorAfter) setLauncherSpeed(0);
+
+                // Set the slot to empty now that we fired its contents
                 robot.sorterLogic.findCurrentSlotInPosition(FIRE).setOccupied(EMPTY);
+
+                // Update the booleans
                 lockControls = false;
                 activeFiring = false;
                 onCooldown = false;
                 firing = false;
+
+                // All done, ready for the next one
                 nextStep(READY_FOR_COMMANDS);
                 break;
         }
