@@ -28,6 +28,7 @@ public class LauncherHardware {
     }
 
     public static double launcherCooldownDuration = 0.3;
+    public static double flickTime = 0.3; //TODO Optimize
 
     public boolean waitingToFire = false;
     boolean lockControls = false;
@@ -51,7 +52,7 @@ public class LauncherHardware {
     enum LauncherSteps {
         READY_FOR_COMMANDS,
         STALLING_UNTIL_SAFE, CHECK_IF_SAFE, WAIT_FOR_TIME_FOR_SAFE,
-        REV_MOTOR, STALL_WHILE_MOTOR_REVVING, FLICK, UNFLICK, OPEN_DOOR, LAUNCHING, CLOSE_DOOR, RESET
+        REV_MOTOR, STALL_WHILE_MOTOR_REVVING, FLICK, UNFLICK, LAUNCHING, RESET
     }
     public enum LauncherMode {
         WAIT_FOREVER, WAIT_FOR_TIME, IF_SAFE_NOW
@@ -63,7 +64,6 @@ public class LauncherHardware {
     private ElapsedTime cooldownTimer = new ElapsedTime();
 
     public void updateLauncherHardware() {
-        robot.telemetry.addLine("Untested launcher hardware, I choose you!");
         robot.telemetry.addData("Launcher step", currentLauncherStep);
         switch (currentLauncherStep) {
             case READY_FOR_COMMANDS:
@@ -111,34 +111,45 @@ public class LauncherHardware {
                 break;
             case STALL_WHILE_MOTOR_REVVING:
                 if (motorSpeedCheck(velocityTarget) /*|| cooldownTimer.seconds() >= .75*/) {
-                    nextStep(OPEN_DOOR);
+                    nextStep(FLICK);
                 }
                 break;
             case FLICK:
                 lockControls = true;
                 activeFiring = true;
                 onCooldown = true;
-                //TODO Flick
+                robot.sorterHardware.flick();
                 cooldownTimer.reset();
                 nextStep(UNFLICK);
                 break;
             case UNFLICK:
-                if(cooldownTimer.seconds() >= 0.25){
-                    //TODO Unflick
+                if(cooldownTimer.seconds() >= flickTime) {
+                    robot.sorterHardware.resetFlicky();
                     nextStep(LAUNCHING);
                 }
+                break;
             case LAUNCHING:
-                if (cooldownTimer.seconds() >= launcherCooldownDuration) {
+                if (stopMotorAfter && cooldownTimer.seconds() >= launcherCooldownDuration) {
+                    nextStep(RESET);
+                }
+                else if (cooldownTimer.seconds() >= flickTime * 2) {
                     nextStep(RESET);
                 }
                 break;
             case RESET:
+                // Stop the motor if requested
                 if (stopMotorAfter) setLauncherSpeed(0);
+
+                // Set the slot to empty now that we fired its contents
                 robot.sorterLogic.findCurrentSlotInPosition(FIRE).setOccupied(EMPTY);
+
+                // Update the booleans
                 lockControls = false;
                 activeFiring = false;
                 onCooldown = false;
                 firing = false;
+
+                // All done, ready for the next one
                 nextStep(READY_FOR_COMMANDS);
                 break;
         }

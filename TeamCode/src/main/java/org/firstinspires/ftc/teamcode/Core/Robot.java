@@ -47,7 +47,7 @@ public class Robot {
     public DcMotorEx swivelMotor;
 
     public Servo hammerServo;
-    public Servo doorServo;
+    public Servo flicky;
 
     public CRServo expandyServo;
 
@@ -116,6 +116,9 @@ public class Robot {
         FORWARD, BACKWARD, LEFT, RIGHT,
         DIAGONAL_LEFT, DIAGONAL_RIGHT,
         TURN_LEFT, TURN_RIGHT}
+    public enum UpDown {
+        UP, DOWN
+    }
 
     public boolean scanningForTargetTag = false;
 
@@ -142,7 +145,7 @@ public class Robot {
         swivelMotor = hardwareMap.get(DcMotorEx.class, "swivelMotor");
 
         //hammerServo = hardwareMap.get(Servo.class, "hammerServo");
-        doorServo = hardwareMap.get(Servo.class, "doorServo");
+        flicky = hardwareMap.get(Servo.class, "flicky");
 
         expandyServo = hardwareMap.get(CRServo.class, "expandyServo");
         intakeyServoL = hardwareMap.get(CRServo.class, "intakeyServoL");
@@ -353,7 +356,7 @@ public class Robot {
 
     ElapsedTime timer = new ElapsedTime();
 
-
+    @Deprecated
     public void prepareAuto(){
         sorterHardware.moveDoor(CLOSED);
     }
@@ -425,7 +428,7 @@ public class Robot {
 
     public void readyHardware(boolean resetEncoder)
     {
-        sorterHardware.doorServo.setPosition(1);
+        sorterHardware.flicky.setPosition(1);
         sorterHardware.moveDoor(CLOSED);
         launcher.setLauncherSpeed(0);
         inventoryCam.updateBlockScan();

@@ -20,7 +20,7 @@ public class SorterHardware {
     public ezPID blenderPID;
     private final LauncherHardware launcher;
     public DcMotorEx motor;
-    public Servo doorServo;
+    public Servo flicky;
     public CRServo feedServoL;
     public CRServo feedServoR;
     public enum positionState {FIRE, LOAD, SWITCH}
@@ -31,8 +31,8 @@ public class SorterHardware {
     public static Double tickTolerance = 100.0;
     public boolean legalToSpin = false;
 
-    public double doorClosedPosition = 1;
-    public double doorOpenPosition = 0.75;
+    public double flickyDownPosition = 1;
+    public double flickyUpPosition = 0.75;
 
     public Robot.OpenClosed doorState;
 
@@ -58,7 +58,7 @@ public class SorterHardware {
     public SorterHardware(Robot robot) {
         this.robot = robot;
         motor = robot.sorterMotor;
-        doorServo = robot.doorServo;
+        flicky = robot.flicky;
         launcher = robot.launcher;
         feedServoL = robot.feedServoL;
         feedServoR = robot.feedServoR;
@@ -75,7 +75,6 @@ public class SorterHardware {
 
         blenderPID = new ezPID(motor, ticksPerRotation, kp, ki, kd, kf, kneecap, tickTolerance, POSITION);
         //reference = 0;
-
     }
 
     private boolean tryToMove = false;
@@ -169,11 +168,7 @@ public class SorterHardware {
     }
 
     public boolean doneMoving() {
-        if (doneMoving) {
-            doneMoving = false;
-            return true;
-        }
-        else return false;
+        return doneMoving;
     }
 
     public void prepareNewMovement(int targetTickPose) {
@@ -305,17 +300,25 @@ public class SorterHardware {
         return (int) (rotation * ticksPerRotation);
     }
 
+    @Deprecated
     public void moveDoor(Robot.OpenClosed doorTarget)
     {
         switch (doorTarget) {
             case CLOSED:
-                doorServo.setPosition(doorClosedPosition);
+                flicky.setPosition(flickyDownPosition);
                 break;
             case OPEN:
-                doorServo.setPosition(doorOpenPosition);
+                flicky.setPosition(flickyUpPosition);
                 break;
         }
         doorState = doorTarget;
+    }
+
+    public void flick() {
+        flicky.setPosition(flickyUpPosition);
+    }
+    public void resetFlicky() {
+        flicky.setPosition(flickyDownPosition);
     }
 
     public boolean doorIs(Robot.OpenClosed target) {
