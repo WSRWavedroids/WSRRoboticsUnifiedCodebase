@@ -16,9 +16,9 @@ public class fireQueueWithStates {
     ///also this could clean up autonomous firing sequences a bit
 
     private Robot robot;
-    private BetaSorterHardware sorterHardware;
+    private SorterHardware sorterHardware;
     private ArtifactLocator sorterLogic;
-    private BetaLauncherHardware launcherHardware;
+    private LauncherHardware launcherHardware;
     public enum firingQueue{NONE, SMART, DUMB}
     public fireQueueWithStates.firingQueue wantToFireQueue = NONE;
 

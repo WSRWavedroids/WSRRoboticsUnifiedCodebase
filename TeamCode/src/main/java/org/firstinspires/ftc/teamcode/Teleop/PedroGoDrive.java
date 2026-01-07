@@ -4,10 +4,10 @@ import static org.firstinspires.ftc.robotcore.internal.system.Misc.isEven;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.OUTTAKE;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.FIRE;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.LOAD;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.SWITCH;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.OUTTAKE;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.FIRE;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.LOAD;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.SWITCH;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;

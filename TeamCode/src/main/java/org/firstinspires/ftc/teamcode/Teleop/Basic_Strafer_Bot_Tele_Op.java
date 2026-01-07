@@ -31,14 +31,13 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware;
-import org.firstinspires.ftc.teamcode.Core.BetaSorterHardware;
+import org.firstinspires.ftc.teamcode.Core.LauncherHardware;
+import org.firstinspires.ftc.teamcode.Core.SorterHardware;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 
 
@@ -67,8 +66,8 @@ public class Basic_Strafer_Bot_Tele_Op extends OpMode {
     private double speed = 0.75;
     //private double storedSpeed;
     public Robot Bot;
-    public BetaSorterHardware sorter;
-    public BetaLauncherHardware launcher;
+    public SorterHardware sorter;
+    public LauncherHardware launcher;
 
 
     /*

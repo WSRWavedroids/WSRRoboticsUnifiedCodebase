@@ -3,12 +3,11 @@ package org.firstinspires.ftc.teamcode.Core;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.*;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 
 import android.annotation.SuppressLint;
-import android.text.method.Touch;
 
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -20,7 +19,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -99,8 +97,8 @@ public class Robot {
 
 
 
-    public BetaSorterHardware sorterHardware;
-    public BetaLauncherHardware launcher;
+    public SorterHardware sorterHardware;
+    public LauncherHardware launcher;
     public ArtifactLocator sorterLogic;
     public SensorHuskyLens inventoryCam;
     public Limelight_Randomization_Scanner randomizationScanner;
@@ -198,8 +196,8 @@ public class Robot {
         //This is new..
         telemetry.addData("Status", "Initialized");
 
-        sorterHardware = new BetaSorterHardware(this);
-        launcher = new BetaLauncherHardware(this);
+        sorterHardware = new SorterHardware(this);
+        launcher = new LauncherHardware(this);
         sorterLogic = new ArtifactLocator(this);
         inventoryCam = new SensorHuskyLens(this);
         queue = new fireQueueWithStates(this);

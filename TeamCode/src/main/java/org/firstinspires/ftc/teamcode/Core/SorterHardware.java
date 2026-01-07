@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.Core;
 
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.BlenderSteps.*;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.*;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.BlenderSteps.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.*;
 
@@ -14,11 +14,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Configurable
-public class BetaSorterHardware  {
+public class SorterHardware {
 
     private final Robot robot;
     public ezPID blenderPID;
-    private final BetaLauncherHardware launcher;
+    private final LauncherHardware launcher;
     public DcMotorEx motor;
     public Servo doorServo;
     public CRServo feedServoL;
@@ -53,9 +53,9 @@ public class BetaSorterHardware  {
     public final static double passiveFeederSpeed = 1;
 
     public double reference;
-    public BetaSorterHardware.positionState currentPositionState;
+    public SorterHardware.positionState currentPositionState;
 
-    public BetaSorterHardware(Robot robot) {
+    public SorterHardware(Robot robot) {
         this.robot = robot;
         motor = robot.sorterMotor;
         doorServo = robot.doorServo;
@@ -322,7 +322,7 @@ public class BetaSorterHardware  {
         return doorState == target;
     }
 
-    public boolean inStateCheck(BetaSorterHardware.positionState targetState){
+    public boolean inStateCheck(SorterHardware.positionState targetState){
         return currentPositionState == targetState;
     }
 

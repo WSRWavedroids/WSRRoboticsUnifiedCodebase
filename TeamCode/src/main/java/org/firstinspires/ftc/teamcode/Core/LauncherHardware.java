@@ -2,26 +2,24 @@ package org.firstinspires.ftc.teamcode.Core;
 
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
-import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherMode.IF_SAFE_NOW;
-import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherMode.WAIT_FOREVER;
-import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherMode.WAIT_FOR_TIME;
-import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherSteps.*;
+import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.IF_SAFE_NOW;
+import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.WAIT_FOREVER;
+import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.WAIT_FOR_TIME;
+import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherSteps.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
-import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.SPEED;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.positionState.*;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class BetaLauncherHardware {
+public class LauncherHardware {
 
     private Robot robot;
     public DcMotorEx motor;
     private static ezPID launcherPID;
 
 
-    public BetaLauncherHardware(Robot robotFile) {
+    public LauncherHardware(Robot robotFile) {
         robot = robotFile;
         motor = robot.launcherMotor1;
         // motor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(P, I, D, F));
