@@ -13,13 +13,16 @@ public class ezPID {
     /// To use an ezPID, just make an instance in the script using it and pass in the PIDF values
     /// kneecap values, encoder resolution, and a speed or position mode into the constructor.
     /// Then, just call run inside of another script's loop, using the instance you made there
+    ///If you want to use Panels or another dashboard, be sure to call changeBehaviorValues to get live values
     ///
-    /// This script was written by Clay Kramer, FTC 13206 🌊🤖, 2025
+    /// This script was written by Clay Kramer, FTC 13206 🌊🤖, 2025-2026
 
     private Robot robot;
     private DcMotorEx motor;
 
     private PIDMotorGroup motorGroup;
+
+    /// SET THESE IN INSTANCES, NOT HERE
     public double p;
     public double i;
     public double d;
@@ -87,9 +90,6 @@ public class ezPID {
 
     }
 
-
-
-
     public PIDDUMP shareInfo() {
         /// This function dumps it's info for another PID to pick up and use
         /// Only hot-swap PIDs if you understand the logic and what might happen with your motor
@@ -109,6 +109,15 @@ public class ezPID {
         integralSum = otherPIDINFO.lastErrorFromOld;
     }
 
+    //Call this before a run call to get panels values
+    //Feed the instance, not the core file
+    public void changeBehaviorValues(double inP, double inI, double inD, double inF, double kneecapIN)
+    {
+        p = inP;
+        i = inI;
+        d = inD;
+        f = inF;
+    }
 
     
     public void runCalledPID(double reference)

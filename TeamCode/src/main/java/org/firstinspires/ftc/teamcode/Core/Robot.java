@@ -15,6 +15,7 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -48,19 +49,9 @@ public class Robot {
 
     public DcMotorEx swivelMotor;
 
-    public Servo hammerServo;
-    public Servo doorServo;
+    public RevColorSensorV3 leftColorScanner;
 
-    public CRServo expandyServo;
-
-    public CRServo intakeyServoR;
-    public CRServo intakeyServoL;
-
-    public CRServo feedServoL;
-    public CRServo feedServoR;
-
-    public CRServo transferServoL;
-    public CRServo transferServoR;
+    public RevColorSensorV3 rightColorScanner;
 
     public TouchSensor magsense;
 
@@ -68,14 +59,10 @@ public class Robot {
 
     public VoltageSensor voltageSensor;
 
-   // public WebcamName CamCam;
-
     public HuskyLens husky;
 
     public Telemetry telemetry;
-    //public BNO055IMU imu;
 
-    //init and declare war
     public OpMode opmode;
     public HardwareMap hardwareMap;
     public String startingPosition;
@@ -101,6 +88,7 @@ public class Robot {
 
     public BetaSorterHardware sorterHardware;
     public BetaLauncherHardware launcher;
+    //public BetaTurretLogic turret;
     public ArtifactLocator sorterLogic;
     public SensorHuskyLens inventoryCam;
     public Limelight_Randomization_Scanner randomizationScanner;
@@ -143,23 +131,10 @@ public class Robot {
         launcherMotor2 =  hardwareMap.get(DcMotorEx.class, "launcherMotor2");
         swivelMotor = hardwareMap.get(DcMotorEx.class, "swivelMotor");
 
-        //hammerServo = hardwareMap.get(Servo.class, "hammerServo");
-        doorServo = hardwareMap.get(Servo.class, "doorServo");
-
-        expandyServo = hardwareMap.get(CRServo.class, "expandyServo");
-        intakeyServoL = hardwareMap.get(CRServo.class, "intakeyServoL");
-        intakeyServoR = hardwareMap.get(CRServo.class, "intakeyServoR");
-        feedServoL = hardwareMap.get(CRServo.class, "feedServoL");
-        feedServoR = hardwareMap.get(CRServo.class, "feedServoR");
-
-        transferServoL = hardwareMap.get(CRServo.class, "transferServoL");
-        transferServoR = hardwareMap.get(CRServo.class, "transferServoR");
-
         magsense = hardwareMap.get(TouchSensor.class, "magsense");
 
-
-        //CamCam = hardwareMap.get(WebcamName.class, "CamCam");
-        //expandyServo = hardwareMap.get(CRServo.class, "expandyServo");
+        leftColorScanner = hardwareMap.get(RevColorSensorV3.class, "leftColorScanner");
+        rightColorScanner = hardwareMap.get(RevColorSensorV3.class, "rightColorScanner");
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
@@ -182,11 +157,6 @@ public class Robot {
 
         sorterMotor.setDirection(REVERSE);
 
-        intakeyServoL.setDirection(FORWARD);
-        intakeyServoR.setDirection(REVERSE);
-
-        transferServoL.setDirection(FORWARD);
-        transferServoR.setDirection(REVERSE);
 
         // This tells the motors to chill when we're not powering them.
         frontRightDrive.setZeroPowerBehavior(BRAKE);
@@ -205,6 +175,7 @@ public class Robot {
         queue = new fireQueueWithStates(this);
         targetScanner = new Limelight_Target_Scanner(this);
         randomizationScanner = new Limelight_Randomization_Scanner(this);
+        //turret = new BetaTurretLogic(this, null);
     }
 
     public boolean isWheelsBusy(){
@@ -405,10 +376,7 @@ public class Robot {
      */
     public void runBasicIntake(double num)
     {
-        intakeyServoR.setPower(num);
-        intakeyServoL.setPower(num);
-        transferServoR.setPower(num);
-        transferServoL.setPower(num);
+
     }
 
     public void runAutoIntakeSequence() //Run in an update function for "fast" auto load

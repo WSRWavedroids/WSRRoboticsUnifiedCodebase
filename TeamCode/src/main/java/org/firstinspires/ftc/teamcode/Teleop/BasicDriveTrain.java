@@ -22,12 +22,12 @@ public class BasicDriveTrain extends OpMode {
         frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftDrive");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftDrive");
-        backRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
 
-        frontLeftDrive.setDirection(FORWARD);
-        frontRightDrive.setDirection(REVERSE);
-        backLeftDrive.setDirection(FORWARD);
-        backRightDrive.setDirection(REVERSE);
+        frontLeftDrive.setDirection(REVERSE);
+        frontRightDrive.setDirection(FORWARD);
+        backLeftDrive.setDirection(REVERSE);
+        backRightDrive.setDirection(FORWARD);
 
         frontLeftDrive.setZeroPowerBehavior(BRAKE);
         frontRightDrive.setZeroPowerBehavior(BRAKE);
@@ -52,16 +52,14 @@ public class BasicDriveTrain extends OpMode {
         float rightX = this.gamepad1.right_stick_x;
         float leftX = this.gamepad1.left_stick_x;
 
-        if (leftY < 0.1) leftY = 0;
-        if (leftX < 0.1) leftX = 0;
-        if (rightX < 0.1) rightX = 0;
+
 
         float[] motorPowers = new float[4];
 
-        motorPowers[0] = (leftY + leftX + rightX); // frontLeftDrive
-        motorPowers[1] = (leftY - leftX - rightX); // frontRightDrive
-        motorPowers[2] = (leftY - leftX + rightX); // backLeftDrive
-        motorPowers[3] = (leftY + leftX - rightX); // backRightDrive
+        motorPowers[0] = (leftY - leftX - rightX); // frontLeftDrive
+        motorPowers[1] = (leftY + leftX + rightX); // frontRightDrive
+        motorPowers[2] = (leftY + leftX - rightX); // backLeftDrive
+        motorPowers[3] = (leftY - leftX + rightX); // backRightDrive
 
         float max = getLargestAbsVal(motorPowers);
         if (max < 1) {

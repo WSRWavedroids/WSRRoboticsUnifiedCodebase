@@ -58,10 +58,10 @@ public class BetaSorterHardware  {
     public BetaSorterHardware(Robot robot) {
         this.robot = robot;
         motor = robot.sorterMotor;
-        doorServo = robot.doorServo;
+        //doorServo = robot.doorServo;
         launcher = robot.launcher;
-        feedServoL = robot.feedServoL;
-        feedServoR = robot.feedServoR;
+        //feedServoL = robot.feedServoL;
+        //feedServoR = robot.feedServoR;
 
 
 
@@ -143,6 +143,7 @@ public class BetaSorterHardware  {
                 break;
         }
         if (!isCalibrating()) {
+            blenderPID.changeBehaviorValues(kp, ki, kd, kf, kneecap);
             blenderPID.runCalledPID(reference);
         }
 
