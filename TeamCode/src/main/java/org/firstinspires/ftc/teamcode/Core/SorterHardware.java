@@ -300,8 +300,11 @@ public class SorterHardware {
     }
 
     private int makeSureFastestRotationIsOK(int position) {
+        // Convert the input position to rotations
         double rotation = (double) position / ticksPerRotation;
-        rotation = Math.round(rotation * 6) / 6.0;
+        // Round the rotations to the nearest third
+        rotation = Math.round(rotation * 3) / 3.0;
+        // Turn it back into ticks
         return (int) (rotation * ticksPerRotation);
     }
 
