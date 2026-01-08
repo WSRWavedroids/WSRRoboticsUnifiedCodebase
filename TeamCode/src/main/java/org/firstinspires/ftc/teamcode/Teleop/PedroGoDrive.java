@@ -4,10 +4,10 @@ import static org.firstinspires.ftc.robotcore.internal.system.Misc.isEven;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.OUTTAKE;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.FIRE;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.LOAD;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.SWITCH;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.OUTTAKE;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.FIRE;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.LOAD;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.SWITCH;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -380,7 +380,7 @@ public class PedroGoDrive extends OpMode {
             cadenHoldingReady = false;
         }
 
-        if(gamepad2.right_trigger > 0.50 && !robot.launcher.wantToOpenDoor /*&& robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE*/) {
+        if(gamepad2.right_trigger > 0.50 && !robot.launcher.isInFireSequence() /*&& robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE*/) {
             if(!cadenHoldingFire)
             {
                 cadenON = true;

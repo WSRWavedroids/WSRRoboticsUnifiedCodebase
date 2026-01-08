@@ -22,13 +22,9 @@
 package org.firstinspires.ftc.teamcode.Core;
 
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
-
-import android.annotation.SuppressLint;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.opencv.ml.EM;
 
 import java.util.ArrayList;
 
@@ -42,7 +38,16 @@ public class ArtifactLocator {
     //private VisionPortal portal;
     //private List<ColorBlobLocatorProcessor.Blob> purpleBlobList;
     //private List<ColorBlobLocatorProcessor.Blob> greenBlobList;
-    public enum SlotState {EMPTY, PURPLE, GREEN, UNKNOWN}
+    public enum SlotState {
+        EMPTY(1),
+        PURPLE(0.71),
+        GREEN(0.475),
+        UNKNOWN(0);
+        public final double lightColor;
+        SlotState(double lightColor){
+            this.lightColor = lightColor;
+        }
+    }
 
     public Slot slotA;
     public Slot slotB;
@@ -70,7 +75,7 @@ public class ArtifactLocator {
      * iterate through them.
      */
     public void initLogic() {
-        double ticksPerRotation = BetaSorterHardware.ticksPerRotation;
+        double ticksPerRotation = SorterHardware.ticksPerRotation;
         // Define slots
         slotA = new Slot(0, (int) (ticksPerRotation / 3), "A");
         slotB = new Slot((int) (2 * ticksPerRotation / 3), 0, "B");
@@ -251,22 +256,22 @@ public class ArtifactLocator {
      *                       load position.
      * @return A Slot, if there's one in position. If there isn't, will return noSlot.
      */
-    public Slot findCurrentSlotInPosition(BetaSorterHardware.positionState targetPosition) {
-        Slot foundLoadSlot;
-        Slot foundFireSlot;
+    public Slot findCurrentSlotInPosition(SorterHardware.PositionState targetPosition) {
+        if (targetPosition == SWITCH) return noSlot;
 
-        switch (getCurrentOffset()) {
-            case 0:  foundLoadSlot = slotA; foundFireSlot = slotB; break;
-            case 1:  foundLoadSlot = slotB; foundFireSlot = slotC; break;
-            case 2:  foundLoadSlot = slotC; foundFireSlot = slotA; break;
-            default: foundLoadSlot = noSlot; foundFireSlot = noSlot;
+        switch (getCurrentOffset() + targetPosition.offset) {
+            case 0:
+            case 3:
+                return slotA;
+            case 1:
+            case 4:
+                return slotB;
+            case 2:
+            case 5:
+                return slotC;
+            default:
+                return noSlot;
         }
-
-        if (targetPosition == LOAD) {
-            return foundLoadSlot;
-        } else if (targetPosition == FIRE) {
-            return foundFireSlot;
-        } else return noSlot;
     }
 
     //TODO Move to LauncherHardware???
@@ -305,7 +310,7 @@ public class ArtifactLocator {
             }
         }
         // Check the high offset 0
-        currentDistanceCheck = (int) Math.abs(BetaSorterHardware.ticksPerRotation - ticks);
+        currentDistanceCheck = (int) Math.abs(SorterHardware.ticksPerRotation - ticks);
         if (currentDistanceCheck < lowestDistance) {
             offset = 0;
         }
@@ -320,17 +325,17 @@ public class ArtifactLocator {
      * @return The equalized position, between 0-8192.
      */
     public int equalizeMotorPositions(int ticks) {
-        while (ticks > BetaSorterHardware.ticksPerRotation) {
-            ticks -= BetaSorterHardware.ticksPerRotation;
+        while (ticks > SorterHardware.ticksPerRotation) {
+            ticks -= SorterHardware.ticksPerRotation;
         }
         while (ticks < 0) {
-            ticks += BetaSorterHardware.ticksPerRotation;
+            ticks += SorterHardware.ticksPerRotation;
         }
         return ticks;
     }
 
     public boolean isCurrentReferenceLogical(int reference) {
-        return reference % ((double) BetaSorterHardware.ticksPerRotation / 6) == 0;
+        return reference % ((double) SorterHardware.ticksPerRotation / 6) == 0;
     }
 
     /**

@@ -2,26 +2,23 @@ package org.firstinspires.ftc.teamcode.Core;
 
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
-import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherMode.IF_SAFE_NOW;
-import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherMode.WAIT_FOREVER;
-import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherMode.WAIT_FOR_TIME;
-import static org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware.LauncherSteps.*;
-import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
-import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.SPEED;
+import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.IF_SAFE_NOW;
+import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.WAIT_FOREVER;
+import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.WAIT_FOR_TIME;
+import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherSteps.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class BetaLauncherHardware {
+public class LauncherHardware {
 
     private Robot robot;
     public DcMotorEx motor;
     private static ezPID launcherPID;
 
 
-    public BetaLauncherHardware(Robot robotFile) {
+    public LauncherHardware(Robot robotFile) {
         robot = robotFile;
         motor = robot.launcherMotor1;
         // motor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(P, I, D, F));
@@ -30,11 +27,13 @@ public class BetaLauncherHardware {
     }
 
     public static double launcherCooldownDuration = 0.3;
+    public static double flickTime = 0.3; //TODO Optimize
 
     public boolean waitingToFire = false;
     boolean lockControls = false;
     boolean stopMotorAfter;
-    boolean doneFiring = false;
+    boolean firing = false;
+    boolean activeFiring = false;
 
     public static final int ticksPerRevolution = 28;
     public static final int revolutionsPerSecond = 100;
@@ -45,8 +44,6 @@ public class BetaLauncherHardware {
 
     public boolean onCooldown = false;
 
-    public boolean wantToOpenDoor;
-
     LauncherMode mode;
     private double waitTime;
     private ElapsedTime waitForSafeTimer = new ElapsedTime();
@@ -54,7 +51,7 @@ public class BetaLauncherHardware {
     enum LauncherSteps {
         READY_FOR_COMMANDS,
         STALLING_UNTIL_SAFE, CHECK_IF_SAFE, WAIT_FOR_TIME_FOR_SAFE,
-        REV_MOTOR, STALL_WHILE_MOTOR_REVVING, OPEN_DOOR, LAUNCHING, CLOSE_DOOR, RESET
+        REV_MOTOR, STALL_WHILE_MOTOR_REVVING, FLICK, UNFLICK, LAUNCHING, RESET
     }
     public enum LauncherMode {
         WAIT_FOREVER, WAIT_FOR_TIME, IF_SAFE_NOW
@@ -66,13 +63,12 @@ public class BetaLauncherHardware {
     private ElapsedTime cooldownTimer = new ElapsedTime();
 
     public void updateLauncherHardware() {
-        robot.telemetry.addLine("Untested launcher hardware, I choose you!");
         robot.telemetry.addData("Launcher step", currentLauncherStep);
         switch (currentLauncherStep) {
             case READY_FOR_COMMANDS:
                 if (waitingToFire) {
                     waitingToFire = false;
-                    doneFiring = false;
+                    firing = true;
                     switch (mode) {
                         case IF_SAFE_NOW:
                             nextStep(CHECK_IF_SAFE);
@@ -114,47 +110,58 @@ public class BetaLauncherHardware {
                 break;
             case STALL_WHILE_MOTOR_REVVING:
                 if (motorSpeedCheck(velocityTarget) /*|| cooldownTimer.seconds() >= .75*/) {
-                    nextStep(OPEN_DOOR);
+                    nextStep(FLICK);
                 }
                 break;
-            case OPEN_DOOR:
+            case FLICK:
                 lockControls = true;
+                activeFiring = true;
                 onCooldown = true;
-                wantToOpenDoor = true;
-                robot.sorterHardware.moveDoor(OPEN);
-                if (robot.sorterHardware.doorIs(OPEN)) {
-                    cooldownTimer.reset();
+                robot.sorterHardware.flick();
+                cooldownTimer.reset();
+                nextStep(UNFLICK);
+                break;
+            case UNFLICK:
+                if(cooldownTimer.seconds() >= flickTime) {
+                    robot.sorterHardware.resetFlicky();
                     nextStep(LAUNCHING);
                 }
                 break;
             case LAUNCHING:
-                if (cooldownTimer.seconds() >= launcherCooldownDuration) {
-                    nextStep(CLOSE_DOOR);
+                if (stopMotorAfter && cooldownTimer.seconds() >= launcherCooldownDuration) {
+                    nextStep(RESET);
+                }
+                else if (cooldownTimer.seconds() >= flickTime * 2) {
+                    nextStep(RESET);
                 }
                 break;
-            case CLOSE_DOOR:
-                wantToOpenDoor = false;
-                robot.sorterHardware.moveDoor(CLOSED);
-                nextStep(RESET);
-
-                break;
             case RESET:
+                // Stop the motor if requested
                 if (stopMotorAfter) setLauncherSpeed(0);
+
+                // Set the slot to empty now that we fired its contents
                 robot.sorterLogic.findCurrentSlotInPosition(FIRE).setOccupied(EMPTY);
+
+                // Update the booleans
                 lockControls = false;
+                activeFiring = false;
                 onCooldown = false;
-                doneFiring = true;
+                firing = false;
+
+                // All done, ready for the next one
                 nextStep(READY_FOR_COMMANDS);
                 break;
         }
     }
 
     public boolean doneFiring() {
-        if (doneFiring) {
-            doneFiring = false;
-            return true;
-        }
-        else return false;
+        return !firing;
+    }
+    public boolean isInFireSequence() {
+        return firing;
+    }
+    public boolean isActivelyFiring() {
+        return activeFiring;
     }
 
     public void fireNowIfSafe(double speedTarget, boolean useSpeedTarget, boolean stopMotorAfter){

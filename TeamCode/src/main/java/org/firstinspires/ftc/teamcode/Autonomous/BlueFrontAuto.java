@@ -267,27 +267,27 @@ public class BlueFrontAuto extends AutonomousPLUS {
         robot.launcher.setLauncherSpeed(1);
         //robot.sorterHardware.reference = robot.sorterHardware.findFastestRotationInTicks(robot.sorterHardware.motor.getCurrentPosition(), one);
         trySpammingSpin(false, one, 10);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorOpenPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyUpPosition);
         sleep(500);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorClosedPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyDownPosition);
         stallForTime(0.5);
 
 
         robot.launcher.setLauncherSpeed(1);
         //robot.sorterHardware.reference = robot.sorterHardware.findFastestRotationInTicks(robot.sorterHardware.motor.getCurrentPosition(), two);
         trySpammingSpin(false, two, 10);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorOpenPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyUpPosition);
         sleep(500);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorClosedPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyDownPosition);
         stallForTime(0.5);
 
 
         robot.launcher.setLauncherSpeed(1);
         //robot.sorterHardware.reference = robot.sorterHardware.findFastestRotationInTicks(robot.sorterHardware.motor.getCurrentPosition(), three);
         trySpammingSpin(false, three, 10);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorOpenPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyUpPosition);
         sleep(500);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorClosedPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyDownPosition);
         stallForTime(0.75);
 
         //reset to safe
@@ -300,17 +300,17 @@ public class BlueFrontAuto extends AutonomousPLUS {
 
         robot.launcher.setLauncherSpeed(1);
         trySpammingSpin(robot.sorterHardware.positionedCheck(), one, 10);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorOpenPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyUpPosition);
         sleep(doortime);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorClosedPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyDownPosition);
         stallForTime(0.5);
 
 
         robot.launcher.setLauncherSpeed(1);
         trySpammingSpin(robot.sorterHardware.positionedCheck(), two, 10);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorOpenPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyUpPosition);
         sleep(doortime);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorClosedPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyDownPosition);
         stallForTime(0.5);
 
         //reset to safe
@@ -323,9 +323,9 @@ public class BlueFrontAuto extends AutonomousPLUS {
 
         robot.launcher.setLauncherSpeed(1);
         trySpammingSpin(robot.sorterHardware.positionedCheck(), one, 10);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorOpenPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyUpPosition);
         sleep(500);
-        //robot.doorServo.setPosition(robot.sorterHardware.doorClosedPosition);
+        robot.flicky.setPosition(robot.sorterHardware.flickyDownPosition);
         stallForTime(0.5);
 
         //reset to safe

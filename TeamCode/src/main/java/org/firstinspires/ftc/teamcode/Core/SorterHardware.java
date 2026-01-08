@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.Core;
 
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.BlenderSteps.*;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.*;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.positionState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.BlenderSteps.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.*;
 
@@ -14,16 +14,22 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Configurable
-public class BetaSorterHardware  {
+public class SorterHardware {
 
     private final Robot robot;
     public ezPID blenderPID;
-    private final BetaLauncherHardware launcher;
+    private final LauncherHardware launcher;
     public DcMotorEx motor;
-    public Servo doorServo;
+    public Servo flicky;
     public CRServo feedServoL;
     public CRServo feedServoR;
-    public enum positionState {FIRE, LOAD, SWITCH}
+    public enum PositionState {
+        FIRE(1), LOAD(0), STORE(2), SWITCH(-1);
+        public final int offset;
+        PositionState(int offset) {
+            this.offset = offset;
+        }
+    }
 
     public int[] positions;
     public static final int ticksPerRotation = 8192;
@@ -31,8 +37,8 @@ public class BetaSorterHardware  {
     public static Double tickTolerance = 100.0;
     public boolean legalToSpin = false;
 
-    public double doorClosedPosition = 1;
-    public double doorOpenPosition = 0.75;
+    public double flickyDownPosition = 1;
+    public double flickyUpPosition = 0.75;
 
     public Robot.OpenClosed doorState;
 
@@ -53,15 +59,15 @@ public class BetaSorterHardware  {
     public final static double passiveFeederSpeed = 1;
 
     public double reference;
-    public BetaSorterHardware.positionState currentPositionState;
+    public PositionState currentPositionState;
 
-    public BetaSorterHardware(Robot robot) {
+    public SorterHardware(Robot robot) {
         this.robot = robot;
         motor = robot.sorterMotor;
-        //doorServo = robot.doorServo;
+        flicky = robot.flicky;
         launcher = robot.launcher;
-        //feedServoL = robot.feedServoL;
-        //feedServoR = robot.feedServoR;
+        feedServoL = robot.feedServoL;
+        feedServoR = robot.feedServoR;
 
 
 
@@ -170,11 +176,7 @@ public class BetaSorterHardware  {
     }
 
     public boolean doneMoving() {
-        if (doneMoving) {
-            doneMoving = false;
-            return true;
-        }
-        else return false;
+        return doneMoving;
     }
 
     public void prepareNewMovement(int targetTickPose) {
@@ -215,7 +217,7 @@ public class BetaSorterHardware  {
                 break;
 
             // Not in a position (-1, -2)
-            default: currentPositionState = positionState.SWITCH;
+            default: currentPositionState = PositionState.SWITCH;
         }
     }
 
@@ -310,20 +312,27 @@ public class BetaSorterHardware  {
     {
         switch (doorTarget) {
             case CLOSED:
-                doorServo.setPosition(doorClosedPosition);
+                flicky.setPosition(flickyDownPosition);
                 break;
             case OPEN:
-                doorServo.setPosition(doorOpenPosition);
+                flicky.setPosition(flickyUpPosition);
                 break;
         }
         doorState = doorTarget;
+    }
+
+    public void flick() {
+        flicky.setPosition(flickyUpPosition);
+    }
+    public void resetFlicky() {
+        flicky.setPosition(flickyDownPosition);
     }
 
     public boolean doorIs(Robot.OpenClosed target) {
         return doorState == target;
     }
 
-    public boolean inStateCheck(BetaSorterHardware.positionState targetState){
+    public boolean inStateCheck(PositionState targetState){
         return currentPositionState == targetState;
     }
 

@@ -1,16 +1,14 @@
 package org.firstinspires.ftc.teamcode.Core;
 
-import static org.firstinspires.ftc.teamcode.Core.BetaTurretLogic.swivelControllers.FINE;
-import static org.firstinspires.ftc.teamcode.Core.BetaTurretLogic.swivelControllers.RAW;
+import static org.firstinspires.ftc.teamcode.Core.TurretLogic.swivelControllers.FINE;
+import static org.firstinspires.ftc.teamcode.Core.TurretLogic.swivelControllers.RAW;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.R;
-
 @Configurable
-public class BetaTurretLogic {
+public class TurretLogic {
      Robot robot;
     PIDMotorGroup launcherMotors;
     public static double launcherP;
@@ -49,7 +47,7 @@ public class BetaTurretLogic {
     public Follower follower;
 
 
-    public BetaTurretLogic(Robot robot, Follower followerIN) {
+    public TurretLogic(Robot robot, Follower followerIN) {
         this.robot = robot;
         follower = followerIN;
         launcherMotors = new PIDMotorGroup(2, robot.launcherMotor1, robot.launcherMotor2);

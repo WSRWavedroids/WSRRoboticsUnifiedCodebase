@@ -3,15 +3,11 @@ package org.firstinspires.ftc.teamcode.Core;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.*;
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
 import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.text.method.Touch;
 
 import com.bylazar.panels.Panels;
@@ -52,7 +48,7 @@ public class Robot {
     public DcMotorEx launcherMotor;
 
     public Servo hammerServo;
-    public Servo doorServo;
+    public Servo flicky;
 
     public CRServo expandyServo;
 
@@ -69,9 +65,13 @@ public class Robot {
 
     public Limelight3A limelight;
 
+    public Servo fireRGB;
+    public Servo loadRGB;
+    public Servo storeRGB;
+
     public VoltageSensor voltageSensor;
 
-    // public WebcamName CamCam;
+   // public WebcamName CamCam;
 
     public HuskyLens husky;
 
@@ -89,18 +89,25 @@ public class Robot {
     public DriveMode controlMode = ROBOT_CENTRIC;
     public IMU.Parameters imuParameters;
     public WaveTag targetTag = new WaveTag();
-
     public enum patternColors {PPG, GPP, PGP}
-
     public patternColors pattern;
 
     public enum allianceSides {BLUE, RED}
-
     public allianceSides alliance;
 
+    public Vector2 robotPosition;
 
-    public BetaSorterHardware sorterHardware;
-    public BetaLauncherHardware launcher;
+    public Vector2 turretPosition;
+
+    public double robotHeading;
+
+    public double turretPositionOffsetXInches, turretPositionOffsetYInches; //Inches from pedro position
+
+
+
+
+    public SorterHardware sorterHardware;
+    public LauncherHardware launcher;
     public ArtifactLocator sorterLogic;
     public SensorHuskyLens inventoryCam;
     public Limelight_Randomization_Scanner randomizationScanner;
@@ -113,13 +120,13 @@ public class Robot {
     public static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
     public enum DriveMode {ROBOT_CENTRIC, PEDRO, LEGACY_FIELD_CENTRIC}
-
-    public enum OpenClosed {OPEN, CLOSED}
-
+    public enum OpenClosed {OPEN,CLOSED}
     public enum CardinalDirections {
         FORWARD, BACKWARD, LEFT, RIGHT,
         DIAGONAL_LEFT, DIAGONAL_RIGHT,
-        TURN_LEFT, TURN_RIGHT
+        TURN_LEFT, TURN_RIGHT}
+    public enum UpDown {
+        UP, DOWN
     }
 
     public boolean scanningForTargetTag = false;
@@ -145,7 +152,7 @@ public class Robot {
         launcherMotor = hardwareMap.get(DcMotorEx.class, "launcherMotor");
 
         //hammerServo = hardwareMap.get(Servo.class, "hammerServo");
-        doorServo = hardwareMap.get(Servo.class, "doorServo");
+        flicky = hardwareMap.get(Servo.class, "flicky");
 
         expandyServo = hardwareMap.get(CRServo.class, "expandyServo");
         intakeyServoL = hardwareMap.get(CRServo.class, "intakeyServoL");
@@ -199,8 +206,8 @@ public class Robot {
         //This is new..
         telemetry.addData("Status", "Initialized");
 
-        sorterHardware = new BetaSorterHardware(this);
-        launcher = new BetaLauncherHardware(this);
+        sorterHardware = new SorterHardware(this);
+        launcher = new LauncherHardware(this);
         sorterLogic = new ArtifactLocator(this);
         inventoryCam = new SensorHuskyLens(this);
         queue = new fireQueueWithStates(this);
@@ -222,9 +229,8 @@ public class Robot {
 
     /**
      * Runs the drive train in a cardinal direction.
-     *
      * @param direction The direction, a cardinalDirection enum
-     * @param ticks     The distance to move in motor ticks
+     * @param ticks The distance to move in motor ticks
      */
     public void setTargets(CardinalDirections direction, int ticks) {
 
@@ -304,13 +310,13 @@ public class Robot {
     /**
      * Turns off the motor encoders, to run purely on power.
      */
-    public void powerRunningMode() {
+    public void powerRunningMode()
+    {
         frontLeftDrive.setMode(RUN_WITHOUT_ENCODER);
         frontRightDrive.setMode(RUN_WITHOUT_ENCODER);
         backLeftDrive.setMode(RUN_WITHOUT_ENCODER);
         backRightDrive.setMode(RUN_WITHOUT_ENCODER);
     }
-
     public void powerSet(double speed) {
         frontLeftDrive.setPower(speed);
         frontRightDrive.setPower(speed);
@@ -322,14 +328,14 @@ public class Robot {
     /**
      * Sets the motors to run with encoder feedback.
      */
-    public void encoderRunningMode() {
+    public void encoderRunningMode(){
         frontLeftDrive.setMode(RUN_USING_ENCODER);
         frontRightDrive.setMode(RUN_USING_ENCODER);
         backLeftDrive.setMode(RUN_USING_ENCODER);
         backRightDrive.setMode(RUN_USING_ENCODER);
     }
 
-    public void encoderReset() {
+    public void encoderReset(){
         frontLeftDrive.setMode(STOP_AND_RESET_ENCODER);
         frontRightDrive.setMode(STOP_AND_RESET_ENCODER);
         backLeftDrive.setMode(STOP_AND_RESET_ENCODER);
@@ -340,7 +346,7 @@ public class Robot {
      * Adds motor data to telemetry and updates it.
      */
     @SuppressLint("DefaultLocale")
-    public void tellMotorOutput() {
+    public void tellMotorOutput(){
         telemetry.addData("Control Mode", controlMode);
         telemetry.addData("Motors", String.format("FL Power(%.2f) FL Location (%d) FL Target (%d)", frontLeftDrive.getPower(), frontLeftDrive.getCurrentPosition(), frontLeftDrive.getTargetPosition()));
         telemetry.addData("Motors", String.format("FR Power(%.2f) FR Location (%d) FR Target (%d)", frontRightDrive.getPower(), frontRightDrive.getCurrentPosition(), frontRightDrive.getTargetPosition()));
@@ -352,14 +358,14 @@ public class Robot {
 
     public double inchesToTicks(double inches) {
         // returns the inches * ticks per rotation / wheel circ
-        return ((inches / 12.25) * 537.6 / .5);
+        return ((inches/12.25) * 537.6 / .5);
         //todo Reference that 1 inch ~= 50 ticks
     }
 
     ElapsedTime timer = new ElapsedTime();
 
-
-    public void prepareAuto() {
+    @Deprecated
+    public void prepareAuto(){
         sorterHardware.moveDoor(CLOSED);
     }
 
@@ -367,7 +373,8 @@ public class Robot {
      * Updates the SorterHardware, LauncherHardware, ArtifactLocator, Limelight, and HuskyLens.
      * Also adds some data to telemetry.
      */
-    public void updateAllDaThings() {
+    public void updateAllDaThings()
+    {
         //sorterHardware.updateSorterHardware();
         //launcher.updateLauncherHardware();
         sorterLogic.update();
@@ -375,7 +382,8 @@ public class Robot {
         launcher.updateLauncherHardware();
         queue.updateQueueStates();
 
-        if (scanningForTargetTag) {
+        if(scanningForTargetTag)
+        {
             targetTag = targetScanner.tagInfo();
         }
 
@@ -384,10 +392,12 @@ public class Robot {
         inventoryCam.updateBlockScan();
 
 
+
         dumpAllTelemetryFromUpdate();
     }
 
-    public void dumpAllTelemetryFromUpdate() {
+    public void dumpAllTelemetryFromUpdate()
+    {
         //Reliant functions not present
         telemetry.addData("Sorter Position: ", sorterHardware.motor.getCurrentPosition());
         telemetry.addData("Reference", sorterHardware.reference);
@@ -400,10 +410,10 @@ public class Robot {
 
     /**
      * Sets the intake and feeder servos to run.
-     *
      * @param num The power input, from -1.0 to 1.0.
      */
-    public void runBasicIntake(double num) {
+    public void runBasicIntake(double num)
+    {
         intakeyServoR.setPower(num);
         intakeyServoL.setPower(num);
         transferServoR.setPower(num);
@@ -418,18 +428,21 @@ public class Robot {
         //sorterHardware.prepareNewMovement(sorterHardware.motor.getCurrentPosition(), sorterLogic.findFirstType(EMPTY).getLoadPosition());/*replace with first empty*/
     }
 
-    public void cancelAutoIntake() {
+    public void cancelAutoIntake()
+    {
         sorterHardware.setFeeders(PASSIVE);
         runBasicIntake(0);
     }
 
-    public void readyHardware(boolean resetEncoder) {
-        sorterHardware.doorServo.setPosition(1);
+    public void readyHardware(boolean resetEncoder)
+    {
+        sorterHardware.flicky.setPosition(1);
         sorterHardware.moveDoor(CLOSED);
         launcher.setLauncherSpeed(0);
         inventoryCam.updateBlockScan();
 
-        if (resetEncoder) {
+        if(resetEncoder)
+        {
             sorterHardware.resetSorterEncoder();
             encoderReset();
             sorterHardware.reference = 0;

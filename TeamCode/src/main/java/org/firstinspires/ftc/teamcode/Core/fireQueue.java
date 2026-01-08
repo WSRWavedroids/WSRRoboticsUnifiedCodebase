@@ -15,9 +15,9 @@ public class fireQueue {
     ///also this could clean up autonomous firing sequences a bit
 
     private Robot robot;
-    private BetaSorterHardware sorterHardware;
+    private SorterHardware sorterHardware;
     private ArtifactLocator sorterLogic;
-    private BetaLauncherHardware launcherHardware;
+    private LauncherHardware launcherHardware;
     private SensorHuskyLens inventoryCam;
 
     private boolean firstFired = false;
