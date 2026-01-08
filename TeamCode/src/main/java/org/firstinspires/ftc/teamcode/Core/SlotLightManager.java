@@ -40,14 +40,14 @@ public class SlotLightManager {
         }
 
         public void update() {
-            if (blinky && blinkyTimer.seconds() * 10 % 2 == 0){
+            final int hertz = 2;
+            if (blinky && ((int) blinkyTimer.seconds()) * hertz % (hertz * 2) == 0) {
                 light.setPosition(0);
             } else {
                 light.setPosition(robot.sorterLogic.findCurrentSlotInPosition(position)
                         .getOccupied()
                         .lightColor);
             }
-
         }
 
         public void blinkify(boolean blink) {

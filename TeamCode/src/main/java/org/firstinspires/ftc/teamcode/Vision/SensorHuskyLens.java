@@ -178,19 +178,6 @@ public class SensorHuskyLens extends LinearOpMode {
         }
     }
 
-    @Deprecated
-    void checkZone(HuskyLens.Block blockData) {
-        for(ArtifactLocator.Zone checkingZone : robot.sorterLogic.allZones) {
-            if((checkingZone.inRange(blockData.x, blockData.y))) {
-                robot.sorterLogic.sortOutBlobs(blockData.id);
-                doTele(robot.sorterLogic.allZones.indexOf(checkingZone), blockData);
-            }
-            else {
-                robot.sorterLogic.sortOutBlobs(0);
-            }
-        }
-    }
-
     public void updateBlockScan()
     {
         HuskyLens.Block[] blocks = huskyLens.blocks();

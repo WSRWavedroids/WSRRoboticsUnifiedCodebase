@@ -71,13 +71,10 @@ public class SorterHardware {
 
 
 
-        positions = new int[6];
-        positions[0] = 0; //Slot A load
-        positions[1] = (int) (ticksPerRotation / 2); //Slot A launch
-        positions[2] = (int) (2 * ticksPerRotation/3); //Slot B load
-        positions[3] = (int) (ticksPerRotation / 6); // Slot B launch
-        positions[4] = (int) (ticksPerRotation / 3); //Slot C load
-        positions[5] = (int) (5 * ticksPerRotation / 6); //Slot C launch
+        positions = new int[3];
+        positions[0] = 0;
+        positions[1] = ticksPerRotation / 3;
+        positions[2] = 2 * ticksPerRotation / 3;
 
         blenderPID = new ezPID(motor, ticksPerRotation, kp, ki, kd, kf, kneecap, tickTolerance, POSITION);
         //reference = 0;

@@ -29,15 +29,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.ArrayList;
 
 public class ArtifactLocator {
-
-    //private ExposureControl exposureControl;
-    //private GainControl gainControl;
-
-    //private ColorBlobLocatorProcessor purpleLocator;
-    //private ColorBlobLocatorProcessor greenLocator;
-    //private VisionPortal portal;
-    //private List<ColorBlobLocatorProcessor.Blob> purpleBlobList;
-    //private List<ColorBlobLocatorProcessor.Blob> greenBlobList;
     public enum SlotState {
         EMPTY(1),
         PURPLE(0.71),
@@ -53,20 +44,21 @@ public class ArtifactLocator {
     public Slot slotB;
     public Slot slotC;
     public Slot noSlot;
-    public Zone zone1;
-    public Zone zone2;
-    public Zone zone3;
     public ArrayList<Slot> allSlots = new ArrayList<>();
-    public ArrayList<Zone> allZones = new ArrayList<>();
+
     public ArrayList<Integer> offsetPositions = new ArrayList<>();
     public SlotInventory inventory;
 
     public Robot robot;
+    public SorterHardware sorterHardware;
+    public LauncherHardware launcher;
 
     private ElapsedTime sortCooldown = new ElapsedTime();
 
     public ArtifactLocator(Robot robotFile) {
         robot = robotFile;
+        this.sorterHardware = robot.sorterHardware;
+        this.launcher = robot.launcher;
         initLogic();
     }
 
@@ -75,16 +67,11 @@ public class ArtifactLocator {
      * iterate through them.
      */
     public void initLogic() {
-        double ticksPerRotation = SorterHardware.ticksPerRotation;
         // Define slots
-        slotA = new Slot(0, (int) (ticksPerRotation / 3), "A");
-        slotB = new Slot((int) (2 * ticksPerRotation / 3), 0, "B");
-        slotC = new Slot((int) (ticksPerRotation / 3), (int) (2 * ticksPerRotation / 3), "C");
+        slotA = new Slot(sorterHardware.positions[0], sorterHardware.positions[1], "A");
+        slotB = new Slot(sorterHardware.positions[2], sorterHardware.positions[0], "B");
+        slotC = new Slot(sorterHardware.positions[1], sorterHardware.positions[2], "C");
         noSlot = new NoSlot();
-
-        zone1 = new Zone(140, 180, 0, 120);
-        zone2 = new Zone(0, 160, 0, 120);
-        zone3 = new Zone(0, 160, 120, 240);
 
         //Sort things into lists
         offsetPositions.add(0, slotA.getLoadPosition());
@@ -92,8 +79,6 @@ public class ArtifactLocator {
         offsetPositions.add(2, slotB.getLoadPosition());
 
         allSlots.add(slotA); allSlots.add(slotB); allSlots.add(slotC);
-
-        allZones.add(zone1); allZones.add(zone2); allZones.add(zone3);
 
         // Define the inventory
         inventory = new SlotInventory();
@@ -225,30 +210,6 @@ public class ArtifactLocator {
             if (currentSlot.doesNotContain(slotType, UNKNOWN)) {
                 return currentSlot;
             }
-        }
-        return noSlot;
-    }
-
-    /**
-     * Uses the current offset to find which Slot is in the specified Zone.
-     * @param zone The target Zone.
-     * @return The found Slot.
-     */
-    public Slot findSlotByZone(Zone zone) {
-        int offset = getCurrentOffset();
-        if (offset == -1) {
-            return noSlot;
-        }
-        int zoneIndex = allZones.indexOf(zone) + 1;
-        int x = zoneIndex - offset;
-
-        switch (x) {
-            case 1:
-                return slotA;
-            case 3:
-                return slotB;
-            case 5:
-                return slotC;
         }
         return noSlot;
     }
@@ -443,7 +404,7 @@ public class ArtifactLocator {
     /**
      * The NoSlot is a special case. It will create a "fake" Slot that always returns the
      * current blender reference for positions and UNKNOWN for occupancy. This is to ensure the
-     * findFirstSlot(), findFirstNoSlot(), and findSlotByZone() functions can still return a "no
+     * findFirstSlot(), findFirstNoSlot() functions can still return a "no
      * Slot found" option without returning null.
      */
     public class NoSlot extends Slot {
@@ -530,39 +491,5 @@ public class ArtifactLocator {
             return greenCount == 1 && purpleCount == 2;
         }
 
-    }
-
-    /**
-     * The Zone class is used to define and range of values for the camera to use. If the
-     * center of a Blob is within the range (which is easy to check by calling the inRange() boolean
-     * function), the Artifact represented by the Blob is within the Slot for which the range
-     * represents.
-     * <p>
-     * This class also just represents the physical position of the blender if needed.
-     */
-    public class Zone {
-        private final float xMin;
-        private final float xMax;
-        private final float yMin;
-        private final float yMax;
-        Zone(float xMin, float xMax, float yMin, float yMax) {
-            this.xMin = xMin;
-            this.xMax = xMax;
-            this.yMin = yMin;
-            this.yMax = yMax;
-        }
-
-        /**
-         * The inRange() function checks to see if a given coordinate is within the Zone. Its
-         * intended implementation is to check whether or not an Artifact, represented by a Blob, is
-         * within a Slot, represented by a Zone. Input the center coordinates of a Blob to test
-         * this.
-         * @param inputX The x-coordinate to test
-         * @param inputY The y-coordinate to test
-         * @return Whether or not the point is in the range (Boolean)
-         */
-        public boolean inRange(float inputX, float inputY) {
-            return inputX > xMin & inputX < xMax & inputY > yMin & inputY < yMax;
-        }
     }
 }
