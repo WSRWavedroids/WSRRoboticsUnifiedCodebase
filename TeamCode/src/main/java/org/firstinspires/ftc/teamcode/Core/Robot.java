@@ -3,11 +3,14 @@ package org.firstinspires.ftc.teamcode.Core;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.*;
-import static org.firstinspires.ftc.teamcode.Core.BetaSorterHardware.FeederState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.INTAKE;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.PASSIVE;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.text.method.Touch;
 
 import com.bylazar.panels.Panels;
@@ -450,7 +453,7 @@ public class Robot {
     }
 
     //This will need to be moved, but for now...
-    ArtifactLocator.SlotState runSideScannersWithRGB()
+    Integer runSideScannersWithRGB()
     {
         float purpleMinRed = 150;
         float purpleMaxRed = 215;
@@ -491,20 +494,20 @@ public class Robot {
         if(averagedBlue > purpleMinBlue && averagedBlue < purpleMaxBlue &&
                 averagedRed > purpleMinRed && averagedRed < purpleMaxRed &&
                 averagedGreen > purpleMinGreen && averagedGreen < purpleMaxGreen) {
-            return PURPLE;
+            return 1;
 
 
         }
         else if(averagedBlue > greenMinBlue && averagedBlue < greenMaxBlue &&
                 averagedRed > greenMinRed && averagedRed < greenMaxRed &&
                 averagedGreen > greenMinGreen && averagedGreen < greenMaxGreen) {
-            return GREEN;
+            return 2;
         }
-            return EMPTY;
+            return 3;
 
     }
 
-    ArtifactLocator.SlotState runSideScannersWithHSV()
+    Integer runSideScannersWithHSV()
     {
         int purpleMinHue = 255;
         int purpleMaxHue = 295;
@@ -521,14 +524,14 @@ public class Robot {
 
         if(hsvValues[0] > purpleMinHue && hsvValues[0] < purpleMaxHue)
         {
-            return PURPLE;
+            return 1;
 
         }
         else if(hsvValues[0] > greenMinHue && hsvValues[0] < greenMaxHue)
         {
-            return GREEN;
+            return 2;
         }
-        return EMPTY;
+        return 3;
     }
 
 

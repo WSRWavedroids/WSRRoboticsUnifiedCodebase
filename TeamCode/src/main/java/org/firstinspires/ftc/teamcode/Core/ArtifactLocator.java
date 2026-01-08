@@ -114,7 +114,6 @@ public class ArtifactLocator {
      */
     public void sortOutBlobs(int state) {
         SlotState newState;
-        Slot loadSlot;
 
         switch (state) {
             case 1: newState = PURPLE; break;
@@ -123,7 +122,11 @@ public class ArtifactLocator {
             default: newState = UNKNOWN;
         }
 
-        loadSlot = this.findCurrentSlotInPosition(LOAD);
+        sortOutBlobs(newState);
+    }
+
+    public void sortOutBlobs(SlotState newState) {
+        Slot loadSlot = this.findCurrentSlotInPosition(LOAD);
 
         if(!loadSlot.contains(newState)) {
             loadSlot.setOccupied(newState);
