@@ -238,7 +238,6 @@ public class ArtifactLocator {
         }
     }
 
-    //TODO Move to LauncherHardware???
     /**
      * Uses the blender encoder and offsetPositions to calculate which offset position the blender
      * is currently in.
@@ -252,7 +251,6 @@ public class ArtifactLocator {
         }
     }
 
-    //TODO Move to LauncherHardware??? Maybe replace it with magnets.
     /**
      * Compares the current motor position to offsetPositions to
      * calculate which offset position the blender is closest to.
@@ -298,8 +296,14 @@ public class ArtifactLocator {
         return ticks;
     }
 
+
+    /**
+     * Tries to see if the current reference is OK (does not work)
+     * @param reference The input reference
+     * @return Whether or not it's legal
+     */
     public boolean isCurrentReferenceLogical(int reference) {
-        return reference % ((double) SorterHardware.ticksPerRotation / 6) == 0;
+        return reference % ((double) SorterHardware.ticksPerRotation / 3) == 0;
     }
 
     /**
@@ -490,6 +494,5 @@ public class ArtifactLocator {
         public boolean canMakePattern() {
             return greenCount == 1 && purpleCount == 2;
         }
-
     }
 }

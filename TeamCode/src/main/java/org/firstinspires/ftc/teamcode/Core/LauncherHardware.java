@@ -20,7 +20,7 @@ public class LauncherHardware {
 
     public LauncherHardware(Robot robotFile) {
         robot = robotFile;
-        motor = robot.launcherMotor1;
+        motor = robot.launcherMotor;
         // motor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(P, I, D, F));
         motor.setDirection(REVERSE);
         waitingToFire = false;

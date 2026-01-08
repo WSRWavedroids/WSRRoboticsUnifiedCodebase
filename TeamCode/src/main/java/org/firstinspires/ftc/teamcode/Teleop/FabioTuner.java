@@ -37,9 +37,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Core.BetaLauncherHardware;
-import org.firstinspires.ftc.teamcode.Core.BetaSorterHardware;
+import org.firstinspires.ftc.teamcode.Core.LauncherHardware;
 import org.firstinspires.ftc.teamcode.Core.Robot;
+import org.firstinspires.ftc.teamcode.Core.SorterHardware;
 
 
 /**
@@ -67,8 +67,8 @@ public class FabioTuner extends OpMode {
     private double speed = 0.75;
     //private double storedSpeed;
     public Robot Bot;
-    public BetaSorterHardware sorter;
-    public BetaLauncherHardware launcher;
+    public SorterHardware sorter;
+    public LauncherHardware launcher;
 
 
     /*
