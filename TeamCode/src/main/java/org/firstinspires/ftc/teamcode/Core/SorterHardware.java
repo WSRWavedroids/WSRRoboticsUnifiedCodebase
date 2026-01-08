@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Core;
 
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.BlenderSteps.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
@@ -7,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.*;
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -21,6 +23,7 @@ public class SorterHardware {
     private final LauncherHardware launcher;
     public DcMotorEx motor;
     public Servo flicky;
+    public AnalogInput flickyFeedback;
     public CRServo feedServoL;
     public CRServo feedServoR;
     public enum PositionState {
@@ -63,11 +66,12 @@ public class SorterHardware {
 
     public SorterHardware(Robot robot) {
         this.robot = robot;
-        motor = robot.sorterMotor;
-        flicky = robot.flicky;
-        launcher = robot.launcher;
-        feedServoL = robot.feedServoL;
-        feedServoR = robot.feedServoR;
+        this.motor = robot.sorterMotor;
+        this.flicky = robot.flicky;
+        this.flickyFeedback = robot.flickyFeedback;
+        this.launcher = robot.launcher;
+        this.feedServoL = robot.feedServoL;
+        this.feedServoR = robot.feedServoR;
 
 
 
@@ -257,7 +261,7 @@ public class SorterHardware {
 
         double out = kneecap * ((kp * error) + (ki * integralSum) + (kd * derivative) + feedforward);
 
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setMode(RUN_WITHOUT_ENCODER);
         motor.setPower(out);
 
         lastError = error;
@@ -344,7 +348,21 @@ public class SorterHardware {
 
     public void resetSorterEncoder()
     {
-        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setMode(STOP_AND_RESET_ENCODER);
+        motor.setMode(RUN_WITHOUT_ENCODER);
+    }
+
+    /**
+     * Checks to see if the flicky servo is in its target position.
+     * @return In position or not
+     */
+    public boolean flickyInPosition() {
+        final double maxVoltage = 6.0;
+        final double tolerance = 0.05;
+
+        double target = flicky.getPosition();
+        double voltage = flickyFeedback.getVoltage();
+        double position = voltage / maxVoltage;
+        return position > target - tolerance && position < target + tolerance;
     }
 }
