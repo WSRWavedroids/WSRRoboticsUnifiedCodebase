@@ -125,16 +125,16 @@ public class LauncherHardware {
                 nextStep(UNFLICK);
                 break;
             case UNFLICK:
-                if(robot.sorterHardware.flickyInPosition()) {
+                if(robot.sorterHardware.flickyInPosition() || cooldownTimer.seconds() >= flickTime) {
                     robot.sorterHardware.resetFlicky();
                     nextStep(LAUNCHING);
                 }
                 break;
             case LAUNCHING:
-                if (stopMotorAfter && cooldownTimer.seconds() >= launcherCooldownDuration) {
+                if (stopMotorAfter && cooldownTimer.seconds() >= launcherCooldownDuration && cooldownTimer.seconds() >= flickTime * 2) {
                     nextStep(RESET);
                 }
-                else if (robot.sorterHardware.flickyInPosition()) {
+                else if (robot.sorterHardware.flickyInPosition() || cooldownTimer.seconds() >= flickTime * 2) {
                     nextStep(RESET);
                 }
                 break;
