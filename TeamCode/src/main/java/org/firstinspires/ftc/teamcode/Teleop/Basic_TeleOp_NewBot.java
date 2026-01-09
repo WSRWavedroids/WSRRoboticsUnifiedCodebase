@@ -402,7 +402,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             currentStep = INPUT;
         } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
             robot.launchTune = pwrtuning * 2000;
-            setLaunchPower(gamepad2.left_trigger, pwrtuning * -2000);
+            setLaunchPower(gamepad2.left_trigger, pwrtuning * 2000);
             currentStep = INPUT;
         } else if (currentStep == INPUT){
             robot.launchTune = 0;
