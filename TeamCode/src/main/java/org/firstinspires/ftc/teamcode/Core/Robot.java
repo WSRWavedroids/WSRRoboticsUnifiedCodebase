@@ -53,8 +53,6 @@ public class Robot {
     public Servo hammerServo;
     public Servo flicky;
 
-    public CRServo expandyServo;
-
     public CRServo intakeyServoR;
     public CRServo intakeyServoL;
 
@@ -73,8 +71,6 @@ public class Robot {
     public Servo storeRGB;
 
     public VoltageSensor voltageSensor;
-
-   // public WebcamName CamCam;
 
     public HuskyLens husky;
 
@@ -157,7 +153,6 @@ public class Robot {
         //hammerServo = hardwareMap.get(Servo.class, "hammerServo");
         flicky = hardwareMap.get(Servo.class, "flicky");
 
-        expandyServo = hardwareMap.get(CRServo.class, "expandyServo");
         intakeyServoL = hardwareMap.get(CRServo.class, "intakeyServoL");
         intakeyServoR = hardwareMap.get(CRServo.class, "intakeyServoR");
         feedServoL = hardwareMap.get(CRServo.class, "feedServoL");
@@ -186,18 +181,12 @@ public class Robot {
         );
 
         // This section sets the direction of all of the motors. Depending on the motor, this may change later in the program.
-        frontLeftDrive.setDirection(FORWARD);
-        frontRightDrive.setDirection(REVERSE);
-        backLeftDrive.setDirection(FORWARD);
-        backRightDrive.setDirection(REVERSE);
+        frontLeftDrive.setDirection(REVERSE);
+        frontRightDrive.setDirection(FORWARD);
+        backLeftDrive.setDirection(REVERSE);
+        backRightDrive.setDirection(FORWARD);
 
         sorterMotor.setDirection(REVERSE);
-
-        intakeyServoL.setDirection(FORWARD);
-        intakeyServoR.setDirection(REVERSE);
-
-        transferServoL.setDirection(FORWARD);
-        transferServoR.setDirection(REVERSE);
 
         // This tells the motors to chill when we're not powering them.
         frontRightDrive.setZeroPowerBehavior(BRAKE);
@@ -378,8 +367,6 @@ public class Robot {
      */
     public void updateAllDaThings()
     {
-        //sorterHardware.updateSorterHardware();
-        //launcher.updateLauncherHardware();
         sorterLogic.update();
         sorterHardware.updateSorterHardware();
         launcher.updateLauncherHardware();
@@ -453,86 +440,7 @@ public class Robot {
     }
 
     //This will need to be moved, but for now...
-    Integer runSideScannersWithRGB()
-    {
-        float purpleMinRed = 150;
-        float purpleMaxRed = 215;
-        float greenMinRed = 70;
-        float greenMaxRed = 130;
-        float purpleMinGreen= 70;
-        float purpleMaxGreen= 130;
-        float greenMinGreen = 150;
-        float greenMaxGreen = 215;
-        float purpleMinBlue= 170;
-        float purpleMaxBlue= 230;
-        float greenMinBlue = 70;
-        float greenMaxBlue = 130;
 
-        //Normalize to prevent color shift from lighting intensity
-        float leftNormGreen, leftNormRed, leftNormBlue, rightNormGreen, rightNormRed, rightNormBlue;
-        NormalizedRGBA leftNormalizedColors = leftColorScanner.getNormalizedColors();
-        NormalizedRGBA rightNormalizedColors = rightColorScanner.getNormalizedColors();
-        leftNormGreen = leftNormalizedColors.green / leftNormalizedColors.alpha;
-        leftNormRed = leftNormalizedColors.red / leftNormalizedColors.alpha;
-        leftNormBlue = leftNormalizedColors.blue / leftNormalizedColors.alpha;
-        rightNormGreen = rightNormalizedColors.green / leftNormalizedColors.alpha;
-        rightNormRed = rightNormalizedColors.red / leftNormalizedColors.alpha;
-        rightNormBlue = rightNormalizedColors.blue / leftNormalizedColors.alpha;
-
-        //Average in case of ball holes
-        float averagedRed = (leftNormRed + rightNormRed)/2;
-        float averagedGreen = (leftNormGreen + rightNormGreen)/2;
-        float averagedBlue = (leftNormBlue + rightNormBlue)/2;
-
-        telemetry.addData("Red: ", averagedRed);
-        telemetry.addData("Green: ", averagedGreen);
-        telemetry.addData("Blue: ", averagedBlue);
-        telemetry.update();
-
-        //Now take our values and do something with them.
-
-        if(averagedBlue > purpleMinBlue && averagedBlue < purpleMaxBlue &&
-                averagedRed > purpleMinRed && averagedRed < purpleMaxRed &&
-                averagedGreen > purpleMinGreen && averagedGreen < purpleMaxGreen) {
-            return 1;
-
-
-        }
-        else if(averagedBlue > greenMinBlue && averagedBlue < greenMaxBlue &&
-                averagedRed > greenMinRed && averagedRed < greenMaxRed &&
-                averagedGreen > greenMinGreen && averagedGreen < greenMaxGreen) {
-            return 2;
-        }
-            return 3;
-
-    }
-
-    Integer runSideScannersWithHSV()
-    {
-        int purpleMinHue = 255;
-        int purpleMaxHue = 295;
-
-        int greenMinHue = 85;
-        int greenMaxHue = 158;
-
-        int averagedRed = (leftColorScanner.red() + rightColorScanner.red())/2;
-        int averagedGreen = (leftColorScanner.green() + rightColorScanner.green())/2;
-        int averagedBlue = (leftColorScanner.blue() + rightColorScanner.blue())/2;
-
-        float[] hsvValues = new float[3];
-        Color.RGBToHSV(averagedRed, averagedGreen, averagedBlue, hsvValues);
-
-        if(hsvValues[0] > purpleMinHue && hsvValues[0] < purpleMaxHue)
-        {
-            return 1;
-
-        }
-        else if(hsvValues[0] > greenMinHue && hsvValues[0] < greenMaxHue)
-        {
-            return 2;
-        }
-        return 3;
-    }
 
 
 }
