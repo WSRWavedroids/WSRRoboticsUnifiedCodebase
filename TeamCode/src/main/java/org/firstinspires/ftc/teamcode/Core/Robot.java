@@ -46,7 +46,6 @@ public class Robot {
     public DcMotorEx intakeMotor;
     public DcMotorEx swivelMotor;
 
-    public Servo hammerServo;
     public Servo flicky;
     public AnalogInput flickyFeedback;
     public CRServo feedServo;
