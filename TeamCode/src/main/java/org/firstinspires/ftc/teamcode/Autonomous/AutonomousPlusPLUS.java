@@ -467,30 +467,46 @@ public class AutonomousPlusPLUS {
     int YoinkStep = 0;
     boolean firingInSequence;
 
-    public void Yoinkify(int ticks, double speed)
+    public void Yoinkify(int ticks, long pause) {
+
+
+    }
+
+enum yoinkstates{CHECKINVENTORY, ROTATE, BEGIN, STOP, BACKUP}
+    private yoinkstates state = yoinkstates.BEGIN;
+    public void AutoSortIntaked(int ticks, double speed)
     {
         robot.setTargets(FORWARD, ticks);
-        switch(YoinkStep)
+        switch(state)
         {
-            case 0:
+            case BEGIN:
+                //enable intake
+                state = yoinkstates.CHECKINVENTORY;
+                break;
+
+            case CHECKINVENTORY:
                 if(robot.sorterLogic.inventory.getTotalCount() > 3)
                 {
-                    YoinkStep = 2;
+                    state = yoinkstates.STOP;
                 }
                 else
                 {
                     YoinkStep = 1;
                 }
                 break;
-            case 1: //move to slot
+            case ROTATE: //move to slot
                 //Enable Intake
                 robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(EMPTY).getLoadPosition());
-                YoinkStep = 0;
+                state = yoinkstates.CHECKINVENTORY;
                 break;
-            case 2:
+            case STOP:
                //Disable Intake
-               YoinkStep = 0;
+                state = yoinkstates.BACKUP;
                break;
+            case BACKUP:
+                //Backup
+                break;
+
 
         }
     }

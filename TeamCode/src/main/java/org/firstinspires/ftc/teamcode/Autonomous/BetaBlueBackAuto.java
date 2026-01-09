@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import static org.firstinspires.ftc.teamcode.Autonomous.BetaBlueFrontAuto.Step.UN_TURN;
 import static org.firstinspires.ftc.teamcode.Autonomous.BetaBlueFrontAuto.Step.YAY;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -36,7 +37,7 @@ public class BetaBlueBackAuto extends OpMode {
 
     private enum Steps {
         START, MOVETURRETONE, FIRE3, MOVEFORWARD, TURN, YOINK, BACKUP,
-        STRAFE, MOVETURRETTWO, FIRE3AGAIN, RESET, UNPARK
+        STRAFE, MOVETURRETTWO, FIRE3AGAIN, RESET, UNPARK, UN_TURN
 
     }
     private Steps currentStep = Steps.START;
@@ -115,44 +116,50 @@ public class BetaBlueBackAuto extends OpMode {
                 nextStep(Steps.MOVETURRETONE);
                 break;
             case MOVETURRETONE:
-                //robot.turret.manualOverridePositionInDegs = -30;
-                //robot.turret.runTurret();
+                robot.turret.manualOverridePositionInDegs = -30;
+                robot.turret.runTurret();
                 nextStep(Steps.MOVEFORWARD);
                 break;
             case MOVEFORWARD:
-                if(/*robot.turret.fineSwivelController.withinTolerance*/false)
+                if(robot.turret.fineSwivelController.withinTolerance)
                 {
-                    auto.moveRobotForward(500, 10);
+                    auto.moveRobotForward(500);
                     nextStep(Steps.TURN);
                 }
                 break;
             case TURN:
                 if(auto.checkMovement())
                 {
-                    auto.turnRobotRight(700, 12);
+                    auto.turnRobotRight(700);
                     nextStep(Steps.YOINK);
                 }
                 break;
             case YOINK:
                 if(auto.checkMovement())
                 {
-                    auto.turnRobotRight(700, 12);
+                    auto.Yoinkify(950, 12);
+
                     nextStep(Steps.BACKUP);
+                }
+                break;
+            case UN_TURN:
+                if(auto.checkMovement())
+                {
+                    auto.turnRobotLeft(700);
+                    nextStep(Steps.YOINK);
                 }
                 break;
             case BACKUP:
                 if(auto.checkMovement())
                 {
-                    nextStep(Steps.UNPARK);
+                    auto.moveRobotBackward(500);
+                    nextStep(Steps.FIRE3AGAIN);
                 }
-                break;
-
-            case UNPARK:
-                if(robot.sorterHardware.doneMoving())
+            case FIRE3AGAIN:
+                if(auto.checkMovement())
                 {
-                    super.requestOpModeStop();
+
                 }
-                break;
         }
 
         robot.updateAllDaThings();

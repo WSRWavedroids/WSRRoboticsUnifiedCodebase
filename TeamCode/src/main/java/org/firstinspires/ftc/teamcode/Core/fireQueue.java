@@ -5,8 +5,6 @@ import static org.firstinspires.ftc.teamcode.Core.fireQueue.firingQueue.*;
 
 import com.bylazar.configurables.annotations.Configurable;
 
-import org.firstinspires.ftc.teamcode.Vision.SensorHuskyLens;
-
 
 @Configurable
 public class fireQueue {
@@ -18,7 +16,6 @@ public class fireQueue {
     private SorterHardware sorterHardware;
     private ArtifactLocator sorterLogic;
     private LauncherHardware launcherHardware;
-    private SensorHuskyLens inventoryCam;
 
     private boolean firstFired = false;
     private boolean secondFired = false;
@@ -35,7 +32,6 @@ public class fireQueue {
         sorterHardware = robot.sorterHardware;
         sorterLogic = robot.sorterLogic;
         launcherHardware = robot.launcher;
-        inventoryCam = robot.inventoryCam;
 
         balls = new queueBall[3];
 

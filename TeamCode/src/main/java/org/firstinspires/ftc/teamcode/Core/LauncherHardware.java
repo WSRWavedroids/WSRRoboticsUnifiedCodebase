@@ -15,12 +15,15 @@ public class LauncherHardware {
 
     private Robot robot;
     public DcMotorEx motor;
+
+    private TurretLogic turret;
     private static ezPID launcherPID;
 
 
     public LauncherHardware(Robot robotFile) {
         robot = robotFile;
         motor = robot.launcherMotor;
+        turret = robot.turret;
         // motor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(P, I, D, F));
         motor.setDirection(REVERSE);
         waitingToFire = false;
@@ -194,8 +197,9 @@ public class LauncherHardware {
     }
 
     public void setLauncherSpeed(double targetspeed) {
-        velocityTarget = ticksPerRevolution * (revolutionsPerSecond * targetspeed);
+        //velocityTarget = ticksPerRevolution * (revolutionsPerSecond * targetspeed);
         motor.setVelocity(velocityTarget);
+        //turret.launcherController.runCalledPID(targetspeed);
     }
 
     public boolean motorSpeedCheck(double speedTarget) {

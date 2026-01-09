@@ -70,8 +70,7 @@ public class SorterHardware {
         this.flicky = robot.flicky;
         this.flickyFeedback = robot.flickyFeedback;
         this.launcher = robot.launcher;
-        this.feedServoL = robot.feedServoL;
-        this.feedServoR = robot.feedServoR;
+        this.feedServoL = robot.feedServo;
 
 
 
@@ -285,9 +284,9 @@ public class SorterHardware {
         int howManyCycles = (int) (currentPosition / ticksPerRotation);
 
         int[] slotSpaces = new int[3];
-        slotSpaces[0] = (int) (targetPosition + (howManyCycles - 1) * ticksPerRotation);
-        slotSpaces[1] = (int) (targetPosition + howManyCycles * ticksPerRotation);
-        slotSpaces[2] = (int) (targetPosition + (howManyCycles + 1) * ticksPerRotation);
+        slotSpaces[0] =  (targetPosition + (howManyCycles - 1) * ticksPerRotation);
+        slotSpaces[1] =  (targetPosition + howManyCycles * ticksPerRotation);
+        slotSpaces[2] =  (targetPosition + (howManyCycles + 1) * ticksPerRotation);
 
         int bestPosition = slotSpaces[0];
         int smallestDistance = Math.abs(slotSpaces[0] - currentPosition);

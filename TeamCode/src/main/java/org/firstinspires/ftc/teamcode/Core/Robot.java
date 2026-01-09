@@ -3,33 +3,27 @@ package org.firstinspires.ftc.teamcode.Core;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.*;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.INTAKE;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.PASSIVE;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
-import android.text.method.Touch;
 
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
-import com.qualcomm.hardware.dfrobot.HuskyLens;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -37,7 +31,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Vision.Limelight_Target_Scanner;
-import org.firstinspires.ftc.teamcode.Vision.SensorHuskyLens;
 import org.firstinspires.ftc.teamcode.Vision.WaveTag;
 import org.firstinspires.ftc.teamcode.Vision.Limelight_Randomization_Scanner;
 
@@ -50,19 +43,13 @@ public class Robot {
 
     public DcMotorEx sorterMotor;
     public DcMotorEx launcherMotor;
+    public DcMotorEx intakeMotor;
+    public DcMotorEx swivelMotor;
 
     public Servo hammerServo;
     public Servo flicky;
     public AnalogInput flickyFeedback;
-
-    public CRServo intakeyServoR;
-    public CRServo intakeyServoL;
-
-    public CRServo feedServoL;
-    public CRServo feedServoR;
-
-    public CRServo transferServoL;
-    public CRServo transferServoR;
+    public CRServo feedServo;
 
     public TouchSensor magsense;
 
@@ -74,11 +61,13 @@ public class Robot {
 
     public VoltageSensor voltageSensor;
 
-    public HuskyLens husky;
+   // public HuskyLens husky;
 
     public RevColorSensorV3 leftColorScanner;
 
     public RevColorSensorV3 rightColorScanner;
+
+    public GoBildaPinpointDriver pinpoint;
 
     public Telemetry telemetry;
     //public BNO055IMU imu;
@@ -110,7 +99,7 @@ public class Robot {
     public SorterHardware sorterHardware;
     public LauncherHardware launcher;
     public ArtifactLocator sorterLogic;
-    public SensorHuskyLens inventoryCam;
+    public TurretLogic turret;
     public Limelight_Randomization_Scanner randomizationScanner;
     public Limelight_Target_Scanner targetScanner;
     public fireQueueWithStates queue;
@@ -152,17 +141,17 @@ public class Robot {
         sorterMotor = hardwareMap.get(DcMotorEx.class, "sorterMotor");
         launcherMotor = hardwareMap.get(DcMotorEx.class, "launcherMotor");
 
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
+        swivelMotor = hardwareMap.get(DcMotorEx.class, "swivelMotor");
+
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+
+
+
+
         //hammerServo = hardwareMap.get(Servo.class, "hammerServo");
         flicky = hardwareMap.get(Servo.class, "flicky");
         flickyFeedback = hardwareMap.get(AnalogInput.class, "flickyFeedback");
-
-        intakeyServoL = hardwareMap.get(CRServo.class, "intakeyServoL");
-        intakeyServoR = hardwareMap.get(CRServo.class, "intakeyServoR");
-        feedServoL = hardwareMap.get(CRServo.class, "feedServoL");
-        feedServoR = hardwareMap.get(CRServo.class, "feedServoR");
-
-        transferServoL = hardwareMap.get(CRServo.class, "transferServoL");
-        transferServoR = hardwareMap.get(CRServo.class, "transferServoR");
 
         magsense = hardwareMap.get(TouchSensor.class, "magsense");
 
@@ -172,7 +161,7 @@ public class Robot {
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
-        husky = hardwareMap.get(HuskyLens.class, "evenBetterMason");
+        //husky = hardwareMap.get(HuskyLens.class, "evenBetterMason");
 
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
@@ -204,10 +193,11 @@ public class Robot {
         sorterHardware = new SorterHardware(this);
         launcher = new LauncherHardware(this);
         sorterLogic = new ArtifactLocator(this);
-        inventoryCam = new SensorHuskyLens(this);
         queue = new fireQueueWithStates(this);
         targetScanner = new Limelight_Target_Scanner(this);
         randomizationScanner = new Limelight_Randomization_Scanner(this);
+        turret = new TurretLogic(this, null);
+
     }
 
 
@@ -382,7 +372,6 @@ public class Robot {
 
 
         panelsTelemetry.update();
-        inventoryCam.updateBlockScan();
 
 
 
@@ -407,10 +396,8 @@ public class Robot {
      */
     public void runBasicIntake(double num)
     {
-        intakeyServoR.setPower(num);
-        intakeyServoL.setPower(num);
-        transferServoR.setPower(num);
-        transferServoL.setPower(num);
+        intakeMotor.setPower(.45);
+        feedServo.setPower(1);
     }
 
     public void runAutoIntakeSequence() //Run in an update function for "fast" auto load
@@ -432,7 +419,6 @@ public class Robot {
         sorterHardware.flicky.setPosition(1);
         sorterHardware.moveDoor(CLOSED);
         launcher.setLauncherSpeed(0);
-        inventoryCam.updateBlockScan();
 
         if(resetEncoder)
         {

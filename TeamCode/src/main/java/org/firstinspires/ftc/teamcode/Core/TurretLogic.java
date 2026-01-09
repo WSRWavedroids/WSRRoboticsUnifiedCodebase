@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 @Configurable
 public class TurretLogic {
      Robot robot;
-    PIDMotorGroup launcherMotors;
+    public ezPID launcherMotor;
     public static double launcherP;
     public static double launcherI;
     public static double launcherD;
@@ -27,7 +27,7 @@ public class TurretLogic {
     public static double tolerance;
     ezPID launcherController;
     ezPID rawSwivelController;
-    ezPID fineSwivelController;
+    public ezPID fineSwivelController;
     double turretDegreesFromTarget;
     double fineDegreeWindow = 60.0;
     double safeDegreeDistance = 270;
@@ -50,9 +50,9 @@ public class TurretLogic {
     public TurretLogic(Robot robot, Follower followerIN) {
         this.robot = robot;
         follower = followerIN;
-        launcherMotors = new PIDMotorGroup(2, robot.launcherMotor1, robot.launcherMotor2);
+
         swivelMotor = robot.swivelMotor;
-        launcherController = new ezPID(launcherMotors, 28, launcherP, launcherI, launcherD,
+        launcherController = new ezPID(robot.launcherMotor, 28, launcherP, launcherI, launcherD,
                 launcherF, 1.0, tolerance, ezPID.movementType.SPEED);
 
         fineSwivelController = new ezPID(swivelMotor, 8192 , fineP, fineI, fineD,
