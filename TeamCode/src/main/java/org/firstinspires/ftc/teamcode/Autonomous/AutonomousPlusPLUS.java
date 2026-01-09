@@ -124,6 +124,10 @@ public class AutonomousPlusPLUS {
         moveXY(moveRight,moveForward,0,waitForCompletion,0);
     }
 
+    /**
+     * Checks to see if a started movement is completed. If it is, does the cleanup work for it.
+     * @return True if completed, otherwise false.
+     */
     public boolean checkMovement() {
         if (robot.isWheelsBusy()) {
             return false;
@@ -135,57 +139,79 @@ public class AutonomousPlusPLUS {
         }
     }
 
+    /**
+     * Starts moving the robot forward without stalling.
+     * @param ticks The number of ticks to move forward
+     */
     public void moveRobotForward(int ticks) {
-
         robot.setTargets(FORWARD, ticks); // Inverted... Lol
         robot.positionRunningMode();
 
         robot.powerSet(speed);
     }
 
+    /**
+     * Moves the robot forward and stalls while doing it.
+     * @param ticks The number of ticks to move forward
+     * @param pause Milliseconds to wait after the movement is completed, in MS
+     */
     public void moveRobotForward(int ticks, long pause) {
         moveRobotForward(ticks);
-        while (robot.isWheelsBusy()) {
+        while (!checkMovement()) {
             robot.tellMotorOutput();
             robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
             robot.updateAllDaThings();
         }
 
-        robot.stopAllMotors();
-        robot.encoderRunningMode();
         sleep(pause);
 
         //robot.encoderReset();
     }
 
+    /**
+     * Starts moving the robot backwards. Check to see if it's done with checkMovement().
+     * @param ticks The number of ticks to move backwards
+     */
     public void moveRobotBackward(int ticks) {
         robot.setTargets(BACKWARD, ticks);
         robot.positionRunningMode();
         robot.powerSet(speed);
     }
 
+    /**
+     * Moves the robot backward and stalls while doing it.
+     * @param ticks The number of ticks to move backward
+     * @param pause Milliseconds to wait after the movement is completed, in MS
+     */
     public void moveRobotBackward(int ticks, long pause) {
         moveRobotForward(ticks);
 
-        while (robot.isWheelsBusy()) {
+        while (checkMovement()) {
             robot.tellMotorOutput();
         }
 
-        robot.stopAllMotors();
-        robot.encoderRunningMode();
         sleep(pause);
     }
 
+    /**
+     * Starts strafing the robot left. Check to see if it's done with checkMovement().
+     * @param ticks The number of ticks to strafe left
+     */
     public void moveRobotLeft(int ticks) {
         robot.setTargets(LEFT, ticks);
         robot.positionRunningMode();
         robot.powerSet(speed);
     }
 
+    /**
+     * Strafes the robot left and stalls while doing it.
+     * @param ticks The number of ticks to strafe left
+     * @param pause Milliseconds to wait after the movement is completed, in MS
+     */
     public void moveRobotLeft(int ticks, long pause) {
         moveRobotLeft(ticks);
 
-        while (robot.isWheelsBusy()) {
+        while (checkMovement()) {
             robot.tellMotorOutput();
         }
 
@@ -194,30 +220,46 @@ public class AutonomousPlusPLUS {
         sleep(pause);
     }
 
+    /**
+     * Starts strafing the robot right. Check to see if it's done with checkMovement().
+     * @param ticks The number of ticks to strafe right
+     */
     public void moveRobotRight(int ticks) {
         robot.setTargets(RIGHT, ticks);
         robot.positionRunningMode();
         robot.powerSet(speed);
     }
 
+    /**
+     * Strafes the robot right and stalls while doing it.
+     * @param ticks The number of ticks to strafe right
+     * @param pause Milliseconds to wait after the movement is completed, in MS
+     */
     public void moveRobotRight(int ticks, long pause) {
         moveRobotRight(ticks);
 
-        while (robot.isWheelsBusy()) {
+        while (checkMovement()) {
             robot.tellMotorOutput();
         }
 
-        robot.stopAllMotors();
-        robot.encoderRunningMode();
         sleep(pause);
     }
 
+    /**
+     * Starts turning the robot right. Check to see if it's done with checkMovement().
+     * @param ticks The number of ticks to turn right
+     */
     public void turnRobotRight(int ticks) {
         robot.setTargets(TURN_RIGHT, ticks);
         robot.positionRunningMode();
         robot.powerSet(speed);
     }
 
+    /**
+     * Turns the robot right and stalls while doing it.
+     * @param ticks The number of ticks to turn right
+     * @param pause Milliseconds to wait after the movement is completed, in MS
+     */
     public void turnRobotRight(int ticks, long pause) {
         turnRobotRight(ticks);
 
@@ -230,12 +272,21 @@ public class AutonomousPlusPLUS {
         sleep(pause);
     }
 
+    /**
+     * Starts turning the robot left. Check to see if it's done with checkMovement().
+     * @param ticks The number of ticks to turn left
+     */
     public void turnRobotLeft(int ticks) {
         robot.setTargets(TURN_LEFT, ticks);
         robot.positionRunningMode();
         robot.powerSet(speed);
     }
 
+    /**
+     * Turns the robot left and stalls while doing it.
+     * @param ticks The number of ticks to turn left
+     * @param pause Milliseconds to wait after the movement is completed, in MS
+     */
     public void turnRobotLeft(int ticks, long pause) {
         turnRobotLeft(ticks);
 
@@ -248,45 +299,48 @@ public class AutonomousPlusPLUS {
         sleep(pause);
     }
 
-    public void moveDiagonalRight(int ticks, long pause) {
-        //This moves along the 45/225 axis, Positive ticks move forward and negative move back
+    /**
+     * Starts moving the robot along the 45/225 degree axis. Check to see if it's done with checkMovement().
+     * @param ticks The number of ticks move. Positive will go forward, negative will go backwards.
+     */
+    public void moveDiagonalRight(int ticks) {
         robot.setTargets(DIAGONAL_RIGHT, ticks);
-        robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.positionRunningMode();
         robot.powerSet(speed);
+    }
+    public void moveDiagonalRight(int ticks, long pause) {
+        moveDiagonalRight(ticks);
 
-        while (robot.isWheelsBusy()) {
+        while (checkMovement()) {
             robot.tellMotorOutput();
             robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
             robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
             robot.updateAllDaThings();
         }
 
-        robot.stopAllMotors();
-        robot.encoderRunningMode();
         sleep(pause);
-        //robot.encoderReset();
-
     }
 
-    public void moveDiagonalLeft(int ticks, long pause) {
-        //moves along the 135/315 axis, positive ticks move forward and negative ticks move back
+    /**
+     * Starts moving the robot along the 135/315 degree axis. Check to see if it's done with checkMovement().
+     * @param ticks The number of ticks move. Positive will go forward, negative will go backwards.
+     */
+    public void moveDiagonalLeft(int ticks) {
         robot.setTargets(DIAGONAL_LEFT, ticks);
-        robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.positionRunningMode();
         robot.powerSet(speed);
+    }
+    public void moveDiagonalLeft(int ticks, long pause) {
+        moveDiagonalLeft(ticks);
 
-        while (robot.isWheelsBusy()) {
+        while (checkMovement()) {
             robot.tellMotorOutput();
             robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
             robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
             robot.updateAllDaThings();
         }
 
-        robot.stopAllMotors();
-        robot.encoderRunningMode();
         sleep(pause);
-        //robot.encoderReset();
     }
 
     public void calibrateDriveTrain(int tolerance, double pValue) {
