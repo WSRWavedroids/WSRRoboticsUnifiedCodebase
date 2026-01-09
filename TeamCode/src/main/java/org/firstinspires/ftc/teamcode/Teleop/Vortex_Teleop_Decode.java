@@ -147,33 +147,52 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         //So Begins the input chain. At least try a bit to organise by driver
 
-        //Driver 1
         driveSpeed();
 
-        if(robot.targetTag.currentlyDetected) {
-            gamepad1.rumble(0.25, 0.25, 100);
-            //gamepad1.rumble(100);
+        controllerRumble();
+
+        holdInPlace();
+
+        driveOrAutoLock();
+
+        fireQueue();
+
+        intake();
+
+        //WSeñorMichael
+
+        launcherToggle();
+
+        fireCurrentFireSlot();
+
+        incrementThroughPositions();
+
+        colorMovement();
+
+        //robot.panelsTelemetry.addData("Motor Position", robot.launcher.motor.getCurrentPosition());
+        robot.panelsTelemetry.update();
+
+        //fps.update();
+        doTelemetryStuff();
+
+        if (gamepad1.touchpad || gamepad2.touchpad) {
+            requestOpModeStop();
         }
+    }
 
-        if(gamepad1.squareWasPressed())//Holds in place...
-        {
-            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();
-            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition();
-            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition();
-            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition();
-            spinTargetAcquired = true;
-            speed = 1;
-        }
+    /**
+     * Code to run ONCE after the driver hits STOP
+     */
+    public void stop() {
+        telemetry.addData("Status", "Robot Stopped");
+    }
 
-        if (gamepad1.left_bumper || gamepad1.right_bumper || gamepad1.square) {
-            autoWheel(robot.targetTag.currentlyDetected, robot.targetTag.angleX);
-        } else {
-            singleJoystickDrive();
-            spinTargetAcquired = false;
-        }
 
-        /// Preps color of choice
+    /*
+     * The holding cell for all of the random functions we call above.
+     */
 
+    private void colorMovement() {
         if(gamepad2.square && !gamepad2.left_bumper)
         {
             robot.sorterHardware.prepareNewMovement(
@@ -184,16 +203,14 @@ public class Vortex_Teleop_Decode extends OpMode {
             robot.sorterHardware.prepareNewMovement(
                     robot.sorterLogic.findFirstType(GREEN).getFirePosition());
         }
-        /*else if(gamepad2.left_trigger > 0.5 && !gamepad2.left_bumper && robot.sorterHardware.currentPositionState == LOAD)//ok this might not be great... don't have the button map with me atm
-        {
-            robot.sorterHardware.prepareNewMovement(robot.sorterHardware.motor.getCurrentPosition(), robot.sorterLogic.findFirstOccupied().getFirePosition());
-        }*/
+    }
 
+    private void fireQueue() {
         /// Clears list each time the button is deliberately pressed, so ready for queueing
         /// Without this we have no way to empty it without firing
         if(gamepad2.leftBumperWasPressed())
         {
-           robot.queue.clearList();
+            robot.queue.clearList();
         }
 
         /// Adds color to queue
@@ -208,11 +225,28 @@ public class Vortex_Teleop_Decode extends OpMode {
             gamepad2.setLedColor(0, 255, 0, 100);
         }
 
-        // If there are unknown slots, go meet them
-        /*if(robot.sorterLogic.findFirstType(UNKNOWN).exists() && robot.sorterLogic.artifactSortCooldown()) {
-            robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(UNKNOWN).getLoadPosition());
-        }*/
+        if(gamepad2.rightBumperWasPressed())
+        {
+            if(robot.queue.checkForExistingQueue())
+            {
+                robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.SMART;
+            }
+            else if(robot.sorterLogic.inventory.canMakePattern())
+            {
+                robot.queue.clearList();
+                robot.queue.addPattern(robot.pattern);
+                robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.SMART;
+            }
+            else
+            {
+                robot.queue.clearList();
+                robot.queue.fillSimple(); // replace with the if when cam ready
+                robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.DUMB;
+            }
+        }
+    }
 
+    private void intake() {
         if(gamepad2.cross)
         {
             if(robot.sorterHardware.inStateCheck(SWITCH))
@@ -228,9 +262,6 @@ public class Vortex_Teleop_Decode extends OpMode {
                 robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(EMPTY).getLoadPosition());
                 robot.cancelAutoIntake();
             }
-            else if (robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY)) {
-                robot.cancelAutoIntake();
-            }
             else
             {
                 //intake if we good
@@ -242,24 +273,29 @@ public class Vortex_Teleop_Decode extends OpMode {
             robot.runBasicIntake(-1);
             robot.sorterHardware.setFeeders(OUTTAKE);
         }
-        else //dont run intake if we not pulling trigger
+        else //don't run intake if we not pulling trigger
         {
-           robot.cancelAutoIntake();
-           robot.runBasicIntake(0.01); //Always keep a slight power flow to servos to prevent input delay from module
+            robot.cancelAutoIntake();
+            robot.runBasicIntake(0.01); //Always keep a slight power flow to servos to prevent input delay from module
         }
+    }
 
-        //WSeñorMichael
+    private void controllerRumble() {
+        if(robot.targetTag.currentlyDetected) {
+            gamepad1.rumble(0.25, 0.25, 100);
+        }
 
         if(robot.sorterHardware.fireSafeCheck())
         {
-           gamepad2.rumble(0.5, 0, 50);
+            gamepad2.rumble(0.5, 0, 50);
         }
         if(robot.launcher.motorSpeedCheck())
         {
             gamepad2.rumble(0, 0.5, 50);
         }
+    }
 
-
+    private void launcherToggle() {
         if(gamepad2.left_trigger > 0.50)
         {
 
@@ -285,7 +321,9 @@ public class Vortex_Teleop_Decode extends OpMode {
         {
             cadenHoldingReady = false;
         }
+    }
 
+    private void fireCurrentFireSlot() {
         if(gamepad2.right_trigger > 0.50 && !robot.launcher.isInFireSequence() /*&& robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE*/) {
             if(!cadenHoldingFire)
             {
@@ -298,60 +336,28 @@ public class Vortex_Teleop_Decode extends OpMode {
         {
             cadenHoldingFire = false;
         }
+    }
 
-        if(gamepad2.rightBumperWasPressed())
+    private void holdInPlace() {
+        if(gamepad1.squareWasPressed())//Holds in place...
         {
-            if(robot.queue.checkForExistingQueue())
-            {
-                robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.SMART;
-            }
-            else if(robot.sorterLogic.inventory.canMakePattern())
-            {
-                robot.queue.clearList();
-                robot.queue.addPattern(robot.pattern);
-                robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.SMART;
-            }
-            else
-            {
-                robot.queue.clearList();
-                robot.queue.fillSimple(); // replace with the if when cam ready
-                robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.DUMB;
-            }
+            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();
+            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition();
+            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition();
+            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition();
+            spinTargetAcquired = true;
+            speed = 1;
         }
-
-
-
-
-       // }
-        //robot.queue.updateQueueStates(1);
-        incrementThroughPositions();
-
-
-        //telemetry.addData("currentSlot target: ", slot);
-
-        if (gamepad1.touchpad || gamepad2.touchpad) {
-            requestOpModeStop();
-        }
-
-        //robot.panelsTelemetry.addData("Motor Position", robot.launcher.motor.getCurrentPosition());
-        robot.panelsTelemetry.update();
-
-        //fps.update();
-        doTelemetryStuff();
-
     }
 
-    /**
-     * Code to run ONCE after the driver hits STOP
-     */
-    public void stop() {
-        telemetry.addData("Status", "Robot Stopped");
+    private void driveOrAutoLock() {
+        if (gamepad1.left_bumper || gamepad1.right_bumper || gamepad1.square) {
+            autoWheel(robot.targetTag.currentlyDetected, robot.targetTag.angleX);
+        } else {
+            singleJoystickDrive();
+            spinTargetAcquired = false;
+        }
     }
-
-
-    /*
-     * The holding cell for all of the random functions we call above.
-     */
 
     public void setIndividualPowers(float[] motorPowers) {
         // This function creates an array so that the function below works.
@@ -519,47 +525,34 @@ public class Vortex_Teleop_Decode extends OpMode {
     }
 
     private void incrementThroughPositions() {
-
         telemetry.addData("Current Offset (by logic)", robot.sorterLogic.getCurrentOffset());
 
         // Fire positions
         if (gamepad2.dpadLeftWasPressed()) {
-            goNextFirePosition(-1);
-        } else if (gamepad2.dpadUpWasReleased()) {
-            goNextFirePosition(1);
-        }
-
-        // Load positions
-        else if (gamepad2.dpadDownWasPressed()){
-            goNextLoadPosition(-1);
+            goNextPosition(-1);
         } else if (gamepad2.dpadRightWasPressed()) {
-            goNextLoadPosition(1);
+            goNextPosition(1);
         }
 
         telemetry.addData("Target Offset", targetOffset);
     }
 
-    private void goNextLoadPosition(int go) {
-        int potentialNewPosition = targetOffset + go;
-        if (!isEven(potentialNewPosition)) {potentialNewPosition += go;}
-        targetOffset = makeSureNewOffsetIsOK(potentialNewPosition);
-        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.offsetPositions.get(targetOffset));
-    }
-    private void goNextFirePosition(int go) {
-        int potentialNewPosition = targetOffset + go;
-        if (isEven(potentialNewPosition)) {potentialNewPosition += go;}
-        targetOffset = makeSureNewOffsetIsOK(potentialNewPosition);
-        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.offsetPositions.get(targetOffset));
+    private void goNextPosition(int go) {
+        robot.sorterHardware.prepareNewMovement(
+                makeSureNewOffsetIsOK(
+                        robot.sorterLogic.getCurrentOffset() + go
+                )
+        );
     }
 
-    private int makeSureNewOffsetIsOK(int oldNewOffset) {
-        while (oldNewOffset < 0) {
-            oldNewOffset += 6;
+    private int makeSureNewOffsetIsOK(int offset) {
+        while (offset < 0) {
+            offset += 3;
         }
-        while (oldNewOffset > 5) {
-            oldNewOffset -= 6;
+        while (offset > 2) {
+            offset -= 3;
         }
-        return oldNewOffset;
+        return offset;
     }
 
     private void doTelemetryStuff() {
