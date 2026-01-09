@@ -21,6 +21,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -52,6 +53,7 @@ public class Robot {
 
     public Servo hammerServo;
     public Servo flicky;
+    public AnalogInput flickyFeedback;
 
     public CRServo intakeyServoR;
     public CRServo intakeyServoL;
@@ -152,6 +154,7 @@ public class Robot {
 
         //hammerServo = hardwareMap.get(Servo.class, "hammerServo");
         flicky = hardwareMap.get(Servo.class, "flicky");
+        flickyFeedback = hardwareMap.get(AnalogInput.class, "flickyFeedback");
 
         intakeyServoL = hardwareMap.get(CRServo.class, "intakeyServoL");
         intakeyServoR = hardwareMap.get(CRServo.class, "intakeyServoR");
