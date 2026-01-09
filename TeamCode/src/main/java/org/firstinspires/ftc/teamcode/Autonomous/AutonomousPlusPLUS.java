@@ -29,12 +29,14 @@ package org.firstinspires.ftc.teamcode.Autonomous;
  */
 
 import static org.firstinspires.ftc.teamcode.Autonomous.AutonomousPlusPLUS.fireInSequenceStalling.*;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
 import static org.firstinspires.ftc.teamcode.Core.Robot.CardinalDirections.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.GPP;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PGP;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PPG;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.LOAD;
 import static android.os.SystemClock.sleep;
 
 import com.bylazar.panels.Panels;
@@ -459,7 +461,39 @@ public class AutonomousPlusPLUS {
     fireInSequenceStalling fireInSequenceStallingState = READY;
     int fireInSequenceI = 0;
     int fireInSequenceStep = 0;
+
+
+
+    int YoinkStep = 0;
     boolean firingInSequence;
+
+    public void Yoinkify(int ticks, double speed)
+    {
+        robot.setTargets(FORWARD, ticks);
+        switch(YoinkStep)
+        {
+            case 0:
+                if(robot.sorterLogic.inventory.getTotalCount() > 3)
+                {
+                    YoinkStep = 2;
+                }
+                else
+                {
+                    YoinkStep = 1;
+                }
+                break;
+            case 1: //move to slot
+                //Enable Intake
+                robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(EMPTY).getLoadPosition());
+                YoinkStep = 0;
+                break;
+            case 2:
+               //Disable Intake
+               YoinkStep = 0;
+               break;
+
+        }
+    }
 
     public void fireInSequence(ArtifactLocator.Slot one, ArtifactLocator.Slot two, ArtifactLocator.Slot three) {
         firingInSequence = true;
