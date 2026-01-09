@@ -213,7 +213,7 @@ public class Robot {
 
     /**
      * Runs the drive train in a cardinal direction.
-     * @param direction The direction, a cardinalDirection enum
+     * @param direction The direction, a CardinalDirections enum
      * @param ticks The distance to move in motor ticks
      */
     public void setTargets(CardinalDirections direction, int ticks) {
@@ -259,15 +259,15 @@ public class Robot {
                 break;
             case DIAGONAL_RIGHT:
                 frontLeftDrive.setTargetPosition(-ticks + frontLeftDrive.getCurrentPosition());
-                frontRightDrive.setPower(0);
-                backLeftDrive.setPower(0);
+                frontRightDrive.setPower(frontRightDrive.getCurrentPosition());
+                backLeftDrive.setPower(backLeftDrive.getCurrentPosition());
                 backRightDrive.setTargetPosition(-ticks + backRightDrive.getCurrentPosition());
                 break;
             case DIAGONAL_LEFT:
-                frontLeftDrive.setPower(0);
+                frontLeftDrive.setPower(frontLeftDrive.getCurrentPosition());
                 frontRightDrive.setTargetPosition(-ticks + frontRightDrive.getCurrentPosition());
                 backLeftDrive.setTargetPosition(-ticks + backLeftDrive.getCurrentPosition());
-                backRightDrive.setPower(0);
+                backRightDrive.setPower(backRightDrive.getCurrentPosition());
                 break;
         }
     }
