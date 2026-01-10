@@ -24,6 +24,8 @@ package org.firstinspires.ftc.teamcode.Core;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
@@ -55,6 +57,10 @@ public class ArtifactLocator {
 
     private ElapsedTime sortCooldown = new ElapsedTime();
 
+    private final int slotALoad = 0;
+    private final int slotBLoad = 2;
+    private final int slotCLoad = 1;
+
     public ArtifactLocator(Robot robotFile) {
         robot = robotFile;
         this.sorterHardware = robot.sorterHardware;
@@ -68,9 +74,9 @@ public class ArtifactLocator {
      */
     public void initLogic() {
         // Define slots
-        slotA = new Slot(sorterHardware.positions[0], sorterHardware.positions[1], "A");
-        slotB = new Slot(sorterHardware.positions[2], sorterHardware.positions[0], "B");
-        slotC = new Slot(sorterHardware.positions[1], sorterHardware.positions[2], "C");
+        slotA = new Slot(sorterHardware.positions[slotALoad], sorterHardware.positions[slotCLoad], "A");
+        slotB = new Slot(sorterHardware.positions[slotBLoad], sorterHardware.positions[slotALoad], "B");
+        slotC = new Slot(sorterHardware.positions[slotCLoad], sorterHardware.positions[slotBLoad], "C");
         noSlot = new NoSlot();
 
         //Sort things into lists
@@ -91,65 +97,59 @@ public class ArtifactLocator {
     public void update() {
         // Read the current list
         this.takeInventory();
-        sortOutBlobs(runSideScannersWithRGB());
+        sortOutBlobs(runSideScannersWithHSV());
     }
 
     /**
      * Checks the color sensors
      * @return The SlotState contents, PURPLE, GREEN, or EMPTY
      */
-    public SlotState runSideScannersWithRGB()
+    public ArtifactLocator.SlotState runSideScannersWithHSV()
     {
-        float greenMinRed = 30;
-        float greenMaxRed = 60;
-        float greenMinGreen = 90;
-        float greenMaxGreen = 170;
-        float greenMinBlue = 65;
-        float greenMaxBlue = 110;
-
-        float purpleMinRed = 50;
-        float purpleMaxRed = 90;
-        float purpleMinGreen= 70;
-        float purpleMaxGreen= 150;
-        float purpleMinBlue= 80;
-        float purpleMaxBlue= 125;
+        double purpleMinHue = 190;
+        double purpleMaxHue = 295;
+        double purpleMinValue = 0.3;
+        double purpleMaxValue = 1.2;
 
 
-        float leftRed = robot.leftColorScanner.red();
-        float leftGreen = robot.leftColorScanner.green();
-        float leftBlue = robot.leftColorScanner.blue();
+        double greenMinHue = 150;
+        double greenMaxHue = 160;
+        double greenMinValue = 0.3;
+        double greenMaxValue = 1.2;
 
-        float rightRed = robot.rightColorScanner.red();
-        float rightGreen = robot.rightColorScanner.green();
-        float rightBlue = robot.rightColorScanner.blue();
+        float[] leftHSVValues = new float[3];
+        float[] rightHSVValues = new float[3];
+        Color.RGBToHSV(robot.leftColorScanner.red(), robot.leftColorScanner.green(), robot.leftColorScanner.blue(), leftHSVValues);
+        Color.RGBToHSV(robot.rightColorScanner.red(), robot.rightColorScanner.green(), robot.rightColorScanner.blue(), rightHSVValues);
 
-        robot.telemetry.addData("Red: ", leftRed + ", " + rightRed);
-        robot.telemetry.addData("Green: ", leftGreen + ", " + rightGreen);
-        robot.telemetry.addData("Blue: ", leftBlue + ", " + rightBlue);
+        double leftHue = leftHSVValues[0];
+        double leftSaturation = leftHSVValues[1];
+        double leftValue = leftHSVValues[2];
 
-        //Now take our values and do something with them.
+        double rightHue = rightHSVValues[0];
+        double rightSaturation = rightHSVValues[1];
+        double rightValue = rightHSVValues[2];
 
-        if(leftBlue > purpleMinBlue && leftBlue < purpleMaxBlue &&
-                leftRed > purpleMinRed && leftRed < purpleMaxRed &&
-                leftGreen > purpleMinGreen && leftGreen < purpleMaxGreen) {
+        robot.telemetry.addData("Hue: ", leftHue + ", " + rightHue);
+        robot.telemetry.addData("Saturation: ", leftSaturation + ", " + rightSaturation);
+        robot.telemetry.addData("Value: ", leftValue + ", " + rightValue);
+        if(leftHue > purpleMinHue && leftHue < purpleMaxHue &&
+                leftValue > purpleMinValue && leftValue < purpleMaxValue) {
             robot.telemetry.addData("It thinks its: ", "Purple");
             return PURPLE;
         }
-        else if(leftBlue > greenMinBlue && leftBlue < greenMaxBlue &&
-                leftRed > greenMinRed && leftRed < greenMaxRed &&
-                leftGreen > greenMinGreen && leftGreen < greenMaxGreen) {
+        else if(leftHue > greenMinHue && leftHue < greenMaxHue &&
+                leftValue > greenMinValue && leftValue < greenMaxValue) {
             robot.telemetry.addData("It thinks its: ", "Green");
             return GREEN;
         }
-        else if(rightBlue > purpleMinBlue && rightBlue < purpleMaxBlue &&
-                rightRed > purpleMinRed && rightRed < purpleMaxRed &&
-                rightGreen > purpleMinGreen && rightGreen < purpleMaxGreen) {
+        else if(rightHue > purpleMinHue && rightHue < purpleMaxHue &&
+                rightValue > purpleMinValue && rightValue < purpleMaxValue) {
             robot.telemetry.addData("It thinks its: ", "Purple");
             return PURPLE;
         }
-        else if(rightBlue > greenMinBlue && rightBlue < greenMaxBlue &&
-                rightRed > greenMinRed && rightRed < greenMaxRed &&
-                rightGreen > greenMinGreen && rightGreen < greenMaxGreen) {
+        else if(rightHue > greenMinHue && rightHue < greenMaxHue &&
+                rightValue > greenMinValue && rightValue < greenMaxValue) {
             robot.telemetry.addData("It thinks its: ", "Green");
             return GREEN;
         }
@@ -285,17 +285,18 @@ public class ArtifactLocator {
      * @return A Slot, if there's one in position. If there isn't, will return noSlot.
      */
     public Slot findCurrentSlotInPosition(SorterHardware.PositionState targetPosition) {
-        if (targetPosition == SWITCH) return noSlot;
+        int currentOffset = getCurrentOffset();
+        if (targetPosition == SWITCH || currentOffset < 0) return noSlot;
 
-        switch (getCurrentOffset() + targetPosition.offset) {
-            case 0:
-            case 3:
+        switch (getCurrentOffset() - targetPosition.offset) {
+            case slotALoad:
+            case slotALoad - 3:
                 return slotA;
-            case 1:
-            case 4:
+            case slotBLoad:
+            case slotBLoad - 3:
                 return slotB;
-            case 2:
-            case 5:
+            case slotCLoad:
+            case slotCLoad - 3:
                 return slotC;
             default:
                 return noSlot;
@@ -305,7 +306,7 @@ public class ArtifactLocator {
     /**
      * Uses the blender encoder and offsetPositions to calculate which offset position the blender
      * is currently in.
-     * @return The current offset, 0-5. -1 means it's in transit.
+     * @return The current offset, 0-2. -1 means it's in transit.
      */
     public int getCurrentOffset() {
         if (robot.sorterHardware.positionedCheck()) {
@@ -319,7 +320,7 @@ public class ArtifactLocator {
      * Compares the current motor position to offsetPositions to
      * calculate which offset position the blender is closest to.
      * @param ticks The current position of the encoder
-     * @return The current nearest blender offset, from 0-5. -2 = error.
+     * @return The current nearest blender offset, from 0-2. -2 = error.
      */
     private int findClosestOffset(int ticks) {
         ticks = equalizeMotorPositions(ticks);

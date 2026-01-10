@@ -447,7 +447,6 @@ public class BetaBlueFrontAuto extends OpMode {
         telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
         telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
         telemetry.addData("Launcher on Cooldown", robot.launcher.onCooldown);
-        telemetry.addData("Blender State", robot.sorterHardware.currentPositionState);
 
         //robot.tellMotorOutput();
     }

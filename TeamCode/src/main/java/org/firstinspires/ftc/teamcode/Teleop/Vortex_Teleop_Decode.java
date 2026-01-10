@@ -249,14 +249,13 @@ public class Vortex_Teleop_Decode extends OpMode {
     private void intake() {
         if(gamepad2.cross)
         {
-            if(robot.sorterHardware.inStateCheck(SWITCH))
+            if(!robot.sorterHardware.positionedCheck())
             {
                 //dont jam while spinning to load
                 robot.cancelAutoIntake();
             }
-            else if(robot.sorterHardware.inStateCheck(FIRE) ||
-                    (robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
-                            robot.sorterLogic.artifactSortCooldown()))
+            else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
+                            robot.sorterLogic.artifactSortCooldown())
             {
                 //if not in load position, go there and make sure we don't jam in the process
                 robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(EMPTY).getLoadPosition());
@@ -417,53 +416,14 @@ public class Vortex_Teleop_Decode extends OpMode {
         float rightX = this.gamepad1.right_stick_x;
         float leftX = this.gamepad1.left_stick_x;
 
-        if (leftY < 0.1) leftY = 0;
-        if (leftX < 0.1) leftX = 0;
-        if (rightX < 0.1) rightX = 0;
 
-        double leftStickAngle = Math.atan2(leftY, leftX);
-        double leftStickMagnitude = Math.sqrt(leftX * 2.0 + leftY * 2.0);
-        //double robotAngle = robot.imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
-
-        if (leftStickMagnitude > 1) {
-            leftStickMagnitude = 1;
-        }
 
         float[] motorPowers = new float[4];
 
-        if (robot.controlMode == ROBOT_CENTRIC) {
-
-            motorPowers[0] = (leftY + leftX + rightX);//might need inverted back
-            motorPowers[1] = (leftY - leftX - rightX);
-            motorPowers[2] = (leftY - leftX + rightX);
-            motorPowers[3] = (leftY + leftX - rightX);
-
-        } else if (robot.controlMode == LEGACY_FIELD_CENTRIC) {
-            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);;// sparky.getPosition().h
-
-            // Rotate the movement direction counter to the bot's rotation
-            double rotX = leftX * Math.cos(-botHeading) - leftY * Math.sin(-botHeading);
-            double rotY = leftX * Math.sin(-botHeading) + leftY * Math.cos(-botHeading);
-
-            rotX = rotX * 1.1;  // Counteract imperfect strafing
-
-            // Denominator is the largest motor power (absolute value) or 1
-            // This ensures all the powers maintain the same ratio,
-            // but only if at least one is out of the range [-1, 1]
-            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rightX), 1);
-            double frontLeftPower = (rotY + rotX + rightX) / denominator; //all of the right xs got inverted
-            double backLeftPower = (rotY - rotX - rightX) / denominator;
-            double frontRightPower = (rotY - rotX + rightX) / denominator;
-            double backRightPower = (rotY + rotX - rightX) / denominator;
-
-
-
-            motorPowers[0] = (float)frontLeftPower;
-            motorPowers[1] = (float) backLeftPower;
-            motorPowers[2] = (float)frontRightPower;
-            motorPowers[3] = (float) backRightPower;
-        }
-
+        motorPowers[0] = (leftY - leftX - rightX); // frontLeftDrive
+        motorPowers[1] = (leftY + leftX + rightX); // frontRightDrive
+        motorPowers[2] = (leftY + leftX - rightX); // backLeftDrive
+        motorPowers[3] = (leftY - leftX + rightX); // backRightDrive
 
         float max = getLargestAbsVal(motorPowers);
         if (max < 1) {
@@ -471,7 +431,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
 
         for (int i = 0; i < motorPowers.length; i++) {
-            motorPowers[i] *= (float) (speed / max);
+            motorPowers[i] *= (1 / max);
 
             float abs = Math.abs(motorPowers[i]);
             if (abs < 0.05) {
@@ -483,7 +443,6 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
 
         setIndividualPowers(motorPowers);
-
     }
 
     private void controlMode() {
@@ -539,9 +498,11 @@ public class Vortex_Teleop_Decode extends OpMode {
 
     private void goNextPosition(int go) {
         robot.sorterHardware.prepareNewMovement(
-                makeSureNewOffsetIsOK(
+            robot.sorterLogic.offsetPositions.get(
+                    makeSureNewOffsetIsOK(
                         robot.sorterLogic.getCurrentOffset() + go
                 )
+            )
         );
     }
 
@@ -584,7 +545,6 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
         telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
         telemetry.addData("Launcher on Cooldown", robot.launcher.onCooldown);
-        telemetry.addData("Blender State", robot.sorterHardware.currentPositionState);
         telemetry.addData("Current Load Slot", robot.sorterLogic.findCurrentSlotInPosition(LOAD).getName());
         telemetry.addData("Current Fire Slot", robot.sorterLogic.findCurrentSlotInPosition(FIRE).getName());
 

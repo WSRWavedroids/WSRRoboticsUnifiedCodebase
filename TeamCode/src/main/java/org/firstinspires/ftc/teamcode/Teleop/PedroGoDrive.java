@@ -312,14 +312,13 @@ public class PedroGoDrive extends OpMode {
 
         if(gamepad2.cross)
         {
-            if(robot.sorterHardware.inStateCheck(SWITCH))
+            if(!robot.sorterHardware.positionedCheck())
             {
                 //dont jam while spinning to load
                 robot.cancelAutoIntake();
             }
-            else if(robot.sorterHardware.inStateCheck(FIRE) ||
-                    (robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
-                            robot.sorterLogic.artifactSortCooldown()))
+            else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
+                            robot.sorterLogic.artifactSortCooldown())
             {
                 //if not in load position, go there and make sure we don't jam in the process
                 robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(EMPTY).getLoadPosition());
@@ -494,7 +493,6 @@ public class PedroGoDrive extends OpMode {
         telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
         telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
         telemetry.addData("Launcher on Cooldown", robot.launcher.onCooldown);
-        telemetry.addData("Blender State", robot.sorterHardware.currentPositionState);
         telemetry.addData("Current Load Slot", robot.sorterLogic.findCurrentSlotInPosition(LOAD).getName());
         telemetry.addData("Current Fire Slot", robot.sorterLogic.findCurrentSlotInPosition(FIRE).getName());
 

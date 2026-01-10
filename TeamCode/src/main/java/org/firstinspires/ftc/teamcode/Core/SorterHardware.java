@@ -23,7 +23,7 @@ public class SorterHardware {
 
     private final Robot robot;
     public ezPID blenderPID;
-    private final LauncherHardware launcher;
+    private LauncherHardware launcher;
     public DcMotorEx motor;
     public Servo flicky;
     public CRServo feedServo;
@@ -49,20 +49,19 @@ public class SorterHardware {
     public boolean onCooldown = false;
     private ElapsedTime pidfTime = new ElapsedTime();
 
-    public static Double kneecap = .4;
-    public static double kp = 0.001;
-    public static double ki = 0.0000002;//maybe try 275 where 275 is
-    public static double kd = 0.0000002;
+    public static Double kneecap = .20;
+    public static double kp = 0.0005;
+    public static double ki = 0.0009;
+    public static double kd = 0.0000065;
     public static double kf = 0.0;
     double lastError = 0;
     double integralSum = 0;
 
     public final static double feederIntakeSpeed = 1;
-    public final static double feederRotateSpeed = 1;
-    public final static double passiveFeederSpeed = 1;
+    public final static double feederRotateSpeed = 0.75;
+    public final static double passiveFeederSpeed = 0.5;
 
     public double reference;
-    public PositionState currentPositionState;
 
     public SorterHardware(Robot robot) {
         this.robot = robot;
@@ -110,7 +109,7 @@ public class SorterHardware {
                 }
                 break;
             case STALLING_UNTIL_SAFE_OR_NEEDED:
-                if (legalToSpin && !launcher.isInFireSequence()) {
+                if (legalToSpin && !robot.launcher.isInFireSequence()) {
                     nextStep(MOVING);
                 }
                 if (this.positionedCheck()) {
@@ -140,7 +139,7 @@ public class SorterHardware {
                 nextStep(CALIBRATING);
                 break;
             case CALIBRATING:
-                motor.setPower(.15);
+                motor.setPower(0.10);
                 if(robot.magsense.isPressed()) {
                     motor.setPower(0);
                     resetSorterEncoder();
@@ -169,7 +168,8 @@ public class SorterHardware {
                 break;
         }
 
-        updateState();
+        robot.panelsTelemetry.addData("Reference", reference);
+        robot.panelsTelemetry.addData("Blender Position", motor.getCurrentPosition());
     }
     private void nextStep(BlenderSteps nextStep) {
         currentBlenderStep = nextStep;
@@ -198,27 +198,6 @@ public class SorterHardware {
 
     public void setFeeders(FeederState newState) {
         currentFeederState = newState;
-    }
-
-    private void updateState() {
-        switch (robot.sorterLogic.getCurrentOffset()) {
-            // Firing positions
-            case 1:
-            case 3:
-            case 5:
-                currentPositionState = FIRE;
-                break;
-
-            // Loading positions
-            case 0:
-            case 2:
-            case 4:
-                currentPositionState = LOAD;
-                break;
-
-            // Not in a position (-1, -2)
-            default: currentPositionState = PositionState.SWITCH;
-        }
     }
 
     public void calibrate() {
@@ -313,14 +292,10 @@ public class SorterHardware {
         flicky.setPosition(flickyDownPosition);
     }
 
-    public boolean inStateCheck(PositionState targetState){
-        return currentPositionState == targetState;
-    }
-
     public boolean fireSafeCheck()
     {
         //if not on servo timeout and there and open, fire
-        return positionedCheck() && inStateCheck(FIRE);
+        return positionedCheck();
     }
 
     public void resetSorterEncoder()
