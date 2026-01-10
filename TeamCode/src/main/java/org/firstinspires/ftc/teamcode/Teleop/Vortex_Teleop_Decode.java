@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.FramerateCalculator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.fireQueueWithStates;
@@ -249,23 +250,7 @@ public class Vortex_Teleop_Decode extends OpMode {
     private void intake() {
         if(gamepad2.cross)
         {
-            if(!robot.sorterHardware.positionedCheck())
-            {
-                //dont jam while spinning to load
-                robot.cancelAutoIntake();
-            }
-            else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
-                            robot.sorterLogic.artifactSortCooldown())
-            {
-                //if not in load position, go there and make sure we don't jam in the process
-                robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(EMPTY).getLoadPosition());
-                robot.cancelAutoIntake();
-            }
-            else
-            {
-                //intake if we good
-                robot.runAutoIntakeSequence();
-            }
+            robot.sorterHardware.runAdvancedIntake();
         }
         else if(gamepad2.circle) // dave spits out artifact
         {

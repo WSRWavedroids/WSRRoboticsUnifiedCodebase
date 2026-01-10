@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.Core;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.BlenderSteps.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
@@ -42,7 +40,7 @@ public class SorterHardware {
     public static Double tickTolerance = 100.0;
     public boolean legalToSpin = false;
 
-    public double flickyDownPosition = 0.5;
+    public double flickyDownPosition = 0.75;
     public double flickyUpPosition = 1;
 
     public ElapsedTime cooldownTimer = new ElapsedTime();
@@ -317,4 +315,32 @@ public class SorterHardware {
         double position = voltage / maxVoltage;
         return position > target - tolerance && position < target + tolerance;
     }
+
+    public void runAdvancedIntake() {
+        if(!robot.sorterHardware.positionedCheck())
+        {
+            //dont jam while spinning to load
+            robot.cancelAutoIntake();
+        }
+        else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
+                robot.sorterLogic.artifactSortCooldown())
+        {
+            ArtifactLocator.Slot emptySlot = robot.sorterLogic.findFirstType(EMPTY);
+            if (emptySlot.exists()) {
+                //if not in load position, go there and make sure we don't jam in the process
+                robot.sorterHardware.prepareNewMovement(emptySlot.getLoadPosition());
+            } else {
+                robot.sorterHardware.prepareNewMovement(
+                        robot.sorterLogic.findFirstType(UNKNOWN).getLoadPosition()
+                );
+            }
+
+            robot.cancelAutoIntake();
+        }
+        else {
+            //intake if we good
+            robot.runAutoIntakeSequence();
+        }
+    }
+
 }
