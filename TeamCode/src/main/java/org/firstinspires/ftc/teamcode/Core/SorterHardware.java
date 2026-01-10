@@ -40,8 +40,8 @@ public class SorterHardware {
     public static Double tickTolerance = 100.0;
     public boolean legalToSpin = false;
 
-    public double flickyDownPosition = 1;
-    public double flickyUpPosition = 0.75;
+    public double flickyDownPosition = 0.5;
+    public double flickyUpPosition = 1;
 
     public Robot.OpenClosed doorState;
 
