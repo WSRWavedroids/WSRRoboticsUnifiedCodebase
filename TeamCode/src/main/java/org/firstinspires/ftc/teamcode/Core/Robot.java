@@ -3,12 +3,16 @@ package org.firstinspires.ftc.teamcode.Core;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.*;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.INTAKE;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.PASSIVE;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -24,6 +28,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -425,6 +430,87 @@ public class Robot {
             encoderReset();
             sorterHardware.reference = 0;
         }
+    }
+
+    public ArtifactLocator.SlotState runSideScannersWithRGB()
+    {
+        float purpleMinRed = 150;
+        float purpleMaxRed = 215;
+        float greenMinRed = 70;
+        float greenMaxRed = 130;
+        float purpleMinGreen= 70;
+        float purpleMaxGreen= 130;
+        float greenMinGreen = 150;
+        float greenMaxGreen = 215;
+        float purpleMinBlue= 170;
+        float purpleMaxBlue= 230;
+        float greenMinBlue = 70;
+        float greenMaxBlue = 130;
+
+        //Normalize to prevent color shift from lighting intensity
+        float leftNormGreen, leftNormRed, leftNormBlue, rightNormGreen, rightNormRed, rightNormBlue;
+        NormalizedRGBA leftNormalizedColors = leftColorScanner.getNormalizedColors();
+        NormalizedRGBA rightNormalizedColors = rightColorScanner.getNormalizedColors();
+        leftNormGreen = leftNormalizedColors.green / leftNormalizedColors.alpha;
+        leftNormRed = leftNormalizedColors.red / leftNormalizedColors.alpha;
+        leftNormBlue = leftNormalizedColors.blue / leftNormalizedColors.alpha;
+        rightNormGreen = rightNormalizedColors.green / leftNormalizedColors.alpha;
+        rightNormRed = rightNormalizedColors.red / leftNormalizedColors.alpha;
+        rightNormBlue = rightNormalizedColors.blue / leftNormalizedColors.alpha;
+
+        //Average in case of ball holes
+        float averagedRed = (leftNormRed + rightNormRed)/2;
+        float averagedGreen = (leftNormGreen + rightNormGreen)/2;
+        float averagedBlue = (leftNormBlue + rightNormBlue)/2;
+
+        telemetry.addData("Red: ", averagedRed);
+        telemetry.addData("Green: ", averagedGreen);
+        telemetry.addData("Blue: ", averagedBlue);
+        telemetry.update();
+
+        //Now take our values and do something with them.
+
+        if(averagedBlue > purpleMinBlue && averagedBlue < purpleMaxBlue &&
+                averagedRed > purpleMinRed && averagedRed < purpleMaxRed &&
+                averagedGreen > purpleMinGreen && averagedGreen < purpleMaxGreen) {
+            return PURPLE;
+
+
+        }
+        else if(averagedBlue > greenMinBlue && averagedBlue < greenMaxBlue &&
+                averagedRed > greenMinRed && averagedRed < greenMaxRed &&
+                averagedGreen > greenMinGreen && averagedGreen < greenMaxGreen) {
+            return GREEN;
+        }
+        return EMPTY;
+
+    }
+
+    public ArtifactLocator.SlotState runSideScannersWithHSV()
+    {
+        int purpleMinHue = 255;
+        int purpleMaxHue = 295;
+
+        int greenMinHue = 85;
+        int greenMaxHue = 158;
+
+        int averagedRed = (leftColorScanner.red() + rightColorScanner.red())/2;
+        int averagedGreen = (leftColorScanner.green() + rightColorScanner.green())/2;
+        int averagedBlue = (leftColorScanner.blue() + rightColorScanner.blue())/2;
+
+        float[] hsvValues = new float[3];
+        Color.RGBToHSV(averagedRed, averagedGreen, averagedBlue, hsvValues);
+
+        if(hsvValues[0] > purpleMinHue && hsvValues[0] < purpleMaxHue)
+        {
+            return PURPLE;
+
+        }
+        else if(hsvValues[0] > greenMinHue && hsvValues[0] < greenMaxHue)
+        {
+            return GREEN;
+        }
+        return EMPTY;
     }
 
     //This will need to be moved, but for now...

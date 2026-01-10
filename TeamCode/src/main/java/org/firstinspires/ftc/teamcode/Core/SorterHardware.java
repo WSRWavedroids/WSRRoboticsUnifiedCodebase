@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Core;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.BlenderSteps.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;

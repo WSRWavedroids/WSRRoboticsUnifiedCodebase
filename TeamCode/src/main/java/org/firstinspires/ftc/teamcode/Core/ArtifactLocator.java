@@ -91,6 +91,70 @@ public class ArtifactLocator {
     public void update() {
         // Read the current list
         this.takeInventory();
+        sortOutBlobs(runSideScannersWithRGB());
+    }
+
+    /**
+     * Checks the color sensors
+     * @return The SlotState contents, PURPLE, GREEN, or EMPTY
+     */
+    public SlotState runSideScannersWithRGB()
+    {
+        float greenMinRed = 30;
+        float greenMaxRed = 60;
+        float greenMinGreen = 90;
+        float greenMaxGreen = 170;
+        float greenMinBlue = 65;
+        float greenMaxBlue = 110;
+
+        float purpleMinRed = 50;
+        float purpleMaxRed = 90;
+        float purpleMinGreen= 70;
+        float purpleMaxGreen= 150;
+        float purpleMinBlue= 80;
+        float purpleMaxBlue= 125;
+
+
+        float leftRed = robot.leftColorScanner.red();
+        float leftGreen = robot.leftColorScanner.green();
+        float leftBlue = robot.leftColorScanner.blue();
+
+        float rightRed = robot.rightColorScanner.red();
+        float rightGreen = robot.rightColorScanner.green();
+        float rightBlue = robot.rightColorScanner.blue();
+
+        robot.telemetry.addData("Red: ", leftRed + ", " + rightRed);
+        robot.telemetry.addData("Green: ", leftGreen + ", " + rightGreen);
+        robot.telemetry.addData("Blue: ", leftBlue + ", " + rightBlue);
+
+        //Now take our values and do something with them.
+
+        if(leftBlue > purpleMinBlue && leftBlue < purpleMaxBlue &&
+                leftRed > purpleMinRed && leftRed < purpleMaxRed &&
+                leftGreen > purpleMinGreen && leftGreen < purpleMaxGreen) {
+            robot.telemetry.addData("It thinks its: ", "Purple");
+            return PURPLE;
+        }
+        else if(leftBlue > greenMinBlue && leftBlue < greenMaxBlue &&
+                leftRed > greenMinRed && leftRed < greenMaxRed &&
+                leftGreen > greenMinGreen && leftGreen < greenMaxGreen) {
+            robot.telemetry.addData("It thinks its: ", "Green");
+            return GREEN;
+        }
+        else if(rightBlue > purpleMinBlue && rightBlue < purpleMaxBlue &&
+                rightRed > purpleMinRed && rightRed < purpleMaxRed &&
+                rightGreen > purpleMinGreen && rightGreen < purpleMaxGreen) {
+            robot.telemetry.addData("It thinks its: ", "Purple");
+            return PURPLE;
+        }
+        else if(rightBlue > greenMinBlue && rightBlue < greenMaxBlue &&
+                rightRed > greenMinRed && rightRed < greenMaxRed &&
+                rightGreen > greenMinGreen && rightGreen < greenMaxGreen) {
+            robot.telemetry.addData("It thinks its: ", "Green");
+            return GREEN;
+        }
+        robot.telemetry.addData("It thinks its: ", "Nothing");
+        return EMPTY;
     }
 
     /**
