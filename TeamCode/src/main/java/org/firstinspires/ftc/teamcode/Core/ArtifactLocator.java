@@ -130,9 +130,6 @@ public class ArtifactLocator {
         double rightSaturation = rightHSVValues[1];
         double rightValue = rightHSVValues[2];
 
-        robot.telemetry.addData("Hue: ", leftHue + ", " + rightHue);
-        robot.telemetry.addData("Saturation: ", leftSaturation + ", " + rightSaturation);
-        robot.telemetry.addData("Value: ", leftValue + ", " + rightValue);
         if(leftHue > purpleMinHue && leftHue < purpleMaxHue &&
                 leftValue > purpleMinValue && leftValue < purpleMaxValue) {
             robot.telemetry.addData("It thinks its: ", "Purple");
@@ -184,7 +181,7 @@ public class ArtifactLocator {
     }
 
     public boolean artifactSortCooldown() {
-        return sortCooldown.seconds() > .5;
+        return sortCooldown.seconds() > .25;
     }
 
     /**
@@ -322,7 +319,7 @@ public class ArtifactLocator {
      * @param ticks The current position of the encoder
      * @return The current nearest blender offset, from 0-2. -2 = error.
      */
-    private int findClosestOffset(int ticks) {
+    public int findClosestOffset(int ticks) {
         ticks = equalizeMotorPositions(ticks);
 
         int lowestDistance = 1000000000;

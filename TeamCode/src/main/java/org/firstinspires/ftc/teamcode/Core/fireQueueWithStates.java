@@ -135,7 +135,7 @@ public class fireQueueWithStates {
                         break;
                     }
 
-                    robot.launcher.setLauncherSpeed(1);
+                    robot.launcher.setLauncherSpeed(0.5);
 
                     int targetPosition;
                     ArtifactLocator.SlotState currentColor = ballQueue.get(0);

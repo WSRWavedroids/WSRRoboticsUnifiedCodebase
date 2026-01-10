@@ -40,7 +40,7 @@ public class LauncherHardware {
 
     public static final int ticksPerRevolution = 28;
     public static final int revolutionsPerSecond = 100;
-    public static final double toleranceRange = 350;
+    public static final double toleranceRange = 100;
 
     public double velocityTarget;
     public double percentSpeed;
@@ -69,6 +69,7 @@ public class LauncherHardware {
         robot.telemetry.addData("Launcher step", currentLauncherStep);
         switch (currentLauncherStep) {
             case READY_FOR_COMMANDS:
+                firing = false;
                 if (waitingToFire) {
                     waitingToFire = false;
                     firing = true;
@@ -112,7 +113,7 @@ public class LauncherHardware {
                 nextStep(STALL_WHILE_MOTOR_REVVING);
                 break;
             case STALL_WHILE_MOTOR_REVVING:
-                if (motorSpeedCheck(velocityTarget) /*|| cooldownTimer.seconds() >= .75*/) {
+                if (motorSpeedCheck(velocityTarget) || cooldownTimer.seconds() >= 5) {
                     nextStep(FLICK);
                 }
                 break;
@@ -182,7 +183,7 @@ public class LauncherHardware {
         if (lockControls) return;
 
         if (useSpeedTarget) percentSpeed = speedTarget;
-        else percentSpeed = 1;
+        else percentSpeed = 0.5;
 
         waitingToFire = true;
         mode = WAIT_FOREVER;
@@ -196,8 +197,9 @@ public class LauncherHardware {
         readyFire(speedTarget, useSpeedTarget);
     }
 
-    public void setLauncherSpeed(double targetspeed) {
-        //velocityTarget = ticksPerRevolution * (revolutionsPerSecond * targetspeed);
+    public void setLauncherSpeed(double targetSpeed) {
+        velocityTarget = ticksPerRevolution * revolutionsPerSecond * targetSpeed;
+        robot.telemetry.addLine("Setting Launcher");
         motor.setVelocity(velocityTarget);
         //turret.launcherController.runCalledPID(targetspeed);
     }
@@ -206,7 +208,8 @@ public class LauncherHardware {
         if (atMaxSpeed()) {
             return true;
         }
-        return (motor.getVelocity() > (-speedTarget - toleranceRange)) && (motor.getVelocity() < (-speedTarget + toleranceRange));
+        double realVelocity = motor.getVelocity();
+        return (realVelocity > (speedTarget - toleranceRange)) && (realVelocity < (speedTarget + toleranceRange));
     }
     public boolean motorSpeedCheck() {
         return motorSpeedCheck(velocityTarget);

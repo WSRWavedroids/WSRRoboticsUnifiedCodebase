@@ -40,16 +40,16 @@ public class SorterHardware {
     public static Double tickTolerance = 100.0;
     public boolean legalToSpin = false;
 
-    public double flickyDownPosition = 0.75;
-    public double flickyUpPosition = 1;
+    public double flickyDownPosition = 0.575;
+    public double flickyUpPosition = 0;
 
     public ElapsedTime cooldownTimer = new ElapsedTime();
     public boolean onCooldown = false;
     private ElapsedTime pidfTime = new ElapsedTime();
 
-    public static Double kneecap = .20;
+    public static Double kneecap = 0.75;
     public static double kp = 0.0005;
-    public static double ki = 0.0009;
+    public static double ki = 0.000001;
     public static double kd = 0.0000065;
     public static double kf = 0.0;
     double lastError = 0;
@@ -320,6 +320,9 @@ public class SorterHardware {
         if(!robot.sorterHardware.positionedCheck())
         {
             //dont jam while spinning to load
+            robot.cancelAutoIntake();
+        }
+        else if (robot.sorterLogic.inventory.getTotalCount() >= 3) {
             robot.cancelAutoIntake();
         }
         else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&

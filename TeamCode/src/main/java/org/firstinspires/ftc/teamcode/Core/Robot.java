@@ -382,8 +382,6 @@ public class Robot {
 
         panelsTelemetry.update();
 
-
-
         dumpAllTelemetryFromUpdate();
     }
 
@@ -424,7 +422,7 @@ public class Robot {
 
     public void readyHardware(boolean resetEncoder)
     {
-        sorterHardware.flicky.setPosition(1);
+        sorterHardware.flicky.setPosition(sorterHardware.flickyDownPosition);
         launcher.setLauncherSpeed(0);
 
         if(resetEncoder)

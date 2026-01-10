@@ -293,7 +293,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             }
 
             if (cadenON) {
-                robot.launcher.setLauncherSpeed(1);
+                robot.launcher.setLauncherSpeed(0.5);
             }
             else
             {
@@ -313,7 +313,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             {
                 cadenON = true;
                 cadenHoldingFire = true;
-                robot.launcher.fireWithinTimeIfSafe(1, false, false, 0.5);
+                robot.launcher.fireWithinTimeIfSafe(0.5, false, false, 0.5);
             }
         }
         else
@@ -485,7 +485,8 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot.sorterHardware.prepareNewMovement(
             robot.sorterLogic.offsetPositions.get(
                     makeSureNewOffsetIsOK(
-                        robot.sorterLogic.getCurrentOffset() + go
+                        robot.sorterLogic.findClosestOffset(
+                                robot.sorterHardware.motor.getCurrentPosition()) + go
                 )
             )
         );
