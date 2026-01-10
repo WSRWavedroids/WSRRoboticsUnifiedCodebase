@@ -67,6 +67,12 @@ public class LauncherHardware {
 
     public void updateLauncherHardware() {
         robot.telemetry.addData("Launcher step", currentLauncherStep);
+
+        //TODO remove this so soon
+        robot.swivelMotor.setMode(RUN_WITHOUT_ENCODER);
+        robot.swivelMotor.setZeroPowerBehavior(BRAKE);
+        robot.swivelMotor.setPower(0);
+
         switch (currentLauncherStep) {
             case READY_FOR_COMMANDS:
                 firing = false;
