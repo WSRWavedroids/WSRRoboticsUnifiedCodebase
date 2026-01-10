@@ -150,6 +150,10 @@ public class Robot {
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
+        leftColorScanner = hardwareMap.get(RevColorSensorV3.class, "leftColorScanner");
+        rightColorScanner = hardwareMap.get(RevColorSensorV3.class, "rightColorScanner");
+
+        feedServo = hardwareMap.get(CRServo.class, "feedServo");
 
 
 
@@ -157,7 +161,7 @@ public class Robot {
         flicky = hardwareMap.get(Servo.class, "flicky");
         flickyFeedback = hardwareMap.get(AnalogInput.class, "flickyFeedback");
 
-        magsense = hardwareMap.get(TouchSensor.class, "magsense");
+        magsense = hardwareMap.get(TouchSensor.class, "magsense1");
 
 
         //CamCam = hardwareMap.get(WebcamName.class, "CamCam");
@@ -355,7 +359,7 @@ public class Robot {
 
     @Deprecated
     public void prepareAuto(){
-        sorterHardware.moveDoor(CLOSED);
+
     }
 
     /**
@@ -400,8 +404,7 @@ public class Robot {
      */
     public void runBasicIntake(double num)
     {
-        intakeMotor.setPower(.45);
-        feedServo.setPower(1);
+        intakeMotor.setPower(num);
     }
 
     public void runAutoIntakeSequence() //Run in an update function for "fast" auto load
@@ -421,7 +424,6 @@ public class Robot {
     public void readyHardware(boolean resetEncoder)
     {
         sorterHardware.flicky.setPosition(1);
-        sorterHardware.moveDoor(CLOSED);
         launcher.setLauncherSpeed(0);
 
         if(resetEncoder)

@@ -328,7 +328,7 @@ public class ArtifactLocator {
         int offset = -2;
         int currentDistanceCheck;
 
-        for(int i = 0; i < 6; i++) {
+        for(int i = 0; i < offsetPositions.size(); i++) {
             currentDistanceCheck = Math.abs(offsetPositions.get(i) - ticks);
             if (currentDistanceCheck < lowestDistance) {
                 lowestDistance = currentDistanceCheck;

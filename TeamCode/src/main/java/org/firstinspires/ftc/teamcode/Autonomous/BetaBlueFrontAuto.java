@@ -442,7 +442,6 @@ public class BetaBlueFrontAuto extends OpMode {
 
         telemetry.addData("Reference", robot.sorterHardware.reference);
 
-        telemetry.addData("Closed Check", robot.sorterHardware.closedCheck());
         telemetry.addData("Equalized Target Position", robot.sorterLogic.offsetPositions.get(targetOffset));
         telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
         telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);

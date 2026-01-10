@@ -489,7 +489,6 @@ public class PedroGoDrive extends OpMode {
         telemetry.addData("Current Reference Acceptable", robot.sorterLogic.isCurrentReferenceLogical((int) robot.sorterHardware.reference));
 
         telemetry.addData("Blender in position", robot.sorterHardware.positionedCheck());
-        telemetry.addData("Closed Check", robot.sorterHardware.closedCheck());
         telemetry.addData("Equalized Target Position", robot.sorterLogic.offsetPositions.get(targetOffset));
         telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
         telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
