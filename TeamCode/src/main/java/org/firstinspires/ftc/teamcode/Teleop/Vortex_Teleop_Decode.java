@@ -65,14 +65,13 @@ public class Vortex_Teleop_Decode extends OpMode {
     public IMU imu;
 
 
-
-
     public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
     public static final String PATTERN_KEY = "Pattern";
 
     public boolean canManuallyControlVerticalSlides = true;
 
     ElapsedTime outtakeTimer = new ElapsedTime();
+    boolean killSwitchActivated = false;
 
     static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
@@ -164,7 +163,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         launcherToggle();
 
-        manualTuneLauncher();
+        //manualTuneLauncher();
 
         fireCurrentFireSlot();
 
@@ -179,6 +178,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         doTelemetryStuff();
 
         if (gamepad1.touchpad || gamepad2.touchpad) {
+            killSwitchActivated = true;
             requestOpModeStop();
         }
     }
@@ -188,6 +188,7 @@ public class Vortex_Teleop_Decode extends OpMode {
      */
     public void stop() {
         telemetry.addData("Status", "Robot Stopped");
+        if (killSwitchActivated) telemetry.addLine("Killswitch Hit!");
     }
 
 
@@ -291,11 +292,11 @@ public class Vortex_Teleop_Decode extends OpMode {
             }
 
             if (cadenON) {
-                robot.launcher.setLauncherSpeed(0.5);
+                robot.launcher.setPerfectLauncherVelocity();
             }
             else
             {
-                robot.launcher.setLauncherSpeed(0);
+                robot.launcher.setLauncherVelocity(0);
             }
 
         }

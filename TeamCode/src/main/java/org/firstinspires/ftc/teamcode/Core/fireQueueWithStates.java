@@ -135,7 +135,7 @@ public class fireQueueWithStates {
                         break;
                     }
 
-                    robot.launcher.setLauncherSpeed(0.5);
+                    robot.launcher.setPerfectLauncherVelocity();
 
                     int targetPosition;
                     ArtifactLocator.SlotState currentColor = ballQueue.get(0);
@@ -189,7 +189,7 @@ public class fireQueueWithStates {
         clearList();
         wantToFireQueue = NONE;
         state = CHECK;
-        robot.launcher.setLauncherSpeed(0);
+        robot.launcher.setLauncherVelocity(0);
 
         // Return sorter to neutral/home position (usually index 0)
         //sorterHardware.prepareNewMovement(sorterHardware.motor.getCurrentPosition(), sorterHardware.positions[0]);

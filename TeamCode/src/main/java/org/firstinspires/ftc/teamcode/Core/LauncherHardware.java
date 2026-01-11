@@ -46,7 +46,7 @@ public class LauncherHardware {
 
     public static final int ticksPerRevolution = 28;
     public static final int revolutionsPerSecond = 100;
-    public static final double toleranceRange = 40;
+    public static final double toleranceRange = 20;
 
     public double velocityTarget;
     public double percentSpeed;
@@ -125,7 +125,7 @@ public class LauncherHardware {
                 }
                 break;
             case REV_MOTOR:
-                setLauncherSpeed(percentSpeed);
+                setPerfectLauncherVelocity();
                 cooldownTimer.reset();
                 nextStep(STALL_WHILE_MOTOR_REVVING);
                 break;
@@ -220,31 +220,44 @@ public class LauncherHardware {
         readyFire(speedTarget, useSpeedTarget);
     }
 
+    @Deprecated
     public void setLauncherSpeed(double targetSpeed) {
-        //velocityTarget = ticksPerRevolution * revolutionsPerSecond * targetSpeed;
+        velocityTarget = ticksPerRevolution * revolutionsPerSecond * targetSpeed;
         robot.telemetry.addLine("Setting Launcher");
         motor.setVelocity(velocityTarget);
         //turret.launcherController.runCalledPID(targetspeed);
     }
 
+    public void setLauncherVelocity(double targetVelocity) {
+        velocityTarget = targetVelocity;
+        motor.setVelocity(velocityTarget);
+    }
+    public void setPerfectLauncherVelocity() {
+        setLauncherVelocity(findBestMotorVelocity(robot.targetTag.distanceZ));
+    }
+
     public boolean motorSpeedCheck(double speedTarget) {
-        if (atMaxSpeed()) {
+        /*if (atMaxSpeed()) {
             return true;
-        }
+        }*/
         double realVelocity = motor.getVelocity();
-        return (realVelocity > (speedTarget - toleranceRange)) && (realVelocity < (speedTarget + toleranceRange));
+        return (realVelocity >= (speedTarget - toleranceRange)) && (realVelocity <= (speedTarget + toleranceRange));
     }
     public boolean motorSpeedCheck() {
         return motorSpeedCheck(velocityTarget);
     }
 
+    //TODO retune this
     public boolean atMaxSpeed() {
         double voltageMax = -138.3958 * robot.voltageSensor.getVoltage() - 836.5097;
-        return motor.getVelocity() > (voltageMax - toleranceRange) &&
-                motor.getVelocity() < (voltageMax + toleranceRange);
+        return motor.getVelocity() >= (voltageMax - toleranceRange);
     }
 
     public boolean motorSteady() {
         return steadiness >= steadinessThreshold;
+    }
+
+    public double findBestMotorVelocity(double input) {
+        return 201 * input + 1103;
     }
 }
