@@ -117,6 +117,7 @@ public class ezPID {
         i = inI;
         d = inD;
         f = inF;
+        kneecap = kneecapIN;
     }
 
     
