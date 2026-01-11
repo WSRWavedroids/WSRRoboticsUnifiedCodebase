@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 
 /**
@@ -260,11 +261,18 @@ public class BetaBlueBackAuto extends OpMode {
                 if(auto.checkMovement())
                 {
                     if (robot.pattern.equals(PPG)) {
-                        auto.fireInSequence(robot.sorterLogic.slotB, robot.sorterLogic.slotC, robot.sorterLogic.slotA);
+                        auto.fireInSequence(robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE)
+                                , robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE),
+                                robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.GREEN));
+
                     } else if (robot.pattern.equals(PGP)) {
-                        auto.fireInSequence(robot.sorterLogic.slotB, robot.sorterLogic.slotA, robot.sorterLogic.slotC);
+                        auto.fireInSequence(robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE)
+                                , robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.GREEN),
+                                robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE));
                     } else {
-                        auto.fireInSequence(robot.sorterLogic.slotA, robot.sorterLogic.slotB, robot.sorterLogic.slotC);
+                        auto.fireInSequence(robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.GREEN)
+                                , robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE),
+                                robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE));
                     }
 
                     if (auto.fireInSequenceComplete()) {
