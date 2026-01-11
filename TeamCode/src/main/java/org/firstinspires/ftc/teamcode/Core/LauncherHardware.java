@@ -50,6 +50,8 @@ public class LauncherHardware {
 
     public double velocityTarget;
     public double percentSpeed;
+    public int steadiness = 0;
+    public final int steadinessThreshold = 3;
 
     public boolean onCooldown = false;
 
@@ -128,7 +130,7 @@ public class LauncherHardware {
                 nextStep(STALL_WHILE_MOTOR_REVVING);
                 break;
             case STALL_WHILE_MOTOR_REVVING:
-                if (motorSpeedCheck(velocityTarget) || cooldownTimer.seconds() >= 5) {
+                if (motorSpeedCheck(velocityTarget) && motorSteady() || cooldownTimer.seconds() >= 5) {
                     nextStep(FLICK);
                 }
                 break;
@@ -170,6 +172,12 @@ public class LauncherHardware {
                 // All done, ready for the next one
                 nextStep(READY_FOR_COMMANDS);
                 break;
+        }
+
+        if (motorSpeedCheck()) {
+            steadiness += 1;
+        } else {
+            steadiness = 0;
         }
     }
 
@@ -234,5 +242,9 @@ public class LauncherHardware {
         double voltageMax = -138.3958 * robot.voltageSensor.getVoltage() - 836.5097;
         return motor.getVelocity() > (voltageMax - toleranceRange) &&
                 motor.getVelocity() < (voltageMax + toleranceRange);
+    }
+
+    public boolean motorSteady() {
+        return steadiness >= steadinessThreshold;
     }
 }
