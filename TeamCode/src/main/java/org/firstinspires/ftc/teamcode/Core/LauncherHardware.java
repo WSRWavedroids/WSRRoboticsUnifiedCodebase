@@ -79,10 +79,10 @@ public class LauncherHardware {
         robot.panelsTelemetry.addData("Launcher Velocity", motor.getVelocity());
         robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
 
-        //TODO remove this so soon
+        /*//TODO remove this so soon
         robot.swivelMotor.setMode(RUN_WITHOUT_ENCODER);
         robot.swivelMotor.setZeroPowerBehavior(BRAKE);
-        robot.swivelMotor.setPower(0);
+        robot.swivelMotor.setPower(0);*/
 
         switch (currentLauncherStep) {
             case READY_FOR_COMMANDS:

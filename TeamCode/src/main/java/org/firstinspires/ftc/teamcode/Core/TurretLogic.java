@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Core;
 
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
 import static org.firstinspires.ftc.teamcode.Core.TurretLogic.swivelControllers.*;
+import static org.firstinspires.ftc.teamcode.Core.TurretLogic.controlMode.*;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
@@ -25,15 +26,15 @@ public class TurretLogic {
     double turretDegreesFromTarget;
     public int encoderResolution = 8192;
     public static double fineDegreeWindow = 36;
-    public static double safeDegreeDistance = 270;
-    public double manualOverridePositionInDegs = 0;
+    public static double safeDegreeDistance = 90;
+    public static double manualOverridePositionInDegs = 0;
     public boolean goodAngle = false;
     public float inputModifier = 400;
     public float input;
 
     enum swivelControllers {RAW, FINE}
     enum controlMode{FULL, PARTIAL, LOCKED, OVERIDE}
-    controlMode activeMode = controlMode.LOCKED;
+    static controlMode activeMode = LOCKED;
 
     public swivelControllers lastUsedSwivelController;
 
@@ -58,9 +59,9 @@ public class TurretLogic {
     }
 
     public void runTurret() {
-        if (follower == null && activeMode.equals(controlMode.FULL)) {
-            activeMode = controlMode.LOCKED;
-        } else if(activeMode.equals(controlMode.FULL))
+        if (follower == null && activeMode.equals(FULL)) {
+            activeMode = LOCKED;
+        } else if(activeMode.equals(FULL))
         {
             updateTurretPositionXY();
         }
@@ -101,7 +102,7 @@ public class TurretLogic {
     double checkDistance() {
         if (robot.targetTag.currentlyDetected) {
             return robot.targetTag.distanceZ;
-        } else if (activeMode.equals(controlMode.FULL)) {
+        } else if (activeMode.equals(FULL)) {
 
             if (robot.alliance.equals(BLUE)) {
                 //A^2 + B^2 = C^2
@@ -119,11 +120,11 @@ public class TurretLogic {
     /// Returns angle the launcher needs to move to IN DEGREES
     /// Dont worry about unsafe positions, a different function converts these
     {
-        if(activeMode.equals(controlMode.LOCKED) || ( activeMode.equals(controlMode.PARTIAL) && !robot.targetTag.currentlyDetected && Math.abs(input) < 0.1))
+        if(activeMode.equals(LOCKED) || ( activeMode.equals(PARTIAL) && !robot.targetTag.currentlyDetected && Math.abs(input) < 0.1))
         {
             return 0;
         }
-        else if(activeMode.equals(controlMode.OVERIDE))
+        else if(activeMode.equals(OVERIDE))
         {
             return manualOverridePositionInDegs;
         }
@@ -132,11 +133,11 @@ public class TurretLogic {
             turretDegreesFromTarget = Math.abs(robot.targetTag.angleX - ticksToTurretHeading());
             return robot.targetTag.angleX - ticksToTurretHeading();
         }
-        else if(activeMode.equals(controlMode.PARTIAL) && Math.abs(input) >= 0.1)
+        else if(activeMode.equals(PARTIAL) && Math.abs(input) >= 0.1)
         {
             return ticksToTurretHeading() + ticksToDegrees(inputToTicks());
         }
-        else if(activeMode.equals(controlMode.FULL))
+        else if(activeMode.equals(FULL))
         {
             if(robot.alliance.equals(BLUE))
             {

@@ -206,7 +206,6 @@ public class Robot {
         targetScanner = new Limelight_Target_Scanner(this);
         randomizationScanner = new Limelight_Randomization_Scanner(this);
         turret = new TurretLogic(this, null);
-
     }
 
 
@@ -373,6 +372,7 @@ public class Robot {
         sorterHardware.updateSorterHardware();
         launcher.updateLauncherHardware();
         queue.updateQueueStates();
+        turret.runTurret();
 
         if(scanningForTargetTag)
         {
@@ -423,7 +423,7 @@ public class Robot {
     public void readyHardware(boolean resetEncoder)
     {
         sorterHardware.flicky.setPosition(sorterHardware.flickyDownPosition);
-        launcher.setLauncherSpeed(0);
+        launcher.setLauncherVelocity(0);
 
         if(resetEncoder)
         {
