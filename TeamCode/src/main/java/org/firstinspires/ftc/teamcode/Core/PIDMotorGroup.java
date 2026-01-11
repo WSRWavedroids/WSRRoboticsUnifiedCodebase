@@ -22,7 +22,7 @@ public class PIDMotorGroup {
 
 
     int numberOfMotorsInGroup;
-    ArrayList<DcMotorEx> motorGroup;
+    public ArrayList<DcMotorEx> motorGroup;
 
     public PIDMotorGroup(int numberOfMotorsIN, DcMotorEx... motorsIN) {
         numberOfMotorsInGroup = numberOfMotorsIN;

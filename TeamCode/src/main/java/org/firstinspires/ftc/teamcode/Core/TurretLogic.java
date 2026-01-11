@@ -10,11 +10,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 @Configurable
 public class TurretLogic {
     Robot robot;
-    public ezPID launcherMotor;
-    public static double launcherP;
-    public static double launcherI;
-    public static double launcherD;
-    public static double launcherF;
     DcMotorEx swivelMotor;
     public static double rawP;
     public static double rawI;
@@ -28,16 +23,18 @@ public class TurretLogic {
     ezPID rawSwivelController;
     public ezPID fineSwivelController;
     double turretDegreesFromTarget;
-    double fineDegreeWindow = 60.0;
-    double safeDegreeDistance = 270;
+    public int encoderResolution = 8192;
+    public static double fineDegreeWindow = 36;
+    public static double safeDegreeDistance = 270;
     public double manualOverridePositionInDegs = 0;
-    public double manualOverrideSpeedInTicks = 72;
-    double heightOffsetModifier;
-    double distanceModifier;
-    public boolean autoTrackingModeOn;
-    public boolean launcherOn = false;
-    public boolean readyToFire = false;
+    public boolean goodAngle = false;
+    public float inputModifier = 400;
+    public float input;
+
     enum swivelControllers {RAW, FINE}
+    enum controlMode{FULL, PARTIAL, LOCKED, OVERIDE}
+    controlMode activeMode = controlMode.LOCKED;
+
     public swivelControllers lastUsedSwivelController;
 
     public double minimumDistance;
@@ -51,107 +48,105 @@ public class TurretLogic {
         follower = followerIN;
 
         swivelMotor = robot.swivelMotor;
-        /*launcherController = new ezPID(robot.launcherMotor, 28, launcherP, launcherI, launcherD,
-                launcherF, 1.0, tolerance, ezPID.movementType.SPEED);*/
 
-        fineSwivelController = new ezPID(swivelMotor, 8192 , fineP, fineI, fineD,
+
+        fineSwivelController = new ezPID(swivelMotor, 8192, fineP, fineI, fineD,
                 fineF, 1.0, tolerance, ezPID.movementType.POSITION);
 
-        rawSwivelController = new ezPID(swivelMotor, 8192 , rawP, rawI, rawD,
+        rawSwivelController = new ezPID(swivelMotor, 8192, rawP, rawI, rawD,
                 rawF, 1.0, tolerance, ezPID.movementType.POSITION);
     }
 
-    public void runTurret()
-    {
-        updateTurretPositionXY();
-        //updateAngle();
-        turretDegreesFromTarget = updateAngle() - ticksToDegrees(swivelMotor.getCurrentPosition(), 8192);
-
-        if(Math.abs(turretDegreesFromTarget) < fineDegreeWindow && autoTrackingModeOn)
+    public void runTurret() {
+        if (follower == null && activeMode.equals(controlMode.FULL)) {
+            activeMode = controlMode.LOCKED;
+        } else if(activeMode.equals(controlMode.FULL))
         {
-            if(lastUsedSwivelController == RAW)
+            updateTurretPositionXY();
+        }
+
+        if (Math.abs(turretDegreesFromTarget) < fineDegreeWindow)
+        {
+            if (lastUsedSwivelController == RAW)
             {
                 fineSwivelController.grabInfoFromPID(rawSwivelController.shareInfo());
             }
             lastUsedSwivelController = swivelControllers.FINE;
+            fineSwivelController.changeBehaviorValues(fineP, fineI, fineD, fineF, 1);
             fineSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
-        }
-        else if(Math.abs(turretDegreesFromTarget) > fineDegreeWindow && autoTrackingModeOn)
+        } else if (Math.abs(turretDegreesFromTarget) > fineDegreeWindow)
         {
-            if(lastUsedSwivelController == FINE)
+            if (lastUsedSwivelController == FINE)
             {
                 rawSwivelController.grabInfoFromPID(fineSwivelController.shareInfo());
             }
             lastUsedSwivelController = RAW;
+            rawSwivelController.changeBehaviorValues(rawP, rawI, rawD, rawF, 1);
             rawSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
         }
         else
         {
-            if(lastUsedSwivelController == RAW)
-            {
+            if (lastUsedSwivelController == RAW) {
                 fineSwivelController.grabInfoFromPID(rawSwivelController.shareInfo());
             }
             lastUsedSwivelController = swivelControllers.FINE;
-            fineSwivelController.runCalledPID(runToSafeAngle(manualOverridePositionInDegs));
+            fineSwivelController.changeBehaviorValues(fineP, fineI, fineD, fineF, 1);
+            fineSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
         }
 
-        if(launcherOn && autoTrackingModeOn)
-        {
-            //launcherController.runCalledPID(findLauncherTargetSpeed(checkDistance()));
-        }
-        else
-        {
-            //launcherController.runCalledPID(manualOverrideSpeedInTicks);
-        }
 
-        readyToFire = launcherMotor.withinTolerance && fineSwivelController.withinTolerance;
+        goodAngle = fineSwivelController.withinTolerance;
     }
 
-    double checkDistance()
-    {
-        if(robot.targetTag.currentlyDetected)
-        {
+    double checkDistance() {
+        if (robot.targetTag.currentlyDetected) {
             return robot.targetTag.distanceZ;
-        }
-        else
-        {
+        } else if (activeMode.equals(controlMode.FULL)) {
 
-            if(robot.alliance.equals(BLUE))
-            {
+            if (robot.alliance.equals(BLUE)) {
                 //A^2 + B^2 = C^2
                 return Math.sqrt(Math.pow(robot.turretPosition.x - 12.5, 2) + Math.pow((robot.turretPosition.y - 135.73), 2));
-            }
-            else if(robot.alliance.equals(Robot.allianceSides.RED))
-            {
+            } else if (robot.alliance.equals(Robot.allianceSides.RED)) {
                 return Math.sqrt(Math.pow(robot.turretPosition.x - 131.5, 2) + Math.pow((robot.turretPosition.y - 135.73), 2));
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }
+
+        return 0;
     }
-
     double updateAngle()
-    /// Returns angle the launcher needs to move IN DEGREES
+    /// Returns angle the launcher needs to move to IN DEGREES
+    /// Dont worry about unsafe positions, a different function converts these
     {
-
-        if(robot.targetTag.currentlyDetected)
+        if(activeMode.equals(controlMode.LOCKED) || ( activeMode.equals(controlMode.PARTIAL) && !robot.targetTag.currentlyDetected && Math.abs(input) < 0.1))
         {
-            //turretDegreesFromTarget = Math.abs(robot.targetTag.angleX);
-            return robot.targetTag.angleX;
+            return 0;
         }
-        else
+        else if(activeMode.equals(controlMode.OVERIDE))
+        {
+            return manualOverridePositionInDegs;
+        }
+        else if(robot.targetTag.currentlyDetected)
+        {
+            turretDegreesFromTarget = Math.abs(robot.targetTag.angleX - ticksToTurretHeading());
+            return robot.targetTag.angleX - ticksToTurretHeading();
+        }
+        else if(activeMode.equals(controlMode.PARTIAL) && Math.abs(input) >= 0.1)
+        {
+            return ticksToTurretHeading() + ticksToDegrees(inputToTicks());
+        }
+        else if(activeMode.equals(controlMode.FULL))
         {
             if(robot.alliance.equals(BLUE))
             {
                 //gets the raw angle without accounting for heading
                 double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x -12.51), (robot.turretPosition.y -136.15)));
                 //Corrects for heading then hands off to safeAngle logic
-                //turretDegreesFromTarget = Math.abs(-90 + (rawAngle));
+                turretDegreesFromTarget = Math.abs(-90 + (rawAngle));
                 return robot.robotHeading - 90 + (rawAngle);
             }
-            else if(robot.alliance.equals(Robot.allianceSides.RED))
+            else
             {
                 //gets the raw angle without accounting for heading
                 double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x -131.699), (robot.turretPosition.y -135.73)));
@@ -159,30 +154,41 @@ public class TurretLogic {
                 //turretDegreesFromTarget =  Math.abs(-90 + (rawAngle));
                 return robot.robotHeading - 90 + (rawAngle);
             }
-            return 0; //Do trig from pedro coords and then add/sub from heading
         }
+        else return 0;
     }
 
-    double ticksToRPM(double ticksPerSecIn, double encoderResolution)
+    double ticksToRPM(double ticksPerSecIn)
     {
         return (ticksPerSecIn / encoderResolution) * 60;
     }
 
-    int degreesToTicks(double degreesIN, int encoderResolution)
+    int degreesToTicks(double degreesIN)
     {
         return (int) ((encoderResolution/360) * degreesIN);
     }
 
-    int ticksToDegrees(double ticksIN, int encoderResolution)
+    int ticksToDegrees(double ticksIN)
     {
         return (int) ((ticksIN / encoderResolution) * 360);
+    }
+
+    /// Will find the turret's direction relative to its zero point
+    double ticksToTurretHeading()
+    {
+        return ticksToDegrees(swivelMotor.getCurrentPosition());
+    }
+
+    int inputToTicks()
+    {
+        return (int) (input * inputModifier);
     }
 
 
     int runToSafeAngle(double intINDegs) {
 
         double finalTargetDeg;
-        double currentPosDeg = ticksToDegrees(swivelMotor.getCurrentPosition(), 8192);
+        double currentPosDeg = ticksToDegrees(swivelMotor.getCurrentPosition());
 
 
         // 1. If the input angle is unsafe, move to its safe coterminal
@@ -208,12 +214,7 @@ public class TurretLogic {
         }
 
         turretDegreesFromTarget = finalTargetDeg - currentPosDeg;
-        return degreesToTicks(finalTargetDeg, 8192);
-    }
-
-    double findLauncherTargetSpeed(double distanceFromTarget)
-    {
-       return (distanceFromTarget + heightOffsetModifier) * distanceModifier;
+        return degreesToTicks(finalTargetDeg);
     }
 
     boolean withinSafeZone(double DegsIn)
@@ -223,21 +224,24 @@ public class TurretLogic {
 
     void updateTurretPositionXY()
     {
-       robot.robotPosition.x = follower.getPose().getX();
-       robot.robotPosition.y = follower.getPose().getY();
-       robot.robotHeading = Math.toDegrees(follower.getHeading());
+        if(follower != null) {
+            robot.robotPosition.x = follower.getPose().getX();
+            robot.robotPosition.y = follower.getPose().getY();
+            robot.robotHeading = Math.toDegrees(follower.getHeading());
 
-       double rotatedX = robot.turretPositionOffsetXInches * Math.cos(robot.robotHeading) - robot.turretPositionOffsetYInches * Math.sin(robot.robotHeading);
-       double rotatedY = robot.turretPositionOffsetXInches * Math.sin(robot.robotHeading) + robot.turretPositionOffsetYInches * Math.cos(robot.robotHeading);
 
-        robot.turretPosition.x = robot.robotPosition.x + rotatedX;
-        robot.turretPosition.y = robot.robotPosition.y + rotatedY;
+            double rotatedX = robot.turretPositionOffsetXInches * Math.cos(robot.robotHeading) - robot.turretPositionOffsetYInches * Math.sin(robot.robotHeading);
+            double rotatedY = robot.turretPositionOffsetXInches * Math.sin(robot.robotHeading) + robot.turretPositionOffsetYInches * Math.cos(robot.robotHeading);
+
+            robot.turretPosition.x = robot.robotPosition.x + rotatedX;
+            robot.turretPosition.y = robot.robotPosition.y + rotatedY;
+        }
     }
 
     void calibratePositionFromTag()
     {
         //Angle from our robot heading to tag
-        double testVal = ticksToDegrees(swivelMotor.getCurrentPosition(), 8192) + robot.targetTag.angleX;
+        double testVal = ticksToDegrees(swivelMotor.getCurrentPosition()) + robot.targetTag.angleX;
 
 
 
@@ -262,6 +266,10 @@ public class TurretLogic {
             //robot.robotHeading = ;
         }
     }
+
+
+
+
 
 
 }

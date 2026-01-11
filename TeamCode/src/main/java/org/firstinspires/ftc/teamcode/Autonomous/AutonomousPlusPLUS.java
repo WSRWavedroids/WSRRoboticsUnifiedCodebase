@@ -387,52 +387,31 @@ public class AutonomousPlusPLUS {
 
 
 
-    int YoinkStep = 0;
+
     boolean firingInSequence;
 
-    public void Yoinkify(int ticks, long pause) {
+    int distanceTraveledForYoink = 0;
+    public boolean yoinking;
 
+    public void yoinkify(int ticks) {
 
-    }
+        robot.sorterHardware.runAdvancedIntake();
+        distanceTraveledForYoink = ticks - robot.frontRightDrive.getCurrentPosition();
 
-enum yoinkstates{CHECKINVENTORY, ROTATE, BEGIN, STOP, BACKUP}
-    private yoinkstates state = yoinkstates.BEGIN;
-    public void AutoSortIntaked(int ticks, double speed)
-    {
-        robot.setTargets(FORWARD, ticks);
-        switch(state)
+        if(checkMovement() || robot.sorterLogic.inventory.getTotalCount() == 3)
         {
-            case BEGIN:
-                //enable intake
-                state = yoinkstates.CHECKINVENTORY;
-                break;
-
-            case CHECKINVENTORY:
-                if(robot.sorterLogic.inventory.getTotalCount() > 3)
-                {
-                    state = yoinkstates.STOP;
-                }
-                else
-                {
-                    YoinkStep = 1;
-                }
-                break;
-            case ROTATE: //move to slot
-                //Enable Intake
-                robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(EMPTY).getLoadPosition());
-                state = yoinkstates.CHECKINVENTORY;
-                break;
-            case STOP:
-               //Disable Intake
-                state = yoinkstates.BACKUP;
-               break;
-            case BACKUP:
-                //Backup
-                break;
-
-
+            //disable intake
+            moveRobotBackward(distanceTraveledForYoink);
+            if(checkMovement())
+            {
+                yoinking = false;
+            }
         }
+
     }
+
+    public boolean checkYoink() {return yoinking;}
+
 
     public void fireInSequence(ArtifactLocator.Slot one, ArtifactLocator.Slot two, ArtifactLocator.Slot three) {
         firingInSequence = true;
