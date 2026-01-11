@@ -12,20 +12,20 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class TurretLogic {
     Robot robot;
     DcMotorEx swivelMotor;
-    public static double rawP;
-    public static double rawI;
-    public static double rawD;
-    public static double rawF;
-    public static double fineP;
-    public static double fineI;
-    public static double fineD;
-    public static double fineF;
+    public static double rawP = 0.0003;
+    public static double rawI = 0.0;
+    public static double rawD = 0.0;
+    public static double rawF = 0.0;
+    public static double fineP = 0.0009;
+    public static double fineI = 0.0002;
+    public static double fineD = 0.0;
+    public static double fineF = 0.0;
     public static double tolerance;
     ezPID rawSwivelController;
     public ezPID fineSwivelController;
     double turretDegreesFromTarget;
-    public int encoderResolution = 8192;
-    public static double fineDegreeWindow = 36;
+    public int encoderResolution = 8192 * 132 / 16; // Actual encoder resolution * teeth on turret / teeth on motor side
+    public static double fineDegreeWindow = 20;
     public static double safeDegreeDistance = 90;
     public static double manualOverridePositionInDegs = 0;
     public boolean goodAngle = false;
@@ -94,6 +94,9 @@ public class TurretLogic {
             fineSwivelController.changeBehaviorValues(fineP, fineI, fineD, fineF, 1);
             fineSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
         }
+
+        robot.panelsTelemetry.addData("Turret position", robot.swivelMotor.getCurrentPosition());
+        robot.panelsTelemetry.addData("Turret target", runToSafeAngle(updateAngle()));
 
 
         goodAngle = fineSwivelController.withinTolerance;
@@ -166,7 +169,7 @@ public class TurretLogic {
 
     int degreesToTicks(double degreesIN)
     {
-        return (int) ((encoderResolution/360) * degreesIN);
+        return (int) (((double) encoderResolution / 360) * degreesIN);
     }
 
     int ticksToDegrees(double ticksIN)
@@ -190,7 +193,6 @@ public class TurretLogic {
 
         double finalTargetDeg;
         double currentPosDeg = ticksToDegrees(swivelMotor.getCurrentPosition());
-
 
         // 1. If the input angle is unsafe, move to its safe coterminal
         if (intINDegs > safeDegreeDistance) {

@@ -23,7 +23,7 @@ public class LauncherHardware {
     public DcMotorEx motor;
 
     private TurretLogic turret;
-    private static ezPID launcherPID;
+    private ezPID launcherPID;
 
 
     public LauncherHardware(Robot robotFile) {
