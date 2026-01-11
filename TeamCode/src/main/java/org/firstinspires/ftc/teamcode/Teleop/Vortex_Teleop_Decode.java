@@ -164,6 +164,8 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         launcherToggle();
 
+        manualTuneLauncher();
+
         fireCurrentFireSlot();
 
         incrementThroughPositions();
@@ -269,13 +271,9 @@ public class Vortex_Teleop_Decode extends OpMode {
             gamepad1.rumble(0.25, 0.25, 100);
         }
 
-        if(robot.sorterHardware.fireSafeCheck())
+        if(robot.launcher.isInFireSequence())
         {
             gamepad2.rumble(0.5, 0, 50);
-        }
-        if(robot.launcher.motorSpeedCheck())
-        {
-            gamepad2.rumble(0, 0.5, 50);
         }
     }
 
@@ -446,6 +444,15 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
     }
 
+    private void manualTuneLauncher() {
+        if (gamepad2.dpadUpWasPressed()) {
+            robot.launcher.velocityTarget += 20;
+        }
+        else if (gamepad2.dpadDownWasPressed()) {
+            robot.launcher.velocityTarget -= 20;
+        }
+    }
+
     private void driveSpeed() {
         if (gamepad1.dpad_up || gamepad1.right_trigger >= 0.5) {
             speed = 1;
@@ -522,18 +529,6 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         telemetry.addData("Last saved Alliance: ", blackboard.get(ALLIANCE_KEY));
 
-        telemetry.addData("Reference", robot.sorterHardware.reference);
-        telemetry.addData("Current Reference Acceptable", robot.sorterLogic.isCurrentReferenceLogical((int) robot.sorterHardware.reference));
-
-        telemetry.addData("Blender in position", robot.sorterHardware.positionedCheck());
-        telemetry.addData("Equalized Target Position", robot.sorterLogic.offsetPositions.get(targetOffset));
-        telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
-        telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
-        telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
-        telemetry.addData("Launcher on Cooldown", robot.launcher.onCooldown);
-        telemetry.addData("Current Load Slot", robot.sorterLogic.findCurrentSlotInPosition(LOAD).getName());
-        telemetry.addData("Current Fire Slot", robot.sorterLogic.findCurrentSlotInPosition(FIRE).getName());
-
         telemetry.addLine("Artifact Storage:");
         telemetry.addData("Total Inventory", robot.sorterLogic.inventory.getTotalCount());
         telemetry.addLine("Purple: " + robot.sorterLogic.inventory.getPurpleCount() +
@@ -541,7 +536,15 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Slot A", robot.sorterLogic.slotA.getOccupied());
         telemetry.addData("Slot B", robot.sorterLogic.slotB.getOccupied());
         telemetry.addData("Slot C", robot.sorterLogic.slotC.getOccupied());
-
+        telemetry.addLine();
+        telemetry.addData("Blender in position", robot.sorterHardware.positionedCheck());
+        telemetry.addData("Equalized Target Position", robot.sorterLogic.offsetPositions.get(targetOffset));
+        telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
+        telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
+        telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
+        telemetry.addData("Current Load Slot", robot.sorterLogic.findCurrentSlotInPosition(LOAD).getName());
+        telemetry.addData("Current Fire Slot", robot.sorterLogic.findCurrentSlotInPosition(FIRE).getName());
+        telemetry.addData("LL Distance", robot.targetTag.distanceZ);
 
         //robot.tellMotorOutput();
     }

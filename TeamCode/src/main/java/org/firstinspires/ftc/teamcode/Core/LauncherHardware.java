@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Core;
 
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_WITHOUT_ENCODER;
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.IF_SAFE_NOW;
@@ -8,9 +11,12 @@ import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.
 import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherSteps.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 
+import com.bylazar.configurables.annotations.Configurable;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Configurable
 public class LauncherHardware {
 
     private Robot robot;
@@ -40,7 +46,7 @@ public class LauncherHardware {
 
     public static final int ticksPerRevolution = 28;
     public static final int revolutionsPerSecond = 100;
-    public static final double toleranceRange = 100;
+    public static final double toleranceRange = 40;
 
     public double velocityTarget;
     public double percentSpeed;
@@ -67,6 +73,9 @@ public class LauncherHardware {
 
     public void updateLauncherHardware() {
         robot.telemetry.addData("Launcher step", currentLauncherStep);
+        robot.telemetry.addData("Launcher Target", velocityTarget);
+        robot.panelsTelemetry.addData("Launcher Velocity", motor.getVelocity());
+        robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
 
         //TODO remove this so soon
         robot.swivelMotor.setMode(RUN_WITHOUT_ENCODER);
@@ -204,7 +213,7 @@ public class LauncherHardware {
     }
 
     public void setLauncherSpeed(double targetSpeed) {
-        velocityTarget = ticksPerRevolution * revolutionsPerSecond * targetSpeed;
+        //velocityTarget = ticksPerRevolution * revolutionsPerSecond * targetSpeed;
         robot.telemetry.addLine("Setting Launcher");
         motor.setVelocity(velocityTarget);
         //turret.launcherController.runCalledPID(targetspeed);

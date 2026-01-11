@@ -106,7 +106,7 @@ public class ArtifactLocator {
      */
     public ArtifactLocator.SlotState runSideScannersWithHSV()
     {
-        double purpleMinHue = 190;
+        double purpleMinHue = 180;
         double purpleMaxHue = 295;
         double purpleMinValue = 0.3;
         double purpleMaxValue = 1.2;
@@ -129,6 +129,10 @@ public class ArtifactLocator {
         double rightHue = rightHSVValues[0];
         double rightSaturation = rightHSVValues[1];
         double rightValue = rightHSVValues[2];
+
+
+        //robot.telemetry.addData("H", leftHue + ", " + rightHue);
+        //robot.telemetry.addData("V", leftValue + ", " + rightValue);
 
         if(leftHue > purpleMinHue && leftHue < purpleMaxHue &&
                 leftValue > purpleMinValue && leftValue < purpleMaxValue) {

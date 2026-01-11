@@ -40,7 +40,7 @@ public class SorterHardware {
     public static Double tickTolerance = 100.0;
     public boolean legalToSpin = false;
 
-    public double flickyDownPosition = 0.575;
+    public double flickyDownPosition = 0.51;
     public double flickyUpPosition = 0;
 
     public ElapsedTime cooldownTimer = new ElapsedTime();
@@ -317,12 +317,7 @@ public class SorterHardware {
     }
 
     public void runAdvancedIntake() {
-        if(!robot.sorterHardware.positionedCheck())
-        {
-            //dont jam while spinning to load
-            robot.cancelAutoIntake();
-        }
-        else if (robot.sorterLogic.inventory.getTotalCount() >= 3) {
+        if (robot.sorterLogic.inventory.getTotalCount() >= 3) {
             robot.cancelAutoIntake();
         }
         else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
@@ -337,8 +332,6 @@ public class SorterHardware {
                         robot.sorterLogic.findFirstType(UNKNOWN).getLoadPosition()
                 );
             }
-
-            robot.cancelAutoIntake();
         }
         else {
             //intake if we good

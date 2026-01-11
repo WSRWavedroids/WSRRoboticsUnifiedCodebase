@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Core;
 
-import static org.firstinspires.ftc.teamcode.Core.TurretLogic.swivelControllers.FINE;
-import static org.firstinspires.ftc.teamcode.Core.TurretLogic.swivelControllers.RAW;
+import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
+import static org.firstinspires.ftc.teamcode.Core.TurretLogic.swivelControllers.*;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @Configurable
 public class TurretLogic {
-     Robot robot;
+    Robot robot;
     public ezPID launcherMotor;
     public static double launcherP;
     public static double launcherI;
@@ -25,7 +25,6 @@ public class TurretLogic {
     public static double fineD;
     public static double fineF;
     public static double tolerance;
-    ezPID launcherController;
     ezPID rawSwivelController;
     public ezPID fineSwivelController;
     double turretDegreesFromTarget;
@@ -52,16 +51,14 @@ public class TurretLogic {
         follower = followerIN;
 
         swivelMotor = robot.swivelMotor;
-        launcherController = new ezPID(robot.launcherMotor, 28, launcherP, launcherI, launcherD,
-                launcherF, 1.0, tolerance, ezPID.movementType.SPEED);
+        /*launcherController = new ezPID(robot.launcherMotor, 28, launcherP, launcherI, launcherD,
+                launcherF, 1.0, tolerance, ezPID.movementType.SPEED);*/
 
         fineSwivelController = new ezPID(swivelMotor, 8192 , fineP, fineI, fineD,
                 fineF, 1.0, tolerance, ezPID.movementType.POSITION);
 
         rawSwivelController = new ezPID(swivelMotor, 8192 , rawP, rawI, rawD,
                 rawF, 1.0, tolerance, ezPID.movementType.POSITION);
-
-
     }
 
     public void runTurret()
@@ -100,14 +97,14 @@ public class TurretLogic {
 
         if(launcherOn && autoTrackingModeOn)
         {
-            launcherController.runCalledPID(findLauncherTargetSpeed(checkDistance()));
+            //launcherController.runCalledPID(findLauncherTargetSpeed(checkDistance()));
         }
         else
         {
-            launcherController.runCalledPID(manualOverrideSpeedInTicks);
+            //launcherController.runCalledPID(manualOverrideSpeedInTicks);
         }
 
-        readyToFire = launcherController.withinTolerance && fineSwivelController.withinTolerance;
+        readyToFire = launcherMotor.withinTolerance && fineSwivelController.withinTolerance;
     }
 
     double checkDistance()
@@ -119,7 +116,7 @@ public class TurretLogic {
         else
         {
 
-            if(robot.alliance.equals(Robot.allianceSides.BLUE))
+            if(robot.alliance.equals(BLUE))
             {
                 //A^2 + B^2 = C^2
                 return Math.sqrt(Math.pow(robot.turretPosition.x - 12.5, 2) + Math.pow((robot.turretPosition.y - 135.73), 2));
@@ -146,7 +143,7 @@ public class TurretLogic {
         }
         else
         {
-            if(robot.alliance.equals(Robot.allianceSides.BLUE))
+            if(robot.alliance.equals(BLUE))
             {
                 //gets the raw angle without accounting for heading
                 double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x -12.51), (robot.turretPosition.y -136.15)));
@@ -246,7 +243,7 @@ public class TurretLogic {
 
         Vector2 goalPosition = new Vector2();
         if(robot.targetTag.currentlyDetected && fineSwivelController.withinTolerance) {
-            if (robot.alliance.equals(Robot.allianceSides.BLUE))
+            if (robot.alliance.equals(BLUE))
             {
                 goalPosition.x = 17;
                 goalPosition.y = 132;
