@@ -188,6 +188,7 @@ public class Robot {
 
         sorterMotor.setDirection(FORWARD);
         intakeMotor.setDirection(REVERSE);
+        swivelMotor.setDirection(REVERSE);
 
         // This tells the motors to chill when we're not powering them.
         frontRightDrive.setZeroPowerBehavior(BRAKE);
