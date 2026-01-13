@@ -545,8 +545,8 @@ public class AutonomousPLUS extends LinearOpMode {
     public void runLauncherAuto() {
         robot.setupLaunchers();
         spd = robot.limelightAdjustedSpeed;
-        robot.launchLeft.setVelocity(spd);
-        robot.launchRight.setVelocity(spd);
+        robot.launchLeft.setVelocity(-spd);
+        robot.launchRight.setVelocity(-spd);
 
     }
     public void runLauncherstop() {
@@ -554,20 +554,20 @@ public class AutonomousPLUS extends LinearOpMode {
         robot.launchRight.setVelocity(0);
     }
     public void runLauncherAuto(double LaunchSpd){
-        robot.launchLeft.setVelocity(-LaunchSpd * 2000);
-        robot.launchRight.setVelocity(-LaunchSpd * 2000);
+        robot.launchLeft.setVelocity(LaunchSpd * -2000);
+        robot.launchRight.setVelocity(LaunchSpd * -2000);
     }
 //PRIMARY INTAKE
 
     public void runIntakeAuto(String direction) {
         if (direction.equals("in")) {
-            robot.intakeMotor.setPower(0.85);
-        } else if (direction.equals("out")) {
             robot.intakeMotor.setPower(-0.85);
+        } else if (direction.equals("out")) {
+            robot.intakeMotor.setPower(0.85);
         } else if (direction.equals(("stop"))) {
             robot.intakeMotor.setPower(0);
         } else ;
-        robot.intakeMotor.setPower(-0.85);
+        robot.intakeMotor.setPower(0.85);
 
     }
  //   public void runIntake2Auto(String direction) {
