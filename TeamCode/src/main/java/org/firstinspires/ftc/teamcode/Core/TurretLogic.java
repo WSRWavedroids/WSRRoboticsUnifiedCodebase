@@ -34,8 +34,8 @@ public class TurretLogic {
     public float input;
 
     enum swivelControllers {RAW, FINE}
-    enum controlMode{FULL, PARTIAL, LOCKED, OVERIDE}
-    static controlMode activeMode = FULL;
+    public enum controlMode{FULL, PARTIAL, LOCKED, OVERIDE}
+    public static controlMode activeMode = FULL;
 
     public swivelControllers lastUsedSwivelController;
 
