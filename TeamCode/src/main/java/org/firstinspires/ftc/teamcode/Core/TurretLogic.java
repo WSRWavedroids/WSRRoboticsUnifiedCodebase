@@ -34,7 +34,7 @@ public class TurretLogic {
 
     enum swivelControllers {RAW, FINE}
     enum controlMode{FULL, PARTIAL, LOCKED, OVERIDE}
-    static controlMode activeMode = PARTIAL;
+    static controlMode activeMode = FULL;
 
     public swivelControllers lastUsedSwivelController;
 
@@ -131,7 +131,7 @@ public class TurretLogic {
         {
             return manualOverridePositionInDegs;
         }
-        else if(robot.targetTag.currentlyDetected)
+        else if(activeMode.equals(PARTIAL) && robot.targetTag.currentlyDetected)
         {
             turretDegreesFromTarget = Math.abs(robot.targetTag.angleX - ticksToTurretHeading());
             return robot.targetTag.angleX + ticksToTurretHeading();
