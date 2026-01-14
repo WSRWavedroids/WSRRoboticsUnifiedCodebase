@@ -46,10 +46,10 @@ public class Constants {
             .rightRearMotorName("backRightDrive")
             .leftRearMotorName("backLeftDrive")
             .leftFrontMotorName("frontLeftDrive")
-            .leftFrontMotorDirection(DcMotorEx.Direction.REVERSE)
-            .leftRearMotorDirection(DcMotorEx.Direction.REVERSE)
-            .rightFrontMotorDirection(DcMotorEx.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorEx.Direction.FORWARD)
+            .leftFrontMotorDirection(DcMotorEx.Direction.FORWARD)
+            .leftRearMotorDirection(DcMotorEx.Direction.FORWARD)
+            .rightFrontMotorDirection(DcMotorEx.Direction.REVERSE)
+            .rightRearMotorDirection(DcMotorEx.Direction.REVERSE)
 
             .xVelocity(59.486481914370074)
             .yVelocity(40.82851956585261)
@@ -57,13 +57,13 @@ public class Constants {
             .useBrakeModeInTeleOp(true);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(1.5)
-            .strafePodX(-7.25)
+            .forwardPodY(7.25)
+            .strafePodX(-7.375)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             ;
 
     public static Follower createFollower(HardwareMap hardwareMap) {
