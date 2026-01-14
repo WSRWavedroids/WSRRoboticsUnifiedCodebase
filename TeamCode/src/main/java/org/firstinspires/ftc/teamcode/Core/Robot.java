@@ -377,6 +377,7 @@ public class Robot {
      */
     public void updateAllDaThings()
     {
+        turret.follower.updatePose();
         sorterLogic.update();
         sorterHardware.updateSorterHardware();
         launcher.updateLauncherHardware();
@@ -387,7 +388,6 @@ public class Robot {
         {
             targetTag = targetScanner.tagInfo();
         }
-
 
         panelsTelemetry.update();
 

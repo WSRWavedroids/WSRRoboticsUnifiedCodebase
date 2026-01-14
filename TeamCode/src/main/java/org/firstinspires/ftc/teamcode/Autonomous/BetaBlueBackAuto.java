@@ -153,7 +153,6 @@ public class BetaBlueBackAuto extends OpMode {
             case PPG:
                 telemetry.addData("We doin", " PPG now");
                 blackboard.put(PATTERN_KEY, "PPG");
-
                 break;
             case GPP:
                 telemetry.addData("We doin", " GPP now");
