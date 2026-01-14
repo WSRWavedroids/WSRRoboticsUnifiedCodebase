@@ -12,12 +12,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 public class TurretLogic {
     Robot robot;
     DcMotorEx swivelMotor;
-    public static double rawP = 0.0003;
+    public static double rawP = 0.00016;
     public static double rawI = 0.0;
     public static double rawD = 0.0;
     public static double rawF = 0.0;
-    public static double fineP = 0.0009;
-    public static double fineI = 0.0002;
+    public static double fineP = 0.00008;
+    public static double fineI = 0.00002;
     public static double fineD = 0.0;
     public static double fineF = 0.0;
     public static double tolerance;
@@ -25,7 +25,7 @@ public class TurretLogic {
     public ezPID fineSwivelController;
     double turretDegreesFromTarget;
     public int encoderResolution = 8192 * 132 / 16; // Actual encoder resolution * teeth on turret / teeth on motor side
-    public static double fineDegreeWindow = 20;
+    public static double fineDegreeWindow = 0;
     public static double safeDegreeDistance = 90;
     public static double manualOverridePositionInDegs = 0;
     public boolean goodAngle = false;
@@ -34,7 +34,7 @@ public class TurretLogic {
 
     enum swivelControllers {RAW, FINE}
     enum controlMode{FULL, PARTIAL, LOCKED, OVERIDE}
-    static controlMode activeMode = LOCKED;
+    static controlMode activeMode = PARTIAL;
 
     public swivelControllers lastUsedSwivelController;
 
@@ -123,7 +123,7 @@ public class TurretLogic {
     /// Returns angle the launcher needs to move to IN DEGREES
     /// Dont worry about unsafe positions, a different function converts these
     {
-        if(activeMode.equals(LOCKED) || ( activeMode.equals(PARTIAL) && !robot.targetTag.currentlyDetected && Math.abs(input) < 0.1))
+        if(activeMode.equals(LOCKED))
         {
             return 0;
         }
@@ -134,7 +134,7 @@ public class TurretLogic {
         else if(robot.targetTag.currentlyDetected)
         {
             turretDegreesFromTarget = Math.abs(robot.targetTag.angleX - ticksToTurretHeading());
-            return robot.targetTag.angleX - ticksToTurretHeading();
+            return robot.targetTag.angleX + ticksToTurretHeading();
         }
         else if(activeMode.equals(PARTIAL) && Math.abs(input) >= 0.1)
         {
@@ -196,11 +196,14 @@ public class TurretLogic {
 
         // 1. If the input angle is unsafe, move to its safe coterminal
         if (intINDegs > safeDegreeDistance) {
-            finalTargetDeg = intINDegs - 360;
+            finalTargetDeg = safeDegreeDistance;
         } else if (intINDegs < -safeDegreeDistance) {
-            finalTargetDeg = intINDegs + 360;
+            finalTargetDeg = -safeDegreeDistance;
         }
-        // 2. If the input is safe, check if its coterminal is also safe
+        else {
+            finalTargetDeg = intINDegs;
+        }
+        /*// 2. If the input is safe, check if its coterminal is also safe
         else {
             double coterminal = (intINDegs > 0) ? intINDegs - 360 : intINDegs + 360;
 
@@ -214,7 +217,7 @@ public class TurretLogic {
                 // Only the input is safe
                 finalTargetDeg = intINDegs;
             }
-        }
+        }*/
 
         turretDegreesFromTarget = finalTargetDeg - currentPosDeg;
         return degreesToTicks(finalTargetDeg);
