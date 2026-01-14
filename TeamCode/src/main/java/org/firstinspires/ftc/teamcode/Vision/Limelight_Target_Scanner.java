@@ -195,6 +195,7 @@ public class  Limelight_Target_Scanner /*extends AutonomousPLUS*/ {
             current.currentlyDetected = true;
              Pose3D targetPoseRs = fr.getTargetPoseRobotSpace();
              Pose3D robotPoseFromTag = fr.getRobotPoseTargetSpace();
+             Pose3D robotPoseOnField = fr.getRobotPoseFieldSpace();
              //current.pos = targetPose;
 
 
@@ -210,6 +211,8 @@ public class  Limelight_Target_Scanner /*extends AutonomousPLUS*/ {
 
             current.tagPosFromRobot = targetPoseRs;
             current.robotFromTagPos = robotPoseFromTag;
+            current.robotFieldPoseFromTag = robotPoseOnField;
+
 
         }
 

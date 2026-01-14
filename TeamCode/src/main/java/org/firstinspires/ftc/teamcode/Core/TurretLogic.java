@@ -17,8 +17,8 @@ public class TurretLogic {
     public static double rawI = 0.0;
     public static double rawD = 0.0;
     public static double rawF = 0.0;
-    public static double fineP = 0.0009;
-    public static double fineI = 0.0002;
+    public static double fineP = 0.00008;
+    public static double fineI = 0.00002;
     public static double fineD = 0.0;
     public static double fineF = 0.0;
     public static double tolerance;
@@ -33,9 +33,9 @@ public class TurretLogic {
     public float inputModifier = 400;
     public float input;
 
-    public enum swivelControllers {RAW, FINE}
-    public enum controlMode{FULL, PARTIAL, LOCKED, OVERIDE}
-    public static controlMode activeMode = PARTIAL;
+    enum swivelControllers {RAW, FINE}
+    enum controlMode{FULL, PARTIAL, LOCKED, OVERIDE}
+    static controlMode activeMode = FULL;
 
     public swivelControllers lastUsedSwivelController;
 
@@ -50,6 +50,7 @@ public class TurretLogic {
         follower = followerIN;
 
         swivelMotor = robot.swivelMotor;
+
 
         fineSwivelController = new ezPID(swivelMotor, 8192, fineP, fineI, fineD,
                 fineF, 1.0, tolerance, ezPID.movementType.POSITION);
@@ -127,7 +128,7 @@ public class TurretLogic {
     /// Returns angle the launcher needs to move to IN DEGREES
     /// Dont worry about unsafe positions, a different function converts these
     {
-        if(activeMode.equals(LOCKED) /*|| ( activeMode.equals(PARTIAL) && !robot.targetTag.currentlyDetected && Math.abs(input) < 0.1)*/)
+        if(activeMode.equals(LOCKED))
         {
             return 0;
         }
@@ -135,10 +136,10 @@ public class TurretLogic {
         {
             return manualOverridePositionInDegs;
         }
-        else if(checkTimeSinceKnownTag(5))
+        else if(activeMode.equals(PARTIAL) && checkTimeSinceKnownTag(5))
         {
             turretDegreesFromTarget = Math.abs(lastKnownTagAngle - ticksToTurretHeading());
-            return ticksToTurretHeading() - lastKnownTagAngle;
+            return lastKnownTagAngle + ticksToTurretHeading();
         }
         else if(activeMode.equals(PARTIAL) && Math.abs(input) >= 0.1)
         {
@@ -199,13 +200,16 @@ public class TurretLogic {
         double currentPosDeg = ticksToDegrees(swivelMotor.getCurrentPosition());
         finalTargetDeg = intINDegs;
 
-        /*// 1. If the input angle is unsafe, move to its safe coterminal
+        // 1. If the input angle is unsafe, move to its safe coterminal
         if (intINDegs > safeDegreeDistance) {
-            finalTargetDeg = intINDegs - 360;
+            finalTargetDeg = safeDegreeDistance;
         } else if (intINDegs < -safeDegreeDistance) {
-            finalTargetDeg = intINDegs + 360;
+            finalTargetDeg = -safeDegreeDistance;
         }
-        // 2. If the input is safe, check if its coterminal is also safe
+        else {
+            finalTargetDeg = intINDegs;
+        }
+        /*// 2. If the input is safe, check if its coterminal is also safe
         else {
             double coterminal = (intINDegs > 0) ? intINDegs - 360 : intINDegs + 360;
 
@@ -220,9 +224,6 @@ public class TurretLogic {
                 finalTargetDeg = intINDegs;
             }
         }*/
-
-        if (finalTargetDeg > safeDegreeDistance) finalTargetDeg = safeDegreeDistance;
-        else if (finalTargetDeg < -safeDegreeDistance) finalTargetDeg = -safeDegreeDistance;
 
         turretDegreesFromTarget = finalTargetDeg - currentPosDeg;
         return degreesToTicks(finalTargetDeg);

@@ -19,5 +19,7 @@ public class WaveTag {
     public Pose3D tagPosFromRobot;
     public Pose3D robotFromTagPos;
 
+    public Pose3D robotFieldPoseFromTag;
+
 
 }
