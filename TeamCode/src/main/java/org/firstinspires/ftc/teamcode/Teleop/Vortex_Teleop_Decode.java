@@ -171,6 +171,8 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         colorMovement();
 
+        turretAssist();
+
         //robot.panelsTelemetry.addData("Motor Position", robot.launcher.motor.getCurrentPosition());
         robot.panelsTelemetry.update();
 
@@ -558,6 +560,18 @@ public class Vortex_Teleop_Decode extends OpMode {
             }
         }
         return max;
+    }
+
+    private void turretAssist()
+    {
+        if(gamepad2.right_stick_button)
+        {
+            robot.turret.input = gamepad2.right_stick_x;
+        }
+        else
+        {
+            robot.turret.input = 0;
+        }
     }
 
     private boolean isEven(int x) {
