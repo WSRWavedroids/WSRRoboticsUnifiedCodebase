@@ -27,7 +27,8 @@ public class TurretLogic {
     double turretDegreesFromTarget;
     public int encoderResolution = 8192 * 132 / 16; // Actual encoder resolution * teeth on turret / teeth on motor side
     public static double fineDegreeWindow = 0;
-    public static double safeDegreeDistance = 90;
+    public static double upperLimit = 150;
+    public static double lowerLimit = -90;
     public static double manualOverridePositionInDegs = 0;
     public boolean goodAngle = false;
     public float inputModifier = 400;
@@ -201,10 +202,10 @@ public class TurretLogic {
         double currentPosDeg = ticksToDegrees(swivelMotor.getCurrentPosition());
 
         // 1. If the input angle is unsafe, move to its safe coterminal
-        while(intINDegs > safeDegreeDistance) {
+        while(intINDegs > upperLimit) {
             intINDegs -= 360;
         }
-        while (intINDegs < -safeDegreeDistance) {
+        while (intINDegs < lowerLimit) {
             intINDegs += 360;
         }
         finalTargetDeg = limitIfNeeded(intINDegs);
@@ -229,17 +230,17 @@ public class TurretLogic {
     }
 
     double limitIfNeeded(double input) {
-        if (input > safeDegreeDistance) {
-            input = safeDegreeDistance;
-        } else if (input < -safeDegreeDistance) {
-            input = -safeDegreeDistance;
+        if (input > upperLimit) {
+            input = upperLimit;
+        } else if (input < lowerLimit) {
+            input = lowerLimit;
         }
         return input;
     }
 
     boolean withinSafeZone(double DegsIn)
     {
-        return (DegsIn < safeDegreeDistance && DegsIn > -safeDegreeDistance);
+        return (DegsIn < upperLimit && DegsIn > lowerLimit);
     }
 
     void updateTurretPositionXY()
