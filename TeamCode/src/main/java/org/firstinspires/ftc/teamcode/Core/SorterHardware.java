@@ -84,20 +84,22 @@ public class SorterHardware {
     private boolean tryToMove = false;
     public boolean doneMoving = false;
 
-    enum BlenderSteps {
+    public enum BlenderSteps {
         READY_FOR_COMMANDS,
         STALLING_UNTIL_SAFE_OR_NEEDED, CHECK_IF_SAFE, MOVING, RESET,
         CALIBRATE, CALIBRATING
     }
     private BlenderSteps currentBlenderStep = READY_FOR_COMMANDS;
 
+    public BlenderSteps getCurrentBlenderStep() {
+        return currentBlenderStep;
+    }
+
     public enum FeederState {PASSIVE, ROTATE, INTAKE, OUTTAKE}
     private FeederState currentFeederState = PASSIVE;
     private int ensureBlenderPosition = 0;
 
     public void updateSorterHardware() {
-        robot.telemetry.addLine("Untested sorter hardware, I choose you!");
-        robot.telemetry.addData("Blender step", currentBlenderStep);
         switch (currentBlenderStep) {
             case READY_FOR_COMMANDS:
                 if (tryToMove || !positionedCheck()) {

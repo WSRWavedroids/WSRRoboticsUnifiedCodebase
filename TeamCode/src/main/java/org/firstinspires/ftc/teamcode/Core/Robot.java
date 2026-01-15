@@ -393,7 +393,7 @@ public class Robot {
 
         panelsTelemetry.update();
 
-        dumpAllTelemetryFromUpdate();
+        //dumpAllTelemetryFromUpdate();
     }
 
     public void dumpAllTelemetryFromUpdate()

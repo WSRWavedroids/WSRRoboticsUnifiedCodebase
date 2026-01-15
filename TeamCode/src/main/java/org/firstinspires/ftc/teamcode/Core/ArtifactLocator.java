@@ -100,6 +100,11 @@ public class ArtifactLocator {
         sortOutBlobs(runSideScannersWithHSV());
     }
 
+
+    public double leftHue;
+    public double rightHue;
+    public double leftValue;
+    public double rightValue;
     /**
      * Checks the color sensors
      * @return The SlotState contents, PURPLE, GREEN, or EMPTY
@@ -122,13 +127,13 @@ public class ArtifactLocator {
         Color.RGBToHSV(robot.leftColorScanner.red(), robot.leftColorScanner.green(), robot.leftColorScanner.blue(), leftHSVValues);
         Color.RGBToHSV(robot.rightColorScanner.red(), robot.rightColorScanner.green(), robot.rightColorScanner.blue(), rightHSVValues);
 
-        double leftHue = leftHSVValues[0];
+        leftHue = leftHSVValues[0];
         double leftSaturation = leftHSVValues[1];
-        double leftValue = leftHSVValues[2];
+        leftValue = leftHSVValues[2];
 
-        double rightHue = rightHSVValues[0];
+        rightHue = rightHSVValues[0];
         double rightSaturation = rightHSVValues[1];
-        double rightValue = rightHSVValues[2];
+        rightValue = rightHSVValues[2];
 
 
         //robot.telemetry.addData("H", leftHue + ", " + rightHue);
@@ -136,25 +141,20 @@ public class ArtifactLocator {
 
         if(leftHue > purpleMinHue && leftHue < purpleMaxHue &&
                 leftValue > purpleMinValue && leftValue < purpleMaxValue) {
-            robot.telemetry.addData("It thinks its: ", "Purple");
             return PURPLE;
         }
         else if(leftHue > greenMinHue && leftHue < greenMaxHue &&
                 leftValue > greenMinValue && leftValue < greenMaxValue) {
-            robot.telemetry.addData("It thinks its: ", "Green");
             return GREEN;
         }
         else if(rightHue > purpleMinHue && rightHue < purpleMaxHue &&
                 rightValue > purpleMinValue && rightValue < purpleMaxValue) {
-            robot.telemetry.addData("It thinks its: ", "Purple");
             return PURPLE;
         }
         else if(rightHue > greenMinHue && rightHue < greenMaxHue &&
                 rightValue > greenMinValue && rightValue < greenMaxValue) {
-            robot.telemetry.addData("It thinks its: ", "Green");
             return GREEN;
         }
-        robot.telemetry.addData("It thinks its: ", "Nothing");
         return EMPTY;
     }
 

@@ -15,14 +15,9 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.FramerateCalculator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.fireQueueWithStates;
@@ -63,8 +58,6 @@ public class Vortex_Teleop_Decode extends OpMode {
     int SpinTargetBackRight;
 
     int slot = 0; // temp for testing lol
-
-    int targetOffset = 0;
 
     //private double storedSpeed;
     public Robot robot = null;
@@ -194,9 +187,10 @@ public class Vortex_Teleop_Decode extends OpMode {
         turretAssist();
 
         //robot.panelsTelemetry.addData("Motor Position", robot.launcher.motor.getCurrentPosition());
-        robot.panelsTelemetry.update();
+        //robot.panelsTelemetry.update(); // Already being updated in updateAllDaThings()
 
         //fps.update();
+
         doTelemetryStuff();
 
         if (gamepad1.touchpad || gamepad2.touchpad) {
@@ -401,7 +395,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             robot.backRightDrive.setTargetPosition(SpinTargetBackRight);
         } else if (detected && gamepad1.right_bumper) //Turn to face target tag
         {
-            double constant = -1660 / 360; //We will know this later
+            double constant = (double) -1660 / 360; //We will know this later
             speed = 1;
             int turnTicks = (int) ((robot.targetTag.angleX + robot.limelightSideOffsetAngle) * constant);
 
@@ -455,10 +449,8 @@ public class Vortex_Teleop_Decode extends OpMode {
         if (gamepad1.back) {
             if (robot.controlMode == ROBOT_CENTRIC){
                 robot.controlMode = LEGACY_FIELD_CENTRIC;
-                telemetry.addData("Control Mode", "Field Centric Controls");
             } else if (robot.controlMode == LEGACY_FIELD_CENTRIC) {
                 robot.controlMode = ROBOT_CENTRIC;
-                telemetry.addData("Control Mode", "Robot Centric Controls");
             }
         }
 
@@ -486,29 +478,15 @@ public class Vortex_Teleop_Decode extends OpMode {
         } else if (gamepad1.dpad_right) {
             speed = 0.75;
         }
-
-        if (speed == 1) {
-            telemetry.addData("Speed", "Fast Boi");
-        } else if (speed == 0.5) {
-            telemetry.addData("Speed", "Slow Boi");
-        } else if (speed == 0.25) {
-            telemetry.addData("Speed", "Super Slow Boi");
-        } else if (speed == 0.75) {
-            telemetry.addData("Speed", "Normal Boi");
-        }
     }
 
     private void incrementThroughPositions() {
-        telemetry.addData("Current Offset (by logic)", robot.sorterLogic.getCurrentOffset());
-
         // Fire positions
         if (gamepad2.dpadLeftWasPressed()) {
             goNextPosition(-1);
         } else if (gamepad2.dpadRightWasPressed()) {
             goNextPosition(1);
         }
-
-        telemetry.addData("Target Offset", targetOffset);
     }
 
     private void goNextPosition(int go) {
@@ -546,32 +524,9 @@ public class Vortex_Teleop_Decode extends OpMode {
         // This little section updates the driver hub on the runtime and the motor powers.
         // It's mostly used for troubleshooting.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Framerate (last 15 seconds)", fps.getFramerate(30) + " fps");
+        //telemetry.addData("Framerate (last 15 seconds)", fps.getFramerate(30) + " fps");
 
         telemetry.addLine();
-
-        telemetry.addData("Turret X", robot.turretPosition.x);
-        telemetry.addData("Turret Y", robot.turretPosition.y);
-        telemetry.addData("Pedro Heading", robot.robotHeading);
-
-        telemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
-        telemetry.addData("Turret Target", robot.turret.ticksToDegrees(robot.turret.runToSafeAngle(robot.turret.updateAngle())));
-        telemetry.addData("Raw Turret Target", robot.turret.updateAngle());
-
-        if(robot.targetTag.currentlyDetected)
-        {
-            telemetry.addData("last detected x angle: ", robot.targetTag.angleX);
-            telemetry.addData("last detected y angle: ", robot.targetTag.angleY);
-
-            telemetry.addData("last distance x: ", robot.targetTag.distanceX);
-            telemetry.addData("last detected distance y: ", robot.targetTag.distanceY);
-            telemetry.addData("last detected distance z: ", robot.targetTag.distanceZ);
-        }
-
-        telemetry.addData("Last saved pattern: ", blackboard.get(PATTERN_KEY));
-
-        telemetry.addData("Last saved Alliance: ", blackboard.get(ALLIANCE_KEY));
-
         telemetry.addLine("Artifact Storage:");
         telemetry.addData("Total Inventory", robot.sorterLogic.inventory.getTotalCount());
         telemetry.addLine("Purple: " + robot.sorterLogic.inventory.getPurpleCount() +
@@ -579,16 +534,65 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Slot A", robot.sorterLogic.slotA.getOccupied());
         telemetry.addData("Slot B", robot.sorterLogic.slotB.getOccupied());
         telemetry.addData("Slot C", robot.sorterLogic.slotC.getOccupied());
+
         telemetry.addLine();
+        telemetry.addLine("Blender:");
+        telemetry.addData("Current Position", robot.sorterHardware.motor.getCurrentPosition());
+        telemetry.addData("Target Position", robot.sorterHardware.reference);
         telemetry.addData("Blender in position", robot.sorterHardware.positionedCheck());
-        telemetry.addData("Equalized Target Position", robot.sorterLogic.offsetPositions.get(targetOffset));
+        telemetry.addData("Current Load Slot", robot.sorterLogic.findCurrentSlotInPosition(LOAD).getName());
+        telemetry.addData("Current Fire Slot", robot.sorterLogic.findCurrentSlotInPosition(FIRE).getName());
+
+        telemetry.addLine();
+        telemetry.addLine("Launcher:");
         telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
         telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
         telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
-        telemetry.addData("Current Load Slot", robot.sorterLogic.findCurrentSlotInPosition(LOAD).getName());
-        telemetry.addData("Current Fire Slot", robot.sorterLogic.findCurrentSlotInPosition(FIRE).getName());
         telemetry.addData("LL Distance", robot.targetTag.distanceZ);
-        telemetry.addData("Launcher PIDF", robot.launcher.motor.getPIDFCoefficients(RUN_USING_ENCODER));
+
+        telemetry.addLine();
+        telemetry.addLine("Turret & PedroPathing:");
+        telemetry.addData("Turret X", robot.turretPosition.x);
+        telemetry.addData("Turret Y", robot.turretPosition.y);
+        telemetry.addData("Pedro Heading", robot.robotHeading);
+        telemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
+        telemetry.addData("Turret Target", robot.turret.ticksToDegrees(robot.turret.runToSafeAngle(robot.turret.updateAngle())));
+        telemetry.addData("Raw Turret Target", robot.turret.updateAngle());
+
+        telemetry.addLine();
+        telemetry.addLine("Color Sensors");
+        robot.telemetry.addData("Color Detected", robot.sorterLogic.runSideScannersWithHSV());
+        robot.telemetry.addData("H", roundToThousandths(robot.sorterLogic.leftHue) + ", " + roundToThousandths(robot.sorterLogic.rightHue));
+        robot.telemetry.addData("V", roundToThousandths(robot.sorterLogic.leftValue) + ", " + roundToThousandths(robot.sorterLogic.rightValue));
+
+        telemetry.addLine();
+        telemetry.addLine("Target Tag:");
+        if(robot.targetTag.currentlyDetected) {
+            telemetry.addData("Tag ID", robot.targetTag.tagID);
+            telemetry.addData("X angle", robot.targetTag.angleX);
+            telemetry.addData("Y angle", robot.targetTag.angleY);
+            telemetry.addData("Distance X", robot.targetTag.distanceX);
+            telemetry.addData("Distance Y", robot.targetTag.distanceY);
+            telemetry.addData("Distance Z", robot.targetTag.distanceZ);
+        } else {
+            telemetry.addLine("NOT DETECTED");
+            telemetry.addLine("CAN'T FIND IT");
+            telemetry.addLine("WHERE IS IT");
+            telemetry.addLine("AHHHHHH");
+            telemetry.addLine("...");
+            telemetry.addLine("plz fix");
+        }
+
+        telemetry.addLine();
+        telemetry.addLine("State Machines:");
+        telemetry.addData("Blender State", robot.sorterHardware.getCurrentBlenderStep());
+        telemetry.addData("Launcher State", robot.launcher.getCurrentLauncherStep());
+        telemetry.addData("Queue State", robot.queue.getCurrentState());
+
+        telemetry.addLine();
+        telemetry.addLine("Blackboard:");
+        telemetry.addData("Last saved pattern", blackboard.get(PATTERN_KEY));
+        telemetry.addData("Last saved Alliance", blackboard.get(ALLIANCE_KEY));
 
         //robot.tellMotorOutput();
     }
@@ -617,6 +621,10 @@ public class Vortex_Teleop_Decode extends OpMode {
 
     private boolean isEven(int x) {
         return x % 2 == 0;
+    }
+
+    private double roundToThousandths(double input) {
+        return Math.round(input * 1000.0) / 1000.0;
     }
 }
 

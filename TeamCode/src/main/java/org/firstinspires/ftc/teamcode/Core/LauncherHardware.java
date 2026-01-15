@@ -66,7 +66,7 @@ public class LauncherHardware {
     public static double d = 50;
     public static double f = 0;
 
-    enum LauncherSteps {
+    public enum LauncherSteps {
         READY_FOR_COMMANDS,
         STALLING_UNTIL_SAFE, CHECK_IF_SAFE, WAIT_FOR_TIME_FOR_SAFE,
         REV_MOTOR, STALL_WHILE_MOTOR_REVVING, FLICK, UNFLICK, LAUNCHING, RESET
@@ -75,14 +75,17 @@ public class LauncherHardware {
         WAIT_FOREVER, WAIT_FOR_TIME, IF_SAFE_NOW
     }
     LauncherSteps currentLauncherStep = READY_FOR_COMMANDS;
+
+    public LauncherSteps getCurrentLauncherStep() {
+        return currentLauncherStep;
+    }
+
     private void nextStep(LauncherSteps nextStep) {
         currentLauncherStep = nextStep;
     }
     private ElapsedTime cooldownTimer = new ElapsedTime();
 
     public void updateLauncherHardware() {
-        robot.telemetry.addData("Launcher step", currentLauncherStep);
-        robot.telemetry.addData("Launcher Target", velocityTarget);
         robot.panelsTelemetry.addData("Launcher Velocity", motor.getVelocity());
         robot.panelsTelemetry.addData("Target Launcher Velocity", velocityTarget);
         robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
@@ -233,7 +236,6 @@ public class LauncherHardware {
     @Deprecated
     public void setLauncherSpeed(double targetSpeed) {
         velocityTarget = ticksPerRevolution * revolutionsPerSecond * targetSpeed;
-        robot.telemetry.addLine("Setting Launcher");
         motor.setVelocity(velocityTarget);
         //turret.launcherController.runCalledPID(targetspeed);
     }

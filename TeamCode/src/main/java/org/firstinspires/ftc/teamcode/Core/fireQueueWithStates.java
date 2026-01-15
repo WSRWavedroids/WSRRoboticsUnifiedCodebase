@@ -27,8 +27,12 @@ public class fireQueueWithStates {
     public ArrayList<ArtifactLocator.SlotState> ballQueue;
 
     //State Machine innovation here
-    enum QueueState {CHECK, POSITIONING, FIRING, COOLDOWN}
+    public enum QueueState {CHECK, POSITIONING, FIRING, COOLDOWN}
     private QueueState state = CHECK;
+
+    public QueueState getCurrentState() {
+        return state;
+    }
     //public firingQueue wantToFire = firingQueue.NONE;
 
     public fireQueueWithStates(Robot robotFile) {
