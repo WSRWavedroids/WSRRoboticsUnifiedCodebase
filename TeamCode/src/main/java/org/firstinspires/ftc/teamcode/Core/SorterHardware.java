@@ -145,11 +145,11 @@ public class SorterHardware {
                 }
                 break;
         }
-        if (!isCalibrating()) {
+
+        if (!isCalibrating() && !robot.launcher.lockControls) {
             blenderPID.changeBehaviorValues(kp, ki, kd, kf, kneecap);
             blenderPID.runCalledPID(reference);
         }
-
 
         switch (currentFeederState) {
             case INTAKE:

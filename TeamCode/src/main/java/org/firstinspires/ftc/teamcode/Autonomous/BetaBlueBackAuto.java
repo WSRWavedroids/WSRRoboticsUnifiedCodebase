@@ -209,12 +209,14 @@ public class BetaBlueBackAuto extends OpMode {
                     robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotB.getFirePosition());
                 }
                 //Preset launcher Speed here
-                robot.turret.runTurret();
+                //robot.turret.runTurret();
+
                 nextStep(Steps.FIRE3);
                 break;
             case FIRE3:
                 if(robot.turret.fineSwivelController.withinTolerance)
                 {
+                    robot.launcher.setPerfectLauncherVelocity();
                     if (robot.pattern.equals(PPG)) {
                         auto.fireInSequence(robot.sorterLogic.slotB, robot.sorterLogic.slotC, robot.sorterLogic.slotA);
                     } else if (robot.pattern.equals(PGP)) {
@@ -246,6 +248,7 @@ public class BetaBlueBackAuto extends OpMode {
             case YOINK:
                 if(auto.checkMovement())
                 {
+                    auto.setSpeed(0.3);
                     auto.moveRobotForward(1000);
                     auto.yoinkify(1000);
                     nextStep(Steps.UN_TURN);
@@ -254,6 +257,16 @@ public class BetaBlueBackAuto extends OpMode {
             case UN_TURN:
                 if(auto.checkYoink())
                 {
+                    if(robot.pattern.equals(GPP))
+                    {
+                        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.GREEN).getFirePosition());
+                    }
+                    else
+                    {
+                        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE).getFirePosition());
+                    }
+
+                    auto.setSpeed(0.75);
                     //double check intake is off lol
                     auto.turnRobotLeft(700);
                     nextStep(Steps.BACKUP);
@@ -262,6 +275,7 @@ public class BetaBlueBackAuto extends OpMode {
             case BACKUP:
                 if(auto.checkMovement())
                 {
+                    robot.launcher.setPerfectLauncherVelocity();
                     auto.moveRobotBackward(500);
                     nextStep(Steps.FIRE3AGAIN);
                 }
