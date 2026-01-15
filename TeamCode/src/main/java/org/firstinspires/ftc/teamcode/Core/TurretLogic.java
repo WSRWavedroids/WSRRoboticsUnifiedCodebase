@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Core;
 
+import static com.qualcomm.robotcore.eventloop.opmode.OpMode.blackboard;
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
 import static org.firstinspires.ftc.teamcode.Core.TurretLogic.swivelControllers.*;
 import static org.firstinspires.ftc.teamcode.Core.TurretLogic.controlMode.*;
@@ -12,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Configurable
 public class TurretLogic {
     Robot robot;
-    DcMotorEx swivelMotor;
+    public DcMotorEx swivelMotor;
     public static double rawP = 0.00016;
     public static double rawI = 0.00002;
     public static double rawD = 0.0;
@@ -22,7 +23,7 @@ public class TurretLogic {
     public static double fineD = 0.0;
     public static double fineF = 0.0;
     public static double tolerance;
-    ezPID rawSwivelController;
+    public ezPID rawSwivelController;
     public ezPID fineSwivelController;
     double turretDegreesFromTarget;
     public int encoderResolution = 8192 * 132 / 16; // Actual encoder resolution * teeth on turret / teeth on motor side
@@ -105,7 +106,7 @@ public class TurretLogic {
         robot.panelsTelemetry.addData("Limelight cooldown", tagCooldown);
         robot.panelsTelemetry.addData("Last known tag angle", lastKnownTagAngle);
 
-        goodAngle = fineSwivelController.withinTolerance;
+        //goodAngle = rawSwivelController.withinTolerance(runToSafeAngle(updateAngle()));
     }
 
     double checkDistance() {
@@ -250,6 +251,9 @@ public class TurretLogic {
             robot.robotPosition.y = follower.getPose().getY();
             robot.robotHeading = Math.toDegrees(follower.getHeading());
 
+            blackboard.put("PedroX", robot.robotPosition.x);
+            blackboard.put("PedroY", robot.robotPosition.y);
+            blackboard.put("PedroHeading", robot.robotHeading);
 
             double rotatedX = robot.turretPositionOffsetXInches * Math.cos(robot.robotHeading) - robot.turretPositionOffsetYInches * Math.sin(robot.robotHeading);
             double rotatedY = robot.turretPositionOffsetXInches * Math.sin(robot.robotHeading) + robot.turretPositionOffsetYInches * Math.cos(robot.robotHeading);

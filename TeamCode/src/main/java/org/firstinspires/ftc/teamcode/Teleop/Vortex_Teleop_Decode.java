@@ -81,7 +81,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
     static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
-    private final Pose startingPose = new Pose(72, 72, Math.PI / 2);
+    private Pose startingPose = new Pose(72, 72, Math.PI / 2);
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -120,8 +120,12 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
 
         robot.panels = Panels.INSTANCE;
-        robot.readyHardware(true);
+        robot.readyHardware(true);//Might not be needed
 
+
+
+        startingPose = new Pose((Double) blackboard.getOrDefault("PedroX", 72),(Double) blackboard.getOrDefault("PedroY", 72), (Double) blackboard.getOrDefault("PedroHeading", Math.PI/2));
+        //)
         robot.turret.follower.setPose(startingPose);
         robot.turret.follower.setHeading(startingPose.getHeading());
     }
