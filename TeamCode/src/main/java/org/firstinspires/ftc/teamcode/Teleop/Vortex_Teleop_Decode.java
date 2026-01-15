@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
+import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
@@ -9,6 +10,7 @@ import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -16,6 +18,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.FramerateCalculator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
@@ -75,6 +79,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
     static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
+    private final Pose startingPose = new Pose(72, 72, Math.PI / 2);
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -114,6 +119,9 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         robot.panels = Panels.INSTANCE;
         robot.readyHardware(true);
+
+        robot.turret.follower.setPose(startingPose);
+        robot.turret.follower.setHeading(startingPose.getHeading());
     }
 
     /**
@@ -170,6 +178,8 @@ public class Vortex_Teleop_Decode extends OpMode {
         incrementThroughPositions();
 
         colorMovement();
+
+        switchAlliance();
 
         turretAssist();
 
@@ -512,11 +522,31 @@ public class Vortex_Teleop_Decode extends OpMode {
         return offset;
     }
 
+    private void switchAlliance() {
+        if (gamepad2.shareWasPressed()){
+            if (robot.alliance == BLUE) {
+                robot.alliance = RED;
+            } else {
+                robot.alliance = BLUE;
+            }
+        }
+    }
+
     private void doTelemetryStuff() {
         // This little section updates the driver hub on the runtime and the motor powers.
         // It's mostly used for troubleshooting.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Framerate (last 15 seconds)", fps.getFramerate(30) + " fps");
+
+        telemetry.addLine();
+
+        telemetry.addData("Turret X", robot.turretPosition.x);
+        telemetry.addData("Turret Y", robot.turretPosition.y);
+        telemetry.addData("Pedro Heading", robot.robotHeading);
+
+        telemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
+        telemetry.addData("Turret Target", robot.turret.ticksToDegrees(robot.turret.runToSafeAngle(robot.turret.updateAngle())));
+        telemetry.addData("Raw Turret Target", robot.turret.updateAngle());
 
         if(robot.targetTag.currentlyDetected)
         {

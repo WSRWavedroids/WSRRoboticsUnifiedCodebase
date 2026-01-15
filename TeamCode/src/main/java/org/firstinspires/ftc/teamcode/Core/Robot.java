@@ -38,6 +38,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Vision.Limelight_Target_Scanner;
 import org.firstinspires.ftc.teamcode.Vision.WaveTag;
 import org.firstinspires.ftc.teamcode.Vision.Limelight_Randomization_Scanner;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class Robot {
 
@@ -188,6 +189,7 @@ public class Robot {
 
         sorterMotor.setDirection(FORWARD);
         intakeMotor.setDirection(REVERSE);
+        swivelMotor.setDirection(REVERSE);
 
         // This tells the motors to chill when we're not powering them.
         frontRightDrive.setZeroPowerBehavior(BRAKE);
@@ -206,6 +208,13 @@ public class Robot {
         targetScanner = new Limelight_Target_Scanner(this);
         randomizationScanner = new Limelight_Randomization_Scanner(this);
         turret = new TurretLogic(this, null);
+
+        robotPosition = new Vector2();
+        turretPosition = new Vector2();
+
+        turret.follower = Constants.createFollower(hardwareMap);
+
+        if (alliance == null) alliance = allianceSides.BLUE;
     }
 
 
@@ -368,6 +377,7 @@ public class Robot {
      */
     public void updateAllDaThings()
     {
+        turret.follower.updatePose();
         sorterLogic.update();
         sorterHardware.updateSorterHardware();
         launcher.updateLauncherHardware();
@@ -378,7 +388,6 @@ public class Robot {
         {
             targetTag = targetScanner.tagInfo();
         }
-
 
         panelsTelemetry.update();
 

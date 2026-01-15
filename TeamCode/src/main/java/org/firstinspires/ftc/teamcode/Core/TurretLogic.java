@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.Core.TurretLogic.controlMode.*;
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Configurable
 public class TurretLogic {
@@ -33,8 +34,8 @@ public class TurretLogic {
     public float input;
 
     enum swivelControllers {RAW, FINE}
-    enum controlMode{FULL, PARTIAL, LOCKED, OVERIDE}
-    static controlMode activeMode = PARTIAL;
+    public enum controlMode{FULL, PARTIAL, LOCKED, OVERIDE}
+    public static controlMode activeMode = FULL;
 
     public swivelControllers lastUsedSwivelController;
 
@@ -97,7 +98,11 @@ public class TurretLogic {
 
         robot.panelsTelemetry.addData("Turret position", robot.swivelMotor.getCurrentPosition());
         robot.panelsTelemetry.addData("Turret target", runToSafeAngle(updateAngle()));
+        robot.panelsTelemetry.addData("Turret position (degrees)", ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
+        robot.panelsTelemetry.addData("Turret target (degrees)", ticksToDegrees(runToSafeAngle(updateAngle())));
 
+        robot.panelsTelemetry.addData("Limelight cooldown", tagCooldown);
+        robot.panelsTelemetry.addData("Last known tag angle", lastKnownTagAngle);
 
         goodAngle = fineSwivelController.withinTolerance;
     }
@@ -110,7 +115,7 @@ public class TurretLogic {
             if (robot.alliance.equals(BLUE)) {
                 //A^2 + B^2 = C^2
                 return Math.sqrt(Math.pow(robot.turretPosition.x - 12.5, 2) + Math.pow((robot.turretPosition.y - 135.73), 2));
-            } else if (robot.alliance.equals(Robot.allianceSides.RED)) {
+            } else if (robot.alliance.equals(RED)) {
                 return Math.sqrt(Math.pow(robot.turretPosition.x - 131.5, 2) + Math.pow((robot.turretPosition.y - 135.73), 2));
             } else {
                 return 0;
@@ -119,7 +124,7 @@ public class TurretLogic {
 
         return 0;
     }
-    double updateAngle()
+    public double updateAngle()
     /// Returns angle the launcher needs to move to IN DEGREES
     /// Dont worry about unsafe positions, a different function converts these
     {
@@ -131,10 +136,10 @@ public class TurretLogic {
         {
             return manualOverridePositionInDegs;
         }
-        else if(robot.targetTag.currentlyDetected)
+        else if(activeMode.equals(PARTIAL) && checkTimeSinceKnownTag(5))
         {
-            turretDegreesFromTarget = Math.abs(robot.targetTag.angleX - ticksToTurretHeading());
-            return robot.targetTag.angleX + ticksToTurretHeading();
+            turretDegreesFromTarget = Math.abs(lastKnownTagAngle - ticksToTurretHeading());
+            return lastKnownTagAngle + ticksToTurretHeading();
         }
         else if(activeMode.equals(PARTIAL) && Math.abs(input) >= 0.1)
         {
@@ -145,18 +150,19 @@ public class TurretLogic {
             if(robot.alliance.equals(BLUE))
             {
                 //gets the raw angle without accounting for heading
-                double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x -12.51), (robot.turretPosition.y -136.15)));
+                double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 12.51), (robot.turretPosition.y - 136.15)));
                 //Corrects for heading then hands off to safeAngle logic
-                turretDegreesFromTarget = Math.abs(-90 + (rawAngle));
-                return robot.robotHeading - 90 + (rawAngle);
+                // TODO make this update live
+                turretDegreesFromTarget = Math.abs(90 + rawAngle);
+                return robot.robotHeading + 90 + rawAngle;
             }
             else
             {
                 //gets the raw angle without accounting for heading
                 double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x -131.699), (robot.turretPosition.y -135.73)));
                 //Corrects for heading then hands off to safeAngle logic
-                //turretDegreesFromTarget =  Math.abs(-90 + (rawAngle));
-                return robot.robotHeading - 90 + (rawAngle);
+                turretDegreesFromTarget =  Math.abs(90 + (rawAngle));
+                return robot.robotHeading + 90 + (rawAngle);
             }
         }
         else return 0;
@@ -172,7 +178,7 @@ public class TurretLogic {
         return (int) (((double) encoderResolution / 360) * degreesIN);
     }
 
-    int ticksToDegrees(double ticksIN)
+    public int ticksToDegrees(double ticksIN)
     {
         return (int) ((ticksIN / encoderResolution) * 360);
     }
@@ -189,20 +195,19 @@ public class TurretLogic {
     }
 
 
-    int runToSafeAngle(double intINDegs) {
+    public int runToSafeAngle(double intINDegs) {
 
         double finalTargetDeg;
         double currentPosDeg = ticksToDegrees(swivelMotor.getCurrentPosition());
 
         // 1. If the input angle is unsafe, move to its safe coterminal
-        if (intINDegs > safeDegreeDistance) {
-            finalTargetDeg = safeDegreeDistance;
-        } else if (intINDegs < -safeDegreeDistance) {
-            finalTargetDeg = -safeDegreeDistance;
+        while(intINDegs > safeDegreeDistance) {
+            intINDegs -= 360;
         }
-        else {
-            finalTargetDeg = intINDegs;
+        while (intINDegs < -safeDegreeDistance) {
+            intINDegs += 360;
         }
+        finalTargetDeg = equalizeIfNeeded(intINDegs);
         /*// 2. If the input is safe, check if its coterminal is also safe
         else {
             double coterminal = (intINDegs > 0) ? intINDegs - 360 : intINDegs + 360;
@@ -221,6 +226,15 @@ public class TurretLogic {
 
         turretDegreesFromTarget = finalTargetDeg - currentPosDeg;
         return degreesToTicks(finalTargetDeg);
+    }
+
+    double equalizeIfNeeded(double input) {
+        if (input > safeDegreeDistance) {
+            input = safeDegreeDistance;
+        } else if (input < -safeDegreeDistance) {
+            input = -safeDegreeDistance;
+        }
+        return input;
     }
 
     boolean withinSafeZone(double DegsIn)
@@ -273,9 +287,16 @@ public class TurretLogic {
         }
     }
 
-
-
-
+    private ElapsedTime tagCooldown = new ElapsedTime();
+    private double lastKnownTagAngle;
+    private boolean checkTimeSinceKnownTag(double time) {
+        if (robot.targetTag.currentlyDetected) {
+            lastKnownTagAngle = robot.targetTag.angleX;
+            tagCooldown.reset();
+            return true;
+        }
+        else return tagCooldown.seconds() <= time;
+    }
 
 
 }

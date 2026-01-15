@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
+import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 
 /**
  * This is an iterative autonomous program. It runs in a state machine, which allows us to run the
@@ -152,7 +153,6 @@ public class BetaBlueBackAuto extends OpMode {
             case PPG:
                 telemetry.addData("We doin", " PPG now");
                 blackboard.put(PATTERN_KEY, "PPG");
-
                 break;
             case GPP:
                 telemetry.addData("We doin", " GPP now");
@@ -187,6 +187,7 @@ public class BetaBlueBackAuto extends OpMode {
                 auto.setTolerances(7);
                 robot.sorterHardware.legalToSpin = true;
                 robot.pattern = robot.randomizationScanner.GetRandomization();//One last Check
+                TurretLogic.activeMode = TurretLogic.controlMode.OVERIDE;
                 nextStep(Steps.MOVETURRETONE);
                 break;
             case MOVETURRETONE:
