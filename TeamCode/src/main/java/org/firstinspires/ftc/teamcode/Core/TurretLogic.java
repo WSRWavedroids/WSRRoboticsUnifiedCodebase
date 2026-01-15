@@ -26,7 +26,7 @@ public class TurretLogic {
     public ezPID rawSwivelController;
     public ezPID fineSwivelController;
     double turretDegreesFromTarget;
-    public int encoderResolution = 8192 * 132 / 16; // Actual encoder resolution * teeth on turret / teeth on motor side
+    public static final int encoderResolution = 8192 * 132 / 16; // Actual encoder resolution * teeth on turret / teeth on motor side
     public static double fineDegreeWindow = 0;
     public static double upperLimit = 150;
     public static double lowerLimit = -90;
@@ -69,6 +69,8 @@ public class TurretLogic {
             updateTurretPositionXY();
         }
 
+        rawSwivelController.tolerance = tolerance;
+
         if (Math.abs(turretDegreesFromTarget) < fineDegreeWindow)
         {
             if (lastUsedSwivelController == RAW)
@@ -78,6 +80,7 @@ public class TurretLogic {
             lastUsedSwivelController = swivelControllers.FINE;
             fineSwivelController.changeBehaviorValues(fineP, fineI, fineD, fineF, 1);
             fineSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
+            fineSwivelController.tolerance = tolerance;
         } else if (Math.abs(turretDegreesFromTarget) > fineDegreeWindow)
         {
             if (lastUsedSwivelController == FINE)
@@ -86,6 +89,7 @@ public class TurretLogic {
             }
             lastUsedSwivelController = RAW;
             rawSwivelController.changeBehaviorValues(rawP, rawI, rawD, rawF, 1);
+            rawSwivelController.tolerance = tolerance;
             rawSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
         }
         else
@@ -95,6 +99,7 @@ public class TurretLogic {
             }
             lastUsedSwivelController = swivelControllers.FINE;
             fineSwivelController.changeBehaviorValues(fineP, fineI, fineD, fineF, 1);
+            fineSwivelController.tolerance = tolerance;
             fineSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
         }
 
@@ -175,12 +180,12 @@ public class TurretLogic {
         return (ticksPerSecIn / encoderResolution) * 60;
     }
 
-    int degreesToTicks(double degreesIN)
+    public static int degreesToTicks(double degreesIN)
     {
         return (int) (((double) encoderResolution / 360) * degreesIN);
     }
 
-    public int ticksToDegrees(double ticksIN)
+    public static int ticksToDegrees(double ticksIN)
     {
         return (int) ((ticksIN / encoderResolution) * 360);
     }

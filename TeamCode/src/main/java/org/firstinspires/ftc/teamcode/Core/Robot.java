@@ -213,6 +213,7 @@ public class Robot {
         turretPosition = new Vector2();
 
         turret.follower = Constants.createFollower(hardwareMap);
+        turret.follower.deactivateAllPIDFs();
 
         if (alliance == null) alliance = allianceSides.BLUE;
 

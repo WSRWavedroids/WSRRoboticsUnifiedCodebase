@@ -135,14 +135,7 @@ public class ezPID {
             // calculate the error
             double error = reference - encoderPosition;
 
-            if(Math.abs(error) > tolerance)
-            {
-                withinTolerance = false;
-            }
-            else
-            {
-                withinTolerance = true;
-            }
+
 
             double derivative;
             // rate of change of the error
@@ -173,6 +166,15 @@ public class ezPID {
 
             // reset the timer for next time
             Timer.reset();
+
+            if(Math.abs(error) > tolerance)
+            {
+                withinTolerance = false;
+            }
+            else
+            {
+                withinTolerance = true;
+            }
 
         }
         else if(mode == movementType.SPEED)

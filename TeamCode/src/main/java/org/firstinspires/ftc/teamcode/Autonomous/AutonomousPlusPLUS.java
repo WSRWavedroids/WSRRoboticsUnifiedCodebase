@@ -355,6 +355,13 @@ public class AutonomousPlusPLUS {
         sleep(pause);
     }
 
+    public void areWheelsRunning() {
+        return
+    }
+
+    private boolean checkTolerance(double current, double target, double tolerance) {
+
+    }
     public void calibrateDriveTrain(int tolerance, double pValue) {
         robot.frontLeftDrive.setTargetPositionTolerance(tolerance);
         robot.frontRightDrive.setTargetPositionTolerance(tolerance);

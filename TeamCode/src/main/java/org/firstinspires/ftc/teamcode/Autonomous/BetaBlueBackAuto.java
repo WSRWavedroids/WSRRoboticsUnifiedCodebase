@@ -132,6 +132,9 @@ public class BetaBlueBackAuto extends OpMode {
         // Go find pizza
 
         robot = new Robot(hardwareMap, telemetry, this);
+        TurretLogic.tolerance = robot.turret.degreesToTicks(8);
+        telemetry.addData("tolerance value test pt 1", TurretLogic.tolerance);
+        telemetry.addData("tolerance value test pt 2", robot.turret.tolerance);
         auto = new AutonomousPlusPLUS(robot);
         robot.turret.activeMode = TurretLogic.controlMode.OVERIDE;
 
@@ -144,7 +147,6 @@ public class BetaBlueBackAuto extends OpMode {
 
         robot.turret.follower.setPose(startPose);
         robot.turret.follower.setHeading(startPose.getHeading());
-        robot.turret.tolerance = 60;
 
         robot.alliance = BLUE;
     }
@@ -196,22 +198,23 @@ public class BetaBlueBackAuto extends OpMode {
     public void loop() {
         robot.turret.follower.updatePose();
 
-        telemetry.addData("Distance", robot.targetTag.distanceX);
+        telemetry.addData("Distance", robot.targetTag.distanceZ);
         telemetry.addData("Angle", robot.targetTag.angleX);
         telemetry.addData("Within Swivel Tolerance", robot.turret.rawSwivelController.withinTolerance);
+        telemetry.addData("Turret Tolerance", robot.turret.rawSwivelController.tolerance);
         telemetry.addData("Swivel Velocity", robot.turret.swivelMotor.getVelocity());
+
         robot.updateAllDaThings();
-        telemetry.update();
 
         switch (currentStep) {
             case START:
                 auto.setTolerances(7);
+
                 robot.pattern = robot.randomizationScanner.GetRandomization();//One last Check
                 if(robot.alliance.equals(BLUE))
                 {
                     robot.targetScanner.InitLimeLightTargeting(1, robot);
                     robot.scanningForTargetTag = true;
-
                 }
                 else
                 {
@@ -244,7 +247,7 @@ public class BetaBlueBackAuto extends OpMode {
                 else
                 {
                     telemetry.addData("In Position, trying to fire", ":(");
-                        robot.launcher.setPerfectLauncherVelocity();
+                    robot.launcher.setPerfectLauncherVelocity();
                     if (robot.pattern.equals(PPG)) {
                         auto.fireInSequence(robot.sorterLogic.slotB, robot.sorterLogic.slotC, robot.sorterLogic.slotA);
                     } else if (robot.pattern.equals(PGP)) {

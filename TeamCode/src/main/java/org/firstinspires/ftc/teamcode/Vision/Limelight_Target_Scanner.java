@@ -165,8 +165,9 @@ public class  Limelight_Target_Scanner /*extends AutonomousPLUS*/ {
     }
     public void InitLimeLightTargeting(int pipeline, Robot robot)
     {
-
         limelight = robot.hardwareMap.get(Limelight3A.class , "limelight");
+
+        limelight.stop();
 
         robot.telemetry.setMsTransmissionInterval(11);
         limelight.pipelineSwitch(pipeline);

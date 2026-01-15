@@ -115,9 +115,10 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot.panels = Panels.INSTANCE;
         robot.readyHardware(true);//Might not be needed
 
+        double test = (double) blackboard.getOrDefault("PedroX", 72);
 
 
-        startingPose = new Pose((Double) blackboard.getOrDefault("PedroX", 72),(Double) blackboard.getOrDefault("PedroY", 72), (Double) blackboard.getOrDefault("PedroHeading", Math.PI/2));
+        startingPose = new Pose((Double) blackboard.getOrDefault("PedroX", 72),(double) blackboard.getOrDefault("PedroY", 72), (double) blackboard.getOrDefault("PedroHeading", Math.PI/2));
         //)
         robot.turret.follower.setPose(startingPose);
         robot.turret.follower.setHeading(startingPose.getHeading());
