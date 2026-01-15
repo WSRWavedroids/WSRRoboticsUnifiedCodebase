@@ -4,9 +4,9 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.tel
 import static org.firstinspires.ftc.teamcode.Autonomous.BetaBlueFrontAuto.Step.UN_TURN;
 import static org.firstinspires.ftc.teamcode.Autonomous.BetaBlueFrontAuto.Step.YAY;
 import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.RESET_BLENDER1;
-import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.GPP;
-import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PGP;
-import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PPG;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
+import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
+import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
 
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -118,6 +118,8 @@ public class BetaBlueBackAuto extends OpMode {
 
     public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
     public static final String PATTERN_KEY = "Pattern";
+
+
     private Pose startPose = new Pose(56.5, 9, Math.PI / 2);
 
     /**
@@ -128,8 +130,7 @@ public class BetaBlueBackAuto extends OpMode {
 
         // Call the initialization protocol from the Robot class.
         // Go find pizza
-        robot.turret.follower.setPose(startPose);
-        robot.turret.follower.setHeading(startPose.getHeading());
+
         robot = new Robot(hardwareMap, telemetry, this);
         auto = new AutonomousPlusPLUS(robot);
         robot.turret.activeMode = TurretLogic.controlMode.OVERIDE;
@@ -141,6 +142,11 @@ public class BetaBlueBackAuto extends OpMode {
         blackboard.put(ALLIANCE_KEY, "BLUE");
         stallTimer = new ElapsedTime();
 
+        robot.turret.follower.setPose(startPose);
+        robot.turret.follower.setHeading(startPose.getHeading());
+        robot.turret.tolerance = 60;
+
+        robot.alliance = BLUE;
     }
 
     /**
@@ -189,16 +195,33 @@ public class BetaBlueBackAuto extends OpMode {
      */
     public void loop() {
         robot.turret.follower.updatePose();
+
+        telemetry.addData("Distance", robot.targetTag.distanceX);
+        telemetry.addData("Angle", robot.targetTag.angleX);
+        telemetry.addData("Within Swivel Tolerance", robot.turret.rawSwivelController.withinTolerance);
+        telemetry.addData("Swivel Velocity", robot.turret.swivelMotor.getVelocity());
+        robot.updateAllDaThings();
+        telemetry.update();
+
         switch (currentStep) {
             case START:
                 auto.setTolerances(7);
-                robot.sorterHardware.legalToSpin = true;
                 robot.pattern = robot.randomizationScanner.GetRandomization();//One last Check
+                if(robot.alliance.equals(BLUE))
+                {
+                    robot.targetScanner.InitLimeLightTargeting(1, robot);
+                    robot.scanningForTargetTag = true;
+
+                }
+                else
+                {
+                    robot.targetScanner.InitLimeLightTargeting(2, robot);
+                    robot.scanningForTargetTag = true;
+                }
                 TurretLogic.activeMode = TurretLogic.controlMode.FULL;
                 nextStep(Steps.MOVETURRETONE);
                 break;
             case MOVETURRETONE:
-                robot.turret.manualOverridePositionInDegs = -25;
                 //Now start the preturn for max time savings... I dont think this interferes with the next state
                 if(robot.pattern.equals(GPP))
                 {
@@ -209,14 +232,19 @@ public class BetaBlueBackAuto extends OpMode {
                     robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotB.getFirePosition());
                 }
                 //Preset launcher Speed here
-                //robot.turret.runTurret();
+                robot.turret.runTurret();
 
                 nextStep(Steps.FIRE3);
                 break;
             case FIRE3:
-                if(robot.turret.fineSwivelController.withinTolerance)
+                if(!robot.turret.rawSwivelController.withinTolerance)
                 {
-                    robot.launcher.setPerfectLauncherVelocity();
+                    telemetry.addData("Out of Position, can't fire", ":(");
+                }
+                else
+                {
+                    telemetry.addData("In Position, trying to fire", ":(");
+                        robot.launcher.setPerfectLauncherVelocity();
                     if (robot.pattern.equals(PPG)) {
                         auto.fireInSequence(robot.sorterLogic.slotB, robot.sorterLogic.slotC, robot.sorterLogic.slotA);
                     } else if (robot.pattern.equals(PGP)) {
@@ -232,11 +260,8 @@ public class BetaBlueBackAuto extends OpMode {
                 }
                 break;
             case MOVEFORWARD:
-                if(auto.fireInSequenceComplete())
-                {
-                    auto.moveRobotForward(500);
-                    nextStep(Steps.TURN);
-                }
+                auto.moveRobotForward(500);
+                nextStep(Steps.TURN);
                 break;
             case TURN:
                 if(auto.checkMovement())
@@ -259,11 +284,11 @@ public class BetaBlueBackAuto extends OpMode {
                 {
                     if(robot.pattern.equals(GPP))
                     {
-                        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.GREEN).getFirePosition());
+                        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(GREEN).getFirePosition());
                     }
                     else
                     {
-                        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE).getFirePosition());
+                        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(PURPLE).getFirePosition());
                     }
 
                     auto.setSpeed(0.75);
@@ -283,18 +308,18 @@ public class BetaBlueBackAuto extends OpMode {
                 if(auto.checkMovement())
                 {
                     if (robot.pattern.equals(PPG)) {
-                        auto.fireInSequence(robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE)
-                                , robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE),
-                                robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.GREEN));
+                        auto.fireInSequence(robot.sorterLogic.findFirstType(PURPLE)
+                                , robot.sorterLogic.findFirstType(PURPLE),
+                                robot.sorterLogic.findFirstType(GREEN));
 
                     } else if (robot.pattern.equals(PGP)) {
-                        auto.fireInSequence(robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE)
-                                , robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.GREEN),
-                                robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE));
+                        auto.fireInSequence(robot.sorterLogic.findFirstType(PURPLE)
+                                , robot.sorterLogic.findFirstType(GREEN),
+                                robot.sorterLogic.findFirstType(PURPLE));
                     } else {
-                        auto.fireInSequence(robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.GREEN)
-                                , robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE),
-                                robot.sorterLogic.findFirstType(ArtifactLocator.SlotState.PURPLE));
+                        auto.fireInSequence(robot.sorterLogic.findFirstType(GREEN)
+                                , robot.sorterLogic.findFirstType(PURPLE),
+                                robot.sorterLogic.findFirstType(PURPLE));
                     }
 
                     if (auto.fireInSequenceComplete()) {
@@ -302,12 +327,10 @@ public class BetaBlueBackAuto extends OpMode {
                     }
                 }
             case RESET:
-                if(auto.fireInSequenceComplete())
-                {
-                    robot.sorterHardware.prepareNewMovement(0);
-                    robot.turret.manualOverridePositionInDegs = 0;
-                    nextStep(Steps.UNPARK);
-                }
+                robot.sorterHardware.prepareNewMovement(0);
+                robot.turret.manualOverridePositionInDegs = 0;
+                nextStep(Steps.UNPARK);
+
                 break;
             case UNPARK:
                 if(robot.sorterHardware.doneMoving() && robot.turret.fineSwivelController.withinTolerance)
@@ -319,11 +342,12 @@ public class BetaBlueBackAuto extends OpMode {
             case STOP:
                 if(auto.checkMovement())
                 {
+                    blackboard.put("PedroX", robot.turret.follower.getPose().getX());
+                    blackboard.put("PedroY", robot.turret.follower.getPose().getY());
+                    blackboard.put("PedroHeading", robot.turret.follower.getHeading());
                     super.requestOpModeStop();
                 }
         }
-
-        robot.updateAllDaThings();
         doTelemetryStuff();
 
     }
