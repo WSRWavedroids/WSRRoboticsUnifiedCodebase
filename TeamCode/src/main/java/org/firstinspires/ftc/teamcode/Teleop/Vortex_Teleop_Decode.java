@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
@@ -14,6 +15,7 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -144,6 +146,10 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot.sorterHardware.calibrate();
         robot.sorterHardware.legalToSpin = true;
 
+        robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
+        robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
+        robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
+        robot.backRightDrive.setZeroPowerBehavior(BRAKE);
     }
 
     /**
@@ -576,6 +582,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Current Load Slot", robot.sorterLogic.findCurrentSlotInPosition(LOAD).getName());
         telemetry.addData("Current Fire Slot", robot.sorterLogic.findCurrentSlotInPosition(FIRE).getName());
         telemetry.addData("LL Distance", robot.targetTag.distanceZ);
+        telemetry.addData("Launcher PIDF", robot.launcher.motor.getPIDFCoefficients(RUN_USING_ENCODER));
 
         //robot.tellMotorOutput();
     }

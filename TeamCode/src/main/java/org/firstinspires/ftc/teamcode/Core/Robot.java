@@ -215,6 +215,8 @@ public class Robot {
         turret.follower = Constants.createFollower(hardwareMap);
 
         if (alliance == null) alliance = allianceSides.BLUE;
+
+
     }
 
 
