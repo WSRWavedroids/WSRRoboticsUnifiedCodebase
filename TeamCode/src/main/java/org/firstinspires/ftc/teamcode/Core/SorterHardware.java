@@ -49,8 +49,8 @@ public class SorterHardware {
 
     public static Double kneecap = 0.75;
     public static double kp = 0.0005;
-    public static double ki = 0.0009;
-    public static double kd = 0.000005;
+    public static double ki = 0.0007;
+    public static double kd = 0.000025;
     public static double kf = 0.0;
     double lastError = 0;
     double integralSum = 0;

@@ -96,7 +96,7 @@ public class Robot {
 
     public double robotHeading;
 
-    public double turretPositionOffsetXInches, turretPositionOffsetYInches; //Inches from pedro position
+    public double turretPositionOffsetXInches = 2.72, turretPositionOffsetYInches =1.57; //Inches from pedro position
 
 
 
@@ -215,6 +215,8 @@ public class Robot {
         turret.follower = Constants.createFollower(hardwareMap);
 
         if (alliance == null) alliance = allianceSides.BLUE;
+
+
     }
 
 

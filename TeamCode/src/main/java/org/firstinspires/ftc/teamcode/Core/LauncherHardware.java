@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Core;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_WITHOUT_ENCODER;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.REVERSE;
@@ -14,6 +15,7 @@ import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Configurable
@@ -46,7 +48,7 @@ public class LauncherHardware {
 
     public static final int ticksPerRevolution = 28;
     public static final int revolutionsPerSecond = 100;
-    public static final double toleranceRange = 20;
+    public static double toleranceRange = 60;
 
     public double velocityTarget;
     public double percentSpeed;
@@ -58,6 +60,11 @@ public class LauncherHardware {
     LauncherMode mode;
     private double waitTime;
     private ElapsedTime waitForSafeTimer = new ElapsedTime();
+
+    public static double p = 10;
+    public static double i = 1.125;
+    public static double d = 50;
+    public static double f = 0;
 
     enum LauncherSteps {
         READY_FOR_COMMANDS,
@@ -77,6 +84,7 @@ public class LauncherHardware {
         robot.telemetry.addData("Launcher step", currentLauncherStep);
         robot.telemetry.addData("Launcher Target", velocityTarget);
         robot.panelsTelemetry.addData("Launcher Velocity", motor.getVelocity());
+        robot.panelsTelemetry.addData("Target Launcher Velocity", velocityTarget);
         robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
 
         /*//TODO remove this so soon
@@ -179,6 +187,8 @@ public class LauncherHardware {
         } else {
             steadiness = 0;
         }
+
+        motor.setPIDFCoefficients(RUN_USING_ENCODER, new PIDFCoefficients(p, i, d, f));
     }
 
     public boolean doneFiring() {

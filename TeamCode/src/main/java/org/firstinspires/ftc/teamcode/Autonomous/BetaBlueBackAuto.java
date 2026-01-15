@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.GPP;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PGP;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PPG;
 
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -117,16 +118,21 @@ public class BetaBlueBackAuto extends OpMode {
 
     public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
     public static final String PATTERN_KEY = "Pattern";
+    private Pose startPose = new Pose(56.5, 9, Math.PI / 2);
 
     /**
      * Code to run ONCE when the driver hits INIT
      */
+
     public void init() {
 
         // Call the initialization protocol from the Robot class.
         // Go find pizza
+        robot.turret.follower.setPose(startPose);
+        robot.turret.follower.setHeading(startPose.getHeading());
         robot = new Robot(hardwareMap, telemetry, this);
         auto = new AutonomousPlusPLUS(robot);
+        robot.turret.activeMode = TurretLogic.controlMode.OVERIDE;
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -182,16 +188,17 @@ public class BetaBlueBackAuto extends OpMode {
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     public void loop() {
+        robot.turret.follower.updatePose();
         switch (currentStep) {
             case START:
                 auto.setTolerances(7);
                 robot.sorterHardware.legalToSpin = true;
                 robot.pattern = robot.randomizationScanner.GetRandomization();//One last Check
-                TurretLogic.activeMode = TurretLogic.controlMode.OVERIDE;
+                TurretLogic.activeMode = TurretLogic.controlMode.FULL;
                 nextStep(Steps.MOVETURRETONE);
                 break;
             case MOVETURRETONE:
-                robot.turret.manualOverridePositionInDegs = -30;
+                robot.turret.manualOverridePositionInDegs = -25;
                 //Now start the preturn for max time savings... I dont think this interferes with the next state
                 if(robot.pattern.equals(GPP))
                 {

@@ -14,11 +14,11 @@ public class TurretLogic {
     Robot robot;
     DcMotorEx swivelMotor;
     public static double rawP = 0.00016;
-    public static double rawI = 0.0;
+    public static double rawI = 0.00002;
     public static double rawD = 0.0;
     public static double rawF = 0.0;
     public static double fineP = 0.00008;
-    public static double fineI = 0.00002;
+    public static double fineI = 0.0002;
     public static double fineD = 0.0;
     public static double fineF = 0.0;
     public static double tolerance;
@@ -150,7 +150,7 @@ public class TurretLogic {
             if(robot.alliance.equals(BLUE))
             {
                 //gets the raw angle without accounting for heading
-                double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 12.51), (robot.turretPosition.y - 136.15)));
+                double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 12), (robot.turretPosition.y - 132)));
                 //Corrects for heading then hands off to safeAngle logic
                 // TODO make this update live
                 turretDegreesFromTarget = Math.abs(90 + rawAngle);
@@ -159,7 +159,7 @@ public class TurretLogic {
             else
             {
                 //gets the raw angle without accounting for heading
-                double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x -131.699), (robot.turretPosition.y -135.73)));
+                double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 132), (robot.turretPosition.y - 132)));
                 //Corrects for heading then hands off to safeAngle logic
                 turretDegreesFromTarget =  Math.abs(90 + (rawAngle));
                 return robot.robotHeading + 90 + (rawAngle);
@@ -207,7 +207,7 @@ public class TurretLogic {
         while (intINDegs < -safeDegreeDistance) {
             intINDegs += 360;
         }
-        finalTargetDeg = equalizeIfNeeded(intINDegs);
+        finalTargetDeg = limitIfNeeded(intINDegs);
         /*// 2. If the input is safe, check if its coterminal is also safe
         else {
             double coterminal = (intINDegs > 0) ? intINDegs - 360 : intINDegs + 360;
@@ -228,7 +228,7 @@ public class TurretLogic {
         return degreesToTicks(finalTargetDeg);
     }
 
-    double equalizeIfNeeded(double input) {
+    double limitIfNeeded(double input) {
         if (input > safeDegreeDistance) {
             input = safeDegreeDistance;
         } else if (input < -safeDegreeDistance) {
