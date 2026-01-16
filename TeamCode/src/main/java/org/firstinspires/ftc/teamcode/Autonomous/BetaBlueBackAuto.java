@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 
+import java.util.Objects;
+
 /**
  * This is an iterative autonomous program. It runs in a state machine, which allows us to run the
  * updateAllDaThings() function and properly run the blender without any... questionable code. And
@@ -20,7 +22,7 @@ import org.firstinspires.ftc.teamcode.Core.TurretLogic;
  * too, allowing us to keep both autos up to date in a single file. BetaRedFrontAuto is a shell that
  * basically just hijacks this file to work, which is neat.
  */
-@Autonomous(group = "Basic", name = "Blue Back 6 Ball")
+@Autonomous(group = "FABIO NO PEDRO", name = "Blue Back 6 Ball")
 public class BetaBlueBackAuto extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
@@ -261,7 +263,15 @@ public class BetaBlueBackAuto extends OpMode {
             case TURN:
                 if(auto.checkMovement())
                 {
-                    auto.turnRobotLeft(700);
+                    if(Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE"))
+                    {
+                        auto.turnRobotLeft(700);
+                    }
+                    else
+                    {
+                        auto.turnRobotRight(700);
+                    }
+
                     nextStep(Steps.YOINK);
                 }
                 break;
@@ -269,38 +279,24 @@ public class BetaBlueBackAuto extends OpMode {
                 if(auto.checkMovement())
                 {
                     auto.setSpeed(0.2);
-                    auto.moveRobotForward(2900);
-                    auto.yoinkify(1000);
-                    nextStep(Steps.UN_TURN);
-                }
-                break;
-            case UN_TURN:
-                if(!auto.checkYoink())
-                {
-                    auto.yoinkify(1000);
-                }
-                if(auto.checkYoink())
-                {
-                    if(robot.pattern.equals(GPP))
-                    {
-                        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(GREEN).getFirePosition());
-                    }
-                    else
-                    {
-                        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(PURPLE).getFirePosition());
-                    }
-
-                    auto.setSpeed(driveSpeed);
-                    //double check intake is off lol
-                    auto.turnRobotLeft(700);
+                    auto.moveRobotForward(2000);
+                    auto.yoinkify(2000);
                     nextStep(Steps.BACKUP);
                 }
                 break;
             case BACKUP:
-                if(auto.checkMovement())
+                if(auto.checkYoink() && auto.checkMovement())
                 {
                     robot.launcher.setPerfectLauncherVelocity();
-                    auto.moveRobotBackward(500);
+                    if(Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE"))
+                    {
+                        auto.moveRobotLeft(800);
+                    }
+                    else
+                    {
+                        auto.moveRobotRight(800);
+                    }
+
                     nextStep(Steps.FIRE3AGAIN);
                 }
             case FIRE3AGAIN:
@@ -334,7 +330,14 @@ public class BetaBlueBackAuto extends OpMode {
             case UNPARK:
                 if(robot.sorterHardware.doneMoving() && robot.turret.fineSwivelController.withinTolerance)
                 {
-                    auto.moveRobotForward(500);
+                    if(Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE"))
+                    {
+                        auto.moveRobotRight(500);
+                    }
+                    else
+                    {
+                        auto.moveRobotLeft(500);
+                    }
                     nextStep(Steps.STOP);
                 }
                 break;

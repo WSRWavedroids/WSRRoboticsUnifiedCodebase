@@ -39,7 +39,7 @@ import java.util.Objects;
  * If you ever have problems with the program not showing up on the driver hub, it's probably because of that.
  * <p>
  */
-@TeleOp(name = "DAVE", group = "CompBot")
+@TeleOp(name = "Fabio", group = "CompBot")
 public class Vortex_Teleop_Decode extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
@@ -512,7 +512,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             speed = 1;
         } else if (gamepad1.dpad_down) {
             speed = 0.25;
-        } else if (gamepad1.dpad_left || gamepad1.left_trigger >0.5) {
+        } else if (gamepad1.dpad_left || gamepad1.left_trigger >= 0.5) {
             speed = 0.5;
         } else if (gamepad1.dpad_right) {
             speed = 0.75;

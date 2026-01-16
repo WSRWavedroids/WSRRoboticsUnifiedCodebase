@@ -29,6 +29,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
  */
 
 import static org.firstinspires.ftc.teamcode.Autonomous.AutonomousPlusPLUS.fireInSequenceStalling.*;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
 import static org.firstinspires.ftc.teamcode.Core.Robot.CardinalDirections.*;
@@ -412,10 +413,7 @@ public class AutonomousPlusPLUS {
             //disable intake
             setSpeed(75);
             moveRobotBackward(-(ticks-distanceRemaining));
-            if(checkMovement())
-            {
-                yoinking = false;
-            }
+            yoinking = false;
         }
 
     }
@@ -466,6 +464,7 @@ public class AutonomousPlusPLUS {
             case FIRE:
                 if (robot.sorterHardware.doneMoving()) {
                     robot.launcher.readyFire();
+                    slot.contains(EMPTY);
                     fireInSequenceStallingState = FIRING;
                 }
                 break;
