@@ -29,18 +29,13 @@ package org.firstinspires.ftc.teamcode.Autonomous;
  */
 
 import static org.firstinspires.ftc.teamcode.Autonomous.AutonomousPlusPLUS.fireInSequenceStalling.*;
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
 import static org.firstinspires.ftc.teamcode.Core.Robot.CardinalDirections.*;
-import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.GPP;
-import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PGP;
-import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.PPG;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.LOAD;
 import static android.os.SystemClock.sleep;
 
 import com.bylazar.panels.Panels;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
@@ -103,7 +98,7 @@ public class AutonomousPlusPLUS {
         robot.backRightDrive.setTargetPosition(-motorTicks[3] + robot.backRightDrive.getCurrentPosition());
 
         if (waitForCompletion) {
-            while (robot.isWheelsBusy()) {
+            while (wheelsAreRunning()) {
                 robot.tellMotorOutput();
                 robot.updateAllDaThings();
             } // And we stall...
@@ -263,12 +258,9 @@ public class AutonomousPlusPLUS {
     public void turnRobotRight(int ticks, long pause) {
         turnRobotRight(ticks);
 
-        while (robot.isWheelsBusy()) {
+        while (checkMovement()) {
             robot.tellMotorOutput();
         }
-
-        robot.stopAllMotors();
-        robot.encoderRunningMode();
         sleep(pause);
     }
 
@@ -290,12 +282,10 @@ public class AutonomousPlusPLUS {
     public void turnRobotLeft(int ticks, long pause) {
         turnRobotLeft(ticks);
 
-        while (robot.isWheelsBusy()) {
+        while (checkMovement()) {
             robot.tellMotorOutput();
         }
 
-        robot.stopAllMotors();
-        robot.encoderRunningMode();
         sleep(pause);
     }
 
@@ -355,12 +345,19 @@ public class AutonomousPlusPLUS {
         sleep(pause);
     }
 
-    public void areWheelsRunning() {
-        return
+    public boolean wheelsAreRunning() {
+        return !(checkTolerance(robot.frontLeftDrive) &&
+                checkTolerance(robot.frontRightDrive) &&
+                checkTolerance(robot.backLeftDrive) &&
+                checkTolerance(robot.backRightDrive)
+        );
     }
 
-    private boolean checkTolerance(double current, double target, double tolerance) {
-
+    private boolean checkTolerance(DcMotorEx motor) {
+        int pos = motor.getCurrentPosition();
+        int target = motor.getTargetPosition();
+        int tol = motor.getTargetPositionTolerance();
+        return pos > target - tol && pos < target + tol;
     }
     public void calibrateDriveTrain(int tolerance, double pValue) {
         robot.frontLeftDrive.setTargetPositionTolerance(tolerance);
@@ -397,18 +394,23 @@ public class AutonomousPlusPLUS {
 
     boolean firingInSequence;
 
-    int distanceTraveledForYoink = 0;
+    int distanceRemaining = 0;
+    int Yoinktarget = 0;
     public boolean yoinking;
 
     public void yoinkify(int ticks) {
 
         robot.sorterHardware.runAdvancedIntake();
-        distanceTraveledForYoink = ticks - robot.frontRightDrive.getCurrentPosition();
+        if(Yoinktarget == 0)
+        {
+            Yoinktarget = robot.frontRightDrive.getCurrentPosition() + ticks;
+        }
+        distanceRemaining = Yoinktarget - robot.frontRightDrive.getCurrentPosition();
 
         if(checkMovement() || robot.sorterLogic.inventory.getTotalCount() == 3)
         {
             //disable intake
-            moveRobotBackward(distanceTraveledForYoink);
+            moveRobotBackward(ticks-distanceRemaining);
             if(checkMovement())
             {
                 yoinking = false;
@@ -455,7 +457,6 @@ public class AutonomousPlusPLUS {
     private void fireOne(ArtifactLocator.Slot slot) {
         switch (fireInSequenceStallingState) {
             case READY:
-                robot.launcher.setLauncherSpeed(1);
                 robot.sorterHardware.prepareNewMovement(
                         robot.sorterHardware.motor.getCurrentPosition(),
                         slot.getFirePosition());

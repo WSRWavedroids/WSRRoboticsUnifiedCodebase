@@ -37,7 +37,7 @@ public class SorterHardware {
     public int[] positions;
     public static final int ticksPerRotation = 8192;
     public int currentTickCount;
-    public static Double tickTolerance = 100.0;
+    public static Double tickTolerance = 200.0;
     public boolean legalToSpin = false;
 
     public double flickyDownPosition = 0.51;
@@ -47,10 +47,10 @@ public class SorterHardware {
     public boolean onCooldown = false;
     private ElapsedTime pidfTime = new ElapsedTime();
 
-    public static Double kneecap = 0.75;
-    public static double kp = 0.0005;
-    public static double ki = 0.0007;
-    public static double kd = 0.000025;
+    public static Double kneecap = 0.15;
+    public static double kp = 0.002025;
+    public static double ki = 0.000015;
+    public static double kd = 0.0001;
     public static double kf = 0.0;
     double lastError = 0;
     double integralSum = 0;
@@ -123,7 +123,7 @@ public class SorterHardware {
                 if (this.positionedCheck()) {
                     ensureBlenderPosition += 1;
                 }
-                if (ensureBlenderPosition >= 5) {
+                if (ensureBlenderPosition >= 3) {
                     nextStep(RESET);
                 }
                 break;

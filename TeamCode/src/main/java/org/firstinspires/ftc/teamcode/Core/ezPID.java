@@ -35,6 +35,10 @@ public class ezPID {
     public double tolerance;
     public boolean withinTolerance;
 
+    private double time;
+    private double lastTime;
+    private double dt;
+
     public enum movementType{SPEED,POSITION}
 
     movementType mode;
@@ -68,7 +72,6 @@ public class ezPID {
         mode = modeIN;
         tolerance = toleranceIN;
         withinTolerance = false;
-
     }
 
     /// This is the constructor for a motor group
@@ -87,7 +90,6 @@ public class ezPID {
         mode = modeIN;
         tolerance = toleranceIN;
         withinTolerance = false;
-
     }
 
     public PIDDUMP shareInfo() {
@@ -128,6 +130,10 @@ public class ezPID {
         /// Use the following line to call this properly FOR ONE MOTOR
         /// PIDINSTANCENAME.runCalledPID(Target position(Ticks) or speed (Ticks/s));
 
+        time = Timer.seconds();
+        dt = time - lastTime;
+        lastTime = time;
+
         if(mode == movementType.POSITION)
         {
             // obtain the encoder position
@@ -135,13 +141,11 @@ public class ezPID {
             // calculate the error
             double error = reference - encoderPosition;
 
-
-
             double derivative;
             // rate of change of the error
             if(Timer.seconds()!= 0)
             {
-                derivative = (error - lastError) / Timer.seconds();
+                derivative = (error - lastError) / dt;
             }
             else
             {
@@ -154,7 +158,7 @@ public class ezPID {
             if(Timer.seconds() != 0)
             {
                 // sum of all error over time
-                integralSum = integralSum + (error * Timer.seconds());
+                integralSum = integralSum + (error * dt);
             }
 
             double out = kneecap * ((p * error) + (i * integralSum) + (d * derivative) + feedforward);
@@ -163,9 +167,6 @@ public class ezPID {
             motor.setPower(out);
 
             lastError = error;
-
-            // reset the timer for next time
-            Timer.reset();
 
             if(Math.abs(error) > tolerance)
             {
@@ -194,19 +195,16 @@ public class ezPID {
             }
 
             // rate of change of the error
-            double derivative = (error - lastError) / Timer.seconds();
+            double derivative = (error - lastError) / dt;
 
             // sum of all error over time
-            integralSum = integralSum + (error * Timer.seconds());
+            integralSum = integralSum + (error * dt);
 
             double out = (p * error) + (i * integralSum) + (d * derivative);
 
             motor.setPower(out);
 
             lastError = error;
-
-            // reset the timer for next time
-            Timer.reset();
         }
     }
 

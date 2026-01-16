@@ -101,10 +101,10 @@ public class Vortex_Teleop_Decode extends OpMode {
             imu.initialize(parameters);
         }
         //if using field centric youl need this lolzeez
-        if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+        if (Objects.equals(blackboard.get(ALLIANCE_KEY), "RED")) {
             robot.targetScanner.InitLimeLightTargeting(1, robot);
             robot.scanningForTargetTag = true;
-        } else if (Objects.equals(blackboard.get(ALLIANCE_KEY), "RED")) {
+        } else if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
             robot.targetScanner.InitLimeLightTargeting(2, robot);
             robot.scanningForTargetTag = true;
         } else {
@@ -115,13 +115,31 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot.panels = Panels.INSTANCE;
         robot.readyHardware(true);//Might not be needed
 
-        double test = (double) blackboard.getOrDefault("PedroX", 72);
+        grabStartPose();
 
-
-        startingPose = new Pose((Double) blackboard.getOrDefault("PedroX", 72),(double) blackboard.getOrDefault("PedroY", 72), (double) blackboard.getOrDefault("PedroHeading", Math.PI/2));
-        //)
         robot.turret.follower.setPose(startingPose);
         robot.turret.follower.setHeading(startingPose.getHeading());
+    }
+
+    private void grabStartPose() {
+        Object pedroXFromBB = blackboard.getOrDefault("PedroX", 72.0);
+        Object pedroYFromBB = blackboard.getOrDefault("PedroY", 72.0);
+        Object pedroHeadingFromBB = blackboard.getOrDefault("PedroHeading", Math.PI / 2);
+
+        double goodX = 72;
+        double goodY = 72;
+        double goodHeading = Math.PI / 2;
+
+        if (pedroXFromBB instanceof Number) {
+            goodX = (double) pedroXFromBB;
+        }
+        if (pedroYFromBB instanceof Number) {
+            goodY = (double) pedroYFromBB;
+        }
+        if (pedroHeadingFromBB instanceof Number) {
+            goodHeading = (double) pedroHeadingFromBB;
+        }
+        startingPose = new Pose(goodX, goodY, goodHeading);
     }
 
     /**
@@ -186,6 +204,8 @@ public class Vortex_Teleop_Decode extends OpMode {
         switchAlliance();
 
         turretAssist();
+
+        resetPedroPosition();
 
         //robot.panelsTelemetry.addData("Motor Position", robot.launcher.motor.getCurrentPosition());
         //robot.panelsTelemetry.update(); // Already being updated in updateAllDaThings()
@@ -515,9 +535,18 @@ public class Vortex_Teleop_Decode extends OpMode {
         if (gamepad2.shareWasPressed()){
             if (robot.alliance == BLUE) {
                 robot.alliance = RED;
+                robot.targetScanner.InitLimeLightTargeting(1, robot);
             } else {
                 robot.alliance = BLUE;
+                robot.targetScanner.InitLimeLightTargeting(2, robot);
             }
+        }
+    }
+
+    private void resetPedroPosition() {
+        if (gamepad1.start && gamepad1.shareWasPressed()) {
+            robot.turret.follower.setPose(new Pose(72, 72));
+            robot.turret.follower.setHeading(Math.PI / 2);
         }
     }
 

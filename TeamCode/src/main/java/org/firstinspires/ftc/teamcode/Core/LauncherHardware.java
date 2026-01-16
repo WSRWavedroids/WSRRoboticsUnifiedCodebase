@@ -48,7 +48,7 @@ public class LauncherHardware {
 
     public static final int ticksPerRevolution = 28;
     public static final int revolutionsPerSecond = 100;
-    public static double toleranceRange = 60;
+    public static double toleranceRange = 50;
 
     public double velocityTarget;
     public double percentSpeed;
@@ -141,6 +141,7 @@ public class LauncherHardware {
                 nextStep(STALL_WHILE_MOTOR_REVVING);
                 break;
             case STALL_WHILE_MOTOR_REVVING:
+                setPerfectLauncherVelocity();
                 if (motorSpeedCheck(velocityTarget) && motorSteady() || cooldownTimer.seconds() >= 5) {
                     nextStep(FLICK);
                 }
@@ -151,6 +152,7 @@ public class LauncherHardware {
                 onCooldown = true;
                 robot.sorterHardware.flick();
                 cooldownTimer.reset();
+
                 nextStep(UNFLICK);
                 break;
             case UNFLICK:
@@ -169,7 +171,7 @@ public class LauncherHardware {
                 break;
             case RESET:
                 // Stop the motor if requested
-                if (stopMotorAfter) setLauncherSpeed(0);
+                if (stopMotorAfter) setLauncherVelocity(0);
 
                 // Set the slot to empty now that we fired its contents
                 robot.sorterLogic.findCurrentSlotInPosition(FIRE).setOccupied(EMPTY);
@@ -222,15 +224,16 @@ public class LauncherHardware {
         else percentSpeed = 0.5;
 
         waitingToFire = true;
+        stopMotorAfter = false;
         mode = WAIT_FOREVER;
     }
 
     public void readyFire() {
-        this.readyFire(0, false, true);
+        this.readyFire(0, false, false);
     }
     public void readyFire(double speedTarget, boolean useSpeedTarget, boolean stopMotorAfter) {
-        this.stopMotorAfter = stopMotorAfter;
         readyFire(speedTarget, useSpeedTarget);
+        this.stopMotorAfter = stopMotorAfter;
     }
 
     @Deprecated
@@ -270,6 +273,6 @@ public class LauncherHardware {
     }
 
     public double findBestMotorVelocity(double input) {
-        return 201 * input + 1103;
+        return 201 * input + 1083;
     }
 }

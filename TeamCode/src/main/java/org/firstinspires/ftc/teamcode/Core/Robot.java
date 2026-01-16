@@ -87,7 +87,12 @@ public class Robot {
     public enum patternColors {PPG, GPP, PGP}
     public patternColors pattern;
 
-    public enum allianceSides {BLUE, RED}
+    public enum allianceSides {
+        BLUE(2), RED(1);
+    public final int limelightPipeline;
+    allianceSides(int limelightPipeline) {
+        this.limelightPipeline = limelightPipeline;
+    }}
     public allianceSides alliance;
 
     public Vector2 robotPosition;
@@ -108,6 +113,7 @@ public class Robot {
     public Limelight_Randomization_Scanner randomizationScanner;
     public Limelight_Target_Scanner targetScanner;
     public fireQueueWithStates queue;
+    public SlotLightManager blinkies;
 
 
     public Panels panels;
@@ -170,6 +176,10 @@ public class Robot {
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
+        loadRGB = hardwareMap.get(Servo.class, "loadRGB");
+        fireRGB = hardwareMap.get(Servo.class, "fireRGB");
+        storeRGB = hardwareMap.get(Servo.class, "storeRGB");
+
         //husky = hardwareMap.get(HuskyLens.class, "evenBetterMason");
 
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
@@ -208,12 +218,13 @@ public class Robot {
         targetScanner = new Limelight_Target_Scanner(this);
         randomizationScanner = new Limelight_Randomization_Scanner(this);
         turret = new TurretLogic(this, null);
+        blinkies = new SlotLightManager(this);
 
         robotPosition = new Vector2();
         turretPosition = new Vector2();
 
         turret.follower = Constants.createFollower(hardwareMap);
-        turret.follower.deactivateAllPIDFs();
+        turret.follower.setMaxPowerScaling(0);
 
         if (alliance == null) alliance = allianceSides.BLUE;
 
@@ -386,6 +397,7 @@ public class Robot {
         launcher.updateLauncherHardware();
         queue.updateQueueStates();
         turret.runTurret();
+        blinkies.update();
 
         if(scanningForTargetTag)
         {

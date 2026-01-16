@@ -27,7 +27,7 @@ public class fireQueueWithStates {
     public ArrayList<ArtifactLocator.SlotState> ballQueue;
 
     //State Machine innovation here
-    public enum QueueState {CHECK, POSITIONING, FIRING, COOLDOWN}
+    public enum QueueState {CHECK, POSITIONING, FIRING}
     private QueueState state = CHECK;
 
     public QueueState getCurrentState() {
@@ -160,16 +160,10 @@ public class fireQueueWithStates {
 
                     // Move the hardware
                     sorterHardware.prepareNewMovement(targetPosition);
+                    launcherHardware.readyFire(0, false, false);
                     state = FIRING;
                     break;
                 case FIRING:
-                    // stall until moved, then fire
-                    if (robot.sorterHardware.doneMoving()) {
-                        launcherHardware.readyFire(0, false, false);
-                        state = COOLDOWN;
-                    }
-                    break;
-                case COOLDOWN:
                     // Wait for the launcher to finish its physical movement before moving the sorter again
                     // This prevents the sorter from rotating while the ball is still in the launcher path
                     if (launcherHardware.doneFiring()) {

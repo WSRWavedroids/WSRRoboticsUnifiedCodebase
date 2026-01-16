@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-import static org.firstinspires.ftc.teamcode.Autonomous.BetaBlueFrontAuto.Step.UN_TURN;
-import static org.firstinspires.ftc.teamcode.Autonomous.BetaBlueFrontAuto.Step.YAY;
-import static org.firstinspires.ftc.teamcode.Autonomous.ExtraBetaBlueFrontAuto.Step.RESET_BLENDER1;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
@@ -14,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 
@@ -30,7 +25,7 @@ public class BetaBlueBackAuto extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
     private ElapsedTime runtime = new ElapsedTime();
-    private double speed = 0.75;
+    private double driveSpeed = 0.25;
 
     int slot = 0; // temp for testing lol
 
@@ -189,7 +184,7 @@ public class BetaBlueBackAuto extends OpMode {
         telemetry.addData("HYPE", "Let's do this!!!");
         robot.readyHardware(true);
         robot.sorterHardware.legalToSpin = true;
-        speed = 1;
+        driveSpeed = .75;
     }
 
     /**
@@ -210,17 +205,13 @@ public class BetaBlueBackAuto extends OpMode {
             case START:
                 auto.setTolerances(7);
 
+                auto.setSpeed(driveSpeed);
+
                 robot.pattern = robot.randomizationScanner.GetRandomization();//One last Check
-                if(robot.alliance.equals(BLUE))
-                {
-                    robot.targetScanner.InitLimeLightTargeting(1, robot);
-                    robot.scanningForTargetTag = true;
-                }
-                else
-                {
-                    robot.targetScanner.InitLimeLightTargeting(2, robot);
-                    robot.scanningForTargetTag = true;
-                }
+
+                robot.targetScanner.InitLimeLightTargeting(robot.alliance.limelightPipeline, robot);
+
+                robot.scanningForTargetTag = true;
                 TurretLogic.activeMode = TurretLogic.controlMode.FULL;
                 nextStep(Steps.MOVETURRETONE);
                 break;
@@ -263,26 +254,31 @@ public class BetaBlueBackAuto extends OpMode {
                 }
                 break;
             case MOVEFORWARD:
-                auto.moveRobotForward(500);
+                robot.launcher.setLauncherVelocity(0);
+                auto.moveRobotForward(800);
                 nextStep(Steps.TURN);
                 break;
             case TURN:
                 if(auto.checkMovement())
                 {
-                    auto.turnRobotRight(700);
+                    auto.turnRobotLeft(700);
                     nextStep(Steps.YOINK);
                 }
                 break;
             case YOINK:
                 if(auto.checkMovement())
                 {
-                    auto.setSpeed(0.3);
+                    auto.setSpeed(0.2);
                     auto.moveRobotForward(1000);
                     auto.yoinkify(1000);
                     nextStep(Steps.UN_TURN);
                 }
                 break;
             case UN_TURN:
+                if(!auto.checkYoink())
+                {
+                    auto.yoinkify(1000);
+                }
                 if(auto.checkYoink())
                 {
                     if(robot.pattern.equals(GPP))
@@ -294,7 +290,7 @@ public class BetaBlueBackAuto extends OpMode {
                         robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(PURPLE).getFirePosition());
                     }
 
-                    auto.setSpeed(0.75);
+                    auto.setSpeed(driveSpeed);
                     //double check intake is off lol
                     auto.turnRobotLeft(700);
                     nextStep(Steps.BACKUP);

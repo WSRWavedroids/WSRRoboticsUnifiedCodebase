@@ -26,8 +26,6 @@ public class SlotLightManager {
         fireLight.update();
         loadLight.update();
         storeLight.update();
-
-        fireLight.blinkify(robot.sorterHardware.fireSafeCheck());
     }
 
     public class Light {
