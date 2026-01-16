@@ -412,10 +412,7 @@ public class AutonomousPlusPLUS {
             //disable intake
             setSpeed(75);
             moveRobotBackward(-(ticks-distanceRemaining));
-            if(checkMovement())
-            {
-                yoinking = false;
-            }
+            yoinking = false;
         }
 
     }

@@ -271,36 +271,14 @@ public class BetaBlueBackAuto extends OpMode {
                     auto.setSpeed(0.2);
                     auto.moveRobotForward(2900);
                     auto.yoinkify(1000);
-                    nextStep(Steps.UN_TURN);
-                }
-                break;
-            case UN_TURN:
-                if(!auto.checkYoink())
-                {
-                    auto.yoinkify(1000);
-                }
-                if(auto.checkYoink())
-                {
-                    if(robot.pattern.equals(GPP))
-                    {
-                        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(GREEN).getFirePosition());
-                    }
-                    else
-                    {
-                        robot.sorterHardware.prepareNewMovement(robot.sorterLogic.findFirstType(PURPLE).getFirePosition());
-                    }
-
-                    auto.setSpeed(driveSpeed);
-                    //double check intake is off lol
-                    auto.turnRobotLeft(700);
                     nextStep(Steps.BACKUP);
                 }
                 break;
             case BACKUP:
-                if(auto.checkMovement())
+                if(auto.checkYoink() && auto.checkMovement())
                 {
                     robot.launcher.setPerfectLauncherVelocity();
-                    auto.moveRobotBackward(500);
+                    auto.moveRobotLeft(800);
                     nextStep(Steps.FIRE3AGAIN);
                 }
             case FIRE3AGAIN:
@@ -334,7 +312,7 @@ public class BetaBlueBackAuto extends OpMode {
             case UNPARK:
                 if(robot.sorterHardware.doneMoving() && robot.turret.fineSwivelController.withinTolerance)
                 {
-                    auto.moveRobotForward(500);
+                    auto.moveRobotRight(500);
                     nextStep(Steps.STOP);
                 }
                 break;

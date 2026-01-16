@@ -512,7 +512,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             speed = 1;
         } else if (gamepad1.dpad_down) {
             speed = 0.25;
-        } else if (gamepad1.dpad_left || gamepad1.left_trigger >0.5) {
+        } else if (gamepad1.dpad_left || gamepad1.left_trigger >= 0.5) {
             speed = 0.5;
         } else if (gamepad1.dpad_right) {
             speed = 0.75;
