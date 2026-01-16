@@ -45,7 +45,7 @@ private AutonomousPLUS auto;
         auto = new AutonomousPLUS();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(55,9,Math.PI/2));
+
     }
 
     static class Paths {
@@ -67,6 +67,7 @@ private AutonomousPLUS auto;
                                     new Pose(55.000, 9.000),
 
                                     new Pose(58.100, 16.600)
+
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(112.5))
 
@@ -189,8 +190,8 @@ private AutonomousPLUS auto;
                 nextStep(LAUNCH0);
                 break;
             case LAUNCH0:
-                    nextStep(INTAKESETUP1);
-                    follower.followPath(runPath.Launch0);
+                nextStep(INTAKESETUP1);
+                follower.followPath(runPath.Launch0);
                 break;
 
             case INTAKESETUP1:
