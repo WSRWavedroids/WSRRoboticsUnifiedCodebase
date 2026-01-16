@@ -136,8 +136,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.setupLaunchers();
 
         intake1(1 ,0.5 ,0.85);
-        intake2(1 ,0.5); //this is a servo
-        intake3(1 ,0.7 ,1);
+        intake2(0.8 ,0.7 ,1);
         launch(0.05, robot.tuningspd);
 
         if (gamepad1.leftBumperWasPressed()){
@@ -353,7 +352,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.intakeMotor.setPower(robot.intakeSpeed);
     }
 
-    private void intake2(double posOPEN, double posCLOSED){
+    private void intakeservo(double posOPEN, double posCLOSED){
         if (gamepad2.xWasPressed()){
             if (robot.intake2.getPosition() == posCLOSED){
                 robot.intake2.setPosition(posOPEN);
@@ -364,7 +363,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
     }
 
 
-    private void intake3(double fwdSPEED, double revSPEED, double master){
+    private void intake2(double fwdSPEED, double revSPEED, double master){
         if (currentStep == INPUT) {
             robot.intake3.setPower(0);
         }
