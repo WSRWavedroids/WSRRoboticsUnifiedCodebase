@@ -255,7 +255,7 @@ public class Robot {
                 274.95936,
                 1173.87201,
                 1973.79332,
-                1923.51328);
+                1905);
     }
 
     public void launcherMath(double x,double m1, double m2, double m3, double m4, double add){
