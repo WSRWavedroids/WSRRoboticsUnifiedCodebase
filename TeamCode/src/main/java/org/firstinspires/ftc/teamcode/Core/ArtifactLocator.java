@@ -97,7 +97,7 @@ public class ArtifactLocator {
     public void update() {
         // Read the current list
         this.takeInventory();
-        sortOutBlobs(runSideScannersWithHSV());
+        sortOutBlobs(runSideScannersWithHSV(), LOAD);
     }
 
 
@@ -172,11 +172,11 @@ public class ArtifactLocator {
             default: newState = UNKNOWN;
         }
 
-        sortOutBlobs(newState);
+        sortOutBlobs(newState, LOAD);
     }
 
-    public void sortOutBlobs(SlotState newState) {
-        Slot loadSlot = this.findCurrentSlotInPosition(LOAD);
+    public void sortOutBlobs(SlotState newState, SorterHardware.PositionState position) {
+        Slot loadSlot = this.findCurrentSlotInPosition(position);
 
         if(!loadSlot.contains(newState)) {
             loadSlot.setOccupied(newState);
