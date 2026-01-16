@@ -562,9 +562,19 @@ public class Vortex_Teleop_Decode extends OpMode {
     }
 
     private void resetPedroPosition() {
-        if (gamepad1.start && gamepad1.shareWasPressed()) {
-            robot.turret.follower.setPose(new Pose(72, 72));
-            robot.turret.follower.setHeading(Math.PI / 2);
+        if (gamepad1.start) {
+            if (gamepad1.shareWasPressed() && robot.alliance == BLUE) {
+                robot.turret.follower.setPose(new Pose(133.28, 10.75));
+                robot.turret.follower.setHeading(Math.PI / 2);
+            }
+            if (gamepad1.shareWasPressed() && robot.alliance == RED) {
+                robot.turret.follower.setPose(new Pose(9.59, 9.67));
+                robot.turret.follower.setHeading(Math.PI / 2);
+            }
+
+            if (gamepad1.leftBumperWasPressed()) {
+                robot.turret.follower.setPose(new Pose(72, 72));
+            }
         }
     }
 
