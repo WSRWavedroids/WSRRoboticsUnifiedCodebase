@@ -410,7 +410,8 @@ public class AutonomousPlusPLUS {
         if(checkMovement() || robot.sorterLogic.inventory.getTotalCount() == 3)
         {
             //disable intake
-            moveRobotBackward(ticks-distanceRemaining);
+            setSpeed(75);
+            moveRobotBackward(-(ticks-distanceRemaining));
             if(checkMovement())
             {
                 yoinking = false;

@@ -15,15 +15,15 @@ public class fireQueueWithStates {
     ///caden to fire back to back to back
     ///also this could clean up autonomous firing sequences a bit
 
-    private Robot robot;
-    private SorterHardware sorterHardware;
-    private ArtifactLocator sorterLogic;
-    private LauncherHardware launcherHardware;
+    private final Robot robot;
+    private final SorterHardware sorterHardware;
+    private final ArtifactLocator sorterLogic;
+    private final LauncherHardware launcherHardware;
     public enum firingQueue{NONE, SMART, DUMB}
     public fireQueueWithStates.firingQueue wantToFireQueue = NONE;
 
     public boolean noBallsQueued = true;
-    int currentSlot = 0;
+
     public ArrayList<ArtifactLocator.SlotState> ballQueue;
 
     //State Machine innovation here
@@ -122,16 +122,16 @@ public class fireQueueWithStates {
 
             switch (state) {
                 case CHECK:
-                    currentSlot = 0;
                     // If we have balls to fire, start the process
-                    if (!ballQueue.isEmpty()) {
+                    if (robot.sorterLogic.inventory.getTotalCount() == 0) {
+                        clearList();
+                    } else if (!ballQueue.isEmpty()) {
                         state = POSITIONING;
                     } else {
                         // Fallback: if triggered but empty, reset
                         wantToFireQueue = NONE;
                     }
                     break;
-
                 case POSITIONING:
                     // Check if we've reached the end of our list or hit an empty slot
                     if (ballQueue.isEmpty()) {
@@ -145,7 +145,7 @@ public class fireQueueWithStates {
                     ArtifactLocator.SlotState currentColor = ballQueue.get(0);
                     ArtifactLocator.Slot targetSlot;
 
-                    if(currentColor == UNKNOWN) {
+                    if (currentColor == UNKNOWN) {
                         targetSlot = sorterLogic.findFirstNotType(EMPTY);
                     } else {
                         targetSlot = sorterLogic.findFirstType(currentColor);

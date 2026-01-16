@@ -122,6 +122,7 @@ public class SorterHardware {
                 setFeeders(ROTATE);
                 if (this.positionedCheck()) {
                     ensureBlenderPosition += 1;
+                    nextStep(RESET);
                 }
                 if (ensureBlenderPosition >= 3) {
                     nextStep(RESET);
@@ -322,8 +323,8 @@ public class SorterHardware {
         if (robot.sorterLogic.inventory.getTotalCount() >= 3) {
             robot.cancelAutoIntake();
         }
-        else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
-                robot.sorterLogic.artifactSortCooldown())
+        else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) /*&&
+                robot.sorterLogic.artifactSortCooldown()*/)
         {
             ArtifactLocator.Slot emptySlot = robot.sorterLogic.findFirstType(EMPTY);
             if (emptySlot.exists()) {

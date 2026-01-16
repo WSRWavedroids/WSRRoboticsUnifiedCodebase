@@ -208,6 +208,7 @@ public class Robot {
         frontLeftDrive.setZeroPowerBehavior(BRAKE);
         sorterMotor.setZeroPowerBehavior(BRAKE);
 
+
         //This is new..
         telemetry.addData("Status", "Initialized");
 

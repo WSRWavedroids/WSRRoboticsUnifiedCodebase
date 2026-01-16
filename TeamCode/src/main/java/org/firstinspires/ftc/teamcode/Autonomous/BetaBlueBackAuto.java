@@ -269,7 +269,7 @@ public class BetaBlueBackAuto extends OpMode {
                 if(auto.checkMovement())
                 {
                     auto.setSpeed(0.2);
-                    auto.moveRobotForward(1000);
+                    auto.moveRobotForward(2900);
                     auto.yoinkify(1000);
                     nextStep(Steps.UN_TURN);
                 }

@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
+import static org.firstinspires.ftc.teamcode.Core.TurretLogic.controlMode.*;
 
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -20,6 +21,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.FramerateCalculator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
+import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 import org.firstinspires.ftc.teamcode.Core.fireQueueWithStates;
 
 
@@ -205,6 +207,8 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         turretAssist();
 
+        toggleTurretFullMode();
+
         resetPedroPosition();
 
         //robot.panelsTelemetry.addData("Motor Position", robot.launcher.motor.getCurrentPosition());
@@ -376,6 +380,20 @@ public class Vortex_Teleop_Decode extends OpMode {
         } else {
             singleJoystickDrive();
             spinTargetAcquired = false;
+        }
+    }
+
+    private void toggleTurretFullMode() {
+        if (gamepad2.leftStickButtonWasPressed()) {
+            switch (TurretLogic.activeMode) {
+                case LOCKED:
+                    TurretLogic.activeMode = FULL;
+                    break;
+                case PARTIAL:
+                case OVERIDE:
+                case FULL:
+                    TurretLogic.activeMode = LOCKED;
+            }
         }
     }
 

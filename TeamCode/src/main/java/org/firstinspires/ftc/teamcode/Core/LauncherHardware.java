@@ -61,9 +61,9 @@ public class LauncherHardware {
     private double waitTime;
     private ElapsedTime waitForSafeTimer = new ElapsedTime();
 
-    public static double p = 10;
-    public static double i = 1.125;
-    public static double d = 50;
+    public static double p = 75;
+    public static double i = 5;
+    public static double d = 2.5;
     public static double f = 0;
 
     public enum LauncherSteps {
@@ -89,11 +89,6 @@ public class LauncherHardware {
         robot.panelsTelemetry.addData("Launcher Velocity", motor.getVelocity());
         robot.panelsTelemetry.addData("Target Launcher Velocity", velocityTarget);
         robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
-
-        /*//TODO remove this so soon
-        robot.swivelMotor.setMode(RUN_WITHOUT_ENCODER);
-        robot.swivelMotor.setZeroPowerBehavior(BRAKE);
-        robot.swivelMotor.setPower(0);*/
 
         switch (currentLauncherStep) {
             case READY_FOR_COMMANDS:
@@ -273,6 +268,6 @@ public class LauncherHardware {
     }
 
     public double findBestMotorVelocity(double input) {
-        return 201 * input + 1083;
+        return 201 * input + 1073;
     }
 }
