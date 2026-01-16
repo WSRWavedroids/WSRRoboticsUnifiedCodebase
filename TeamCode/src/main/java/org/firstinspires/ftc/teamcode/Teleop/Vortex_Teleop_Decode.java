@@ -612,6 +612,8 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addLine("Turret & PedroPathing:");
         telemetry.addData("Turret X", robot.turretPosition.x);
         telemetry.addData("Turret Y", robot.turretPosition.y);
+        telemetry.addData("Robot X", robot.robotPosition.x);
+        telemetry.addData("Robot Y", robot.robotPosition.y);
         telemetry.addData("Pedro Heading", robot.robotHeading);
         telemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
         telemetry.addData("Turret Target", robot.turret.ticksToDegrees(robot.turret.runToSafeAngle(robot.turret.updateAngle())));
