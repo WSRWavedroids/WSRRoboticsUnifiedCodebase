@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.Robot;
+import org.firstinspires.ftc.teamcode.Core.SorterHardware;
 import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 
 import java.util.Objects;
@@ -210,6 +212,10 @@ public class BetaBlueBackAuto extends OpMode {
 
                 auto.setSpeed(driveSpeed);
 
+                robot.sorterLogic.sortOutBlobs(GREEN, LOAD);
+                robot.sorterLogic.sortOutBlobs(PURPLE, FIRE);
+                robot.sorterLogic.sortOutBlobs(PURPLE, STORE);
+
                 robot.pattern = robot.randomizationScanner.GetRandomization();//One last Check
 
                 robot.targetScanner.InitLimeLightTargeting(robot.alliance.limelightPipeline, robot);
@@ -242,24 +248,16 @@ public class BetaBlueBackAuto extends OpMode {
                 {
                     telemetry.addData("In Position, trying to fire", ":(");
                     robot.launcher.setPerfectLauncherVelocity();
-                    if (robot.pattern.equals(PPG)) {
-                        auto.fireInSequence(robot.sorterLogic.slotB, robot.sorterLogic.slotC, robot.sorterLogic.slotA);
-                    } else if (robot.pattern.equals(PGP)) {
-                        auto.fireInSequence(robot.sorterLogic.slotB, robot.sorterLogic.slotA, robot.sorterLogic.slotC);
-                    } else {
-                        auto.fireInSequence(robot.sorterLogic.slotA, robot.sorterLogic.slotB, robot.sorterLogic.slotC);
-                    }
-
-                    if (auto.fireInSequenceComplete()) {
-                        nextStep(Steps.MOVEFORWARD);
-                    }
-
+                    robot.queue.addPattern(robot.pattern);
+                    nextStep(Steps.MOVEFORWARD);
                 }
                 break;
             case MOVEFORWARD:
-                robot.launcher.setLauncherVelocity(0);
-                auto.moveRobotForward(800);
-                nextStep(Steps.TURN);
+                if (robot.queue.noBallsQueued) {
+                    auto.moveRobotForward(825);
+                    nextStep(Steps.TURN);
+                }
+
                 break;
             case TURN:
                 if(auto.checkMovement())
@@ -279,14 +277,14 @@ public class BetaBlueBackAuto extends OpMode {
             case YOINK:
                 if(auto.checkMovement())
                 {
-                    auto.setSpeed(0.2);
-                    auto.moveRobotForward(1200);
-                    auto.yoinkify(1200);
+                    auto.setSpeed(0.15);
+                    auto.moveRobotForward(1375);
+                    auto.yoinkify(1375);
                     nextStep(Steps.BACKUP);
                 }
                 break;
             case BACKUP:
-                auto.yoinkify(1200);
+                auto.yoinkify(1375);
                 if(auto.checkYoink() && auto.checkMovement())
                 {
                     robot.launcher.setPerfectLauncherVelocity();
@@ -305,42 +303,27 @@ public class BetaBlueBackAuto extends OpMode {
             case FIRE3AGAIN:
                 if(auto.checkMovement())
                 {
-                    if (robot.pattern.equals(PPG)) {
-                        auto.fireInSequence(robot.sorterLogic.findFirstType(PURPLE)
-                                , robot.sorterLogic.findFirstType(PURPLE),
-                                robot.sorterLogic.findFirstType(GREEN));
-
-                    } else if (robot.pattern.equals(PGP)) {
-                        auto.fireInSequence(robot.sorterLogic.findFirstType(PURPLE)
-                                , robot.sorterLogic.findFirstType(GREEN),
-                                robot.sorterLogic.findFirstType(PURPLE));
-                    } else {
-                        auto.fireInSequence(robot.sorterLogic.findFirstType(GREEN)
-                                , robot.sorterLogic.findFirstType(PURPLE),
-                                robot.sorterLogic.findFirstType(PURPLE));
-                    }
-
-                    if (auto.fireInSequenceComplete()) {
-                        nextStep(Steps.RESET);
-                    }
+                    robot.queue.addPattern(robot.pattern);
+                    nextStep(Steps.RESET);
                 }
                 break;
             case RESET:
-                robot.sorterHardware.prepareNewMovement(0);
-                robot.turret.manualOverridePositionInDegs = 0;
-                nextStep(Steps.UNPARK);
-
+                if (robot.queue.noBallsQueued) {
+                    robot.sorterHardware.prepareNewMovement(0);
+                    robot.turret.manualOverridePositionInDegs = 0;
+                    nextStep(Steps.UNPARK);
+                }
                 break;
             case UNPARK:
                 if(robot.sorterHardware.doneMoving() && robot.turret.rawSwivelController.withinTolerance)
                 {
                     if(Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE"))
                     {
-                        auto.moveRobotRight(750);
+                        auto.moveRobotRight(1000);
                     }
                     else
                     {
-                        auto.moveRobotLeft(750);
+                        auto.moveRobotLeft(1000);
                     }
                     nextStep(Steps.STOP);
                 }

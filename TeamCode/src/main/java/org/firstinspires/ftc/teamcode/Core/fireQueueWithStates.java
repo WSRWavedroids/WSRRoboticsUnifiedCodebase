@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Core;
 
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
+import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
 import static org.firstinspires.ftc.teamcode.Core.fireQueueWithStates.QueueState.*;
 import static org.firstinspires.ftc.teamcode.Core.fireQueueWithStates.firingQueue.*;
 
@@ -84,23 +85,23 @@ public class fireQueueWithStates {
         noBallsQueued = false;
     }
 
-    public void addPattern(Object Pattern)
+    public void addPattern(Robot.patternColors pattern)
     {
-        if(Pattern == "PGP")
+        if(pattern == PGP)
         {
             ballQueue.add(PURPLE);
             ballQueue.add(GREEN);
             ballQueue.add(PURPLE);
             noBallsQueued = false;
         }
-        else if(Pattern == "PPG")
+        else if(pattern == PPG)
         {
             ballQueue.add(PURPLE);
             ballQueue.add(PURPLE);
             ballQueue.add(GREEN);
             noBallsQueued = false;
         }
-        else if(Pattern == "GPP")
+        else if(pattern == GPP)
         {
             ballQueue.add(GREEN);
             ballQueue.add(PURPLE);
@@ -111,6 +112,9 @@ public class fireQueueWithStates {
         {
             fillSimple();
         }
+
+        wantToFireQueue = SMART;
+        noBallsQueued = false;
     }
 
     public void updateQueueStates()

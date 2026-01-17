@@ -412,7 +412,7 @@ public class AutonomousPlusPLUS {
         {
             //disable intake
             setSpeed(75);
-            moveRobotBackward(-(ticks-distanceRemaining));
+            moveRobotBackward(-(ticks-distanceRemaining) - 150);
             yoinking = false;
         }
 
