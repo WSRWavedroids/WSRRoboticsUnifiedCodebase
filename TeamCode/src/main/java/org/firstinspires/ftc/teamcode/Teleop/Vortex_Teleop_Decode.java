@@ -586,17 +586,17 @@ public class Vortex_Teleop_Decode extends OpMode {
 
     private void resetPedroPosition() {
         if (gamepad1.start) {
-            if (gamepad1.shareWasPressed() && robot.alliance == BLUE) {
+            boolean pressed = gamepad1.shareWasPressed();
+            if (pressed && robot.alliance == BLUE) {
                 robot.turret.follower.setPose(new Pose(133.28, 10.75));
                 robot.turret.follower.setHeading(Math.PI / 2);
+
+                robot.turret.updateTurretPositionXY();
             }
-            if (gamepad1.shareWasPressed() && robot.alliance == RED) {
+            if (pressed && robot.alliance == RED) {
                 robot.turret.follower.setPose(new Pose(9.59, 9.67));
                 robot.turret.follower.setHeading(Math.PI / 2);
-            }
-
-            if (gamepad1.leftBumperWasPressed()) {
-                robot.turret.follower.setPose(new Pose(72, 72));
+                robot.turret.updateTurretPositionXY();
             }
         }
     }
@@ -605,6 +605,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         // This little section updates the driver hub on the runtime and the motor powers.
         // It's mostly used for troubleshooting.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Alliance", robot.alliance);
         //telemetry.addData("Framerate (last 15 seconds)", fps.getFramerate(30) + " fps");
 
         telemetry.addLine();

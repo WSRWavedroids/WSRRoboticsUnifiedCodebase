@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.Core.TurretLogic;
  * efficient, at least. But this class is basically just a button on the control hub. The auto is
  * in BetaBlueFrontAuto. Your problem is probably there.
  */
-@Autonomous(group = "FABIO NO PEDRO", name = "Red Back 6 Ball")
+@Autonomous(group = "0. FABIO NO PEDRO", name = "Red Back 6 Ball")
 public class BetaRedBackAuto extends BetaBlueBackAuto {
 
     private Pose startPose = new Pose(85.25, 9, Math.PI / 2);

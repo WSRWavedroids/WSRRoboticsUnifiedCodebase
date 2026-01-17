@@ -24,7 +24,7 @@ import java.util.Objects;
  * too, allowing us to keep both autos up to date in a single file. BetaRedFrontAuto is a shell that
  * basically just hijacks this file to work, which is neat.
  */
-@Autonomous(group = "FABIO NO PEDRO", name = "Blue Back 6 Ball")
+@Autonomous(group = "0. FABIO NO PEDRO", name = "Blue Back 6 Ball")
 public class BetaBlueBackAuto extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
@@ -264,11 +264,11 @@ public class BetaBlueBackAuto extends OpMode {
                 {
                     if(Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE"))
                     {
-                        auto.turnRobotLeft(700);
+                        auto.turnRobotLeft(725);
                     }
                     else
                     {
-                        auto.turnRobotRight(700);
+                        auto.turnRobotRight(725);
                     }
 
                     nextStep(Steps.YOINK);
@@ -278,13 +278,13 @@ public class BetaBlueBackAuto extends OpMode {
                 if(auto.checkMovement())
                 {
                     auto.setSpeed(0.15);
-                    auto.moveRobotForward(1375);
-                    auto.yoinkify(1375);
+                    auto.moveRobotForward(1425);
+                    auto.yoinkify(1425);
                     nextStep(Steps.BACKUP);
                 }
                 break;
             case BACKUP:
-                auto.yoinkify(1375);
+                auto.yoinkify(1425);
                 if(auto.checkYoink() && auto.checkMovement())
                 {
                     robot.launcher.setPerfectLauncherVelocity();

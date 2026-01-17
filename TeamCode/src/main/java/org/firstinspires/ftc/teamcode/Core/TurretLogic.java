@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class TurretLogic {
     Robot robot;
     public DcMotorEx swivelMotor;
-    public static double rawP = 0.00021;
+    public static double rawP = 0.00015;
     public static double rawI = 0.00;
     public static double rawD = 0.0;
     public static double rawF = 0.0;
@@ -255,7 +255,7 @@ public class TurretLogic {
         return (DegsIn < upperLimit && DegsIn > lowerLimit);
     }
 
-    void updateTurretPositionXY()
+    public void updateTurretPositionXY()
     {
         if(follower != null) {
             robot.robotPosition.x = follower.getPose().getX();
