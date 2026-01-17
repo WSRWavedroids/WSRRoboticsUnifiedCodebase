@@ -331,9 +331,10 @@ public class BetaBlueBackAuto extends OpMode {
             case STOP:
                 if(auto.checkMovement())
                 {
-                    blackboard.put("PedroX", robot.turret.follower.getPose().getX());
-                    blackboard.put("PedroY", robot.turret.follower.getPose().getY());
-                    blackboard.put("PedroHeading", robot.turret.follower.getHeading());
+                    robot.turret.updateTurretPositionXY();
+                    /*blackboard.put("PedroX", robot.robotPosition.x = robot.turret.follower.getPose().getX());
+                    blackboard.put("PedroY", robot.robotPosition.y = robot.turret.follower.getPose().getY());
+                    blackboard.put("PedroHeading", robot.robotHeading = Math.toDegrees(robot.turret.follower.getHeading()));*/
                     super.requestOpModeStop();
                 }
         }
