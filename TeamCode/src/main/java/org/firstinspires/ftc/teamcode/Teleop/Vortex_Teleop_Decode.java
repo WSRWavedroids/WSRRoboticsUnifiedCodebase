@@ -65,6 +65,8 @@ public class Vortex_Teleop_Decode extends OpMode {
     public Robot robot = null;
     public IMU imu;
 
+    private boolean blackboardPositioningSucessful = true;
+
 
     public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
     public static final String PATTERN_KEY = "Pattern";
@@ -134,11 +136,20 @@ public class Vortex_Teleop_Decode extends OpMode {
         if (pedroXFromBB instanceof Number) {
             goodX = (double) pedroXFromBB;
         }
+        else {
+            blackboardPositioningSucessful = false;
+        }
         if (pedroYFromBB instanceof Number) {
             goodY = (double) pedroYFromBB;
         }
+        else {
+            blackboardPositioningSucessful = false;
+        }
         if (pedroHeadingFromBB instanceof Number) {
             goodHeading = (double) pedroHeadingFromBB;
+        }
+        else {
+            blackboardPositioningSucessful = false;
         }
         startingPose = new Pose(goodX, goodY, goodHeading);
     }
@@ -677,6 +688,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addLine("Blackboard:");
         telemetry.addData("Last saved pattern", blackboard.get(PATTERN_KEY));
         telemetry.addData("Last saved Alliance", blackboard.get(ALLIANCE_KEY));
+        telemetry.addData("Position grab successful", blackboardPositioningSucessful);
 
         //robot.tellMotorOutput();
     }
