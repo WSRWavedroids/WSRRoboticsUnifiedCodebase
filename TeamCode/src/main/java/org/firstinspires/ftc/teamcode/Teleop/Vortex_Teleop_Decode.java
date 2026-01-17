@@ -86,6 +86,8 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot = new Robot(hardwareMap, telemetry, this);
 
         robot.targetScanner.InitLimeLightTargeting(1, robot);
+        robot.controlMode = ROBOT_CENTRIC;
+        imu = hardwareMap.get(IMU.class, "imu");
 
 
         // Tell the driver that initialization is complete.
@@ -93,15 +95,6 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         outtakeTimer.reset();
 
-        if (robot.controlMode == LEGACY_FIELD_CENTRIC) {
-
-            imu = hardwareMap.get(IMU.class, "imu");
-            IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                    RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)); //Forward = left fsr
-            // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
-            imu.initialize(parameters);
-        }
         //if using field centric youl need this lolzeez
         if (Objects.equals(blackboard.get(ALLIANCE_KEY), "RED")) {
             robot.targetScanner.InitLimeLightTargeting(1, robot);
@@ -465,10 +458,32 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         float[] motorPowers = new float[4];
 
-        motorPowers[0] = (leftY - leftX - rightX); // frontLeftDrive
-        motorPowers[1] = (leftY + leftX + rightX); // frontRightDrive
-        motorPowers[2] = (leftY + leftX - rightX); // backLeftDrive
-        motorPowers[3] = (leftY - leftX + rightX); // backRightDrive
+        if(robot.controlMode == ROBOT_CENTRIC)
+        {
+            motorPowers[0] = (leftY - leftX - rightX); // frontLeftDrive
+            motorPowers[1] = (leftY + leftX + rightX); // frontRightDrive
+            motorPowers[2] = (leftY + leftX - rightX); // backLeftDrive
+            motorPowers[3] = (leftY - leftX + rightX);
+        }
+         // backRightDrive
+
+
+        else if(robot.controlMode == LEGACY_FIELD_CENTRIC)
+        {
+            double rotX = leftX * Math.cos(-robot.robotHeading) - leftY * Math.sin(-robot.robotHeading);
+            double rotY = leftX * Math.sin(-robot.robotHeading) + leftY * Math.cos(-robot.robotHeading);
+
+            rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio,
+            // but only if at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rightX), 1);
+            motorPowers[0] = (float) ((rotY + rotX + rightX) / denominator);
+            motorPowers[1] = (float) ((rotY - rotX + rightX) / denominator);
+            motorPowers[2] = (float) ((rotY - rotX - rightX) / denominator);
+            motorPowers[3] = (float) ((rotY + rotX - rightX) / denominator);
+        }
 
         float max = getLargestAbsVal(motorPowers);
         if (max < 1) {
@@ -486,6 +501,8 @@ public class Vortex_Teleop_Decode extends OpMode {
                 motorPowers[i] /= abs;
             }
         }
+
+
 
         setIndividualPowers(motorPowers);
     }
@@ -684,6 +701,8 @@ public class Vortex_Teleop_Decode extends OpMode {
             robot.turret.input = 0;
         }
     }
+
+
 
     private boolean isEven(int x) {
         return x % 2 == 0;

@@ -10,6 +10,7 @@ import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.
 import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.WAIT_FOREVER;
 import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherMode.WAIT_FOR_TIME;
 import static org.firstinspires.ftc.teamcode.Core.LauncherHardware.LauncherSteps.*;
+import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.BLUE;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 
 import com.bylazar.configurables.annotations.Configurable;
@@ -268,6 +269,27 @@ public class LauncherHardware {
     }
 
     public double findBestMotorVelocity(double input) {
+
+        if(!robot.targetTag.currentlyDetected)
+        {
+            double targetX;
+            double targetY;
+
+            if(robot.alliance.equals(BLUE)) {
+                targetX = 12;
+                targetY = 132;
+            }
+            else
+            {
+                targetX = 132;
+                targetY = 132;
+            }
+
+            input = Math.sqrt(Math.pow(robot.turretPosition.x - targetX, 2) + Math.pow(robot.turretPosition.y - targetY, 2));
+            input /= 39.37; //convert to meters
+
+        }
         return 201 * input + 1073;
+
     }
 }
