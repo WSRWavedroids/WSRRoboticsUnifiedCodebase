@@ -20,49 +20,57 @@ public class RedOnLaunchZoneANGLED extends AutonomousPLUS {
         //900 tick = about 20 in
         //550 ticks = about 90 degrees right
         //6 millisecond pause after everything
-        moveRobotBackward(1400, 6, 0.5);
+        moveRobotBackward(1250, 6, 0.5);
+        prepareNextAction(6);
 
         launchBall(100, 450);
-        sleep(150);
         launchBall(100, 500);
-        sleep(150);
-        launchBall(100, 800);
-        sleep(150);
+        launchBall(100, 900);
         runLauncherstop();
 
         prepareNextAction(6);
         runLauncherAuto(-0.6);
-        runIntake2Auto(1);
+        runIntake2Auto(0.75);
         if (blackboard.get(ALLIANCE_KEY) == "RED"){
-            turnRobotRight(777,6); }
+            turnRobotRight(775,6); }
         else {
-            turnRobotLeft(777,6); }
+            turnRobotLeft(875,6); }
         if (blackboard.get(ALLIANCE_KEY) == "RED"){
-            moveRobotLeft(675,6, 0.5); }
+            moveRobotLeft(700,6, 0.5);
+        }
         else {
-            moveRobotRight(675,6, 0.5); }
-        moveRobotBackward(1200, 6, 0.2);
-        turnRobotLeft(100, 6);
+            moveRobotRight(670,6, 0.5);
+        }
+        moveRobotBackward(1150, 6, 0.11);
         runIntake2Auto(-0.2);
-        moveRobotForward(1250, 6, 0.4);
+        moveRobotForward(1150, 6, 0.4);
         runIntake2Auto(0);
         if (blackboard.get(ALLIANCE_KEY) == "RED"){
-            turnRobotLeft(750,6); }
+            moveRobotRight(700,6, 0.5);
+        }
         else {
-            turnRobotRight(750,6); }
+            moveRobotLeft(625  ,6, 0.5);
+        }
+        if (blackboard.get(ALLIANCE_KEY) == "RED"){
+            turnRobotLeft(880,6);
+        }
+        else {
+            turnRobotRight(840,6);
+        }
+        moveRobotBackward(175,20,0.5);
 
         launchBall(100, 450);
-        sleep(150);
+        prepareNextAction(50);
         launchBall(100, 500);
-        sleep(150);
-        launchBall(100, 800);
-        sleep(150);
+        launchBall(100, 900);
         runLauncherstop();
 
         if (blackboard.get(ALLIANCE_KEY) == "RED"){
-            moveRobotRight(800,6, 0.3); }
+            moveRobotRight(800,6, 0.5);
+        }
         else {
-            moveRobotLeft(800,6, 0.3); }
+            moveRobotLeft(800,6, 0.5);
+        }
     }
 }
 //whatever i want

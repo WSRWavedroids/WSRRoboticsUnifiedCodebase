@@ -8,7 +8,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="PedroRedFarlaunch12Ball")
+@Autonomous(name="PedroRedFarlaunch12Ball", group = "Pedro")
 public class PedroRedFarlaunch12Ball extends AutonomousPLUS {
 
     @Override

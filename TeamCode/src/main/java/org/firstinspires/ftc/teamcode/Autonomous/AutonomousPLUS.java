@@ -529,6 +529,20 @@ public class AutonomousPLUS extends LinearOpMode {
     public void launchBall(double sleep1, double sleep2){
         runLauncherAuto();
         while (!robot.upToSpeed()){
+            sleep(3);
+        }
+        sleep((long)sleep1);
+        runIntake2Auto(1);
+        runIntakeAuto("in");
+        sleep((long)sleep2);
+        runIntake2Auto(0);
+        runIntakeAuto("stop");
+    }
+    public void launchBallPedro(double sleep1, double sleep2){
+        spd = robot.limelightAdjustedSpeed;
+        robot.launchLeft.setVelocity(-spd);
+        robot.launchRight.setVelocity(-spd);
+        while (!robot.upToSpeed()){
             sleep(1);
         }
         runIntake2Auto(0);
@@ -539,7 +553,6 @@ public class AutonomousPLUS extends LinearOpMode {
         runIntake2Auto(0);
         runIntakeAuto("stop");
     }
-
 
 //LAUNCHER
     public void runLauncherAuto() {

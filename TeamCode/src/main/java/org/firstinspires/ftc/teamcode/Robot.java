@@ -1,16 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Thread.sleep;
+import static org.firstinspires.ftc.teamcode.Robot.launchSteps.*;
 
 import android.annotation.SuppressLint;
 
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.lynx.commands.standard.LynxSetModuleLEDPatternCommand;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -19,7 +20,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorGoBildaPinpoint;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.List;
@@ -266,6 +266,56 @@ public class Robot {
         double velocity = launchLeft.getVelocity();
         return (velocity > -limelightAdjustedSpeed - 60) && (velocity < -limelightAdjustedSpeed + 60);
     }
+public ElapsedTime cooldown = new ElapsedTime();
+    public enum launchSteps {
+        START,
+        STARTMOTORS,
+        STARTINTAKE,
+        END
+    }
+
+    public launchSteps currentstep = launchSteps.STARTMOTORS;
+
+public boolean doneLaunching = false;
+
+        public void launchLoop(double sleep1, double sleep2) {
+            switch(currentstep) {
+                case START:
+                    cooldown.reset();
+                    currentstep = STARTMOTORS;
+                case STARTMOTORS:
+                    launchLeft.setVelocity(-limelightAdjustedSpeed);
+                    launchRight.setVelocity(-limelightAdjustedSpeed);
+                    if (!upToSpeed()) {
+                        if (cooldown.seconds() >= 0.003) {
+                            cooldown.reset();
+                            if (cooldown.milliseconds() >= sleep1) {
+                                cooldown.reset();
+                                currentstep = STARTINTAKE;
+                            }
+                        }
+                    }
+                    break;
+                case STARTINTAKE:
+                    intake3.setPower(1);
+                    intakeMotor.setPower(1);
+                    if (cooldown.milliseconds() >= sleep2) {
+                        cooldown.reset();
+                        currentstep = END;
+                    }
+                    break;
+                case END:
+                    intake3.setPower(0);
+                    intakeMotor.setPower(0);
+                    launchLeft.setVelocity(-0);
+                    launchRight.setVelocity(-0);
+                    doneLaunching = true;
+            }
+        }
+
+
+
+
 
 
     ElapsedTime timer = new ElapsedTime();
