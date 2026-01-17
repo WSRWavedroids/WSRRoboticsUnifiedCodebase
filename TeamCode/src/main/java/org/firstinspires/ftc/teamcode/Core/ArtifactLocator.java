@@ -56,6 +56,7 @@ public class ArtifactLocator {
     public LauncherHardware launcher;
 
     private ElapsedTime sortCooldown = new ElapsedTime();
+    public double sortCooldownTime = 0;
 
     private final int slotALoad = 0;
     private final int slotBLoad = 2;
@@ -185,7 +186,7 @@ public class ArtifactLocator {
     }
 
     public boolean artifactSortCooldown() {
-        return sortCooldown.seconds() > .25;
+        return sortCooldown.seconds() >= sortCooldownTime;
     }
 
     /**

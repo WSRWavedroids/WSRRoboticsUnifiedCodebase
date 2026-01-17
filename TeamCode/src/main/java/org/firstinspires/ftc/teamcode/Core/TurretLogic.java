@@ -14,20 +14,21 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class TurretLogic {
     Robot robot;
     public DcMotorEx swivelMotor;
-    public static double rawP = 0.00016;
-    public static double rawI = 0.00002;
+    public static double rawP = 0.00021;
+    public static double rawI = 0.00;
     public static double rawD = 0.0;
     public static double rawF = 0.0;
-    public static double fineP = 0.00008;
+
+    /*public static double fineP = 0.00008;
     public static double fineI = 0.0002;
     public static double fineD = 0.0;
-    public static double fineF = 0.0;
+    public static double fineF = 0.0;*/
     public static double tolerance;
     public ezPID rawSwivelController;
     public ezPID fineSwivelController;
     double turretDegreesFromTarget;
     public static final int encoderResolution = 8192 * 132 / 16; // Actual encoder resolution * teeth on turret / teeth on motor side
-    public static double fineDegreeWindow = 0;
+    //public static double fineDegreeWindow = 0;
     public static double upperLimit = 150;
     public static double lowerLimit = -90;
     public static double manualOverridePositionInDegs = 0;
@@ -54,8 +55,8 @@ public class TurretLogic {
         swivelMotor = robot.swivelMotor;
 
 
-        fineSwivelController = new ezPID(swivelMotor, 8192, fineP, fineI, fineD,
-                fineF, 1.0, tolerance, ezPID.movementType.POSITION);
+        /*fineSwivelController = new ezPID(swivelMotor, 8192, fineP, fineI, fineD,
+                fineF, 1.0, tolerance, ezPID.movementType.POSITION);*/
 
         rawSwivelController = new ezPID(swivelMotor, 8192, rawP, rawI, rawD,
                 rawF, 1.0, tolerance, ezPID.movementType.POSITION);
@@ -71,7 +72,7 @@ public class TurretLogic {
 
         rawSwivelController.tolerance = tolerance;
 
-        if (Math.abs(turretDegreesFromTarget) < fineDegreeWindow)
+        /*if (Math.abs(turretDegreesFromTarget) < fineDegreeWindow)
         {
             if (lastUsedSwivelController == RAW)
             {
@@ -101,7 +102,12 @@ public class TurretLogic {
             fineSwivelController.changeBehaviorValues(fineP, fineI, fineD, fineF, 1);
             fineSwivelController.tolerance = tolerance;
             fineSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
-        }
+        }*/
+
+        lastUsedSwivelController = RAW;
+        rawSwivelController.changeBehaviorValues(rawP, rawI, rawD, rawF, 1);
+        rawSwivelController.tolerance = tolerance;
+        rawSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
 
         robot.panelsTelemetry.addData("Turret position", robot.swivelMotor.getCurrentPosition());
         robot.panelsTelemetry.addData("Turret target", runToSafeAngle(updateAngle()));

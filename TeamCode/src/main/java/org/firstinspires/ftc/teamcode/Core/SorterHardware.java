@@ -323,6 +323,29 @@ public class SorterHardware {
         if (robot.sorterLogic.inventory.getTotalCount() >= 3) {
             robot.cancelAutoIntake();
         }
+        else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
+                robot.sorterLogic.artifactSortCooldown())
+        {
+            ArtifactLocator.Slot emptySlot = robot.sorterLogic.findFirstType(EMPTY);
+            if (emptySlot.exists()) {
+                //if not in load position, go there and make sure we don't jam in the process
+                robot.sorterHardware.prepareNewMovement(emptySlot.getLoadPosition());
+            } else {
+                robot.sorterHardware.prepareNewMovement(
+                        robot.sorterLogic.findFirstType(UNKNOWN).getLoadPosition()
+                );
+            }
+        }
+        else {
+            //intake if we good
+            robot.runAutoIntakeSequence();
+        }
+    }
+
+    public void superyoink() {
+        if (robot.sorterLogic.inventory.getTotalCount() >= 3) {
+            robot.cancelAutoIntake();
+        }
         else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) /*&&
                 robot.sorterLogic.artifactSortCooldown()*/)
         {

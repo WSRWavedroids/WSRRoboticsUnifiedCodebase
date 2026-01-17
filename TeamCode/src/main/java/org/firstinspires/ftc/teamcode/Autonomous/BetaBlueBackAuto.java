@@ -187,6 +187,7 @@ public class BetaBlueBackAuto extends OpMode {
         robot.readyHardware(true);
         robot.sorterHardware.legalToSpin = true;
         driveSpeed = .75;
+        robot.sorterLogic.sortCooldownTime = 0.25;
     }
 
     /**
@@ -279,12 +280,13 @@ public class BetaBlueBackAuto extends OpMode {
                 if(auto.checkMovement())
                 {
                     auto.setSpeed(0.2);
-                    auto.moveRobotForward(2000);
-                    auto.yoinkify(2000);
+                    auto.moveRobotForward(1200);
+                    auto.yoinkify(1200);
                     nextStep(Steps.BACKUP);
                 }
                 break;
             case BACKUP:
+                auto.yoinkify(1200);
                 if(auto.checkYoink() && auto.checkMovement())
                 {
                     robot.launcher.setPerfectLauncherVelocity();
@@ -299,6 +301,7 @@ public class BetaBlueBackAuto extends OpMode {
 
                     nextStep(Steps.FIRE3AGAIN);
                 }
+                break;
             case FIRE3AGAIN:
                 if(auto.checkMovement())
                 {
@@ -321,6 +324,7 @@ public class BetaBlueBackAuto extends OpMode {
                         nextStep(Steps.RESET);
                     }
                 }
+                break;
             case RESET:
                 robot.sorterHardware.prepareNewMovement(0);
                 robot.turret.manualOverridePositionInDegs = 0;
@@ -328,15 +332,15 @@ public class BetaBlueBackAuto extends OpMode {
 
                 break;
             case UNPARK:
-                if(robot.sorterHardware.doneMoving() && robot.turret.fineSwivelController.withinTolerance)
+                if(robot.sorterHardware.doneMoving() && robot.turret.rawSwivelController.withinTolerance)
                 {
                     if(Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE"))
                     {
-                        auto.moveRobotRight(500);
+                        auto.moveRobotRight(750);
                     }
                     else
                     {
-                        auto.moveRobotLeft(500);
+                        auto.moveRobotLeft(750);
                     }
                     nextStep(Steps.STOP);
                 }

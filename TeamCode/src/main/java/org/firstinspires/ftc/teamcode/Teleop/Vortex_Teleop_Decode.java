@@ -105,12 +105,15 @@ public class Vortex_Teleop_Decode extends OpMode {
         //if using field centric youl need this lolzeez
         if (Objects.equals(blackboard.get(ALLIANCE_KEY), "RED")) {
             robot.targetScanner.InitLimeLightTargeting(1, robot);
+            robot.alliance = RED;
             robot.scanningForTargetTag = true;
         } else if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
             robot.targetScanner.InitLimeLightTargeting(2, robot);
+            robot.alliance = BLUE;
             robot.scanningForTargetTag = true;
         } else {
             robot.targetScanner.InitLimeLightTargeting(2, robot);
+            robot.alliance = BLUE;
             robot.scanningForTargetTag = true;
         }
 
@@ -119,8 +122,11 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         grabStartPose();
 
+        robot.robotPosition.x = startingPose.getX();
+        robot.robotPosition.y = startingPose.getY();
+        robot.robotPosition.heading = Math.toRadians(startingPose.getHeading());
         robot.turret.follower.setPose(startingPose);
-        robot.turret.follower.setHeading(startingPose.getHeading());
+        robot.turret.follower.setHeading(Math.toRadians(startingPose.getHeading()));
     }
 
     private void grabStartPose() {

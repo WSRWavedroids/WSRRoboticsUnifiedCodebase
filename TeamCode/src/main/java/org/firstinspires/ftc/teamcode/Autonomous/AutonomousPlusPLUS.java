@@ -400,7 +400,7 @@ public class AutonomousPlusPLUS {
     public boolean yoinking;
 
     public void yoinkify(int ticks) {
-
+        yoinking = true;
         robot.sorterHardware.runAdvancedIntake();
         if(Yoinktarget == 0)
         {
@@ -418,7 +418,7 @@ public class AutonomousPlusPLUS {
 
     }
 
-    public boolean checkYoink() {return yoinking;}
+    public boolean checkYoink() {return !yoinking;}
 
 
     public void fireInSequence(ArtifactLocator.Slot one, ArtifactLocator.Slot two, ArtifactLocator.Slot three) {
