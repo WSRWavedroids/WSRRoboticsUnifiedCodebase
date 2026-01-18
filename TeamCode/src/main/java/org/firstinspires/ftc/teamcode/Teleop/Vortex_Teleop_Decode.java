@@ -584,7 +584,7 @@ public class Vortex_Teleop_Decode extends OpMode {
     }
 
     private void switchAlliance() {
-        if (gamepad2.shareWasPressed()){
+        if (gamepad2.start && gamepad2.shareWasPressed()){
             if (robot.alliance == BLUE) {
                 robot.alliance = RED;
                 robot.targetScanner.InitLimeLightTargeting(1, robot);
