@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Core;
 
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
 import static org.firstinspires.ftc.teamcode.Core.fireQueueWithStates.QueueState.*;
 import static org.firstinspires.ftc.teamcode.Core.fireQueueWithStates.firingQueue.*;
 
@@ -152,7 +153,7 @@ public class fireQueueWithStates {
                     if (currentColor == UNKNOWN) {
                         targetSlot = sorterLogic.findFirstNotType(EMPTY);
                     } else {
-                        targetSlot = sorterLogic.findFirstType(currentColor);
+                        targetSlot = sorterLogic.findBestPositionedType(currentColor, FIRE);
                     }
 
                     if (!targetSlot.exists()) {

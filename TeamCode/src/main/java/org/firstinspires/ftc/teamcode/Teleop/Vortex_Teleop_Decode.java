@@ -13,7 +13,6 @@ import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -251,12 +250,12 @@ public class Vortex_Teleop_Decode extends OpMode {
         if(gamepad2.square && !gamepad2.left_bumper)
         {
             robot.sorterHardware.prepareNewMovement(
-                    robot.sorterLogic.findFirstType(PURPLE).getFirePosition());
+                    robot.sorterLogic.findBestPositionedType(PURPLE, FIRE).getFirePosition());
         }
         else if(gamepad2.triangle && !gamepad2.left_bumper)
         {
             robot.sorterHardware.prepareNewMovement(
-                    robot.sorterLogic.findFirstType(GREEN).getFirePosition());
+                    robot.sorterLogic.findBestPositionedType(GREEN, FIRE).getFirePosition());
         }
     }
 

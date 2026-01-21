@@ -306,7 +306,7 @@ public class ArtifactLocator {
     }
 
 
-    public Slot findBestPositionSlot(SlotState targetArtifact, SorterHardware.PositionState targetPosition) {
+    public Slot findBestPositionedType(SlotState targetArtifact, SorterHardware.PositionState targetPosition) {
         Slot currentFireSlot = findCurrentSlotInPosition(targetPosition);
         if (currentFireSlot.contains(targetArtifact)) {
             return currentFireSlot;

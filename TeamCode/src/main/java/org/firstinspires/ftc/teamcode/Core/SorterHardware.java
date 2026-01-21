@@ -326,13 +326,13 @@ public class SorterHardware {
         else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
                 robot.sorterLogic.artifactSortCooldown())
         {
-            ArtifactLocator.Slot emptySlot = robot.sorterLogic.findFirstType(EMPTY);
+            ArtifactLocator.Slot emptySlot = robot.sorterLogic.findBestPositionedType(EMPTY, LOAD);
             if (emptySlot.exists()) {
                 //if not in load position, go there and make sure we don't jam in the process
                 robot.sorterHardware.prepareNewMovement(emptySlot.getLoadPosition());
             } else {
                 robot.sorterHardware.prepareNewMovement(
-                        robot.sorterLogic.findFirstType(UNKNOWN).getLoadPosition()
+                        robot.sorterLogic.findBestPositionedType(UNKNOWN, LOAD).getLoadPosition()
                 );
             }
         }
