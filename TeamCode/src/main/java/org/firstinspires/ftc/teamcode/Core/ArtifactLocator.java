@@ -305,6 +305,18 @@ public class ArtifactLocator {
         }
     }
 
+
+    public Slot findBestPositionSlot(SlotState targetArtifact, SorterHardware.PositionState targetPosition) {
+        Slot currentFireSlot = findCurrentSlotInPosition(targetPosition);
+        if (currentFireSlot.contains(targetArtifact)) {
+            return currentFireSlot;
+        }
+        else {
+            return findFirstType(targetArtifact);
+        }
+    }
+
+
     /**
      * Uses the blender encoder and offsetPositions to calculate which offset position the blender
      * is currently in.
