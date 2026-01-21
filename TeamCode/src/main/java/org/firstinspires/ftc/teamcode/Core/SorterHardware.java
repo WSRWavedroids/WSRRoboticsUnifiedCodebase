@@ -61,6 +61,9 @@ public class SorterHardware {
 
     public double reference;
 
+    private ElapsedTime outtakeTapTimer = new ElapsedTime();
+    public static double outtakeTapTime = 0.5;
+
     public SorterHardware(Robot robot) {
         this.robot = robot;
         this.motor = robot.sorterMotor;
@@ -320,10 +323,23 @@ public class SorterHardware {
     }
 
     public void runAdvancedIntake() {
+
+        // If full
         if (robot.sorterLogic.inventory.getTotalCount() >= 3) {
-            robot.cancelAutoIntake();
+            if (outtakeTapTimer.seconds() <= outtakeTapTime) {
+                robot.runBasicIntake(-1);
+            }
+            else {
+                robot.cancelAutoIntake();
+            }
+
+            return; // Return early to avoid resetting the auto outtake tap timer
         }
-        else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
+
+        // If there are empty slots
+        outtakeTapTimer.reset();
+
+        if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
                 robot.sorterLogic.artifactSortCooldown())
         {
             ArtifactLocator.Slot emptySlot = robot.sorterLogic.findBestPositionedType(EMPTY, LOAD);
