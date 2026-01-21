@@ -139,6 +139,13 @@ public class Basic_TeleOp_NewBot extends OpMode {
         intake2(0.7 ,0.6 ,1);
         launch(0.05, robot.tuningspd);
 
+
+
+
+
+
+
+
         if (gamepad1.leftBumperWasPressed()){
             robot.tuningspd = robot.tuningspd + 0.005;
         }
