@@ -188,10 +188,12 @@ private ElapsedTime cooldown = new ElapsedTime();
             case START:
                 nextStep(LAUNCH0);
                 break;
+
             case LAUNCH0:
                 follower.followPath(runPath.Launch0);
                 nextStep(UNPARK); //TODO change to RUNLAUNCH0 once it works ALSO ADD OTHER 3 BALLS
                 break;
+
             case SHOOT0BALL1:
                 if(!follower.isBusy()) {
                     if (!robot.doneLaunching) {
@@ -202,6 +204,29 @@ private ElapsedTime cooldown = new ElapsedTime();
                     }
                 }
                 break;
+
+            case SHOOT0BALL2:
+                if(!follower.isBusy()) {
+                    if (!robot.doneLaunching) {
+                        robot.launchLoop(400,500);
+                    } else {
+                        follower.followPath(runPath.IntakeSetup1);
+                        nextStep(INTAKESETUP1);
+                    }
+                }
+                break;
+
+            case SHOOT0BALL3:
+                if(!follower.isBusy()) {
+                    if (!robot.doneLaunching) {
+                        robot.launchLoop(400,500);
+                    } else {
+                        follower.followPath(runPath.IntakeSetup1);
+                        nextStep(INTAKESETUP1);
+                    }
+                }
+                break;
+
             case INTAKESETUP1:
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
@@ -220,7 +245,6 @@ private ElapsedTime cooldown = new ElapsedTime();
                 }
                 break;
 
-
             case LAUNCH1:
                 if(!follower.isBusy()) {
                     nextStep(SHOOT1BALL1);
@@ -231,10 +255,30 @@ private ElapsedTime cooldown = new ElapsedTime();
                     if (!robot.doneLaunching) {
                         robot.launchLoop(400,500);
                     } else {
+                        nextStep(SHOOT1BALL2);
+                    }
+                }
+                break;
+            case SHOOT1BALL2:
+                if(!follower.isBusy()) {
+                    if (!robot.doneLaunching) {
+                        robot.launchLoop(400,500);
+                    } else {
                         follower.followPath(runPath.IntakeSetup2);
+                        nextStep(SHOOT1BALL3);
+                    }
+                }
+                break;
+            case SHOOT1BALL3:
+                if(!follower.isBusy()) {
+                    if (!robot.doneLaunching) {
+                        robot.launchLoop(400,500);
+                    } else {
                         nextStep(INTAKESETUP2);
                     }
                 }
+                break;
+
             case INTAKESETUP2:
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
@@ -252,7 +296,6 @@ private ElapsedTime cooldown = new ElapsedTime();
                     follower.followPath(runPath.Launch2);
                     nextStep(LAUNCH2);
                 }
-
                 break;
 
             case LAUNCH2:
@@ -260,7 +303,26 @@ private ElapsedTime cooldown = new ElapsedTime();
                     nextStep(SHOOT2BALL1);
                 }
                 break;
+
             case SHOOT2BALL1:
+                if(!follower.isBusy()) {
+                    if (!robot.doneLaunching) {
+                        robot.launchLoop(400,500);
+                    } else {
+                        nextStep(SHOOT2BALL2);
+                    }
+                }
+                break;
+            case SHOOT2BALL2:
+                if(!follower.isBusy()) {
+                    if (!robot.doneLaunching) {
+                        robot.launchLoop(400,500);
+                    } else {
+                        nextStep(SHOOT2BALL3);
+                    }
+                }
+                break;
+            case SHOOT2BALL3:
                 if(!follower.isBusy()) {
                     if (!robot.doneLaunching) {
                         robot.launchLoop(400,500);
@@ -269,6 +331,8 @@ private ElapsedTime cooldown = new ElapsedTime();
                         nextStep(INTAKESETUP3);
                     }
                 }
+                break;
+
             case INTAKESETUP3:
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
@@ -292,7 +356,26 @@ private ElapsedTime cooldown = new ElapsedTime();
                     nextStep(SHOOT3BALL1);
                 }
                 break;
+
             case SHOOT3BALL1:
+                if(!follower.isBusy()) {
+                    if (!robot.doneLaunching) {
+                        robot.launchLoop(400,500);
+                    } else {
+                        nextStep(SHOOT3BALL2);
+                    }
+                }
+                break;
+            case SHOOT3BALL2:
+                if(!follower.isBusy()) {
+                    if (!robot.doneLaunching) {
+                        robot.launchLoop(400,500);
+                    } else {
+                        nextStep(SHOOT3BALL3);
+                    }
+                }
+                break;
+            case SHOOT3BALL3:
                 if(!follower.isBusy()) {
                     if (!robot.doneLaunching) {
                         robot.launchLoop(400,500);
@@ -301,10 +384,13 @@ private ElapsedTime cooldown = new ElapsedTime();
                         nextStep(UNPARK);
                     }
                 }
+                break;
+
             case UNPARK:
 
                 break;
-
+            case END:
+                //TODO End this somehow
         }
 
         telemetry.addData("Current Step", currentstep);
@@ -334,7 +420,8 @@ private ElapsedTime cooldown = new ElapsedTime();
         SHOOT3BALL1,
         SHOOT3BALL2,
         SHOOT3BALL3,
-        UNPARK
+        UNPARK,
+        END;
     }
 
 
