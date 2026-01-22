@@ -199,7 +199,7 @@ public class PedroGoDrive extends OpMode {
             follower.holdPoint(new BezierPoint(follower.getPose()), follower.getHeading() + Math.PI);
             automatedDrive = true;
             speed = 1;
-        } else if (gamepad1.right_bumper)// Auto aim
+        } else if (gamepad1.rightBumperWasPressed())// Auto aim
         {
             follower.holdPoint(new BezierPoint(follower.getPose()), locateTagHeading(tagPosition, follower.getPose()));
             automatedDrive = true;

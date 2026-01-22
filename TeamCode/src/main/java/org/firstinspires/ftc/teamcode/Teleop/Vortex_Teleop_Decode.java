@@ -12,7 +12,11 @@ import static org.firstinspires.ftc.teamcode.Core.TurretLogic.controlMode.*;
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.BezierPoint;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -47,8 +51,7 @@ public class Vortex_Teleop_Decode extends OpMode {
     private double speed = 0.75;
     private boolean spinTargetAcquired = false;
 
-    private boolean cadenRecording = false;
-    private boolean contTwoBumpersPressed = false;
+    private boolean automatedDrive;
     boolean cadenON = false;
     boolean cadenHoldingReady = false;
     boolean cadenHoldingFire = false;
@@ -57,6 +60,21 @@ public class Vortex_Teleop_Decode extends OpMode {
     int SpinTargetFrontRight;
     int SpinTargetBackLeft;
     int SpinTargetBackRight;
+
+    //Trackpad vars for automove
+    public double trackpadXMax = 1920;
+    public double trackpadXMin = 0;
+    public double trackpadYMax = 1020;
+    public double trackpadYMin = 0;
+
+    public double trackpadCurrentX;
+    public double trackpadCurrentY;
+
+    public double stickerOffsetX = -0.01;
+    public double stickerOffsetY = 0.01;
+
+    public Pose trackTarget;
+
 
     int slot = 0; // temp for testing lol
 
@@ -75,9 +93,10 @@ public class Vortex_Teleop_Decode extends OpMode {
     ElapsedTime outtakeTimer = new ElapsedTime();
     boolean killSwitchActivated = false;
 
-    static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+    //static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
     private Pose startingPose;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -87,7 +106,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot = new Robot(hardwareMap, telemetry, this);
 
         robot.targetScanner.InitLimeLightTargeting(1, robot);
-        robot.controlMode = ROBOT_CENTRIC;
+        robot.controlMode = LEGACY_FIELD_CENTRIC;
         imu = hardwareMap.get(IMU.class, "imu");
 
 
@@ -134,20 +153,17 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         if (pedroXFromBB instanceof Number) {
             goodX = (double) pedroXFromBB;
-        }
-        else {
+        } else {
             blackboardPositioningSucessful = false;
         }
         if (pedroYFromBB instanceof Number) {
             goodY = (double) pedroYFromBB;
-        }
-        else {
+        } else {
             blackboardPositioningSucessful = false;
         }
         if (pedroHeadingFromBB instanceof Number) {
             goodHeading = (double) pedroHeadingFromBB;
-        }
-        else {
+        } else {
             blackboardPositioningSucessful = false;
         }
         startingPose = new Pose(goodX, goodY, goodHeading);
@@ -190,11 +206,21 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         driveSpeed();
 
+        controlMode();
+
         controllerRumble();
 
-        holdInPlace();
 
-        driveOrAutoLock();
+        if(robot.controlMode == PEDRO)
+        {
+            pedroAutomation(robot.turret.follower);
+        }
+        else
+        {
+            holdInPlace();
+            driveOrAutoLock();
+        }
+
 
         fireQueue();
 
@@ -220,6 +246,10 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         resetPedroPosition();
 
+        runTrackpadFunctions();
+
+
+
         //robot.panelsTelemetry.addData("Motor Position", robot.launcher.motor.getCurrentPosition());
         //robot.panelsTelemetry.update(); // Already being updated in updateAllDaThings()
 
@@ -227,7 +257,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         doTelemetryStuff();
 
-        if (gamepad1.touchpad || gamepad2.touchpad) {
+        if (gamepad2.touchpad) {
             killSwitchActivated = true;
             requestOpModeStop();
         }
@@ -247,13 +277,10 @@ public class Vortex_Teleop_Decode extends OpMode {
      */
 
     private void colorMovement() {
-        if(gamepad2.square && !gamepad2.left_bumper)
-        {
+        if (gamepad2.square && !gamepad2.left_bumper) {
             robot.sorterHardware.prepareNewMovement(
                     robot.sorterLogic.findBestPositionedType(PURPLE, FIRE).getFirePosition());
-        }
-        else if(gamepad2.triangle && !gamepad2.left_bumper)
-        {
+        } else if (gamepad2.triangle && !gamepad2.left_bumper) {
             robot.sorterHardware.prepareNewMovement(
                     robot.sorterLogic.findBestPositionedType(GREEN, FIRE).getFirePosition());
         }
@@ -262,37 +289,27 @@ public class Vortex_Teleop_Decode extends OpMode {
     private void fireQueue() {
         /// Clears list each time the button is deliberately pressed, so ready for queueing
         /// Without this we have no way to empty it without firing
-        if(gamepad2.leftBumperWasPressed())
-        {
+        if (gamepad2.leftBumperWasPressed()) {
             robot.queue.clearList();
         }
 
         /// Adds color to queue
-        if(gamepad2.squareWasPressed() && gamepad2.left_bumper)
-        {
+        if (gamepad2.squareWasPressed() && gamepad2.left_bumper) {
             robot.queue.addToNextSpotColor(PURPLE);
-            gamepad2.setLedColor(152, 7, 224,100);
-        }
-        else if(gamepad2.triangleWasPressed() && gamepad2.left_bumper)
-        {
+            gamepad2.setLedColor(152, 7, 224, 100);
+        } else if (gamepad2.triangleWasPressed() && gamepad2.left_bumper) {
             robot.queue.addToNextSpotColor(GREEN);
             gamepad2.setLedColor(0, 255, 0, 100);
         }
 
-        if(gamepad2.rightBumperWasPressed())
-        {
-            if(robot.queue.checkForExistingQueue())
-            {
+        if (gamepad2.rightBumperWasPressed()) {
+            if (robot.queue.checkForExistingQueue()) {
                 robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.SMART;
-            }
-            else if(robot.sorterLogic.inventory.canMakePattern())
-            {
+            } else if (robot.sorterLogic.inventory.canMakePattern()) {
                 robot.queue.clearList();
                 robot.queue.addPattern(robot.pattern);
                 robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.SMART;
-            }
-            else
-            {
+            } else {
                 robot.queue.clearList();
                 robot.queue.fillSimple(); // replace with the if when cam ready
                 robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.DUMB;
@@ -301,16 +318,13 @@ public class Vortex_Teleop_Decode extends OpMode {
     }
 
     private void intake() {
-        if(gamepad2.cross)
-        {
+        if (gamepad2.cross) {
             robot.sorterHardware.runAdvancedIntake();
-        }
-        else if(gamepad2.circle) // dave spits out artifact
+        } else if (gamepad2.circle) // dave spits out artifact
         {
             robot.runBasicIntake(-1);
             robot.sorterHardware.setFeeders(OUTTAKE);
-        }
-        else //don't run intake if we not pulling trigger
+        } else //don't run intake if we not pulling trigger
         {
             robot.cancelAutoIntake();
             robot.runBasicIntake(0.01); //Always keep a slight power flow to servos to prevent input delay from module
@@ -318,19 +332,17 @@ public class Vortex_Teleop_Decode extends OpMode {
     }
 
     private void controllerRumble() {
-        if(robot.targetTag.currentlyDetected) {
+        if (robot.targetTag.currentlyDetected) {
             gamepad1.rumble(0.25, 0.25, 100);
         }
 
-        if(robot.launcher.isInFireSequence())
-        {
+        if (robot.launcher.isInFireSequence()) {
             gamepad2.rumble(0.5, 0, 50);
         }
     }
 
     private void launcherToggle() {
-        if(gamepad2.left_trigger > 0.50)
-        {
+        if (gamepad2.left_trigger > 0.50) {
 
             if (!cadenHoldingReady) {
                 cadenHoldingReady = true;
@@ -343,36 +355,29 @@ public class Vortex_Teleop_Decode extends OpMode {
 
             if (cadenON) {
                 robot.launcher.setPerfectLauncherVelocity();
-            }
-            else
-            {
+            } else {
                 robot.launcher.setLauncherVelocity(0);
             }
 
-        }
-        else
-        {
+        } else {
             cadenHoldingReady = false;
         }
     }
 
     private void fireCurrentFireSlot() {
-        if(gamepad2.right_trigger > 0.50 && !robot.launcher.isInFireSequence() /*&& robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE*/) {
-            if(!cadenHoldingFire)
-            {
+        if (gamepad2.right_trigger > 0.50 && !robot.launcher.isInFireSequence() /*&& robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE*/) {
+            if (!cadenHoldingFire) {
                 cadenON = true;
                 cadenHoldingFire = true;
                 robot.launcher.fireWithinTimeIfSafe(0.5, false, false, 0.5);
             }
-        }
-        else
-        {
+        } else {
             cadenHoldingFire = false;
         }
     }
 
     private void holdInPlace() {
-        if(gamepad1.squareWasPressed())//Holds in place...
+        if (gamepad1.squareWasPressed())//Holds in place...
         {
             SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();
             SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition();
@@ -426,12 +431,12 @@ public class Vortex_Teleop_Decode extends OpMode {
 
     private void autoWheel(boolean detected, double anglex) {
 
-        if(gamepad1.left_bumper)//Does 180
+        if (gamepad1.left_bumper)//Does 180
         {
-            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition() + 830*2;
-            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition() - 830*2;
-            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition() + 830*2;
-            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition() - 830*2;
+            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition() + 830 * 2;
+            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition() - 830 * 2;
+            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition() + 830 * 2;
+            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition() - 830 * 2;
             spinTargetAcquired = true;
             speed = 1;
         }
@@ -465,21 +470,18 @@ public class Vortex_Teleop_Decode extends OpMode {
         float leftX = this.gamepad1.left_stick_x;
 
 
-
         float[] motorPowers = new float[4];
 
-        if(robot.controlMode == ROBOT_CENTRIC)
-        {
+        if (robot.controlMode == ROBOT_CENTRIC) {
             motorPowers[0] = (leftY - leftX - rightX); // frontLeftDrive
             motorPowers[1] = (leftY + leftX + rightX); // frontRightDrive
             motorPowers[2] = (leftY + leftX - rightX); // backLeftDrive
             motorPowers[3] = (leftY - leftX + rightX);
         }
-         // backRightDrive
+        // backRightDrive
 
 
-        else if(robot.controlMode == LEGACY_FIELD_CENTRIC)
-        {
+        else if (robot.controlMode == LEGACY_FIELD_CENTRIC) {
             double rotX = leftX * Math.cos(-robot.robotHeading) - leftY * Math.sin(-robot.robotHeading);
             double rotY = leftX * Math.sin(-robot.robotHeading) + leftY * Math.cos(-robot.robotHeading);
 
@@ -489,10 +491,10 @@ public class Vortex_Teleop_Decode extends OpMode {
             // This ensures all the powers maintain the same ratio,
             // but only if at least one is out of the range [-1, 1]
             double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rightX), 1);
-            motorPowers[0] = (float) ((rotY + rotX + rightX) / denominator);
-            motorPowers[1] = (float) ((rotY - rotX + rightX) / denominator);
-            motorPowers[2] = (float) ((rotY - rotX - rightX) / denominator);
-            motorPowers[3] = (float) ((rotY + rotX - rightX) / denominator);
+            motorPowers[0] = (float) -((rotY + rotX + rightX) / denominator);
+            motorPowers[1] = (float) -((rotY - rotX + rightX) / denominator);
+            motorPowers[2] = (float) -((rotY - rotX - rightX) / denominator);
+            motorPowers[3] = (float) -((rotY + rotX - rightX) / denominator);
         }
 
         float max = getLargestAbsVal(motorPowers);
@@ -512,14 +514,12 @@ public class Vortex_Teleop_Decode extends OpMode {
             }
         }
 
-
-
         setIndividualPowers(motorPowers);
     }
 
     private void controlMode() {
         if (gamepad1.back) {
-            if (robot.controlMode == ROBOT_CENTRIC){
+            if (robot.controlMode == ROBOT_CENTRIC) {
                 robot.controlMode = LEGACY_FIELD_CENTRIC;
             } else if (robot.controlMode == LEGACY_FIELD_CENTRIC) {
                 robot.controlMode = ROBOT_CENTRIC;
@@ -534,8 +534,7 @@ public class Vortex_Teleop_Decode extends OpMode {
     private void manualTuneLauncher() {
         if (gamepad2.dpadUpWasPressed()) {
             robot.launcher.velocityTarget += 20;
-        }
-        else if (gamepad2.dpadDownWasPressed()) {
+        } else if (gamepad2.dpadDownWasPressed()) {
             robot.launcher.velocityTarget -= 20;
         }
     }
@@ -563,12 +562,12 @@ public class Vortex_Teleop_Decode extends OpMode {
 
     private void goNextPosition(int go) {
         robot.sorterHardware.prepareNewMovement(
-            robot.sorterLogic.offsetPositions.get(
-                    makeSureNewOffsetIsOK(
-                        robot.sorterLogic.findClosestOffset(
-                                robot.sorterHardware.motor.getCurrentPosition()) + go
+                robot.sorterLogic.offsetPositions.get(
+                        makeSureNewOffsetIsOK(
+                                robot.sorterLogic.findClosestOffset(
+                                        robot.sorterHardware.motor.getCurrentPosition()) + go
+                        )
                 )
-            )
         );
     }
 
@@ -583,7 +582,7 @@ public class Vortex_Teleop_Decode extends OpMode {
     }
 
     private void switchAlliance() {
-        if (gamepad2.start && gamepad2.shareWasPressed()){
+        if (gamepad2.start && gamepad2.shareWasPressed()) {
             if (robot.alliance == BLUE) {
                 robot.alliance = RED;
                 robot.targetScanner.InitLimeLightTargeting(1, robot);
@@ -661,7 +660,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         telemetry.addLine();
         telemetry.addLine("Target Tag:");
-        if(robot.targetTag.currentlyDetected) {
+        if (robot.targetTag.currentlyDetected) {
             telemetry.addData("Tag ID", robot.targetTag.tagID);
             telemetry.addData("X angle", robot.targetTag.angleX);
             telemetry.addData("Y angle", robot.targetTag.angleY);
@@ -691,7 +690,8 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         //robot.tellMotorOutput();
     }
-    private float getLargestAbsVal(float[] values){
+
+    private float getLargestAbsVal(float[] values) {
         // This function does some math!
         float max = 0;
         for (float val : values) {
@@ -702,15 +702,96 @@ public class Vortex_Teleop_Decode extends OpMode {
         return max;
     }
 
-    private void turretAssist()
-    {
-        if(gamepad2.right_stick_button)
-        {
+    private void turretAssist() {
+        if (gamepad2.right_stick_button) {
             robot.turret.input = gamepad2.right_stick_x;
-        }
-        else
-        {
+        } else {
             robot.turret.input = 0;
+        }
+    }
+
+    void runTrackpadFunctions() {
+        if (gamepad1.touchpad_finger_1) {
+            trackpadCurrentX = gamepad1.touchpad_finger_1_x;
+            trackpadCurrentY = gamepad1.touchpad_finger_1_y; // Corrected for inversion
+            trackTarget = translateTrackpad(trackpadCurrentX, trackpadCurrentY, ""); // Sets tracktarget to coords
+
+            telemetry.addData("Finger 1 x detected val: ", gamepad1.touchpad_finger_1_x);
+            telemetry.addData("Finger 1 y detected val: ", gamepad1.touchpad_finger_1_y);
+
+            telemetry.addData("Finger 1 x adjusted: ", trackpadCurrentX);
+            telemetry.addData("Finger 1 y adjusted: ", trackpadCurrentY);
+
+            telemetry.addData("Pedro Target Position: ", trackTarget);
+        } else if (trackTarget == null) {
+            trackTarget = new Pose(72, 72, 0);
+        }
+    }
+
+    private Pose translateTrackpad(double inX, double inY, String headingCheck) {
+
+
+        //fix y axis inversion (top is 0 instead of bottom)
+        //inY = Math.abs(inY - trackpadYMax);
+
+        //if the heading check is tag rotate to point at target during path
+        if (headingCheck == "tag") {
+            return new Pose(((inX) * 72) + 72, ((inY) * 72) + 72);
+        } else //or just keep current heading for same movement
+        {
+            return new Pose(((inX) * 72) + 72, ((inY) * 72) + 72);
+        }
+    }
+
+    private PathChain makeDynamicPath(Pose targetPose, double targetHeadingRadians) {
+        return robot.turret.follower.pathBuilder()
+                .addPath(new BezierLine(robot.turret.follower.getPose(), targetPose))
+                .setLinearHeadingInterpolation(robot.turret.follower.getHeading(), targetHeadingRadians)
+                .build();
+        // Build the PathChain after adding all paths
+    }
+
+    private void pedroAutomation(Follower follower) {
+
+        if (!automatedDrive) {
+            //Make the last parameter false for field-centric
+            //In case the drivers want to use a "slowMode" you can scale the vectors
+
+            //This is the normal version to use in the TeleOp
+            follower.setTeleOpDrive(
+                    gamepad1.left_stick_x * speed,//swapped these for mason
+                    -gamepad1.left_stick_y * speed,//swapped these for mason
+                    -gamepad1.right_stick_x * speed,
+                    false // Robot Centric
+            );
+
+        }
+
+        //Automated PathFollowing
+        //Mason's Pedro
+        if (gamepad1.touchpadWasPressed()) {
+            follower.followPath(makeDynamicPath(trackTarget, follower.getHeading()));
+            automatedDrive = true;
+        } else if (gamepad1.triangle) //Do a 180
+        {
+            speed = 1;
+            follower.followPath(makeDynamicPath(follower.getPose(), follower.getHeading()+ Math.PI));
+            //Use holdpoint if no work but I think this turns way faster
+            automatedDrive = true;
+        }
+        else if (gamepad1.left_bumper) {
+            follower.holdPoint(new BezierPoint(follower.getPose()), follower.getHeading());
+
+            speed = 1;
+            automatedDrive = true;
+
+        }
+
+
+        //Stop automated following when the driver needs to
+        if (automatedDrive && (gamepad1.bWasPressed())) {
+            follower.startTeleopDrive();
+            automatedDrive = false;
         }
     }
 

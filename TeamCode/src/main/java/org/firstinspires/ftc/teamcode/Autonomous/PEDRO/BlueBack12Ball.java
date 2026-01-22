@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Blue Back 12 Ball", group = "Autonomous")
+@Autonomous(name = "Blue Back 12 Ball", group = "1. FABIO WITH PEDRO")
 @Configurable // Panels
 public class BlueBack12Ball extends OpMode {
 
@@ -30,6 +30,9 @@ public class BlueBack12Ball extends OpMode {
     public Follower follower; // Pedro Pathing follower instance
     private int pathState; // Current autonomous path state (state machine)
     private PathsForBack12Blue paths; // Paths defined in the Paths class
+
+    public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
+    public static final String PATTERN_KEY = "Pattern";
 
     private Timer pathTimer, actionTimer, opmodeTimer;
 
@@ -42,7 +45,7 @@ public class BlueBack12Ball extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(50.188, 9.200, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(144-50.188, 9.200, Math.toRadians(90)));
 
         paths = new PathsForBack12Blue(follower, pathTimer); // Build paths
 
@@ -51,11 +54,29 @@ public class BlueBack12Ball extends OpMode {
     }
 
     public void init_loop() {
-        telemetry.addData("HYPE", "ARE! YOU! READY?!?!?!?!");
-
         robot.pattern = robot.randomizationScanner.GetRandomization();
         telemetry.addData(String.valueOf(robot.pattern), " Works!");
         telemetry.update();
+
+        telemetry.addData("Our pattern is: ", String.valueOf(robot.pattern), " ...yay");
+
+        switch (robot.pattern) {
+            case PPG:
+                telemetry.addData("We doin", " PPG now");
+                blackboard.put(PATTERN_KEY, "PPG");
+                break;
+            case GPP:
+                telemetry.addData("We doin", " GPP now");
+                blackboard.put(PATTERN_KEY, "GPP");
+                break;
+            case PGP:
+                telemetry.addData("We doin", " PGP now");
+                blackboard.put(PATTERN_KEY, "PGP");
+                break;
+            default:
+                telemetry.addData("It failed ", "cry time");
+                break;
+        }
     }
 
     /**
@@ -72,6 +93,7 @@ public class BlueBack12Ball extends OpMode {
     @Override
     public void loop() {
         follower.update(); // Update Pedro Pathing
+        robot.updateAllDaThings();
         pathState = autonomousPathUpdate(); // Update autonomous state machine
 
         // Log values to Panels and Driver Station
@@ -210,9 +232,9 @@ public class BlueBack12Ball extends OpMode {
         // Add your state machine Here
         // Access paths with paths.pathName
         // Refer to the Pedro Pathing Docs (Auto Example) for an example state machine
+
         switch (pathState) {
             case 0:
-                emergencyFinishIfNeeded();
                 follower.followPath(paths.MoveFromBackFiringZone);
                 setPathState(1);
                 break;
@@ -221,7 +243,7 @@ public class BlueBack12Ball extends OpMode {
             - Follower State: "if(!follower.isBusy()) {}"
             - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
             - Robot Position: "if(follower.getPose().getX() > 36) {}"
-            */emergencyFinishIfNeeded();
+            *
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if (!follower.isBusy()) {
                     /* Score Preload */
@@ -231,7 +253,6 @@ public class BlueBack12Ball extends OpMode {
                 }
                 break;
             case 2:
-                emergencyFinishIfNeeded();
                 if (auto.fireInSequenceComplete()) {
                     follower.followPath(paths.LineUpWithMiddleBalls);
                     setPathState(3);
@@ -255,7 +276,6 @@ public class BlueBack12Ball extends OpMode {
 
                 break;
             case 5:
-                emergencyFinishIfNeeded();
                 if (!follower.isBusy()) {
                     //Disable Auto intake
                     follower.followPath(paths.GoHitGate);
@@ -263,35 +283,30 @@ public class BlueBack12Ball extends OpMode {
                 }
                 break;
             case 6: //Wait to let balls out
-                emergencyFinishIfNeeded();
                 if (!follower.isBusy()) {
                     actionTimer.resetTimer();
                     setPathState(7);
                 }
                 break;
             case 7:
-                emergencyFinishIfNeeded();
                 if (actionTimer.getElapsedTime() > 500) {
                     follower.followPath(paths.MoveToScoreSecondPattern);
                     setPathState(8);
                 }
                 break;
             case 8:
-                emergencyFinishIfNeeded();
                 if (!follower.isBusy()) {
                     auto.fireMatchPattern();
                     setPathState(9);
                 }
                 break;
             case 9:
-                emergencyFinishIfNeeded();
                 if (auto.fireInSequenceComplete()) {
                     follower.followPath(paths.LineUpWithClose);
                     setPathState(10);
                 }
                 break;
             case 10:
-                emergencyFinishIfNeeded();
                 if (!follower.isBusy()) {
                     //Enable auto intake
                     actionTimer.resetTimer();
@@ -299,34 +314,29 @@ public class BlueBack12Ball extends OpMode {
                 }
                 break;
             case 11:
-                emergencyFinishIfNeeded();
                 if (actionTimer.getElapsedTime() > 250) {
                     follower.followPath(paths.YOINKCLOSE);
                     setPathState(12);
                 }
             case 12:
-                emergencyFinishIfNeeded();
                 if (!follower.isBusy()) {
                     follower.followPath(paths.MoveToFireThridPattern);
                     setPathState(13);
                 }
                 break;
             case 13:
-                emergencyFinishIfNeeded();
                 if (!follower.isBusy()) {
                     auto.fireMatchPattern();
                     setPathState(14);
                 }
                 break;
             case 14:
-                emergencyFinishIfNeeded();
                 if (auto.fireInSequenceComplete()) {
                     follower.followPath(paths.LineUpWithFarBalls);
                     setPathState(15);
                 }
                 break;
             case 15:
-                emergencyFinishIfNeeded();
                 if(!follower.isBusy())
                 {
                     //activate intake
@@ -335,7 +345,6 @@ public class BlueBack12Ball extends OpMode {
                 }
                 break;
             case 16:
-                emergencyFinishIfNeeded();
                 if(actionTimer.getElapsedTime() > 0.25)
                 {
                     follower.followPath(paths.YOINKFAR);
@@ -343,7 +352,6 @@ public class BlueBack12Ball extends OpMode {
                 }
                 break;
             case 17:
-                emergencyFinishIfNeeded();
                 if(!follower.isBusy())
                 {
                     follower.followPath(paths.ScoreFinalPattern);
@@ -351,7 +359,6 @@ public class BlueBack12Ball extends OpMode {
                 }
                 break;
             case 18:
-                emergencyFinishIfNeeded();
                 if(!follower.isBusy())
                 {
                     auto.fireMatchPattern();
@@ -383,8 +390,9 @@ public class BlueBack12Ball extends OpMode {
 
     private void emergencyFinishIfNeeded()
     {
-        if(opmodeTimer.getElapsedTimeSeconds() > 29.5)
+        if(opmodeTimer.getElapsedTimeSeconds() >= 29)
         {
+            robot.turret.updateTurretPositionXY();
             robot.sorterHardware.prepareNewMovement(0);
             setPathState(99);
         }

@@ -172,8 +172,8 @@ public class SorterHardware {
                 break;
         }
 
-        robot.panelsTelemetry.addData("Reference", reference);
-        robot.panelsTelemetry.addData("Blender Position", motor.getCurrentPosition());
+        //robot.panelsTelemetry.addData("Reference", reference);
+        //robot.panelsTelemetry.addData("Blender Position", motor.getCurrentPosition());
     }
     private void nextStep(BlenderSteps nextStep) {
         currentBlenderStep = nextStep;

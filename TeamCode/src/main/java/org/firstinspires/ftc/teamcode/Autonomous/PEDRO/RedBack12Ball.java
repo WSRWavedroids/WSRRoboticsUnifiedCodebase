@@ -29,7 +29,7 @@ public class RedBack12Ball extends OpMode {
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
     private int pathState; // Current autonomous path state (state machine)
-    private PathsForBack12Blue paths; // Paths defined in the Paths class
+    private PathsForBack12Red paths; // Paths defined in the Paths class
 
     private Timer pathTimer, actionTimer, opmodeTimer;
 
@@ -44,7 +44,7 @@ public class RedBack12Ball extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(144-50.188, 9.200, Math.toRadians(90)));
 
-        paths = new PathsForBack12Blue(follower, pathTimer); // Build paths
+        paths = new PathsForBack12Red(follower, pathTimer); // Build paths
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
@@ -82,7 +82,7 @@ public class RedBack12Ball extends OpMode {
         panelsTelemetry.update(telemetry);
     }
 
-    public static class PathsForBack12Blue {
+    public static class PathsForBack12Red {
 
         public PathChain MoveFromBackFiringZone;
         public PathChain LineUpWithMiddleBalls;
@@ -97,7 +97,7 @@ public class RedBack12Ball extends OpMode {
         public PathChain ScoreFinalPattern;
         public PathChain Unpark;
 
-        public PathsForBack12Blue(Follower follower, Timer pathTimer) {
+        public PathsForBack12Red(Follower follower, Timer pathTimer) {
             MoveFromBackFiringZone = follower
                     .pathBuilder()
                     .addPath(
