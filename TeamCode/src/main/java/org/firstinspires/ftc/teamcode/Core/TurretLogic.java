@@ -109,13 +109,13 @@ public class TurretLogic {
         rawSwivelController.tolerance = tolerance;
         rawSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
 
-        robot.panelsTelemetry.addData("Turret position", robot.swivelMotor.getCurrentPosition());
+        /*robot.panelsTelemetry.addData("Turret position", robot.swivelMotor.getCurrentPosition());
         robot.panelsTelemetry.addData("Turret target", runToSafeAngle(updateAngle()));
         robot.panelsTelemetry.addData("Turret position (degrees)", ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
         robot.panelsTelemetry.addData("Turret target (degrees)", ticksToDegrees(runToSafeAngle(updateAngle())));
 
         robot.panelsTelemetry.addData("Limelight cooldown", tagCooldown);
-        robot.panelsTelemetry.addData("Last known tag angle", lastKnownTagAngle);
+        robot.panelsTelemetry.addData("Last known tag angle", lastKnownTagAngle);*/
 
         //goodAngle = rawSwivelController.withinTolerance(runToSafeAngle(updateAngle()));
     }

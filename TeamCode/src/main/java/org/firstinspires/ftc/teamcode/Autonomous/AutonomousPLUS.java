@@ -128,7 +128,7 @@ public class AutonomousPLUS extends LinearOpMode {
 
         while (opModeIsActive() && robot.isWheelsBusy()) {
             robot.tellMotorOutput();
-            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+            //robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
             robot.updateAllDaThings();
         }
 
@@ -148,8 +148,8 @@ public class AutonomousPLUS extends LinearOpMode {
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
                 robot.tellMotorOutput();
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
+                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
                 robot.updateAllDaThings();
 
             }
@@ -170,14 +170,14 @@ public class AutonomousPLUS extends LinearOpMode {
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
                 robot.tellMotorOutput();
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
+                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
                 robot.updateAllDaThings();
             }
 
             robot.stopAllMotors();
-            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
+            /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
             robot.encoderRunningMode();
             sleep(pause);
             //robot.encoderReset();
@@ -193,8 +193,8 @@ public class AutonomousPLUS extends LinearOpMode {
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
                 robot.tellMotorOutput();
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
+                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
                 robot.updateAllDaThings();
             }
 
@@ -214,8 +214,8 @@ public class AutonomousPLUS extends LinearOpMode {
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
                 robot.tellMotorOutput();
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
+                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
                 robot.updateAllDaThings();
             }
 
@@ -235,8 +235,8 @@ public class AutonomousPLUS extends LinearOpMode {
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
                 robot.tellMotorOutput();
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
+                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
                 robot.updateAllDaThings();
             }
 
@@ -258,8 +258,8 @@ public class AutonomousPLUS extends LinearOpMode {
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
                 robot.tellMotorOutput();
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
+                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
                 robot.updateAllDaThings();
             }
 
@@ -280,8 +280,8 @@ public class AutonomousPLUS extends LinearOpMode {
 
             while (opModeIsActive() && robot.isWheelsBusy()) {
                 robot.tellMotorOutput();
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
+                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
                 robot.updateAllDaThings();
             }
 

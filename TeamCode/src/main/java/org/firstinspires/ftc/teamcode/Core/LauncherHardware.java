@@ -87,9 +87,9 @@ public class LauncherHardware {
     private ElapsedTime cooldownTimer = new ElapsedTime();
 
     public void updateLauncherHardware() {
-        robot.panelsTelemetry.addData("Launcher Velocity", motor.getVelocity());
-        robot.panelsTelemetry.addData("Target Launcher Velocity", velocityTarget);
-        robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
+        //robot.panelsTelemetry.addData("Launcher Velocity", motor.getVelocity());
+        //robot.panelsTelemetry.addData("Target Launcher Velocity", velocityTarget);
+        //robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
 
         switch (currentLauncherStep) {
             case READY_FOR_COMMANDS:

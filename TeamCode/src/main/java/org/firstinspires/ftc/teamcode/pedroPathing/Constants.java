@@ -17,25 +17,25 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(5.44)
-            .forwardZeroPowerAcceleration(-37.128732234784884)
-            .lateralZeroPowerAcceleration(-54.1940366970884)
+            .mass(11.34)
+            .forwardZeroPowerAcceleration(-46.7473767728444)
+            .lateralZeroPowerAcceleration(-74.7156762508709)
 
             // MORE PEDRO ???
             .useSecondaryTranslationalPIDF(true)
             .useSecondaryHeadingPIDF(true)
-            .useSecondaryDrivePIDF(true)
+            .useSecondaryDrivePIDF(false)
 
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.2, 0, 0.0264, 0.015))
-            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(.3,0,.025,.015))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.015, 0.1, 0.009, 0.006))
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.075,0.0001,0.001, 0.006))
 
-            .headingPIDFCoefficients(new PIDFCoefficients(.5, 0, 0, .025))
-            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(.8, 0, .12, .025))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.9, 0, 0, 0.02))
+            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(0.9, 0.075, 0, 0.02))
 
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(.025,0,.00025,.6,.5))
-            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(.02,0,.00005,.6,.01))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.01, 0.001, 0.001, 0, 0))
+            //.secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(.0, 0, 0, 0, 0))
 
-            .centripetalScaling(0.75)
+            .centripetalScaling(0.5)
             .automaticHoldEnd(true);
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
@@ -51,8 +51,8 @@ public class Constants {
             .rightFrontMotorDirection(DcMotorEx.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorEx.Direction.REVERSE)
 
-            .xVelocity(59.486481914370074)
-            .yVelocity(40.82851956585261)
+            .xVelocity(41.66101458692175)
+            .yVelocity(51.29496416707677)
 
             .useBrakeModeInTeleOp(true);
 

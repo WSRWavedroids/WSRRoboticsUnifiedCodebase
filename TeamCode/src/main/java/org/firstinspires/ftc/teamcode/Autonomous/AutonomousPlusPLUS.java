@@ -155,7 +155,7 @@ public class AutonomousPlusPLUS {
         moveRobotForward(ticks);
         while (!checkMovement()) {
             robot.tellMotorOutput();
-            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+            //robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
             robot.updateAllDaThings();
         }
 
@@ -310,8 +310,8 @@ public class AutonomousPlusPLUS {
 
         while (checkMovement()) {
             robot.tellMotorOutput();
-            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
+            /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
             robot.updateAllDaThings();
         }
 
@@ -338,8 +338,8 @@ public class AutonomousPlusPLUS {
 
         while (checkMovement()) {
             robot.tellMotorOutput();
-            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());
+            /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
+            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
             robot.updateAllDaThings();
         }
 
