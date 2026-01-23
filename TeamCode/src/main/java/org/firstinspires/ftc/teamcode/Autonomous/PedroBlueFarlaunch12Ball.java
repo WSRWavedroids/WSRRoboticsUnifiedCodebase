@@ -38,6 +38,7 @@ private ElapsedTime cooldown = new ElapsedTime();
     public void init() {
         robot = new Robot(hardwareMap, telemetry, this);
         follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose(55,9, Math.PI/2));
         robot.initLimelight();
     }
 
@@ -62,6 +63,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                                     new Pose(58.100, 16.600)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(112.5))
+                    .setVelocityConstraint(1)
 
                     .build();
 
@@ -72,6 +74,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                                     new Pose(41.000, 35.700)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(360))
+                    .setVelocityConstraint(1)
 
                     .build();
 
@@ -82,6 +85,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                                     new Pose(23.100, 35.700)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
+                    .setVelocityConstraint(0.11)
 
                     .build();
 
@@ -92,6 +96,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                                     new Pose(58.100, 16.600)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(112.5))
+                    .setVelocityConstraint(1)
 
                     .build();
 
@@ -102,6 +107,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                                     new Pose(41.000, 60.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(360))
+                    .setVelocityConstraint(1)
 
                     .build();
 
@@ -112,6 +118,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                                     new Pose(23.100, 60.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
+                    .setVelocityConstraint(0.11)
 
                     .build();
 
@@ -122,6 +129,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                                     new Pose(58.100, 16.600)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(112.5))
+                    .setVelocityConstraint(1)
 
                     .build();
 
@@ -132,6 +140,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                                     new Pose(41.000, 84.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(360))
+                    .setVelocityConstraint(1)
 
                     .build();
 
@@ -142,6 +151,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                                     new Pose(23.100, 84.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
+                    .setVelocityConstraint(0.11)
 
                     .build();
 
@@ -152,6 +162,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                                     new Pose(58.100, 16.600)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(112.5))
+                    .setVelocityConstraint(1)
 
                     .build();
 
@@ -162,6 +173,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                                     new Pose(58.100, 30.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(90))
+                    .setVelocityConstraint(1)
 
                     .build();
         }
@@ -176,12 +188,8 @@ private ElapsedTime cooldown = new ElapsedTime();
         runPath = new Paths(follower);
     }
     public void loop() {
-        robot.launcherMath(robot.getApriltagDistance(),
-                23.41447,
-                274.95936,
-                1173.87201,
-                1973.79332,
-                1897);
+        robot.setupLaunchers();
+        robot.getApriltagDistance();
         telemetry.addData("ODOMETRY X", follower.getPose().getX());
         telemetry.addData("ODOMETRY Y", follower.getPose().getY());
         follower.update();
@@ -192,42 +200,36 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             case LAUNCH0:
                 follower.followPath(runPath.Launch0);
-                nextStep(UNPARK); //TODO change to RUNLAUNCH0 once it works ALSO ADD OTHER 3 BALLS
+                nextStep(SHOOT0BALL1);
                 break;
 
             case SHOOT0BALL1:
                 if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,450);
-                    } else {
+                    robot.launchLoop(100,450);
+                    if(robot.doneLaunching) {
                         nextStep(SHOOT0BALL2);
                     }
                 }
                 break;
 
             case SHOOT0BALL2:
-                if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,500);
-                    } else {
-                        nextStep(SHOOT0BALL3);
-                    }
+                    robot.launchLoop(100,500);
+                    if (robot.doneLaunching){
+                    nextStep(SHOOT0BALL3);
                 }
+
                 break;
 
             case SHOOT0BALL3:
-                if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,1000);
-                    } else {
-                        follower.followPath(runPath.IntakeSetup1);
-                        nextStep(INTAKESETUP1);
-                    }
+                robot.launchLoop(100,500);
+                if (robot.doneLaunching){
+                    follower.followPath(runPath.IntakeSetup1);
+                    nextStep(INTAKESETUP1);
                 }
                 break;
 
             case INTAKESETUP1:
-                if(!follower.isBusy()) {
+                if(follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(0.8);
                     follower.followPath(runPath.Intake1);
@@ -251,35 +253,28 @@ private ElapsedTime cooldown = new ElapsedTime();
                 break;
             case SHOOT1BALL1:
                 if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,450);
-                    } else {
+                    robot.launchLoop(100,450);
+                    if(robot.doneLaunching) {
                         nextStep(SHOOT1BALL2);
                     }
                 }
                 break;
             case SHOOT1BALL2:
-                if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,500);
-                    } else {
-                        follower.followPath(runPath.IntakeSetup2);
-                        nextStep(SHOOT1BALL3);
-                    }
+                robot.launchLoop(100,500);
+                if (robot.doneLaunching){
+                    nextStep(SHOOT1BALL3);
                 }
                 break;
             case SHOOT1BALL3:
-                if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,1000);
-                    } else {
-                        nextStep(INTAKESETUP2);
-                    }
+                robot.launchLoop(100,500);
+                if (robot.doneLaunching){
+                    follower.followPath(runPath.IntakeSetup2);
+                    nextStep(INTAKESETUP2);
                 }
                 break;
 
             case INTAKESETUP2:
-                if(!follower.isBusy()) {
+                if(follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(0.8);
                     follower.followPath(runPath.Intake2);
@@ -304,36 +299,29 @@ private ElapsedTime cooldown = new ElapsedTime();
                 break;
 
             case SHOOT2BALL1:
-                if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,450);
-                    } else {
+                if(follower.isBusy()) {
+                    robot.launchLoop(100,450);
+                    if(robot.doneLaunching) {
                         nextStep(SHOOT2BALL2);
                     }
                 }
                 break;
             case SHOOT2BALL2:
-                if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,500);
-                    } else {
-                        nextStep(SHOOT2BALL3);
-                    }
+                robot.launchLoop(100,500);
+                if (robot.doneLaunching){
+                    nextStep(SHOOT2BALL3);
                 }
                 break;
             case SHOOT2BALL3:
-                if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,1000);
-                    } else {
-                        follower.followPath(runPath.IntakeSetup3);
-                        nextStep(INTAKESETUP3);
-                    }
+                robot.launchLoop(100,500);
+                if (robot.doneLaunching){
+                    follower.followPath(runPath.IntakeSetup3);
+                    nextStep(INTAKESETUP3);
                 }
                 break;
 
             case INTAKESETUP3:
-                if(!follower.isBusy()) {
+                if(follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(0.8);
                     follower.followPath(runPath.Intake3);
@@ -357,31 +345,24 @@ private ElapsedTime cooldown = new ElapsedTime();
                 break;
 
             case SHOOT3BALL1:
-                if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,450);
-                    } else {
+                if(follower.isBusy()) {
+                    robot.launchLoop(100,450);
+                    if(robot.doneLaunching) {
                         nextStep(SHOOT3BALL2);
                     }
                 }
                 break;
             case SHOOT3BALL2:
-                if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,500);
-                    } else {
+                robot.launchLoop(100,500);
+                if (robot.doneLaunching){
                         nextStep(SHOOT3BALL3);
-                    }
                 }
                 break;
             case SHOOT3BALL3:
-                if(!follower.isBusy()) {
-                    if (!robot.doneLaunching) {
-                        robot.launchLoop(100,1000);
-                    } else {
+                robot.launchLoop(100,500);
+                if (robot.doneLaunching){
                         follower.followPath(runPath.Unpark);
                         nextStep(UNPARK);
-                    }
                 }
                 break;
 

@@ -267,6 +267,7 @@ public class Robot {
         return (velocity > -limelightAdjustedSpeed - 60) && (velocity < -limelightAdjustedSpeed + 60);
     }
 public ElapsedTime cooldown = new ElapsedTime();
+
     public enum launchSteps {
         START,
         STARTMOTORS,
@@ -274,7 +275,7 @@ public ElapsedTime cooldown = new ElapsedTime();
         END
     }
 
-    public launchSteps currentstep = launchSteps.STARTMOTORS;
+    public launchSteps currentstep = launchSteps.START;
 
 public boolean doneLaunching = false;
 
@@ -284,16 +285,19 @@ public boolean doneLaunching = false;
                     cooldown.reset();
                     currentstep = STARTMOTORS;
                 case STARTMOTORS:
+                    setupLaunchers();
                     launchLeft.setVelocity(-limelightAdjustedSpeed);
                     launchRight.setVelocity(-limelightAdjustedSpeed);
                     if (!upToSpeed()) {
+                        getApriltagDistance();
                         if (cooldown.seconds() >= 0.003) {
                             cooldown.reset();
-                            if (cooldown.milliseconds() >= sleep1) {
-                                cooldown.reset();
-                                currentstep = STARTINTAKE;
-                            }
+
                         }
+                    }
+                    else if (cooldown.milliseconds() >= sleep1) {
+                        cooldown.reset();
+                        currentstep = STARTINTAKE;
                     }
                     break;
                 case STARTINTAKE:
@@ -326,9 +330,9 @@ public boolean doneLaunching = false;
     public void prepareAuto() {
 
     }
-    public void initLimelight(){
-        limelight.pipelineSwitch(0);
-        limelight.start();
+
+    public void initLimelight() {
+
     }
 
     public double getApriltagDistance(){
