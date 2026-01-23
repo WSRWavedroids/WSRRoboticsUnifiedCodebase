@@ -229,7 +229,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                 break;
 
             case INTAKESETUP1:
-                if(follower.isBusy()) {
+                if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(0.8);
                     follower.followPath(runPath.Intake1);
@@ -274,7 +274,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                 break;
 
             case INTAKESETUP2:
-                if(follower.isBusy()) {
+                if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(0.8);
                     follower.followPath(runPath.Intake2);
@@ -299,7 +299,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                 break;
 
             case SHOOT2BALL1:
-                if(follower.isBusy()) {
+                if(!follower.isBusy()) {
                     robot.launchLoop(100,450);
                     if(robot.doneLaunching) {
                         nextStep(SHOOT2BALL2);
@@ -321,7 +321,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                 break;
 
             case INTAKESETUP3:
-                if(follower.isBusy()) {
+                if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(0.8);
                     follower.followPath(runPath.Intake3);
@@ -345,7 +345,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                 break;
 
             case SHOOT3BALL1:
-                if(follower.isBusy()) {
+                if(!follower.isBusy()) {
                     robot.launchLoop(100,450);
                     if(robot.doneLaunching) {
                         nextStep(SHOOT3BALL2);
@@ -355,7 +355,7 @@ private ElapsedTime cooldown = new ElapsedTime();
             case SHOOT3BALL2:
                 robot.launchLoop(100,500);
                 if (robot.doneLaunching){
-                        nextStep(SHOOT3BALL3);
+                    nextStep(SHOOT3BALL3);
                 }
                 break;
             case SHOOT3BALL3:

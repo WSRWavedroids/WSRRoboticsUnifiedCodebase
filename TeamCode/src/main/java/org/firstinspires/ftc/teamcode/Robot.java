@@ -282,17 +282,17 @@ public boolean doneLaunching = false;
         public void launchLoop(double sleep1, double sleep2) {
             switch(currentstep) {
                 case START:
+                    doneLaunching = false;
                     cooldown.reset();
                     currentstep = STARTMOTORS;
+                    break;
                 case STARTMOTORS:
                     setupLaunchers();
                     launchLeft.setVelocity(-limelightAdjustedSpeed);
                     launchRight.setVelocity(-limelightAdjustedSpeed);
                     if (!upToSpeed()) {
-                        getApriltagDistance();
                         if (cooldown.seconds() >= 0.003) {
                             cooldown.reset();
-
                         }
                     }
                     else if (cooldown.milliseconds() >= sleep1) {
@@ -314,6 +314,7 @@ public boolean doneLaunching = false;
                     launchLeft.setVelocity(-0);
                     launchRight.setVelocity(-0);
                     doneLaunching = true;
+                    break;
             }
         }
 
