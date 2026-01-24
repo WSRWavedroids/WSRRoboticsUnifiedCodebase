@@ -26,7 +26,7 @@ public class BetaRedBackAuto extends BetaBlueBackAuto {
         robot = new Robot(hardwareMap, telemetry, this);
         TurretLogic.tolerance = robot.turret.degreesToTicks(8);
         auto = new AutonomousPlusPLUS(robot);
-        robot.turret.activeMode = TurretLogic.controlMode.OVERIDE;
+        robot.turret.activeMode = TurretLogic.controlMode.FULL;
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");

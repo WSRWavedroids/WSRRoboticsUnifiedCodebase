@@ -106,7 +106,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot = new Robot(hardwareMap, telemetry, this);
 
         robot.targetScanner.InitLimeLightTargeting(1, robot);
-        robot.controlMode = LEGACY_FIELD_CENTRIC;
+        robot.controlMode = ROBOT_CENTRIC;
         imu = hardwareMap.get(IMU.class, "imu");
 
 
@@ -651,6 +651,9 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
         telemetry.addData("Turret Target", robot.turret.ticksToDegrees(robot.turret.runToSafeAngle(robot.turret.updateAngle())));
         telemetry.addData("Raw Turret Target", robot.turret.updateAngle());
+        telemetry.addData("Flipper in positon", robot.sorterHardware.flickyInPosition());
+        telemetry.addData("Flipper position", robot.flickyFeedback.getVoltage());
+
 
         telemetry.addLine();
         telemetry.addLine("Color Sensors");

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous.PEDRO;
 
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
+import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.BLUE;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
 
 import com.bylazar.configurables.annotations.Configurable;
@@ -14,10 +15,12 @@ import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Autonomous.AutonomousPlusPLUS;
 import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
+import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous(name = "Blue Back 12 Ball", group = "1. FABIO WITH PEDRO")
@@ -33,19 +36,31 @@ public class BlueBack12Ball extends OpMode {
 
     public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
     public static final String PATTERN_KEY = "Pattern";
-
+    public ElapsedTime stallTimer;
+    private Pose startPose = new Pose(56.5, 9, Math.PI / 2);
     private Timer pathTimer, actionTimer, opmodeTimer;
 
     @Override
     public void init() {
 
         robot = new Robot(hardwareMap, telemetry, this);
+        TurretLogic.tolerance = robot.turret.degreesToTicks(8);
+        telemetry.addData("tolerance value test pt 1", TurretLogic.tolerance);
+        telemetry.addData("tolerance value test pt 2", robot.turret.tolerance);
         auto = new AutonomousPlusPLUS(robot);
+        robot.turret.activeMode = TurretLogic.controlMode.FULL;
 
-        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+        // Tell the driver that initialization is complete.
+        telemetry.addData("Status", "Initialized");
 
-        follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(144-50.188, 9.200, Math.toRadians(90)));
+        robot.randomizationScanner.InitLimeLight(0);
+        blackboard.put(ALLIANCE_KEY, "BLUE");
+        stallTimer = new ElapsedTime();
+
+        robot.turret.follower.setPose(startPose);
+        robot.turret.follower.setHeading(startPose.getHeading());
+
+        robot.alliance = BLUE;
 
         paths = new PathsForBack12Blue(follower, pathTimer); // Build paths
 

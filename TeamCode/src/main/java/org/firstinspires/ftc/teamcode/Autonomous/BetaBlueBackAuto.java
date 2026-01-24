@@ -135,7 +135,7 @@ public class BetaBlueBackAuto extends OpMode {
         telemetry.addData("tolerance value test pt 1", TurretLogic.tolerance);
         telemetry.addData("tolerance value test pt 2", robot.turret.tolerance);
         auto = new AutonomousPlusPLUS(robot);
-        robot.turret.activeMode = TurretLogic.controlMode.OVERIDE;
+        robot.turret.activeMode = TurretLogic.controlMode.FULL;
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
