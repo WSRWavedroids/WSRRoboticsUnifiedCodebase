@@ -26,12 +26,12 @@ public class BlueFront12Ball extends OpMode {
 
     public Robot robot = null;
     public AutonomousPlusPLUS auto = null;
-    private TelemetryManager panelsTelemetry; // Panels Telemetry instance
+    TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
-    private int pathState; // Current autonomous path state (state machine)
-    private PathsForFront12Blue paths; // Paths defined in the Paths class
+    int pathState; // Current autonomous path state (state machine)
+    PathsForFront12Blue paths; // Paths defined in the Paths class
 
-    private Timer pathTimer, actionTimer, opmodeTimer;
+    Timer pathTimer, actionTimer, opmodeTimer;
 
     @Override
     public void init() {

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Autonomous.PEDRO;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.BLUE;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueBack12Ball.Steps.*;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -18,7 +19,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Autonomous.AutonomousPlusPLUS;
-import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -29,16 +29,16 @@ public class BlueBack12Ball extends OpMode {
 
     public Robot robot = null;
     public AutonomousPlusPLUS auto = null;
-    private TelemetryManager panelsTelemetry; // Panels Telemetry instance
+    TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
-    private int pathState; // Current autonomous path state (state machine)
-    private PathsForBack12Blue paths; // Paths defined in the Paths class
+    int pathState; // Current autonomous path state (state machine)
+    PathsForBack12Blue paths; // Paths defined in the Paths class
 
     public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
     public static final String PATTERN_KEY = "Pattern";
     public ElapsedTime stallTimer;
-    private Pose startPose = new Pose(56.5, 9, Math.PI / 2);
-    private Timer pathTimer, actionTimer, opmodeTimer;
+    Pose startPose = new Pose(56.5, 9, Math.PI / 2); // Make sure this is set HERE
+    Timer pathTimer, actionTimer, opmodeTimer;
 
     @Override
     public void init() {
@@ -49,9 +49,6 @@ public class BlueBack12Ball extends OpMode {
         telemetry.addData("tolerance value test pt 2", robot.turret.tolerance);
         auto = new AutonomousPlusPLUS(robot);
         robot.turret.activeMode = TurretLogic.controlMode.FULL;
-
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
 
         robot.randomizationScanner.InitLimeLight(0);
         blackboard.put(ALLIANCE_KEY, "BLUE");
@@ -66,6 +63,8 @@ public class BlueBack12Ball extends OpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+        // Tell the driver that initialization is complete.
+        telemetry.addData("Status", "Initialized");
     }
 
     public void init_loop() {
@@ -112,7 +111,7 @@ public class BlueBack12Ball extends OpMode {
         pathState = autonomousPathUpdate(); // Update autonomous state machine
 
         // Log values to Panels and Driver Station
-        panelsTelemetry.debug("Path State", pathState);
+        panelsTelemetry.debug("Path State", currentStep);
         panelsTelemetry.debug("X", follower.getPose().getX());
         panelsTelemetry.debug("Y", follower.getPose().getY());
         panelsTelemetry.debug("Heading", follower.getPose().getHeading());
@@ -126,9 +125,10 @@ public class BlueBack12Ball extends OpMode {
         public PathChain YOINKMIDDLE;
         public PathChain GoHitGate;
         public PathChain MoveToScoreSecondPattern;
+        public PathChain MoveToScoreSecondPatternNoGate;
         public PathChain LineUpWithClose;
         public PathChain YOINKFAR;
-        public PathChain MoveToFireThridPattern;
+        public PathChain MoveToFireThirdPattern;
         public PathChain LineUpWithFarBalls;
         public PathChain YOINKCLOSE;
         public PathChain ScoreFinalPattern;
@@ -183,6 +183,18 @@ public class BlueBack12Ball extends OpMode {
                     .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(113))
                     .build();
 
+            MoveToScoreSecondPatternNoGate = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierCurve(
+                                    new Pose(9.953, 57.176),
+                                    new Pose(54.212, 62.682),
+                                    new Pose(57.600, 19.059)
+                            )
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(113))
+                    .build();
+
             LineUpWithClose = follower
                     .pathBuilder()
                     .addPath(
@@ -199,7 +211,7 @@ public class BlueBack12Ball extends OpMode {
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
 
-            MoveToFireThridPattern = follower
+            MoveToFireThirdPattern = follower
                     .pathBuilder()
                     .addPath(
                             new BezierLine(new Pose(10.000, 35.365), new Pose(57.812, 18.635))
@@ -241,19 +253,32 @@ public class BlueBack12Ball extends OpMode {
         }
     }
 
+    public enum Steps {
+        MOVE_TO_FIRE_1, FIRE_1,
+        LINE_UP_2, ENABLE_INTAKE_2, YOINK_2,
+        HIT_GATE, WAIT_FOR_GATE_EMPTY,
+        MOVE_TO_FIRE_2, FIRE_2,
+        LINE_UP_3, ENABLE_INTAKE_3, YOINK_3, MOVE_TO_FIRE_3, FIRE_3,
+        LINE_UP_4, ENABLE_INTAKE_4, YOINK_4, MOVE_TO_FIRE_4, FIRE_4,
+        END
+    }
 
+
+    private Steps currentStep = MOVE_TO_FIRE_1; // Current autonomous path state (state machine)
 
     public int autonomousPathUpdate() {
         // Add your state machine Here
         // Access paths with paths.pathName
         // Refer to the Pedro Pathing Docs (Auto Example) for an example state machine
 
-        switch (pathState) {
-            case 0:
+        emergencyFinishIfNeeded();
+
+        switch (currentStep) {
+            case MOVE_TO_FIRE_1:
                 follower.followPath(paths.MoveFromBackFiringZone);
-                setPathState(1);
+                setCurrentStep(FIRE_1);
                 break;
-            case 1:
+            case FIRE_1:
             /* You could check for
             - Follower State: "if(!follower.isBusy()) {}"
             - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
@@ -264,138 +289,132 @@ public class BlueBack12Ball extends OpMode {
                     /* Score Preload */
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     auto.fireMatchPattern();
-                    setPathState(2);
+                    setCurrentStep(LINE_UP_2);
                 }
                 break;
-            case 2:
+            case LINE_UP_2:
                 if (auto.fireInSequenceComplete()) {
                     follower.followPath(paths.LineUpWithMiddleBalls);
-                    setPathState(3);
+                    setCurrentStep(ENABLE_INTAKE_2);
                 }
                 break;
-            case 3:
-                emergencyFinishIfNeeded();
+            case ENABLE_INTAKE_2:
                 if (!follower.isBusy()) {
                     //Enable auto Intake
                     actionTimer.resetTimer();
-                    setPathState(4);
+                    setCurrentStep(YOINK_2);
                 }
                 break;
-            case 4:
-                emergencyFinishIfNeeded();
+            case YOINK_2:
                 if(actionTimer.getElapsedTime() > 250)
                 {
                     follower.followPath(paths.YOINKMIDDLE);
-                    setPathState(5);
+                    setCurrentStep(MOVE_TO_FIRE_2);
                 }
 
                 break;
-            case 5:
+            case HIT_GATE:
                 if (!follower.isBusy()) {
                     //Disable Auto intake
                     follower.followPath(paths.GoHitGate);
-                    setPathState(6);
+                    setCurrentStep(WAIT_FOR_GATE_EMPTY);
                 }
                 break;
-            case 6: //Wait to let balls out
+            case WAIT_FOR_GATE_EMPTY: //Wait to let balls out
                 if (!follower.isBusy()) {
                     actionTimer.resetTimer();
-                    setPathState(7);
+                    setCurrentStep(MOVE_TO_FIRE_2);
                 }
                 break;
-            case 7:
-                if (actionTimer.getElapsedTime() > 500) {
-                    follower.followPath(paths.MoveToScoreSecondPattern);
-                    setPathState(8);
+            case MOVE_TO_FIRE_2:
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.MoveToScoreSecondPatternNoGate);
+                    setCurrentStep(FIRE_2);
                 }
                 break;
-            case 8:
+            case FIRE_2:
                 if (!follower.isBusy()) {
                     auto.fireMatchPattern();
-                    setPathState(9);
+                    setCurrentStep(LINE_UP_3);
                 }
                 break;
-            case 9:
+            case LINE_UP_3:
                 if (auto.fireInSequenceComplete()) {
                     follower.followPath(paths.LineUpWithClose);
-                    setPathState(10);
+                    setCurrentStep(ENABLE_INTAKE_3);
                 }
                 break;
-            case 10:
+            case ENABLE_INTAKE_3:
                 if (!follower.isBusy()) {
                     //Enable auto intake
                     actionTimer.resetTimer();
-                    setPathState(11);
+                    setCurrentStep(YOINK_3);
                 }
                 break;
-            case 11:
+            case YOINK_3:
                 if (actionTimer.getElapsedTime() > 250) {
                     follower.followPath(paths.YOINKCLOSE);
-                    setPathState(12);
+                    setCurrentStep(MOVE_TO_FIRE_3);
                 }
-            case 12:
+            case MOVE_TO_FIRE_3:
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.MoveToFireThridPattern);
-                    setPathState(13);
+                    follower.followPath(paths.MoveToFireThirdPattern);
+                    setCurrentStep(FIRE_3);
                 }
                 break;
-            case 13:
+            case FIRE_3:
                 if (!follower.isBusy()) {
                     auto.fireMatchPattern();
-                    setPathState(14);
+                    setCurrentStep(LINE_UP_4);
                 }
                 break;
-            case 14:
+            case LINE_UP_4:
                 if (auto.fireInSequenceComplete()) {
                     follower.followPath(paths.LineUpWithFarBalls);
-                    setPathState(15);
+                    setCurrentStep(ENABLE_INTAKE_4);
                 }
                 break;
-            case 15:
+            case ENABLE_INTAKE_4:
                 if(!follower.isBusy())
                 {
                     //activate intake
                     actionTimer.resetTimer();
-                    setPathState(16);
+                    setCurrentStep(YOINK_4);
                 }
                 break;
-            case 16:
+            case YOINK_4:
                 if(actionTimer.getElapsedTime() > 0.25)
                 {
                     follower.followPath(paths.YOINKFAR);
-                    setPathState(17);
+                    setCurrentStep(MOVE_TO_FIRE_4);
                 }
                 break;
-            case 17:
+            case MOVE_TO_FIRE_4:
                 if(!follower.isBusy())
                 {
                     follower.followPath(paths.ScoreFinalPattern);
-                    setPathState(18);
+                    setCurrentStep(FIRE_4);
                 }
                 break;
-            case 18:
+            case FIRE_4:
                 if(!follower.isBusy())
                 {
                     auto.fireMatchPattern();
-                    setPathState(99);
+                    setCurrentStep(END);
                 }
                 break;
-
-
-            case 99:
+            case END:
                 return 0;
-
         }
         return 0;
     }
-    /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
 
-    void setPathState(int i) {
-        {
-            pathState = i;
-            pathTimer.resetTimer();
-        }
+    /** These change the states of the paths and actions.
+     * It will also reset the timers of the individual switches **/
 
+    void setCurrentStep(Steps nextStep) {
+        currentStep = nextStep;
+        pathTimer.resetTimer();
     }
 
     private void scan()
@@ -409,7 +428,7 @@ public class BlueBack12Ball extends OpMode {
         {
             robot.turret.updateTurretPositionXY();
             robot.sorterHardware.prepareNewMovement(0);
-            setPathState(99);
+            setCurrentStep(END);
         }
     }
 }

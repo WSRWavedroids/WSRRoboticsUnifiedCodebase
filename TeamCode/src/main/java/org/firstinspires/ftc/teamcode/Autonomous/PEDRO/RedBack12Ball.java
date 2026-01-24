@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous.PEDRO;
 
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
+import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.RED;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
 
 import com.bylazar.configurables.annotations.Configurable;
@@ -20,84 +21,32 @@ import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Red Back 12 Ball", group = "Autonomous")
+@Autonomous(name = "Red Back 12 Ball", group = "1. FABIO WITH PEDRO")
 @Configurable // Panels
-public class RedBack12Ball extends OpMode {
+public class RedBack12Ball extends BlueBack12Ball {
 
-    public Robot robot = null;
-    public AutonomousPlusPLUS auto = null;
-    private TelemetryManager panelsTelemetry; // Panels Telemetry instance
-    public Follower follower; // Pedro Pathing follower instance
-    private int pathState; // Current autonomous path state (state machine)
-    private PathsForBack12Red paths; // Paths defined in the Paths class
-
-    private Timer pathTimer, actionTimer, opmodeTimer;
 
     @Override
     public void init() {
+        startPose = new Pose(144-50.188, 9.200, Math.toRadians(90));
 
-        robot = new Robot(hardwareMap, telemetry, this);
-        auto = new AutonomousPlusPLUS(robot);
+        super.init();
 
-        panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
-        follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(144-50.188, 9.200, Math.toRadians(90)));
 
+        robot.alliance = RED;
+
         paths = new PathsForBack12Red(follower, pathTimer); // Build paths
+
+        blackboard.put(ALLIANCE_KEY, "RED");
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
     }
 
-    public void init_loop() {
-        telemetry.addData("HYPE", "ARE! YOU! READY?!?!?!?!");
-
-        robot.pattern = robot.randomizationScanner.GetRandomization();
-        telemetry.addData(String.valueOf(robot.pattern), " Works!");
-        telemetry.update();
-    }
-
-    /**
-     * Code to run ONCE when the driver hits PLAY
-     */
-    public void start() {
-        //runtime.reset();
-        telemetry.addData("HYPE", "Let's do this!!!");
-        robot.readyHardware(true);
-        robot.sorterHardware.legalToSpin = true;
-        //speed = 1;
-    }
-
-    @Override
-    public void loop() {
-        follower.update(); // Update Pedro Pathing
-        pathState = autonomousPathUpdate(); // Update autonomous state machine
-
-        // Log values to Panels and Driver Station
-        panelsTelemetry.debug("Path State", pathState);
-        panelsTelemetry.debug("X", follower.getPose().getX());
-        panelsTelemetry.debug("Y", follower.getPose().getY());
-        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
-        panelsTelemetry.update(telemetry);
-    }
-
-    public static class PathsForBack12Red {
-
-        public PathChain MoveFromBackFiringZone;
-        public PathChain LineUpWithMiddleBalls;
-        public PathChain YOINKMIDDLE;
-        public PathChain GoHitGate;
-        public PathChain MoveToScoreSecondPattern;
-        public PathChain LineUpWithClose;
-        public PathChain YOINKFAR;
-        public PathChain MoveToFireThridPattern;
-        public PathChain LineUpWithFarBalls;
-        public PathChain YOINKCLOSE;
-        public PathChain ScoreFinalPattern;
-        public PathChain Unpark;
-
+    public static class PathsForBack12Red extends PathsForBack12Blue {
         public PathsForBack12Red(Follower follower, Timer pathTimer) {
+            super(follower, pathTimer);
             MoveFromBackFiringZone = follower
                     .pathBuilder()
                     .addPath(
@@ -162,7 +111,7 @@ public class RedBack12Ball extends OpMode {
                     .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
                     .build();
 
-            MoveToFireThridPattern = follower
+            MoveToFireThirdPattern = follower
                     .pathBuilder()
                     .addPath(
                             new BezierLine(new Pose(144-10.000, 35.365), new Pose(144-57.812, 18.635))
@@ -201,176 +150,6 @@ public class RedBack12Ball extends OpMode {
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(50), Math.toRadians(180))
                     .build();
-        }
-    }
-
-
-
-    public int autonomousPathUpdate() {
-        emergencyFinishIfNeeded();
-        // Add your state machine Here
-        // Access paths with paths.pathName
-        // Refer to the Pedro Pathing Docs (Auto Example) for an example state machine
-        switch (pathState) {
-            case 0:
-                follower.followPath(paths.MoveFromBackFiringZone);
-                setPathState(1);
-                break;
-            case 1:
-            /* You could check for
-            - Follower State: "if(!follower.isBusy()) {}"
-            - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
-            - Robot Position: "if(follower.getPose().getX() > 36) {}"
-            */
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if (!follower.isBusy()) {
-                    /* Score Preload */
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    auto.fireMatchPattern();
-                    setPathState(2);
-                }
-                break;
-            case 2:
-                if (auto.fireInSequenceComplete()) {
-                    follower.followPath(paths.LineUpWithMiddleBalls);
-                    setPathState(3);
-                }
-                break;
-            case 3:
-                if (!follower.isBusy()) {
-                    //Enable auto Intake
-                    actionTimer.resetTimer();
-                    setPathState(4);
-                }
-                break;
-            case 4:
-
-                if(actionTimer.getElapsedTime() > 250)
-                {
-                    follower.followPath(paths.YOINKMIDDLE);
-                    setPathState(5);
-                }
-
-                break;
-            case 5:
-                if (!follower.isBusy()) {
-                    //Disable Auto intake
-                    follower.followPath(paths.GoHitGate);
-                    setPathState(6);
-                }
-                break;
-            case 6: //Wait to let balls out
-                if (!follower.isBusy()) {
-                    actionTimer.resetTimer();
-                    setPathState(7);
-                }
-                break;
-            case 7:
-                if (actionTimer.getElapsedTime() > 500) {
-                    follower.followPath(paths.MoveToScoreSecondPattern);
-                    setPathState(8);
-                }
-                break;
-            case 8:
-                if (!follower.isBusy()) {
-                    auto.fireMatchPattern();
-                    setPathState(9);
-                }
-                break;
-            case 9:
-                if (auto.fireInSequenceComplete()) {
-                    follower.followPath(paths.LineUpWithClose);
-                    setPathState(10);
-                }
-                break;
-            case 10:
-                if (!follower.isBusy()) {
-                    //Enable auto intake
-                    actionTimer.resetTimer();
-                    setPathState(11);
-                }
-                break;
-            case 11:
-                if (actionTimer.getElapsedTime() > 250) {
-                    follower.followPath(paths.YOINKCLOSE);
-                    setPathState(12);
-                }
-            case 12:
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.MoveToFireThridPattern);
-                    setPathState(13);
-                }
-                break;
-            case 13:
-                if (!follower.isBusy()) {
-                    auto.fireMatchPattern();
-                    setPathState(14);
-                }
-                break;
-            case 14:
-                if (auto.fireInSequenceComplete()) {
-                    follower.followPath(paths.LineUpWithFarBalls);
-                    setPathState(15);
-                }
-                break;
-            case 15:
-                if(!follower.isBusy())
-                {
-                    //activate intake
-                    actionTimer.resetTimer();
-                    setPathState(16);
-                }
-                break;
-            case 16:
-                if(actionTimer.getElapsedTime() > 0.25)
-                {
-                    follower.followPath(paths.YOINKFAR);
-                    setPathState(17);
-                }
-                break;
-            case 17:
-                if(!follower.isBusy())
-                {
-                    follower.followPath(paths.ScoreFinalPattern);
-                    setPathState(18);
-                }
-                break;
-            case 18:
-                if(!follower.isBusy())
-                {
-                    auto.fireMatchPattern();
-                    setPathState(99);
-                }
-                break;
-
-
-            case 99:
-                return 0;
-
-        }
-        return 0;
-    }
-    /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
-
-    void setPathState(int i) {
-        {
-            pathState = i;
-            pathTimer.resetTimer();
-        }
-
-    }
-
-    private void scan()
-    {
-        
-    }
-
-    private void emergencyFinishIfNeeded()
-    {
-        if(opmodeTimer.getElapsedTimeSeconds() > 29.5)
-        {
-            robot.sorterHardware.prepareNewMovement(0);
-            setPathState(99);
         }
     }
 }

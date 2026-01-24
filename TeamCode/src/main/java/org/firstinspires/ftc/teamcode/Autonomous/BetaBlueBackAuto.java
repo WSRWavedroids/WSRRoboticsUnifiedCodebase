@@ -119,7 +119,7 @@ public class BetaBlueBackAuto extends OpMode {
     public static final String PATTERN_KEY = "Pattern";
 
 
-    private Pose startPose = new Pose(56.5, 9, Math.PI / 2);
+    private final Pose startPose = new Pose(56.5, 9, Math.PI / 2);
 
     /**
      * Code to run ONCE when the driver hits INIT
