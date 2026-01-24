@@ -314,6 +314,7 @@ public boolean doneLaunching = false;
                     launchLeft.setVelocity(-0);
                     launchRight.setVelocity(-0);
                     doneLaunching = true;
+                    currentstep = START;
                     break;
             }
         }

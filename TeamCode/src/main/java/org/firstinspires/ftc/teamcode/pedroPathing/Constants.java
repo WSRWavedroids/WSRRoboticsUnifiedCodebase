@@ -33,9 +33,13 @@ public class Constants {
             .headingPIDFCoefficients(new PIDFCoefficients(1, 0, 0.129, 0.1))
             .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1, 0, 0.129, 0.01))
             .centripetalScaling(0.0007)
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.025,0,0.00001,0.6,0.1))
-            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.02,0,0.000004,0.6,0.01));
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1000, 1);
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.015,0,0.0007,0.6,0.1))
+            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.015,0,0.001,0.6,0.1));
+    public static PathConstraints pathConstraints = new PathConstraints(
+            0.99,
+            100,
+            3.3,
+            1);
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
             .rightFrontMotorName("frontRightDrive")
