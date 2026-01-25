@@ -70,7 +70,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                             new BezierLine(
                                     new Pose(58.100, 16.600),
 
-                                    new Pose(41.000, 35.700)
+                                    new Pose(44.000, 35.700)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(360))
 
@@ -80,7 +80,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                             new BezierLine(
                                     new Pose(41.000, 35.700),
 
-                                    new Pose(23.100, 35.700)
+                                    new Pose(8.5, 35.700)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
 
@@ -100,7 +100,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                             new BezierLine(
                                     new Pose(58.100, 16.600),
 
-                                    new Pose(41.000, 60.000)
+                                    new Pose(44.000, 60.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(360))
 
@@ -110,7 +110,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                             new BezierLine(
                                     new Pose(41.000, 60.000),
 
-                                    new Pose(23.100, 60.000)
+                                    new Pose(8.5, 60.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
 
@@ -130,7 +130,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                             new BezierLine(
                                     new Pose(58.100, 16.600),
 
-                                    new Pose(41.000, 84.000)
+                                    new Pose(44.000, 84.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(360))
 
@@ -140,7 +140,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                             new BezierLine(
                                     new Pose(41.000, 84.000),
 
-                                    new Pose(23.100, 84.000)
+                                    new Pose(17.5, 84.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
 
@@ -191,7 +191,7 @@ private ElapsedTime cooldown = new ElapsedTime();
                 break;
 
             case LAUNCH0:
-                follower.setMaxPower(1);
+                follower.setMaxPower(2);
                 follower.followPath(runPath.Launch0);
                 nextStep(SHOOT0BALL1);
                 break;
@@ -209,7 +209,9 @@ private ElapsedTime cooldown = new ElapsedTime();
             case INTAKESETUP1:
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
-                    robot.intake3.setPower(0.8);
+                    robot.intake3.setPower(0.55);
+                    robot.launchLeft.setPower(0.4);
+                    robot.launchRight.setPower(0.4);
                     follower.setMaxPower(0.25);
                     follower.followPath(runPath.Intake1);
                     nextStep(INTAKE1);
@@ -218,9 +220,11 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             case INTAKE1:
                 if(!follower.isBusy()) {
-                    robot.intakeMotor.setPower(0);
-                    robot.intake3.setPower(0);
-                    follower.setMaxPower(1);
+                    follower.setMaxPower(2);
+                    robot.intakeMotor.setPower(1);
+                    robot.intake3.setPower(-1);
+                    robot.launchLeft.setPower(0);
+                    robot.launchRight.setPower(0);
                     follower.followPath(runPath.Launch1);
                     nextStep(LAUNCH1);
                 }
@@ -228,6 +232,8 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             case LAUNCH1:
                 if(!follower.isBusy()) {
+                    robot.intakeMotor.setPower(0);
+                    robot.intake3.setPower(0);
                     nextStep(SHOOT1BALL1);
                 }
                 break;
@@ -246,7 +252,9 @@ private ElapsedTime cooldown = new ElapsedTime();
             case INTAKESETUP2:
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
-                    robot.intake3.setPower(0.8);
+                    robot.intake3.setPower(0.55);
+                    robot.launchLeft.setPower(0.4);
+                    robot.launchRight.setPower(0.4);
                     follower.setMaxPower(.25);
                     follower.followPath(runPath.Intake2);
                     nextStep(INTAKE2);
@@ -256,9 +264,11 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             case INTAKE2:
                 if(!follower.isBusy()) {
-                    robot.intakeMotor.setPower(0);
-                    robot.intake3.setPower(0);
-                    follower.setMaxPower(1);
+                    follower.setMaxPower(2);
+                    robot.intakeMotor.setPower(1);
+                    robot.intake3.setPower(-1);
+                    robot.launchLeft.setPower(0);
+                    robot.launchRight.setPower(0);
                     follower.followPath(runPath.Launch2);
                     nextStep(LAUNCH2);
                 }
@@ -266,6 +276,8 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             case LAUNCH2:
                 if(!follower.isBusy()) {
+                    robot.intakeMotor.setPower(0);
+                    robot.intake3.setPower(0);
                     nextStep(SHOOT2BALL1);
                 }
                 break;
@@ -284,7 +296,9 @@ private ElapsedTime cooldown = new ElapsedTime();
             case INTAKESETUP3:
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
-                    robot.intake3.setPower(0.8);
+                    robot.intake3.setPower(0.55);
+                    robot.launchLeft.setPower(0.4);
+                    robot.launchRight.setPower(0.4);
                     follower.setMaxPower(.25);
                     follower.followPath(runPath.Intake3);
                     nextStep(INTAKE3);
@@ -293,9 +307,11 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             case INTAKE3:
                 if(!follower.isBusy()) {
-                    robot.intakeMotor.setPower(0);
-                    robot.intake3.setPower(0);
-                    follower.setMaxPower(1);
+                    follower.setMaxPower(2);
+                    robot.intakeMotor.setPower(1);
+                    robot.intake3.setPower(-1);
+                    robot.launchLeft.setPower(0);
+                    robot.launchRight.setPower(0);
                     follower.followPath(runPath.Launch3);
                     nextStep(LAUNCH3);
                 }
@@ -303,6 +319,8 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             case LAUNCH3:
                 if(!follower.isBusy()) {
+                    robot.intakeMotor.setPower(0);
+                    robot.intake3.setPower(0);
                     nextStep(SHOOT3BALL1);
                 }
                 break;

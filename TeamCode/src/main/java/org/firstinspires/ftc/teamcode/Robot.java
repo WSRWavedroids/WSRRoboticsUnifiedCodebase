@@ -320,10 +320,6 @@ public boolean doneLaunching = false;
         }
 
 
-
-
-
-
     ElapsedTime timer = new ElapsedTime();
 
     public double tuningspd = 0.5;
