@@ -53,9 +53,177 @@ public class PedroRedFarlaunch12Ball extends OpMode {
         robot.initLimelight();
     }
 
-    @Override
-    public void loop() {
 
+    public void loop() {
+        robot.setupLaunchers();
+        robot.getApriltagDistance();
+        telemetry.addData("ODOMETRY X", follower.getPose().getX());
+        telemetry.addData("ODOMETRY Y", follower.getPose().getY());
+        telemetry.addData("Launch State", robot.doneLaunching);
+        telemetry.addData("Cooldown", robot.cooldown);
+        telemetry.addData("Follower is Busy", follower.isBusy());
+        follower.update();
+        switch (currentstep) {
+            case START:
+                nextStep(LAUNCH0);
+                break;
+
+            case LAUNCH0:
+                follower.setMaxPower(2);
+                follower.followPath(runPath.Launch0);
+                nextStep(SHOOT0BALL1);
+                break;
+
+            case SHOOT0BALL1:
+                if (!follower.isBusy()) {
+                    robot.launchLoop(100, 2500);
+                    if (robot.doneLaunching) {
+                        follower.followPath(runPath.IntakeSetup1);
+                        nextStep(INTAKESETUP1);
+                    }
+                }
+                break;
+
+            case INTAKESETUP1:
+                if (!follower.isBusy()) {
+                    robot.intakeMotor.setPower(1);
+                    robot.intake3.setPower(0.55);
+                    robot.launchLeft.setPower(0.4);
+                    robot.launchRight.setPower(0.4);
+                    follower.setMaxPower(0.25);
+                    follower.followPath(runPath.Intake1);
+                    nextStep(INTAKE1);
+                }
+                break;
+
+            case INTAKE1:
+                if (!follower.isBusy()) {
+                    follower.setMaxPower(2);
+                    robot.intakeMotor.setPower(1);
+                    robot.intake3.setPower(-1);
+                    robot.launchLeft.setPower(0);
+                    robot.launchRight.setPower(0);
+                    follower.followPath(runPath.Launch1);
+                    nextStep(LAUNCH1);
+                }
+                break;
+
+            case LAUNCH1:
+                if (!follower.isBusy()) {
+                    robot.intakeMotor.setPower(0);
+                    robot.intake3.setPower(0);
+                    nextStep(SHOOT1BALL1);
+                }
+                break;
+
+            case SHOOT1BALL1:
+                if (!follower.isBusy()) {
+                    robot.launchLoop(100, 2500);
+                    if (robot.doneLaunching) {
+                        follower.followPath(runPath.IntakeSetup2);
+                        nextStep(INTAKESETUP2);
+                    }
+                }
+                break;
+
+
+            case INTAKESETUP2:
+                if (!follower.isBusy()) {
+                    robot.intakeMotor.setPower(1);
+                    robot.intake3.setPower(0.55);
+                    robot.launchLeft.setPower(0.4);
+                    robot.launchRight.setPower(0.4);
+                    follower.setMaxPower(.25);
+                    follower.followPath(runPath.Intake2);
+                    nextStep(INTAKE2);
+                }
+
+                break;
+
+            case INTAKE2:
+                if (!follower.isBusy()) {
+                    follower.setMaxPower(2);
+                    robot.intakeMotor.setPower(1);
+                    robot.intake3.setPower(-1);
+                    robot.launchLeft.setPower(0);
+                    robot.launchRight.setPower(0);
+                    follower.followPath(runPath.Launch2);
+                    nextStep(LAUNCH2);
+                }
+                break;
+
+            case LAUNCH2:
+                if (!follower.isBusy()) {
+                    robot.intakeMotor.setPower(0);
+                    robot.intake3.setPower(0);
+                    nextStep(SHOOT2BALL1);
+                }
+                break;
+
+            case SHOOT2BALL1:
+                if (!follower.isBusy()) {
+                    robot.launchLoop(100, 2500);
+                    if (robot.doneLaunching) {
+                        follower.followPath(runPath.IntakeSetup3);
+                        nextStep(INTAKESETUP3);
+                    }
+                }
+
+                break;
+
+            case INTAKESETUP3:
+                if (!follower.isBusy()) {
+                    robot.intakeMotor.setPower(1);
+                    robot.intake3.setPower(0.55);
+                    robot.launchLeft.setPower(0.4);
+                    robot.launchRight.setPower(0.4);
+                    follower.setMaxPower(.25);
+                    follower.followPath(runPath.Intake3);
+                    nextStep(INTAKE3);
+                }
+                break;
+
+            case INTAKE3:
+                if (!follower.isBusy()) {
+                    follower.setMaxPower(2);
+                    robot.intakeMotor.setPower(1);
+                    robot.intake3.setPower(-1);
+                    robot.launchLeft.setPower(0);
+                    robot.launchRight.setPower(0);
+                    follower.followPath(runPath.Launch3);
+                    nextStep(LAUNCH3);
+                }
+                break;
+
+            case LAUNCH3:
+                if (!follower.isBusy()) {
+                    robot.intakeMotor.setPower(0);
+                    robot.intake3.setPower(0);
+                    nextStep(SHOOT3BALL1);
+                }
+                break;
+
+            case SHOOT3BALL1:
+                if (!follower.isBusy()) {
+                    robot.launchLoop(100, 2500);
+                    if (robot.doneLaunching) {
+                        follower.followPath(runPath.Unpark);
+                        nextStep(UNPARK);
+                    }
+                }
+                break;
+
+            case UNPARK:
+
+                break;
+            case END:
+                if (!follower.isBusy()) {
+                    requestOpModeStop();
+                }
+                break;
+        }
+
+        telemetry.addData("Current Step", currentstep);
     }
 
     enum Steps {
@@ -210,7 +378,7 @@ public class PedroRedFarlaunch12Ball extends OpMode {
 
                     .build();
         }
-
+    }
 
         private Paths runPath;
 
@@ -218,180 +386,9 @@ public class PedroRedFarlaunch12Ball extends OpMode {
             runPath = new Paths(follower);
         }
 
-        public void loop() {
-            robot.setupLaunchers();
-            robot.getApriltagDistance();
-            telemetry.addData("ODOMETRY X", follower.getPose().getX());
-            telemetry.addData("ODOMETRY Y", follower.getPose().getY());
-            telemetry.addData("Launch State", robot.doneLaunching);
-            telemetry.addData("Cooldown", robot.cooldown);
-            telemetry.addData("Follower is Busy", follower.isBusy());
-            follower.update();
-            switch (currentstep) {
-                case START:
-                    nextStep(LAUNCH0);
-                    break;
-
-                case LAUNCH0:
-                    follower.setMaxPower(2);
-                    follower.followPath(runPath.Launch0);
-                    nextStep(SHOOT0BALL1);
-                    break;
-
-                case SHOOT0BALL1:
-                    if (!follower.isBusy()) {
-                        robot.launchLoop(100, 2500);
-                        if (robot.doneLaunching) {
-                            follower.followPath(runPath.IntakeSetup1);
-                            nextStep(INTAKESETUP1);
-                        }
-                    }
-                    break;
-
-                case INTAKESETUP1:
-                    if (!follower.isBusy()) {
-                        robot.intakeMotor.setPower(1);
-                        robot.intake3.setPower(0.55);
-                        robot.launchLeft.setPower(0.4);
-                        robot.launchRight.setPower(0.4);
-                        follower.setMaxPower(0.25);
-                        follower.followPath(runPath.Intake1);
-                        nextStep(INTAKE1);
-                    }
-                    break;
-
-                case INTAKE1:
-                    if (!follower.isBusy()) {
-                        follower.setMaxPower(2);
-                        robot.intakeMotor.setPower(1);
-                        robot.intake3.setPower(-1);
-                        robot.launchLeft.setPower(0);
-                        robot.launchRight.setPower(0);
-                        follower.followPath(runPath.Launch1);
-                        nextStep(LAUNCH1);
-                    }
-                    break;
-
-                case LAUNCH1:
-                    if (!follower.isBusy()) {
-                        robot.intakeMotor.setPower(0);
-                        robot.intake3.setPower(0);
-                        nextStep(SHOOT1BALL1);
-                    }
-                    break;
-
-                case SHOOT1BALL1:
-                    if (!follower.isBusy()) {
-                        robot.launchLoop(100, 2500);
-                        if (robot.doneLaunching) {
-                            follower.followPath(runPath.IntakeSetup2);
-                            nextStep(INTAKESETUP2);
-                        }
-                    }
-                    break;
 
 
-                case INTAKESETUP2:
-                    if (!follower.isBusy()) {
-                        robot.intakeMotor.setPower(1);
-                        robot.intake3.setPower(0.55);
-                        robot.launchLeft.setPower(0.4);
-                        robot.launchRight.setPower(0.4);
-                        follower.setMaxPower(.25);
-                        follower.followPath(runPath.Intake2);
-                        nextStep(INTAKE2);
-                    }
 
-                    break;
-
-                case INTAKE2:
-                    if (!follower.isBusy()) {
-                        follower.setMaxPower(2);
-                        robot.intakeMotor.setPower(1);
-                        robot.intake3.setPower(-1);
-                        robot.launchLeft.setPower(0);
-                        robot.launchRight.setPower(0);
-                        follower.followPath(runPath.Launch2);
-                        nextStep(LAUNCH2);
-                    }
-                    break;
-
-                case LAUNCH2:
-                    if (!follower.isBusy()) {
-                        robot.intakeMotor.setPower(0);
-                        robot.intake3.setPower(0);
-                        nextStep(SHOOT2BALL1);
-                    }
-                    break;
-
-                case SHOOT2BALL1:
-                    if (!follower.isBusy()) {
-                        robot.launchLoop(100, 2500);
-                        if (robot.doneLaunching) {
-                            follower.followPath(runPath.IntakeSetup3);
-                            nextStep(INTAKESETUP3);
-                        }
-                    }
-
-                    break;
-
-                case INTAKESETUP3:
-                    if (!follower.isBusy()) {
-                        robot.intakeMotor.setPower(1);
-                        robot.intake3.setPower(0.55);
-                        robot.launchLeft.setPower(0.4);
-                        robot.launchRight.setPower(0.4);
-                        follower.setMaxPower(.25);
-                        follower.followPath(runPath.Intake3);
-                        nextStep(INTAKE3);
-                    }
-                    break;
-
-                case INTAKE3:
-                    if (!follower.isBusy()) {
-                        follower.setMaxPower(2);
-                        robot.intakeMotor.setPower(1);
-                        robot.intake3.setPower(-1);
-                        robot.launchLeft.setPower(0);
-                        robot.launchRight.setPower(0);
-                        follower.followPath(runPath.Launch3);
-                        nextStep(LAUNCH3);
-                    }
-                    break;
-
-                case LAUNCH3:
-                    if (!follower.isBusy()) {
-                        robot.intakeMotor.setPower(0);
-                        robot.intake3.setPower(0);
-                        nextStep(SHOOT3BALL1);
-                    }
-                    break;
-
-                case SHOOT3BALL1:
-                    if (!follower.isBusy()) {
-                        robot.launchLoop(100, 2500);
-                        if (robot.doneLaunching) {
-                            follower.followPath(runPath.Unpark);
-                            nextStep(UNPARK);
-                        }
-                    }
-                    break;
-
-                case UNPARK:
-
-                    break;
-                case END:
-                    if (!follower.isBusy()) {
-                        requestOpModeStop();
-                    }
-                    break;
-            }
-
-            telemetry.addData("Current Step", currentstep);
-        }
-
-
-    }
 }
 
 
