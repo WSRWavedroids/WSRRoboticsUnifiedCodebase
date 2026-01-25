@@ -137,9 +137,9 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         robot.robotPosition.x = startingPose.getX();
         robot.robotPosition.y = startingPose.getY();
-        robot.robotHeading = Math.toRadians(startingPose.getHeading());
+        robot.robotHeading = startingPose.getHeading();
         robot.turret.follower.setPose(startingPose);
-        robot.turret.follower.setHeading(Math.toRadians(startingPose.getHeading()));
+        robot.turret.follower.setHeading(startingPose.getHeading());
     }
 
     private void grabStartPose() {
@@ -230,7 +230,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         launcherToggle();
 
-        //manualTuneLauncher();
+        manualTuneLauncher();
 
         fireCurrentFireSlot();
 

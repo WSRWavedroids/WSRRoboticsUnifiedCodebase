@@ -51,20 +51,21 @@ public class LauncherHardware {
     public static final int revolutionsPerSecond = 100;
     public static double toleranceRange = 50;
 
-    public double velocityTarget;
+    public static double velocityTarget;
     public double percentSpeed;
     public int steadiness = 0;
     public final int steadinessThreshold = 3;
 
     public boolean onCooldown = false;
+    public static boolean manualTuneMode;
 
     LauncherMode mode;
     private double waitTime;
     private ElapsedTime waitForSafeTimer = new ElapsedTime();
 
-    public static double p = 75;
-    public static double i = 5;
-    public static double d = 2.5;
+    public static double p = 100;
+    public static double i = 7.5;
+    public static double d = 0;
     public static double f = 0;
 
     public enum LauncherSteps {
@@ -87,9 +88,9 @@ public class LauncherHardware {
     private ElapsedTime cooldownTimer = new ElapsedTime();
 
     public void updateLauncherHardware() {
-        //robot.panelsTelemetry.addData("Launcher Velocity", motor.getVelocity());
-        //robot.panelsTelemetry.addData("Target Launcher Velocity", velocityTarget);
-        //robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
+        robot.panelsTelemetry.addData("Launcher Velocity", motor.getVelocity());
+        robot.panelsTelemetry.addData("Target Launcher Velocity", velocityTarget);
+        robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
 
         switch (currentLauncherStep) {
             case READY_FOR_COMMANDS:
@@ -240,7 +241,9 @@ public class LauncherHardware {
     }
 
     public void setLauncherVelocity(double targetVelocity) {
-        velocityTarget = targetVelocity;
+        if (!manualTuneMode) {
+            velocityTarget = targetVelocity;
+        }
         motor.setVelocity(velocityTarget);
     }
     public void setPerfectLauncherVelocity() {
@@ -289,7 +292,7 @@ public class LauncherHardware {
             input /= 39.37; //convert to meters
 
         }
-        return 201 * input + 1073;
+        return (43.75095 * Math.pow(input, 2)) + (-73.54794 * input) + 1297.48932;
 
     }
 }

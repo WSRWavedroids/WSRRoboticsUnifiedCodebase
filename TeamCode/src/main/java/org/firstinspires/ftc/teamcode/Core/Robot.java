@@ -118,7 +118,7 @@ public class Robot {
 
     public Panels panels;
 
-    //public static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+    public static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
     public enum DriveMode {ROBOT_CENTRIC, PEDRO, LEGACY_FIELD_CENTRIC}
     public enum OpenClosed {OPEN,CLOSED}
@@ -405,7 +405,7 @@ public class Robot {
             targetTag = targetScanner.tagInfo();
         }
 
-        //panelsTelemetry.update();
+        panelsTelemetry.update();
 
         //dumpAllTelemetryFromUpdate();
     }
