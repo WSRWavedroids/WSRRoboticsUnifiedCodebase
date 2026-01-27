@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueBack12Ball.Ste
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -37,16 +38,24 @@ public class BlueBack12Ball extends OpMode {
     public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
     public static final String PATTERN_KEY = "Pattern";
     public ElapsedTime stallTimer;
-    Pose startPose = new Pose(56.5, 9, Math.PI / 2); // Make sure this is set HERE
+    Pose startPose = new Pose(50.188, 9.200, Math.PI / 2); // Make sure this is set HERE
     Timer pathTimer, actionTimer, opmodeTimer;
 
     @Override
     public void init() {
 
         robot = new Robot(hardwareMap, telemetry, this);
-        TurretLogic.tolerance = robot.turret.degreesToTicks(8);
+        TurretLogic.tolerance = TurretLogic.degreesToTicks(8);
+        follower = robot.turret.follower;
+        follower.setMaxPowerScaling(1);
+        follower.setMaxPower(1);
+        robot.callPartialPedro = false;
+        panelsTelemetry = Robot.panelsTelemetry;
+        opmodeTimer = new Timer();
+        pathTimer = new Timer();
+        actionTimer = new Timer();
         telemetry.addData("tolerance value test pt 1", TurretLogic.tolerance);
-        telemetry.addData("tolerance value test pt 2", robot.turret.tolerance);
+        telemetry.addData("tolerance value test pt 2", TurretLogic.tolerance);
         auto = new AutonomousPlusPLUS(robot);
         robot.turret.activeMode = TurretLogic.controlMode.FULL;
 
@@ -59,7 +68,7 @@ public class BlueBack12Ball extends OpMode {
 
         robot.alliance = BLUE;
 
-        paths = new PathsForBack12Blue(follower, pathTimer); // Build paths
+        paths = new PathsForBack12Blue(follower); // Build paths
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
@@ -98,6 +107,7 @@ public class BlueBack12Ball extends OpMode {
      */
     public void start() {
         //runtime.reset();
+        opmodeTimer.resetTimer();
         telemetry.addData("HYPE", "Let's do this!!!");
         robot.readyHardware(true);
         robot.sorterHardware.legalToSpin = true;
@@ -115,6 +125,8 @@ public class BlueBack12Ball extends OpMode {
         panelsTelemetry.debug("X", follower.getPose().getX());
         panelsTelemetry.debug("Y", follower.getPose().getY());
         panelsTelemetry.debug("Heading", follower.getPose().getHeading());
+        panelsTelemetry.debug("Max Power Scalar", follower.getMaxPowerScaling());
+        panelsTelemetry.debug("Motor power", robot.frontLeftDrive.getVelocity());
         panelsTelemetry.update(telemetry);
     }
 
@@ -134,11 +146,13 @@ public class BlueBack12Ball extends OpMode {
         public PathChain ScoreFinalPattern;
         public PathChain Unpark;
 
-        public PathsForBack12Blue(Follower follower, Timer pathTimer) {
-            MoveFromBackFiringZone = follower
-                    .pathBuilder()
+        public PathsForBack12Blue(Follower follower) {
+            MoveFromBackFiringZone = follower.pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(50.188, 9.200), new Pose(57.689, 19.006))
+                            new BezierLine(
+                                    new Pose(50.188, 9.200),
+                                    new Pose(57.689, 19.006)
+                            )
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(113))
                     .build();
@@ -254,6 +268,7 @@ public class BlueBack12Ball extends OpMode {
     }
 
     public enum Steps {
+        START,
         MOVE_TO_FIRE_1, FIRE_1,
         LINE_UP_2, ENABLE_INTAKE_2, YOINK_2,
         HIT_GATE, WAIT_FOR_GATE_EMPTY,
@@ -264,7 +279,7 @@ public class BlueBack12Ball extends OpMode {
     }
 
 
-    private Steps currentStep = MOVE_TO_FIRE_1; // Current autonomous path state (state machine)
+    private Steps currentStep = START; // Current autonomous path state (state machine)
 
     public int autonomousPathUpdate() {
         // Add your state machine Here
@@ -274,6 +289,9 @@ public class BlueBack12Ball extends OpMode {
         emergencyFinishIfNeeded();
 
         switch (currentStep) {
+            case START:
+                setCurrentStep(MOVE_TO_FIRE_1);
+                break;
             case MOVE_TO_FIRE_1:
                 follower.followPath(paths.MoveFromBackFiringZone);
                 setCurrentStep(FIRE_1);
@@ -288,12 +306,12 @@ public class BlueBack12Ball extends OpMode {
                 if (!follower.isBusy()) {
                     /* Score Preload */
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    auto.fireMatchPattern();
+                    robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_2);
                 }
                 break;
             case LINE_UP_2:
-                if (auto.fireInSequenceComplete()) {
+                if (robot.queue.noBallsQueued) {
                     follower.followPath(paths.LineUpWithMiddleBalls);
                     setCurrentStep(ENABLE_INTAKE_2);
                 }

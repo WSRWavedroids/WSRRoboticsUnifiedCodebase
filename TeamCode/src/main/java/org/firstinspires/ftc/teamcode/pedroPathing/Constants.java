@@ -24,21 +24,22 @@ public class Constants {
             // MORE PEDRO ???
             .useSecondaryTranslationalPIDF(true)
             .useSecondaryHeadingPIDF(true)
-            .useSecondaryDrivePIDF(false)
+            .useSecondaryDrivePIDF(true)
 
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.015, 0.1, 0.009, 0.006))
-            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.075,0.0001,0.001, 0.006))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.015, 0.1, 0.009, 0.02))
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.075,0.0001,0.001, 0.02))
 
             .headingPIDFCoefficients(new PIDFCoefficients(0.9, 0, 0, 0.02))
             .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(0.9, 0.075, 0, 0.02))
 
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.01, 0.001, 0.001, 0, 0))
-            //.secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(.0, 0, 0, 0, 0))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.01, 0.001, 0.001, 0.5, 0.02))
+            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.0, 0, 0, 0, 0.02))
 
             .centripetalScaling(0.5)
-            .automaticHoldEnd(true);
+            .automaticHoldEnd(true)
+            ;
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 0);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)

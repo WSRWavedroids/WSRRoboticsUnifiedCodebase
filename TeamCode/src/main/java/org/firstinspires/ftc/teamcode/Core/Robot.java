@@ -103,7 +103,7 @@ public class Robot {
 
     public double turretPositionOffsetXInches = 2.72, turretPositionOffsetYInches =1.57; //Inches from pedro position
 
-
+    public boolean callPartialPedro = true;
 
 
     public SorterHardware sorterHardware;
@@ -379,7 +379,7 @@ public class Robot {
         //todo Reference that 1 inch ~= 50 ticks
     }
 
-    ElapsedTime timer = new ElapsedTime();
+    public ElapsedTime timer = new ElapsedTime();
 
     @Deprecated
     public void prepareAuto(){
@@ -392,7 +392,8 @@ public class Robot {
      */
     public void updateAllDaThings()
     {
-        turret.follower.updatePose();
+        if (callPartialPedro) turret.follower.updatePose();
+
         sorterLogic.update();
         sorterHardware.updateSorterHardware();
         launcher.updateLauncherHardware();
@@ -404,8 +405,6 @@ public class Robot {
         {
             targetTag = targetScanner.tagInfo();
         }
-
-        panelsTelemetry.update();
 
         //dumpAllTelemetryFromUpdate();
     }

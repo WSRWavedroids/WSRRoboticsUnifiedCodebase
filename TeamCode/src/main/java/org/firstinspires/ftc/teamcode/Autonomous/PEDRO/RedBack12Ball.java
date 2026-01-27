@@ -36,7 +36,7 @@ public class RedBack12Ball extends BlueBack12Ball {
 
         robot.alliance = RED;
 
-        paths = new PathsForBack12Red(follower, pathTimer); // Build paths
+        paths = new PathsForBack12Red(follower); // Build paths
 
         blackboard.put(ALLIANCE_KEY, "RED");
 
@@ -45,8 +45,8 @@ public class RedBack12Ball extends BlueBack12Ball {
     }
 
     public static class PathsForBack12Red extends PathsForBack12Blue {
-        public PathsForBack12Red(Follower follower, Timer pathTimer) {
-            super(follower, pathTimer);
+        public PathsForBack12Red(Follower follower) {
+            super(follower);
             MoveFromBackFiringZone = follower
                     .pathBuilder()
                     .addPath(
