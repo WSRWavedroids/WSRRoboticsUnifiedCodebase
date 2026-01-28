@@ -184,6 +184,10 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
         telemetry.addData("Launch State", robot.doneLaunching);
         telemetry.addData("Cooldown", robot.cooldown);
         telemetry.addData("Follower is Busy", follower.isBusy());
+        telemetry.addLine("");
+        telemetry.addData("Limelight is initialized?", robot.limelight.isRunning());
+        telemetry.addData("cam dist to apriltag", robot.getApriltagDistance());
+        telemetry.addData("limelight spd", robot.limelightAdjustedSpeed/2000);
         follower.update();
         switch(currentstep){
             case START:
