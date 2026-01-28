@@ -109,7 +109,7 @@ public class BlueBack12Ball extends OpMode {
         //runtime.reset();
         opmodeTimer.resetTimer();
         telemetry.addData("HYPE", "Let's do this!!!");
-        robot.readyHardware(true);
+        robot.readyHardware(false);
         robot.sorterHardware.legalToSpin = true;
         //speed = 1;
     }
@@ -241,7 +241,7 @@ public class BlueBack12Ball extends OpMode {
                     .setLinearHeadingInterpolation(Math.toRadians(113), Math.toRadians(180))
                     .build();
 
-            YOINKCLOSE = follower
+            YOINKFAR = follower
                     .pathBuilder()
                     .addPath(
                             new BezierLine(new Pose(44.682, 83.859), new Pose(17.000, 84.071))
@@ -352,12 +352,12 @@ public class BlueBack12Ball extends OpMode {
                 break;
             case FIRE_2:
                 if (!follower.isBusy()) {
-                    auto.fireMatchPattern();
+                    robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_3);
                 }
                 break;
             case LINE_UP_3:
-                if (auto.fireInSequenceComplete()) {
+                if (robot.queue.noBallsQueued) {
                     follower.followPath(paths.LineUpWithClose);
                     setCurrentStep(ENABLE_INTAKE_3);
                 }
@@ -382,12 +382,12 @@ public class BlueBack12Ball extends OpMode {
                 break;
             case FIRE_3:
                 if (!follower.isBusy()) {
-                    auto.fireMatchPattern();
+                    robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_4);
                 }
                 break;
             case LINE_UP_4:
-                if (auto.fireInSequenceComplete()) {
+                if (robot.queue.noBallsQueued) {
                     follower.followPath(paths.LineUpWithFarBalls);
                     setCurrentStep(ENABLE_INTAKE_4);
                 }
@@ -417,7 +417,7 @@ public class BlueBack12Ball extends OpMode {
             case FIRE_4:
                 if(!follower.isBusy())
                 {
-                    auto.fireMatchPattern();
+                    robot.queue.addPattern(robot.pattern);
                     setCurrentStep(END);
                 }
                 break;
