@@ -108,6 +108,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot.targetScanner.InitLimeLightTargeting(1, robot);
         robot.controlMode = ROBOT_CENTRIC;
         imu = hardwareMap.get(IMU.class, "imu");
+        robot.turret.rawSwivelController.tolerance = 0;
 
 
         // Tell the driver that initialization is complete.

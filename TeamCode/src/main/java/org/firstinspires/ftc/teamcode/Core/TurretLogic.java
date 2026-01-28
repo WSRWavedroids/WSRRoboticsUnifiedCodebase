@@ -196,7 +196,6 @@ public class TurretLogic {
         return (int) ((ticksIN / encoderResolution) * 360);
     }
 
-    /// Will find the turret's direction relative to its zero point
     double ticksToTurretHeading()
     {
         return ticksToDegrees(swivelMotor.getCurrentPosition());
@@ -207,13 +206,11 @@ public class TurretLogic {
         return (int) (input * inputModifier);
     }
 
-
     public int runToSafeAngle(double intINDegs) {
 
         double finalTargetDeg;
         double currentPosDeg = ticksToDegrees(swivelMotor.getCurrentPosition());
 
-        // 1. If the input angle is unsafe, move to its safe coterminal
         while(intINDegs > upperLimit) {
             intINDegs -= 360;
         }
@@ -221,21 +218,6 @@ public class TurretLogic {
             intINDegs += 360;
         }
         finalTargetDeg = limitIfNeeded(intINDegs);
-        /*// 2. If the input is safe, check if its coterminal is also safe
-        else {
-            double coterminal = (intINDegs > 0) ? intINDegs - 360 : intINDegs + 360;
-
-            if (withinSafeZone(coterminal)) {
-                // Take the shorter movement
-                double distNormal = Math.abs(intINDegs - currentPosDeg);
-                double distCoterminal = Math.abs(coterminal - currentPosDeg);
-
-                finalTargetDeg = (distCoterminal < distNormal) ? coterminal : intINDegs;
-            } else {
-                // Only the input is safe
-                finalTargetDeg = intINDegs;
-            }
-        }*/
 
         turretDegreesFromTarget = finalTargetDeg - currentPosDeg;
         return degreesToTicks(finalTargetDeg);
@@ -279,27 +261,17 @@ public class TurretLogic {
         //Angle from our robot heading to tag
         double testVal = ticksToDegrees(swivelMotor.getCurrentPosition()) + robot.targetTag.angleX;
 
-
-
         Vector2 goalPosition = new Vector2();
         if(robot.targetTag.currentlyDetected && fineSwivelController.withinTolerance) {
             if (robot.alliance.equals(BLUE))
             {
                 goalPosition.x = 17;
                 goalPosition.y = 132;
-                //goalPosition.heading = 55;
             } else
             {
                 goalPosition.x = 123;
                 goalPosition.y = 132;
-                //goalPosition.heading = 125;
             }
-
-
-            //Do some trig
-            //robot.robotPosition.x = ;
-            //robot.robotPosition.y = ;
-            //robot.robotHeading = ;
         }
     }
 
@@ -317,8 +289,13 @@ public class TurretLogic {
     public double findStartingAngle()
     {
         double maxAnalogValue = 1;//tempValue
-        return ((robot.analogTurretTracker.getVoltage()/maxAnalogValue)*240)-90;
-         //Returns in degs
+        double minAnalogValue = -.5;
+        double adjustedMax = maxAnalogValue-minAnalogValue;
+
+        double recorded = robot.analogTurretTracker.getVoltage() -minAnalogValue;
+        double voltPercentage = recorded / adjustedMax;
+        double degrees = ((Math.abs(upperLimit) + Math.abs(lowerLimit)) * voltPercentage)-lowerLimit;
+        return degrees;
     }
 
 

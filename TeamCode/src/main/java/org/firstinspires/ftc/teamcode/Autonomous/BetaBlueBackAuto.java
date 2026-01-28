@@ -50,9 +50,6 @@ public class BetaBlueBackAuto extends OpMode {
         doTelemetryStuff();
     }
 
-    /*
-     * The holding cell for all of the random functions we call above.
-     */
     private void nextStep(Steps nextStep) {
         currentStep = nextStep;
     }
@@ -60,7 +57,6 @@ public class BetaBlueBackAuto extends OpMode {
     private void nextPatternSpecificStep(Steps nextGeneralStep) {
 
     }
-
     private void doTelemetryStuff() {
         // This little section updates the driver hub on the runtime and the motor powers.
         // It's mostly used for troubleshooting.
@@ -127,11 +123,8 @@ public class BetaBlueBackAuto extends OpMode {
 
     public void init() {
 
-        // Call the initialization protocol from the Robot class.
-        // Go find pizza
-
         robot = new Robot(hardwareMap, telemetry, this);
-        TurretLogic.tolerance = robot.turret.degreesToTicks(8);
+        TurretLogic.tolerance = robot.turret.degreesToTicks(4);
         telemetry.addData("tolerance value test pt 1", TurretLogic.tolerance);
         telemetry.addData("tolerance value test pt 2", robot.turret.tolerance);
         auto = new AutonomousPlusPLUS(robot);

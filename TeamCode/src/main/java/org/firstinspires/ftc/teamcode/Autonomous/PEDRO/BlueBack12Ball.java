@@ -4,6 +4,9 @@ import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.BLUE;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
 import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueBack12Ball.Steps.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.FIRE;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.LOAD;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.STORE;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -45,7 +48,7 @@ public class BlueBack12Ball extends OpMode {
     public void init() {
 
         robot = new Robot(hardwareMap, telemetry, this);
-        TurretLogic.tolerance = TurretLogic.degreesToTicks(8);
+        TurretLogic.tolerance = TurretLogic.degreesToTicks(4);
         follower = robot.turret.follower;
         follower.setMaxPowerScaling(1);
         follower.setMaxPower(1);
@@ -132,149 +135,118 @@ public class BlueBack12Ball extends OpMode {
 
     public static class PathsForBack12Blue {
 
-        public PathChain MoveFromBackFiringZone;
-        public PathChain LineUpWithMiddleBalls;
-        public PathChain YOINKMIDDLE;
-        public PathChain GoHitGate;
-        public PathChain MoveToScoreSecondPattern;
-        public PathChain MoveToScoreSecondPatternNoGate;
         public PathChain LineUpWithClose;
-        public PathChain YOINKFAR;
-        public PathChain MoveToFireThirdPattern;
-        public PathChain LineUpWithFarBalls;
-        public PathChain YOINKCLOSE;
-        public PathChain ScoreFinalPattern;
-        public PathChain Unpark;
+        public PathChain GrabClose;
+        public PathChain MoveToFireSecond;
+        public PathChain LineUpWithMiddle;
+        public PathChain GrabMiddle;
+        public PathChain MoveToFireThird;
+        public PathChain GrabFar;
+        public PathChain FireLastPattern;
+        public PathChain UnparkWithRizz;
 
         public PathsForBack12Blue(Follower follower) {
-            MoveFromBackFiringZone = follower.pathBuilder()
-                    .addPath(
+            LineUpWithClose = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(50.188, 9.200),
-                                    new Pose(57.689, 19.006)
+                                    new Pose(56.500, 9.200),
+
+                                    new Pose(42.000, 36.000)
                             )
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(113))
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+
                     .build();
 
-            LineUpWithMiddleBalls = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(57.689, 19.006), new Pose(47.859, 56.965))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(113), Math.toRadians(180))
+            GrabClose = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(42.000, 36.000),
+
+                                    new Pose(11.500, 36.000)
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+
                     .build();
 
-            YOINKMIDDLE = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(47.859, 56.965), new Pose(9.953, 57.176))
-                    )
-                    .setTangentHeadingInterpolation()
+            MoveToFireSecond = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(11.500, 36.000),
+
+                                    new Pose(56.500, 12.000)
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+
                     .build();
 
-            GoHitGate = follower
-                    .pathBuilder()
-                    .addPath(
+            LineUpWithMiddle = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(56.500, 12.000),
+
+                                    new Pose(42.000, 60.000)
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+
+                    .build();
+
+            GrabMiddle = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(9.953, 57.176),
-                                    new Pose(57.812, 63.529),
-                                    new Pose(16.306, 68.824)
+                                    new Pose(42.000, 60.000),
+                                    new Pose(36.544, 62.388),
+                                    new Pose(9.747, 57.576)
                             )
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(90))
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+
                     .build();
 
-            MoveToScoreSecondPattern = follower
-                    .pathBuilder()
-                    .addPath(
+            MoveToFireThird = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(16.306, 68.824),
-                                    new Pose(54.212, 62.682),
-                                    new Pose(57.600, 19.059)
+                                    new Pose(9.747, 57.576),
+                                    new Pose(45.709, 62.047),
+                                    new Pose(52.000, 86.000)
                             )
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(113))
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+
                     .build();
 
-            MoveToScoreSecondPatternNoGate = follower
-                    .pathBuilder()
-                    .addPath(
+            GrabFar = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(9.953, 57.176),
-                                    new Pose(54.212, 62.682),
-                                    new Pose(57.600, 19.059)
+                                    new Pose(52.000, 86.000),
+                                    new Pose(37.444, 82.924),
+                                    new Pose(19.700, 84.035)
                             )
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(113))
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+
                     .build();
 
-            LineUpWithClose = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(57.600, 19.059), new Pose(44.471, 34.518))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(113), Math.toRadians(180))
+            FireLastPattern = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(19.700, 84.035),
+
+                                    new Pose(52.000, 86.000)
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+
                     .build();
 
-            YOINKCLOSE = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(44.471, 34.518), new Pose(10.000, 35.365))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-                    .build();
+            UnparkWithRizz = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(52.000, 86.000),
 
-            MoveToFireThirdPattern = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(10.000, 35.365), new Pose(57.812, 18.635))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(113))
-                    .build();
+                                    new Pose(23.506, 71.788)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(270))
 
-            LineUpWithFarBalls = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(57.812, 18.635), new Pose(44.682, 83.859))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(113), Math.toRadians(180))
-                    .build();
-
-            YOINKFAR = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(44.682, 83.859), new Pose(17.000, 84.071))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-                    .build();
-
-            ScoreFinalPattern = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(17.000, 84.071), new Pose(56.329, 79.200))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(130))
-                    .build();
-
-            Unpark = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(56.329, 79.200), new Pose(56.541, 57.600))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(130), Math.toRadians(0))
                     .build();
         }
     }
 
     public enum Steps {
         START,
-        MOVE_TO_FIRE_1, FIRE_1,
-        LINE_UP_2, ENABLE_INTAKE_2, YOINK_2,
-        HIT_GATE, WAIT_FOR_GATE_EMPTY,
+        FIRE_1,
+        LINE_UP_2, YOINK_2,
         MOVE_TO_FIRE_2, FIRE_2,
-        LINE_UP_3, ENABLE_INTAKE_3, YOINK_3, MOVE_TO_FIRE_3, FIRE_3,
-        LINE_UP_4, ENABLE_INTAKE_4, YOINK_4, MOVE_TO_FIRE_4, FIRE_4,
+        LINE_UP_3, YOINK_3, MOVE_TO_FIRE_3, FIRE_3,
+        LINE_UP_4, YOINK_4, MOVE_TO_FIRE_4, FIRE_4,
+
+        UNPARK,
         END
     }
 
@@ -290,139 +262,128 @@ public class BlueBack12Ball extends OpMode {
 
         switch (currentStep) {
             case START:
-                setCurrentStep(MOVE_TO_FIRE_1);
-                break;
-            case MOVE_TO_FIRE_1:
-                follower.followPath(paths.MoveFromBackFiringZone);
+                robot.launcher.setPerfectLauncherVelocity();
+                follower.setMaxPower(1);
+                robot.pattern = robot.randomizationScanner.GetRandomization();//One last Check
+                robot.targetScanner.InitLimeLightTargeting(robot.alliance.limelightPipeline, robot);
+                robot.scanningForTargetTag = true;
+                TurretLogic.activeMode = TurretLogic.controlMode.FULL;
+                robot.sorterLogic.sortOutBlobs(GREEN, LOAD);
+                robot.sorterLogic.sortOutBlobs(PURPLE, FIRE);
+                robot.sorterLogic.sortOutBlobs(PURPLE, STORE);
+                if(robot.pattern.equals(GPP))
+                {
+                    robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotA.getFirePosition());
+                }
+                else
+                {
+                    robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotB.getFirePosition());
+                }
                 setCurrentStep(FIRE_1);
                 break;
             case FIRE_1:
-            /* You could check for
-            - Follower State: "if(!follower.isBusy()) {}"
-            - Time: "if(pathTimer.getElapsedTimeSeconds() > 1) {}"
-            - Robot Position: "if(follower.getPose().getX() > 36) {}"
-            *
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if (!follower.isBusy()) {
-                    /* Score Preload */
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
+                if(robot.turret.rawSwivelController.withinTolerance)
+                {
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_2);
                 }
                 break;
             case LINE_UP_2:
                 if (robot.queue.noBallsQueued) {
-                    follower.followPath(paths.LineUpWithMiddleBalls);
-                    setCurrentStep(ENABLE_INTAKE_2);
-                }
-                break;
-            case ENABLE_INTAKE_2:
-                if (!follower.isBusy()) {
-                    //Enable auto Intake
-                    actionTimer.resetTimer();
+                    follower.followPath(paths.LineUpWithClose);
                     setCurrentStep(YOINK_2);
                 }
                 break;
             case YOINK_2:
-                if(actionTimer.getElapsedTime() > 250)
+                if(!follower.isBusy())
                 {
-                    follower.followPath(paths.YOINKMIDDLE);
+                    robot.sorterHardware.runAdvancedIntake();
+                    follower.setMaxPower(0.35);
+                    follower.followPath(paths.GrabClose);
                     setCurrentStep(MOVE_TO_FIRE_2);
                 }
+                break;
 
-                break;
-            case HIT_GATE:
-                if (!follower.isBusy()) {
-                    //Disable Auto intake
-                    follower.followPath(paths.GoHitGate);
-                    setCurrentStep(WAIT_FOR_GATE_EMPTY);
-                }
-                break;
-            case WAIT_FOR_GATE_EMPTY: //Wait to let balls out
-                if (!follower.isBusy()) {
-                    actionTimer.resetTimer();
-                    setCurrentStep(MOVE_TO_FIRE_2);
-                }
-                break;
             case MOVE_TO_FIRE_2:
+                robot.sorterHardware.runAdvancedIntake();
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.MoveToScoreSecondPatternNoGate);
+                    follower.setMaxPower(1);
+                    follower.followPath(paths.MoveToFireSecond);
                     setCurrentStep(FIRE_2);
                 }
                 break;
             case FIRE_2:
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() && robot.turret.rawSwivelController.withinTolerance) {
+
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_3);
                 }
                 break;
             case LINE_UP_3:
                 if (robot.queue.noBallsQueued) {
-                    follower.followPath(paths.LineUpWithClose);
-                    setCurrentStep(ENABLE_INTAKE_3);
-                }
-                break;
-            case ENABLE_INTAKE_3:
-                if (!follower.isBusy()) {
-                    //Enable auto intake
-                    actionTimer.resetTimer();
+                    follower.followPath(paths.LineUpWithMiddle);
                     setCurrentStep(YOINK_3);
                 }
                 break;
             case YOINK_3:
-                if (actionTimer.getElapsedTime() > 250) {
-                    follower.followPath(paths.YOINKCLOSE);
+                if (!follower.isBusy()) {
+                    robot.sorterHardware.runAdvancedIntake();
+                    follower.setMaxPower(0.35);
+                    follower.followPath(paths.GrabMiddle);
                     setCurrentStep(MOVE_TO_FIRE_3);
                 }
             case MOVE_TO_FIRE_3:
+                robot.sorterHardware.runAdvancedIntake();
                 if (!follower.isBusy()) {
-                    follower.followPath(paths.MoveToFireThirdPattern);
+                    follower.setMaxPower(1);
+                    follower.followPath(paths.MoveToFireThird);
                     setCurrentStep(FIRE_3);
                 }
                 break;
             case FIRE_3:
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() && robot.turret.rawSwivelController.withinTolerance) {
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_4);
                 }
                 break;
-            case LINE_UP_4:
-                if (robot.queue.noBallsQueued) {
-                    follower.followPath(paths.LineUpWithFarBalls);
-                    setCurrentStep(ENABLE_INTAKE_4);
-                }
-                break;
-            case ENABLE_INTAKE_4:
-                if(!follower.isBusy())
-                {
-                    //activate intake
-                    actionTimer.resetTimer();
-                    setCurrentStep(YOINK_4);
-                }
-                break;
             case YOINK_4:
-                if(actionTimer.getElapsedTime() > 0.25)
+                if(robot.queue.noBallsQueued)
                 {
-                    follower.followPath(paths.YOINKFAR);
+                    robot.sorterHardware.runAdvancedIntake();
+                    follower.setMaxPower(0.35);
+                    follower.followPath(paths.GrabFar);
                     setCurrentStep(MOVE_TO_FIRE_4);
                 }
                 break;
             case MOVE_TO_FIRE_4:
+                robot.sorterHardware.runAdvancedIntake();
                 if(!follower.isBusy())
                 {
-                    follower.followPath(paths.ScoreFinalPattern);
+                    follower.setMaxPower(1);
+                    follower.followPath(paths.FireLastPattern);
                     setCurrentStep(FIRE_4);
                 }
                 break;
             case FIRE_4:
-                if(!follower.isBusy())
+                if(!follower.isBusy() && robot.turret.rawSwivelController.withinTolerance)
                 {
                     robot.queue.addPattern(robot.pattern);
-                    setCurrentStep(END);
+                    setCurrentStep(UNPARK);
                 }
                 break;
+            case UNPARK:
+                if(robot.queue.noBallsQueued)
+                {
+                    robot.sorterHardware.prepareNewMovement(0);
+                    follower.followPath(paths.UnparkWithRizz);
+                    setCurrentStep(END);
+                }
             case END:
-                return 0;
+                if(robot.sorterHardware.doneMoving())
+                {
+                    return 0;
+                }
+
         }
         return 0;
     }

@@ -47,108 +47,96 @@ public class RedBack12Ball extends BlueBack12Ball {
     public static class PathsForBack12Red extends PathsForBack12Blue {
         public PathsForBack12Red(Follower follower) {
             super(follower);
-            MoveFromBackFiringZone = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(144-50.188, 9.200), new Pose(144-57.689, 19.006))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(86.3105590062))
-                    .build();
 
-            LineUpWithMiddleBalls = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(144-57.689, 19.006), new Pose(144-47.859, 56.965))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(86.3105590062), Math.toRadians(0))
-                    .build();
 
-            YOINKMIDDLE = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(144-47.859, 56.965), new Pose(144-9.953, 57.176))
-                    )
-                    .setTangentHeadingInterpolation()
-                    .build();
+            LineUpWithClose = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(144-56.500, 9.200),
 
-            GoHitGate = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierCurve(
-                                    new Pose(144-9.953, 57.176),
-                                    new Pose(144-57.812, 63.529),
-                                    new Pose(144-16.306, 68.824)
+                                    new Pose(144-42.000, 36.000)
                             )
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(90))
+                    ).setConstantHeadingInterpolation(Math.toRadians(180-180))
+
                     .build();
 
-            MoveToScoreSecondPattern = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierCurve(
-                                    new Pose(144-16.306, 68.824),
-                                    new Pose(144-54.212, 62.682),
-                                    new Pose(144-57.600, 19.059)
+            GrabClose = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(144-42.000, 36.000),
+
+                                    new Pose(144-11.500, 36.000)
                             )
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(60))
+                    ).setConstantHeadingInterpolation(Math.toRadians(180-180))
+
                     .build();
 
-            LineUpWithClose = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(144-57.600, 19.059), new Pose(144-44.471, 34.518))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(60), Math.toRadians(0))
+            MoveToFireSecond = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(144-11.500, 36.000),
+
+                                    new Pose(144-56.500, 12.000)
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180-180))
+
                     .build();
 
-            YOINKCLOSE = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(144-44.471, 34.518), new Pose(144-10.000, 35.365))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+            LineUpWithMiddle = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(144-56.500, 12.000),
+
+                                    new Pose(144-42.000, 60.000)
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180-180))
+
                     .build();
 
-            MoveToFireThirdPattern = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(144-10.000, 35.365), new Pose(144-57.812, 18.635))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(60))
+            GrabMiddle = follower.pathBuilder().addPath(
+                            new BezierCurve(
+                                    new Pose(144-42.000, 60.000),
+                                    new Pose(144-36.544, 62.388),
+                                    new Pose(144-9.747, 57.576)
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180-180))
+
                     .build();
 
-            LineUpWithFarBalls = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(144-57.812, 18.635), new Pose(144-44.682, 83.859))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(60), Math.toRadians(0))
+            MoveToFireThird = follower.pathBuilder().addPath(
+                            new BezierCurve(
+                                    new Pose(144-9.747, 57.576),
+                                    new Pose(144-45.709, 62.047),
+                                    new Pose(144-52.000, 86.000)
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180-180))
+
                     .build();
 
-            YOINKCLOSE = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(144-44.682, 83.859), new Pose(144-17.000, 84.071))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+            GrabFar = follower.pathBuilder().addPath(
+                            new BezierCurve(
+                                    new Pose(144-52.000, 86.000),
+                                    new Pose(144-37.444, 82.924),
+                                    new Pose(144-19.700, 84.035)
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180-180))
+
                     .build();
 
-            ScoreFinalPattern = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(144-17.000, 84.071), new Pose(144-56.329, 79.200))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(50))
+            FireLastPattern = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(144-19.700, 84.035),
+
+                                    new Pose(144-52.000, 86.000)
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180-180))
+
                     .build();
 
-            Unpark = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(144-56.329, 79.200), new Pose(144-56.541, 57.600))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(50), Math.toRadians(180))
+            UnparkWithRizz = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(144-52.000, 86.000),
+
+                                    new Pose(144-23.506, 71.788)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(180-180), Math.toRadians(270-180))
+
                     .build();
         }
     }
