@@ -54,6 +54,7 @@ public class Robot {
 
     public Servo flicky;
     public AnalogInput flickyFeedback;
+    public AnalogInput analogTurretTracker;
     public CRServo feedServo;
 
     public TouchSensor magsense;
@@ -167,6 +168,9 @@ public class Robot {
         //hammerServo = hardwareMap.get(Servo.class, "hammerServo");
         flicky = hardwareMap.get(Servo.class, "flicky");
         flickyFeedback = hardwareMap.get(AnalogInput.class, "flickyFeedback");
+
+        analogTurretTracker = hardwareMap.get(AnalogInput.class, "analogTurretTracker");
+
 
         magsense = hardwareMap.get(TouchSensor.class, "magsense1");
 
@@ -418,6 +422,7 @@ public class Robot {
         telemetry.addData("Sorter In Position", sorterHardware.positionedCheck());
         telemetry.addData("Sorter State: ", sorterLogic.getCurrentOffset());
         telemetry.addData("Limelight angleX: ", targetTag.angleX);
+        telemetry.addData("Analog Turret Voltage", analogTurretTracker);
 
     }
 

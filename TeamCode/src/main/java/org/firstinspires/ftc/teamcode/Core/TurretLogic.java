@@ -314,6 +314,13 @@ public class TurretLogic {
         else return tagCooldown.seconds() <= time;
     }
 
+    public double findStartingAngle()
+    {
+        double maxAnalogValue = 1;//tempValue
+        return ((robot.analogTurretTracker.getVoltage()/maxAnalogValue)*240)-90;
+         //Returns in degs
+    }
+
 
 }
 

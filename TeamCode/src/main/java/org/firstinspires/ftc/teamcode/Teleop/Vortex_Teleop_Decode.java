@@ -145,7 +145,7 @@ public class Vortex_Teleop_Decode extends OpMode {
     private void grabStartPose() {
         Object pedroXFromBB = blackboard.getOrDefault("PedroX", 72.0);
         Object pedroYFromBB = blackboard.getOrDefault("PedroY", 72.0);
-        Object pedroHeadingFromBB = blackboard.getOrDefault("PedroHeading", Math.PI / 2);
+        Object pedroHeadingFromBB = Math.toRadians((Double) blackboard.getOrDefault("PedroHeading", Math.PI / 2));
 
         double goodX = 72;
         double goodY = 72;

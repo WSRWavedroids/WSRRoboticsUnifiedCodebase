@@ -319,7 +319,7 @@ public class SorterHardware {
         double target = flicky.getPosition();
         double voltage = flickyFeedback.getVoltage();
         double position = voltage / maxVoltage;
-        return position > target - tolerance && position < target + tolerance;
+        return (voltage > target-tolerance && voltage < target+tolerance);
     }
 
     public void runAdvancedIntake() {
