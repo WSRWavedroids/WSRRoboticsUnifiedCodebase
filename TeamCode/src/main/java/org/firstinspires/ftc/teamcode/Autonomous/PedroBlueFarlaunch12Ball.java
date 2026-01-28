@@ -40,6 +40,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(55,9.275, Math.PI/2));
         robot.initLimelight();
+        robot.limelightTelemetry();
     }
 
     static class Paths {
@@ -178,16 +179,12 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
     }
     public void loop() {
         robot.setupLaunchers();
-        robot.getApriltagDistance();
         telemetry.addData("ODOMETRY X", follower.getPose().getX());
         telemetry.addData("ODOMETRY Y", follower.getPose().getY());
         telemetry.addData("Launch State", robot.doneLaunching);
         telemetry.addData("Cooldown", robot.cooldown);
         telemetry.addData("Follower is Busy", follower.isBusy());
-        telemetry.addLine("");
-        telemetry.addData("Limelight is initialized?", robot.limelight.isRunning());
-        telemetry.addData("cam dist to apriltag", robot.getApriltagDistance());
-        telemetry.addData("limelight spd", robot.limelightAdjustedSpeed/2000);
+        robot.limelightTelemetry();
         follower.update();
         switch(currentstep){
             case START:

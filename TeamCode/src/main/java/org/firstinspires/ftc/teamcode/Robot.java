@@ -243,6 +243,29 @@ public class Robot {
         return ((inches/12.25) * 537.6 / .5);
         //todo Reference that 1 inch ~= 50 ticks
     }
+
+    public void limelightTelemetry(){
+        if (!limelight.isConnected()){
+            telemetry.addLine();
+            telemetry.addLine("LIMELIGHT UNPLUGGED");
+            telemetry.addLine("LIMELIGHT UNPLUGGED");
+            telemetry.addLine("LIMELIGHT UNPLUGGED");
+            telemetry.addLine("LIMELIGHT UNPLUGGED");
+            telemetry.addLine("LIMELIGHT UNPLUGGED");
+            telemetry.addLine("LIMELIGHT UNPLUGGED");
+            telemetry.addLine("LIMELIGHT UNPLUGGED");
+            telemetry.addLine("LIMELIGHT UNPLUGGED");
+            telemetry.addLine("LIMELIGHT UNPLUGGED");
+            telemetry.addLine("LIMELIGHT UNPLUGGED");
+        }
+        telemetry.addLine();
+        telemetry.addData("Limelight is initialized?" ,limelight.isConnected());
+        telemetry.addData("cam dist to apriltag" ,getApriltagDistance());
+        telemetry.addData("launch spd" ,limelightAdjustedSpeed/2000);
+
+    }
+
+
     public void setupLaunchers() {
 
         double dist = getApriltagDistance();
@@ -264,8 +287,14 @@ public class Robot {
 
     public boolean upToSpeed(){
         double velocity = launchLeft.getVelocity();
-        return (velocity > -limelightAdjustedSpeed - 60) && (velocity < -limelightAdjustedSpeed + 60);
+        return (velocity > -limelightAdjustedSpeed - 40) && (velocity < -limelightAdjustedSpeed + 40);
     }
+
+    public boolean upToSpeed(double tolerance){
+        double velocity = launchLeft.getVelocity();
+        return (velocity > -limelightAdjustedSpeed - tolerance) && (velocity < -limelightAdjustedSpeed + tolerance);
+    }
+
 public ElapsedTime cooldown = new ElapsedTime();
 
     public enum launchSteps {
