@@ -26,11 +26,11 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Autonomous(name="PedroBlue" + "Farlaunch12Ball", group = "Pedro")
 public class PedroBlueFarlaunch12Ball extends OpMode {
     Steps currentstep = START;
-public Follower follower;
-private Robot robot;
-private AutonomousPLUS auto;
-private ElapsedTime cooldown = new ElapsedTime();
-    private void nextStep(Steps nextStep){
+    public Follower follower;
+    Robot robot;
+    AutonomousPLUS auto;
+    ElapsedTime cooldown = new ElapsedTime();
+    void nextStep(Steps nextStep) {
         currentstep = nextStep;
     }
 
@@ -38,7 +38,7 @@ private ElapsedTime cooldown = new ElapsedTime();
     public void init() {
         robot = new Robot(hardwareMap, telemetry, this);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(55,9, Math.PI/2));
+        follower.setStartingPose(new Pose(55,9.275, Math.PI/2));
         robot.initLimelight();
     }
 
@@ -58,7 +58,7 @@ private ElapsedTime cooldown = new ElapsedTime();
         public Paths(Follower follower) {
             Launch0 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(55.000, 9.000),
+                                    new Pose(55.000, 9.275),
 
                                     new Pose(58.100, 16.600)
                             )
@@ -78,7 +78,7 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             Intake1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(41.000, 35.700),
+                                    new Pose(44.000, 35.700),
 
                                     new Pose(8.5, 35.700)
                             )
@@ -88,7 +88,7 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             Launch1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(23.100, 35.700),
+                                    new Pose(8.5, 35.700),
 
                                     new Pose(58.100, 16.600)
                             )
@@ -108,7 +108,7 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             Intake2 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(41.000, 60.000),
+                                    new Pose(44.000, 60.000),
 
                                     new Pose(8.5, 60.000)
                             )
@@ -118,7 +118,7 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             Launch2 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(23.100, 60.000),
+                                    new Pose(8.5, 60.000),
 
                                     new Pose(58.100, 16.600)
                             )
@@ -138,7 +138,7 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             Intake3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(41.000, 84.000),
+                                    new Pose(44.000, 84.000),
 
                                     new Pose(17.5, 84.000)
                             )
@@ -148,7 +148,7 @@ private ElapsedTime cooldown = new ElapsedTime();
 
             Launch3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(23.100, 84.000),
+                                    new Pose(17.5, 84.000),
 
                                     new Pose(58.100, 16.600)
                             )
@@ -171,7 +171,7 @@ private ElapsedTime cooldown = new ElapsedTime();
 
     }
 
-    private Paths runPath;
+    Paths runPath;
 
     public void start() {
         runPath = new Paths(follower);

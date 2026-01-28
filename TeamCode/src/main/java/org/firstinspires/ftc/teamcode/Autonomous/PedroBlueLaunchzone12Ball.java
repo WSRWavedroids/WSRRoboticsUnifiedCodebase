@@ -7,28 +7,19 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="PedroBlueLaunchzone12Ball", group = "Pedro")
-public class PedroBlueLaunchzone12Ball extends AutonomousPLUS {
+public class PedroBlueLaunchzone12Ball extends PedroBlueFarlaunch12Ball {
 
     @Override
-    public void runOpMode() {
-        super.runOpMode();
-        class Paths {
-            public PathChain Launch0;
-            public PathChain IntakeSetup1;
-            public PathChain Intake1;
-            public PathChain Launch1;
-            public PathChain IntakeSetup2;
-            public PathChain Intake2;
-            public PathChain Launch2;
-            public PathChain IntakeSetup3;
-            public PathChain Intake3;
-            public PathChain Launch3;
-            public PathChain Unpark;
-
+    public void init() {
+        super.init();
+        follower.setStartingPose(new Pose(23.75, 130.5, Math.toRadians(143.5))); //todo be cool like michael
+    }
+        class Paths extends PedroBlueFarlaunch12Ball.Paths{
             public Paths(Follower follower) {
+                super(follower);
                 Launch0 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(24.400, 130.000),
+                                        new Pose(23.750, 130.500),
 
                                         new Pose(62.300, 94.000)
                                 )
@@ -40,7 +31,7 @@ public class PedroBlueLaunchzone12Ball extends AutonomousPLUS {
                                 new BezierLine(
                                         new Pose(62.300, 94.000),
 
-                                        new Pose(41.000, 84.000)
+                                        new Pose(44.000, 84.000)
                                 )
                         ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(360))
 
@@ -48,9 +39,9 @@ public class PedroBlueLaunchzone12Ball extends AutonomousPLUS {
 
                 Intake1 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(41.000, 84.000),
+                                        new Pose(44.000, 84.000),
 
-                                        new Pose(23.100, 84.000)
+                                        new Pose(17.5, 84.000)
                                 )
                         ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
 
@@ -70,7 +61,7 @@ public class PedroBlueLaunchzone12Ball extends AutonomousPLUS {
                                 new BezierLine(
                                         new Pose(62.300, 94.000),
 
-                                        new Pose(41.000, 60.000)
+                                        new Pose(44.000, 60.000)
                                 )
                         ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(360))
 
@@ -78,9 +69,9 @@ public class PedroBlueLaunchzone12Ball extends AutonomousPLUS {
 
                 Intake2 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(41.000, 60.000),
+                                        new Pose(44.000, 60.000),
 
-                                        new Pose(23.100, 60.000)
+                                        new Pose(8.5, 60.000)
                                 )
                         ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
 
@@ -100,7 +91,7 @@ public class PedroBlueLaunchzone12Ball extends AutonomousPLUS {
                                 new BezierLine(
                                         new Pose(62.300, 94.000),
 
-                                        new Pose(41.000, 35.700)
+                                        new Pose(44.000, 35.700)
                                 )
                         ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(360))
 
@@ -108,9 +99,9 @@ public class PedroBlueLaunchzone12Ball extends AutonomousPLUS {
 
                 Intake3 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(41.000, 35.700),
+                                        new Pose(44.000, 35.700),
 
-                                        new Pose(23.100, 35.700)
+                                        new Pose(8.500, 35.700)
                                 )
                         ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
 
@@ -118,7 +109,7 @@ public class PedroBlueLaunchzone12Ball extends AutonomousPLUS {
 
                 Launch3 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(23.100, 35.700),
+                                        new Pose(8.500, 35.700),
 
                                         new Pose(62.300, 94.000)
                                 )
@@ -137,5 +128,8 @@ public class PedroBlueLaunchzone12Ball extends AutonomousPLUS {
                         .build();
             }
         }
+    @Override
+    public void start() {
+        runPath = new PedroBlueLaunchzone12Ball.Paths(follower);
     }
 }

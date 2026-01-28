@@ -330,7 +330,8 @@ public boolean doneLaunching = false;
     }
 
     public void initLimelight() {
-
+        limelight.pipelineSwitch(0);
+        limelight.start();
     }
 
     public double getApriltagDistance(){

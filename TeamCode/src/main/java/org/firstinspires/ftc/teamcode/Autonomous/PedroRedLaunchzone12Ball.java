@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -7,28 +9,21 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="PedroRedLaunchzone12Ball", group = "Pedro")
-public class PedroRedLaunchzone12Ball extends AutonomousPLUS {
+public class PedroRedLaunchzone12Ball extends PedroBlueFarlaunch12Ball {
 
     @Override
-    public void runOpMode() {
-        super.runOpMode();
-        class Paths {
-            public PathChain Launch0;
-            public PathChain IntakeSetup1;
-            public PathChain Intake1;
-            public PathChain Launch1;
-            public PathChain IntakeSetup2;
-            public PathChain Intake2;
-            public PathChain Launch2;
-            public PathChain IntakeSetup3;
-            public PathChain Intake3;
-            public PathChain Launch3;
-            public PathChain Unpark;
+    public void init() {
+        super.init();
+        follower.setStartingPose(new Pose(120.25, 130.5, Math.toRadians(45))); //todo be cool like michael
+    }
 
+    public void runOpMode() {
+        class Paths extends PedroBlueFarlaunch12Ball.Paths{
             public Paths(Follower follower) {
+                super(follower);
                 Launch0 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(119.600, 130.000),
+                                        new Pose(120.250, 130.500),
 
                                         new Pose(81.700, 94.000)
                                 )
@@ -137,5 +132,9 @@ public class PedroRedLaunchzone12Ball extends AutonomousPLUS {
                         .build();
             }
         }
+    }
+    @Override
+    public void start() {
+        runPath = new PedroRedLaunchzone12Ball.Paths(follower);
     }
 }
