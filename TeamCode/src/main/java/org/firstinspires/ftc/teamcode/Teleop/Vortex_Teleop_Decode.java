@@ -249,7 +249,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         runTrackpadFunctions();
 
-
+        resetTurretEncoder();
 
         //robot.panelsTelemetry.addData("Motor Position", robot.launcher.motor.getCurrentPosition());
         robot.panelsTelemetry.update();
@@ -463,6 +463,12 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot.powerSet(speed);
     }
 
+    private void resetTurretEncoder() {
+        if (gamepad1.dpadDownWasPressed()) {
+            robot.turret.resetEncoder();
+        }
+    }
+
     private void singleJoystickDrive() {
         // We don't really know how this function works, but it makes the wheels drive, so we don't question it.
         // Don't mess with this function unless you REALLY know what you're doing.
@@ -653,12 +659,13 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Robot X", robot.robotPosition.x);
         telemetry.addData("Robot Y", robot.robotPosition.y);
         telemetry.addData("Pedro Heading", robot.robotHeading);
-        telemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
+        telemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.turret.getMotorPosition()));
+        telemetry.addData("Turret Motor Position", robot.swivelMotor.getCurrentPosition());
         telemetry.addData("Turret Target", robot.turret.ticksToDegrees(robot.turret.runToSafeAngle(robot.turret.updateAngle())));
         telemetry.addData("Raw Turret Target", robot.turret.updateAngle());
         telemetry.addData("Potentiometer reading", robot.analogTurretTracker.getVoltage());
         telemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
-        robot.panelsTelemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
+        robot.panelsTelemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.turret.getMotorPosition()));
         robot.panelsTelemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
 
         telemetry.addLine();

@@ -122,8 +122,12 @@ public class ezPID {
         kneecap = kneecapIN;
     }
 
-    
-    public void runCalledPID(double reference)
+    public void runCalledPID(double reference) {
+        // obtain the encoder position
+        double encoderPosition = motor.getCurrentPosition();
+    }
+
+    public void runCalledPID(double reference, double encoderPosition)
     {
         /// CALL THIS ONCE PER LOOP IN ANOTHER SCRIPT OR MOTOR WON'T MOVE
         /// ONLY USE FOR ONE MOTOR ezPID INSTANCES OR WILL THROW ERRORS!
@@ -136,8 +140,6 @@ public class ezPID {
 
         if(mode == movementType.POSITION)
         {
-            // obtain the encoder position
-            double encoderPosition = motor.getCurrentPosition();
             // calculate the error
             double error = reference - encoderPosition;
 

@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Core;
 
+import static android.os.SystemClock.sleep;
 import static com.qualcomm.robotcore.eventloop.opmode.OpMode.blackboard;
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_WITHOUT_ENCODER;
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
 import static org.firstinspires.ftc.teamcode.Core.TurretLogic.swivelControllers.*;
 import static org.firstinspires.ftc.teamcode.Core.TurretLogic.controlMode.*;
@@ -36,6 +39,8 @@ public class TurretLogic {
     public float inputModifier = 400;
     public float input;
 
+    double offsetDegrees;
+
     enum swivelControllers {RAW, FINE}
     public enum controlMode{FULL, PARTIAL, LOCKED, OVERIDE}
     public static controlMode activeMode = FULL;
@@ -60,6 +65,14 @@ public class TurretLogic {
 
         rawSwivelController = new ezPID(swivelMotor, 8192, rawP, rawI, rawD,
                 rawF, 1.0, tolerance, ezPID.movementType.POSITION);
+
+        resetEncoder();
+    }
+
+    public void resetEncoder() {
+        swivelMotor.setMode(STOP_AND_RESET_ENCODER);
+        offsetDegrees = findStartingAngle();
+        swivelMotor.setMode(RUN_WITHOUT_ENCODER);
     }
 
     public void runTurret() {
@@ -107,11 +120,11 @@ public class TurretLogic {
         lastUsedSwivelController = RAW;
         rawSwivelController.changeBehaviorValues(rawP, rawI, rawD, rawF, 1);
         rawSwivelController.tolerance = tolerance;
-        rawSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
+        rawSwivelController.runCalledPID(runToSafeAngle(updateAngle()), getMotorPosition());
 
-        /*robot.panelsTelemetry.addData("Turret position", robot.swivelMotor.getCurrentPosition());
+        /*robot.panelsTelemetry.addData("Turret position", robot.getMotorPosition());
         robot.panelsTelemetry.addData("Turret target", runToSafeAngle(updateAngle()));
-        robot.panelsTelemetry.addData("Turret position (degrees)", ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
+        robot.panelsTelemetry.addData("Turret position (degrees)", ticksToDegrees(robot.getMotorPosition()));
         robot.panelsTelemetry.addData("Turret target (degrees)", ticksToDegrees(runToSafeAngle(updateAngle())));
 
         robot.panelsTelemetry.addData("Limelight cooldown", tagCooldown);
@@ -198,7 +211,7 @@ public class TurretLogic {
 
     double ticksToTurretHeading()
     {
-        return ticksToDegrees(swivelMotor.getCurrentPosition());
+        return ticksToDegrees(getMotorPosition());
     }
 
     int inputToTicks()
@@ -209,7 +222,7 @@ public class TurretLogic {
     public int runToSafeAngle(double intINDegs) {
 
         double finalTargetDeg;
-        double currentPosDeg = ticksToDegrees(swivelMotor.getCurrentPosition());
+        double currentPosDeg = ticksToDegrees(getMotorPosition());
 
         while(intINDegs > upperLimit) {
             intINDegs -= 360;
@@ -259,7 +272,7 @@ public class TurretLogic {
     void calibratePositionFromTag()
     {
         //Angle from our robot heading to tag
-        double testVal = ticksToDegrees(swivelMotor.getCurrentPosition()) + robot.targetTag.angleX;
+        double testVal = ticksToDegrees(getMotorPosition()) + robot.targetTag.angleX;
 
         Vector2 goalPosition = new Vector2();
         if(robot.targetTag.currentlyDetected && fineSwivelController.withinTolerance) {
@@ -303,7 +316,9 @@ public class TurretLogic {
                 + 48.60426;
     }
 
-
+    public double getMotorPosition() {
+        return swivelMotor.getCurrentPosition() + degreesToTicks(offsetDegrees);
+    }
 }
 
 
