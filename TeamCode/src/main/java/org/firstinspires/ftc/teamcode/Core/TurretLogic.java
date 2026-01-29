@@ -246,7 +246,7 @@ public class TurretLogic {
 
             blackboard.put("PedroX", robot.robotPosition.x);
             blackboard.put("PedroY", robot.robotPosition.y);
-            blackboard.put("PedroHeading", robot.robotHeading);
+            blackboard.put("PedroHeading", Math.toRadians(robot.robotHeading));
 
             double rotatedX = robot.turretPositionOffsetXInches * Math.cos(robot.robotHeading) - robot.turretPositionOffsetYInches * Math.sin(robot.robotHeading);
             double rotatedY = robot.turretPositionOffsetXInches * Math.sin(robot.robotHeading) + robot.turretPositionOffsetYInches * Math.cos(robot.robotHeading);
@@ -288,14 +288,19 @@ public class TurretLogic {
 
     public double findStartingAngle()
     {
-        double maxAnalogValue = 1;//tempValue
-        double minAnalogValue = -.5;
+        double maxAnalogValue = 0.875; //tempValue
+        double minAnalogValue = 0.355;
         double adjustedMax = maxAnalogValue-minAnalogValue;
 
-        double recorded = robot.analogTurretTracker.getVoltage() -minAnalogValue;
+        double recorded = robot.analogTurretTracker.getVoltage() - minAnalogValue;
         double voltPercentage = recorded / adjustedMax;
-        double degrees = ((Math.abs(upperLimit) + Math.abs(lowerLimit)) * voltPercentage)-lowerLimit;
-        return degrees;
+        double degrees = ((153 - -87) * voltPercentage) + -87;
+
+        return  - (5.11539 * (Math.pow(10, -8))) * Math.pow(degrees, 4)
+                + 0.0000184408 * (Math.pow(degrees, 3))
+                - 0.0042155 * (Math.pow(degrees, 2))
+                + 1.05153 * (degrees)
+                + 48.60426;
     }
 
 

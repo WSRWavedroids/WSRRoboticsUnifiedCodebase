@@ -41,14 +41,15 @@ public class BlueBack12Ball extends OpMode {
     public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
     public static final String PATTERN_KEY = "Pattern";
     public ElapsedTime stallTimer;
-    Pose startPose = new Pose(50.188, 9.200, Math.PI / 2); // Make sure this is set HERE
+    Pose startPose = new Pose(56.5, 9.200, Math.toRadians(180));
+    // Make sure this is set HEREqa
     Timer pathTimer, actionTimer, opmodeTimer;
 
     @Override
     public void init() {
 
         robot = new Robot(hardwareMap, telemetry, this);
-        TurretLogic.tolerance = TurretLogic.degreesToTicks(4);
+        TurretLogic.tolerance = TurretLogic.degreesToTicks(8);
         follower = robot.turret.follower;
         follower.setMaxPowerScaling(1);
         follower.setMaxPower(1);
@@ -60,7 +61,7 @@ public class BlueBack12Ball extends OpMode {
         telemetry.addData("tolerance value test pt 1", TurretLogic.tolerance);
         telemetry.addData("tolerance value test pt 2", TurretLogic.tolerance);
         auto = new AutonomousPlusPLUS(robot);
-        robot.turret.activeMode = TurretLogic.controlMode.FULL;
+        TurretLogic.activeMode = TurretLogic.controlMode.FULL;
 
         robot.randomizationScanner.InitLimeLight(0);
         blackboard.put(ALLIANCE_KEY, "BLUE");
@@ -262,8 +263,8 @@ public class BlueBack12Ball extends OpMode {
 
         switch (currentStep) {
             case START:
-                robot.launcher.setPerfectLauncherVelocity();
                 follower.setMaxPower(1);
+                robot.randomizationScanner.InitLimeLight(0);
                 robot.pattern = robot.randomizationScanner.GetRandomization();//One last Check
                 robot.targetScanner.InitLimeLightTargeting(robot.alliance.limelightPipeline, robot);
                 robot.scanningForTargetTag = true;
@@ -298,7 +299,7 @@ public class BlueBack12Ball extends OpMode {
                 if(!follower.isBusy())
                 {
                     robot.sorterHardware.runAdvancedIntake();
-                    follower.setMaxPower(0.35);
+                    follower.setMaxPower(0.5);
                     follower.followPath(paths.GrabClose);
                     setCurrentStep(MOVE_TO_FIRE_2);
                 }
@@ -328,7 +329,7 @@ public class BlueBack12Ball extends OpMode {
             case YOINK_3:
                 if (!follower.isBusy()) {
                     robot.sorterHardware.runAdvancedIntake();
-                    follower.setMaxPower(0.35);
+                    follower.setMaxPower(0.5);
                     follower.followPath(paths.GrabMiddle);
                     setCurrentStep(MOVE_TO_FIRE_3);
                 }
@@ -350,7 +351,7 @@ public class BlueBack12Ball extends OpMode {
                 if(robot.queue.noBallsQueued)
                 {
                     robot.sorterHardware.runAdvancedIntake();
-                    follower.setMaxPower(0.35);
+                    follower.setMaxPower(0.5);
                     follower.followPath(paths.GrabFar);
                     setCurrentStep(MOVE_TO_FIRE_4);
                 }

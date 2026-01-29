@@ -64,6 +64,8 @@ public class SorterHardware {
     private ElapsedTime outtakeTapTimer = new ElapsedTime();
     public static double outtakeTapTime = 0.5;
 
+    public ElapsedTime timeSinceFlickyLastInPosition = new ElapsedTime();
+
     public SorterHardware(Robot robot) {
         this.robot = robot;
         this.motor = robot.sorterMotor;
@@ -103,6 +105,8 @@ public class SorterHardware {
     private int ensureBlenderPosition = 0;
 
     public void updateSorterHardware() {
+        if (flickyInPosition()) timeSinceFlickyLastInPosition.reset();
+
         switch (currentBlenderStep) {
             case READY_FOR_COMMANDS:
                 if (tryToMove || !positionedCheck()) {
@@ -313,13 +317,21 @@ public class SorterHardware {
      * @return In position or not
      */
     public boolean flickyInPosition() {
-        final double maxVoltage = 6.0;
         final double tolerance = 0.05;
+
+        final double position1 = 0.51;
+        final double voltage1 = 1.695;
+        final double position2 = 0;
+        final double voltage2 = 1;
+
+        final double slope = (position2 - position1) / (voltage2 - voltage1);
+
+        final double yIntercept = position1 - (slope * voltage1);
 
         double target = flicky.getPosition();
         double voltage = flickyFeedback.getVoltage();
-        double position = voltage / maxVoltage;
-        return (voltage > target-tolerance && voltage < target+tolerance);
+        double position = (voltage * slope) + yIntercept;
+        return Math.abs(position - target) <= tolerance;
     }
 
     public void runAdvancedIntake() {

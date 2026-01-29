@@ -192,7 +192,7 @@ public class fireQueueWithStates {
         clearList();
         wantToFireQueue = NONE;
         state = CHECK;
-        robot.launcher.setLauncherVelocity(0);
+        //robot.launcher.setLauncherVelocity(0);
 
         // Return sorter to neutral/home position (usually index 0)
         //sorterHardware.prepareNewMovement(sorterHardware.motor.getCurrentPosition(), sorterHardware.positions[0]);

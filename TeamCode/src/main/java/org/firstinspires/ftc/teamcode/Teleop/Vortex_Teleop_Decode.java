@@ -146,7 +146,7 @@ public class Vortex_Teleop_Decode extends OpMode {
     private void grabStartPose() {
         Object pedroXFromBB = blackboard.getOrDefault("PedroX", 72.0);
         Object pedroYFromBB = blackboard.getOrDefault("PedroY", 72.0);
-        Object pedroHeadingFromBB = Math.toRadians((Double) blackboard.getOrDefault("PedroHeading", Math.PI / 2));
+        Object pedroHeadingFromBB =  blackboard.getOrDefault("PedroHeading", Math.PI / 2);
 
         double goodX = 72;
         double goodY = 72;
@@ -252,7 +252,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
 
         //robot.panelsTelemetry.addData("Motor Position", robot.launcher.motor.getCurrentPosition());
-        //robot.panelsTelemetry.update(); // Already being updated in updateAllDaThings()
+        robot.panelsTelemetry.update();
 
         //fps.update();
 
@@ -634,6 +634,10 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Blender in position", robot.sorterHardware.positionedCheck());
         telemetry.addData("Current Load Slot", robot.sorterLogic.findCurrentSlotInPosition(LOAD).getName());
         telemetry.addData("Current Fire Slot", robot.sorterLogic.findCurrentSlotInPosition(FIRE).getName());
+        telemetry.addData("Flipper in positon", robot.sorterHardware.flickyInPosition());
+        telemetry.addData("Flipper analog position", robot.flickyFeedback.getVoltage());
+        telemetry.addData("Flipper target position", robot.flicky.getPosition());
+        telemetry.addData("Time Since Flicky In Position", robot.sorterHardware.timeSinceFlickyLastInPosition.milliseconds());
 
         telemetry.addLine();
         telemetry.addLine("Launcher:");
@@ -652,9 +656,10 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
         telemetry.addData("Turret Target", robot.turret.ticksToDegrees(robot.turret.runToSafeAngle(robot.turret.updateAngle())));
         telemetry.addData("Raw Turret Target", robot.turret.updateAngle());
-        telemetry.addData("Flipper in positon", robot.sorterHardware.flickyInPosition());
-        telemetry.addData("Flipper position", robot.flickyFeedback.getVoltage());
-
+        telemetry.addData("Potentiometer reading", robot.analogTurretTracker.getVoltage());
+        telemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
+        robot.panelsTelemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.swivelMotor.getCurrentPosition()));
+        robot.panelsTelemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
 
         telemetry.addLine();
         telemetry.addLine("Color Sensors");
