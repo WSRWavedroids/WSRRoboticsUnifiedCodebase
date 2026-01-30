@@ -525,7 +525,7 @@ public class Vortex_Teleop_Decode extends OpMode {
     }
 
     private void controlMode() {
-        if (gamepad1.back) {
+        if (gamepad1.back && !gamepad1.start) {
             if (robot.controlMode == ROBOT_CENTRIC) {
                 robot.controlMode = LEGACY_FIELD_CENTRIC;
             } else if (robot.controlMode == LEGACY_FIELD_CENTRIC) {

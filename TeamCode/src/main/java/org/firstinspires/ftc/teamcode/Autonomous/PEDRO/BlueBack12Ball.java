@@ -115,6 +115,7 @@ public class BlueBack12Ball extends OpMode {
         telemetry.addData("HYPE", "Let's do this!!!");
         robot.readyHardware(false);
         robot.sorterHardware.legalToSpin = true;
+        robot.turret.resetEncoder();
         //speed = 1;
     }
 
@@ -253,13 +254,22 @@ public class BlueBack12Ball extends OpMode {
 
 
     private Steps currentStep = START; // Current autonomous path state (state machine)
-
+private boolean eat = false;
     public int autonomousPathUpdate() {
         // Add your state machine Here
         // Access paths with paths.pathName
         // Refer to the Pedro Pathing Docs (Auto Example) for an example state machine
 
         emergencyFinishIfNeeded();
+
+        if(eat && robot.sorterLogic.inventory.getTotalCount()<3)
+        {
+            robot.sorterHardware.runAdvancedIntake();
+        }
+        else
+        {
+            robot.runBasicIntake(0);
+        }
 
         switch (currentStep) {
             case START:
@@ -272,14 +282,7 @@ public class BlueBack12Ball extends OpMode {
                 robot.sorterLogic.sortOutBlobs(GREEN, LOAD);
                 robot.sorterLogic.sortOutBlobs(PURPLE, FIRE);
                 robot.sorterLogic.sortOutBlobs(PURPLE, STORE);
-                if(robot.pattern.equals(GPP))
-                {
-                    robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotA.getFirePosition());
-                }
-                else
-                {
-                    robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotB.getFirePosition());
-                }
+                robot.updateAllDaThings();
                 setCurrentStep(FIRE_1);
                 break;
             case FIRE_1:
@@ -298,7 +301,7 @@ public class BlueBack12Ball extends OpMode {
             case YOINK_2:
                 if(!follower.isBusy())
                 {
-                    robot.sorterHardware.runAdvancedIntake();
+                    eat = true;
                     follower.setMaxPower(0.5);
                     follower.followPath(paths.GrabClose);
                     setCurrentStep(MOVE_TO_FIRE_2);
@@ -306,15 +309,17 @@ public class BlueBack12Ball extends OpMode {
                 break;
 
             case MOVE_TO_FIRE_2:
-                robot.sorterHardware.runAdvancedIntake();
+
                 if (!follower.isBusy()) {
+                    eat = false;
                     follower.setMaxPower(1);
                     follower.followPath(paths.MoveToFireSecond);
+                    robot.runBasicIntake(0);
                     setCurrentStep(FIRE_2);
                 }
                 break;
             case FIRE_2:
-                if (!follower.isBusy() && robot.turret.rawSwivelController.withinTolerance) {
+                if ((!follower.isBusy()) && robot.turret.rawSwivelController.withinTolerance) {
 
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_3);
@@ -328,21 +333,21 @@ public class BlueBack12Ball extends OpMode {
                 break;
             case YOINK_3:
                 if (!follower.isBusy()) {
-                    robot.sorterHardware.runAdvancedIntake();
+                    eat = true;
                     follower.setMaxPower(0.5);
                     follower.followPath(paths.GrabMiddle);
                     setCurrentStep(MOVE_TO_FIRE_3);
                 }
             case MOVE_TO_FIRE_3:
-                robot.sorterHardware.runAdvancedIntake();
                 if (!follower.isBusy()) {
+                    eat = false;
                     follower.setMaxPower(1);
                     follower.followPath(paths.MoveToFireThird);
                     setCurrentStep(FIRE_3);
                 }
                 break;
             case FIRE_3:
-                if (!follower.isBusy() && robot.turret.rawSwivelController.withinTolerance) {
+                if ((!follower.isBusy()) && robot.turret.rawSwivelController.withinTolerance) {
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_4);
                 }
@@ -350,16 +355,16 @@ public class BlueBack12Ball extends OpMode {
             case YOINK_4:
                 if(robot.queue.noBallsQueued)
                 {
-                    robot.sorterHardware.runAdvancedIntake();
+                    eat = true;
                     follower.setMaxPower(0.5);
                     follower.followPath(paths.GrabFar);
                     setCurrentStep(MOVE_TO_FIRE_4);
                 }
                 break;
             case MOVE_TO_FIRE_4:
-                robot.sorterHardware.runAdvancedIntake();
                 if(!follower.isBusy())
                 {
+                    eat = false;
                     follower.setMaxPower(1);
                     follower.followPath(paths.FireLastPattern);
                     setCurrentStep(FIRE_4);

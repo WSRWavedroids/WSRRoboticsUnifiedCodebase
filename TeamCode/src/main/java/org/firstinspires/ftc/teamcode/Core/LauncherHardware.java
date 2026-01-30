@@ -39,7 +39,7 @@ public class LauncherHardware {
     }
 
     public static double launcherCooldownDuration = 0.3;
-    public static double flickTime = 0.15; //TODO Optimize
+    public static double flickTime = 0.20; //TODO Optimize
 
     public boolean waitingToFire = false;
     boolean lockControls = false;
@@ -162,7 +162,7 @@ public class LauncherHardware {
                 if (stopMotorAfter && cooldownTimer.seconds() >= launcherCooldownDuration && cooldownTimer.seconds() >= flickTime * 2) {
                     nextStep(RESET);
                 }
-                else if (robot.sorterHardware.flickyInPosition() || cooldownTimer.seconds() >= flickTime * 2) {
+                else if (/*robot.sorterHardware.flickyInPosition() ||*/ cooldownTimer.seconds() >= flickTime * 2) {
                     nextStep(RESET);
                 }
                 break;

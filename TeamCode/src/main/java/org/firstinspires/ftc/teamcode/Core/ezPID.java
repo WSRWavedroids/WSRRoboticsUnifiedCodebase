@@ -123,8 +123,87 @@ public class ezPID {
     }
 
     public void runCalledPID(double reference) {
-        // obtain the encoder position
-        double encoderPosition = motor.getCurrentPosition();
+        /// CALL THIS ONCE PER LOOP IN ANOTHER SCRIPT OR MOTOR WON'T MOVE
+        /// ONLY USE FOR ONE MOTOR ezPID INSTANCES OR WILL THROW ERRORS!
+        /// Use the following line to call this properly FOR ONE MOTOR
+        /// PIDINSTANCENAME.runCalledPID(Target position(Ticks) or speed (Ticks/s));
+
+        time = Timer.seconds();
+        dt = time - lastTime;
+        lastTime = time;
+
+        if(mode == movementType.POSITION)
+        {
+            // obtain the encoder position
+            double encoderPosition = motor.getCurrentPosition();
+            // calculate the error
+            double error = reference - encoderPosition;
+
+            double derivative;
+            // rate of change of the error
+            if(Timer.seconds()!= 0)
+            {
+                derivative = (error - lastError) / dt;
+            }
+            else
+            {
+                derivative = (error - lastError);
+            }
+
+
+            double feedforward = f * reference;
+
+            if(Timer.seconds() != 0)
+            {
+                // sum of all error over time
+                integralSum = integralSum + (error * dt);
+            }
+
+            double out = kneecap * ((p * error) + (i * integralSum) + (d * derivative) + feedforward);
+
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setPower(out);
+
+            lastError = error;
+
+            if(Math.abs(error) > tolerance)
+            {
+                withinTolerance = false;
+            }
+            else
+            {
+                withinTolerance = true;
+            }
+
+        }
+        else if(mode == movementType.SPEED)
+        {
+            // obtain the encoder position
+            double encoderSpeed = motor.getVelocity();
+            // calculate the error
+            double error = reference - encoderSpeed;
+
+            if(Math.abs(error) > tolerance)
+            {
+                withinTolerance = false;
+            }
+            else
+            {
+                withinTolerance = true;
+            }
+
+            // rate of change of the error
+            double derivative = (error - lastError) / dt;
+
+            // sum of all error over time
+            integralSum = integralSum + (error * dt);
+
+            double out = (p * error) + (i * integralSum) + (d * derivative);
+
+            motor.setPower(out);
+
+            lastError = error;
+        }
     }
 
     public void runCalledPID(double reference, double encoderPosition)
