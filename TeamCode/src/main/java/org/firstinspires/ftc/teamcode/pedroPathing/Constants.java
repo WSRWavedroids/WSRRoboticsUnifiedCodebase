@@ -33,8 +33,8 @@ public class Constants {
             .headingPIDFCoefficients(new PIDFCoefficients(1, 0, 0.129, 0.1))
             .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(1, 0, 0.129, 0.01))
             .centripetalScaling(0.0007)
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.015,0,0.001,0.6,0.1))
-            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.015,0,0.004,0.6,0.1));
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.0125,0,0.002,0.6,0.1))
+            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.0125,0,0.0055,0.6,0.1));
     public static PathConstraints pathConstraints = new PathConstraints(
             0.99,
             100,

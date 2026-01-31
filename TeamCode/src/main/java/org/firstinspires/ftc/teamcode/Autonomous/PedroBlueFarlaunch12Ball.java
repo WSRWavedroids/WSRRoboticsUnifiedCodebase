@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 
-@Autonomous(name="PedroBlue" + "Farlaunch12Ball", group = "Pedro")
+@Autonomous(name="BlueFarlaunch", group = "Pedro")
 public class PedroBlueFarlaunch12Ball extends OpMode {
     Steps currentstep = START;
     public Follower follower;

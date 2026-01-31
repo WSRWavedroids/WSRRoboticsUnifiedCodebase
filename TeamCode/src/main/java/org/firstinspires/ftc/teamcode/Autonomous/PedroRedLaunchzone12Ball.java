@@ -8,16 +8,16 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="PedroRedLaunchzone12Ball", group = "Pedro")
+@Autonomous(name="RedLaunchzone", group = "Pedro")
 public class PedroRedLaunchzone12Ball extends PedroBlueFarlaunch12Ball {
 
     @Override
     public void init() {
         super.init();
-        follower.setStartingPose(new Pose(120.25, 130.5, Math.toRadians(45))); //todo be cool like michael
+        follower.setPose(new Pose(120.25, 130.5, Math.toRadians(45)));
+        robot.initLimelight();
+        robot.limelightTelemetry();
     }
-
-    public void runOpMode() {
         class Paths extends PedroBlueFarlaunch12Ball.Paths{
             public Paths(Follower follower) {
                 super(follower);
@@ -132,7 +132,7 @@ public class PedroRedLaunchzone12Ball extends PedroBlueFarlaunch12Ball {
                         .build();
             }
         }
-    }
+
     @Override
     public void start() {
         runPath = new PedroRedLaunchzone12Ball.Paths(follower);

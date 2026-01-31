@@ -9,13 +9,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 
 
-@Autonomous(name="PedroRedFarlaunch12Ball", group = "Pedro")
+@Autonomous(name="RedFarlaunch", group = "Pedro")
 public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
     @Override
     public void init() {
         super.init();
-        follower.setStartingPose(new Pose(89, 9.275, Math.PI / 2)); //todo be cool like michael
+        follower.setPose(new Pose(89, 9.275, Math.PI / 2));
+        robot.initLimelight();
+        robot.limelightTelemetry();
     }
 
     class Paths extends PedroBlueFarlaunch12Ball.Paths {
@@ -37,7 +39,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
                                     new Pose(100.000, 35.700)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(67.5), Math.toRadians(0))
+                    ).setLinearHeadingInterpolation(Math.toRadians(67.5), Math.toRadians(180))
 
                     .build();
 
@@ -47,7 +49,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
                                     new Pose(135.500, 35.700)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
@@ -57,7 +59,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
                                     new Pose(85.900, 16.600)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(67.5))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(67.5))
 
                     .build();
 
@@ -67,7 +69,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
                                     new Pose(103.000, 60.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(67.5), Math.toRadians(0))
+                    ).setLinearHeadingInterpolation(Math.toRadians(67.5), Math.toRadians(180))
 
                     .build();
 
@@ -77,7 +79,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
                                     new Pose(120.900, 60.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
@@ -87,7 +89,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
                                     new Pose(85.900, 16.600)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(67.5))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(67.5))
 
                     .build();
 
@@ -97,7 +99,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
                                     new Pose(103.000, 84.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(67.5), Math.toRadians(360))
+                    ).setLinearHeadingInterpolation(Math.toRadians(67.5), Math.toRadians(180))
 
                     .build();
 
@@ -107,7 +109,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
                                     new Pose(120.900, 84.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
@@ -117,7 +119,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
                                     new Pose(85.900, 16.600)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(67.5))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(67.5))
 
                     .build();
 
@@ -135,7 +137,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
     @Override
     public void start() {
-        runPath = new Paths(follower);
+        runPath = new PedroRedFarlaunch12Ball.Paths(follower);
     }
 
 }
