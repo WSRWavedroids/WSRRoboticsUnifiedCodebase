@@ -274,11 +274,11 @@ public class Robot {
         }
 
         launcherMath(dist,
-                23.41447,
-                274.95936,
-                1173.87201,
-                1973.79332,
-                1897);
+                103.80245,
+                1008.15851,
+                3610.79545,
+                5511.20962,
+                3765);
     }
 
     public void launcherMath(double x,double m1, double m2, double m3, double m4, double add){
