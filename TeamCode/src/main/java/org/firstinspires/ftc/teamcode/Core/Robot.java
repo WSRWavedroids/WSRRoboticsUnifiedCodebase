@@ -90,10 +90,11 @@ public class Robot {
 
     public enum allianceSides {
         BLUE(2), RED(1);
-    public final int limelightPipeline;
-    allianceSides(int limelightPipeline) {
-        this.limelightPipeline = limelightPipeline;
-    }}
+        public final int limelightPipeline;
+        allianceSides(int limelightPipeline) {
+            this.limelightPipeline = limelightPipeline;
+        }
+    }
     public allianceSides alliance;
 
     public Vector2 robotPosition;
