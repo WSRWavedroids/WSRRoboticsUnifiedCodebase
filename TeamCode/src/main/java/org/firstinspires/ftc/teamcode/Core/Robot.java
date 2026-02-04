@@ -173,7 +173,7 @@ public class Robot {
         analogTurretTracker = hardwareMap.get(AnalogInput.class, "analogTurretTracker");
 
 
-        magsense = hardwareMap.get(TouchSensor.class, "magsense1");
+        magsense = hardwareMap.get(TouchSensor.class, "magsense");
 
 
         //CamCam = hardwareMap.get(WebcamName.class, "CamCam");
