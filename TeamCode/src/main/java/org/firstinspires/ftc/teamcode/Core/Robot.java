@@ -48,9 +48,9 @@ public class Robot {
     public DcMotorEx backRightDrive;
 
     public DcMotorEx sorterMotor;
-    public DcMotorEx launcherMotor;
+    public DcMotorEx launcherMotorOne;
+    public DcMotorEx launcherMotorTwo;
     public DcMotorEx intakeMotor;
-    public DcMotorEx swivelMotor;
 
     public Servo flicky;
     public AnalogInput flickyFeedback;
@@ -60,6 +60,9 @@ public class Robot {
     public TouchSensor magsense;
 
     public Limelight3A limelight;
+
+    public Servo turretServoOne;
+    public Servo turretServoTwo;
 
     public Servo fireRGB;
     public Servo loadRGB;
@@ -152,10 +155,10 @@ public class Robot {
         backRightDrive = hardwareMap.get(DcMotorEx.class, "backRightDrive");
 
         sorterMotor = hardwareMap.get(DcMotorEx.class, "sorterMotor");
-        launcherMotor = hardwareMap.get(DcMotorEx.class, "launcherMotor");
+        launcherMotorOne = hardwareMap.get(DcMotorEx.class, "launcherMotorOne");
+        launcherMotorTwo = hardwareMap.get(DcMotorEx.class, "launcherMotorTwo");
 
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
-        swivelMotor = hardwareMap.get(DcMotorEx.class, "swivelMotor");
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
 
@@ -163,6 +166,9 @@ public class Robot {
         rightColorScanner = hardwareMap.get(RevColorSensorV3.class, "rightColorScanner");
 
         feedServo = hardwareMap.get(CRServo.class, "feedServo");
+
+        turretServoOne = hardwareMap.get(Servo.class, "turretServoOne");
+        turretServoTwo = hardwareMap.get(Servo.class, "turretServoTwo");
 
 
 
@@ -204,7 +210,6 @@ public class Robot {
 
         sorterMotor.setDirection(FORWARD);
         intakeMotor.setDirection(REVERSE);
-        swivelMotor.setDirection(REVERSE);
 
         // This tells the motors to chill when we're not powering them.
         frontRightDrive.setZeroPowerBehavior(BRAKE);
@@ -419,7 +424,7 @@ public class Robot {
         //Reliant functions not present
         telemetry.addData("Sorter Position: ", sorterHardware.motor.getCurrentPosition());
         telemetry.addData("Reference", sorterHardware.reference);
-        telemetry.addData("Launcher Velocity: ", launcher.motor.getVelocity());
+        telemetry.addData("Launcher Velocity: ", launcher.motor1.getVelocity());
         telemetry.addData("Sorter In Position", sorterHardware.positionedCheck());
         telemetry.addData("Sorter State: ", sorterLogic.getCurrentOffset());
         telemetry.addData("Limelight angleX: ", targetTag.angleX);

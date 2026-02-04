@@ -23,18 +23,25 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class LauncherHardware {
 
     private Robot robot;
-    public DcMotorEx motor;
-
+    public DcMotorEx motor1, motor2;
     private TurretLogic turret;
-    private ezPID launcherPID;
+    private PIDMotorGroup launcherMotors;
+
+    public ezPID launcherPID;
+
+
 
 
     public LauncherHardware(Robot robotFile) {
         robot = robotFile;
-        motor = robot.launcherMotor;
+        motor1 = robot.launcherMotorOne;
+        motor2 = robot.launcherMotorTwo;
+        launcherMotors = new PIDMotorGroup(2, motor1, motor2);
+        launcherMotors.setDirections(-1, -1);
+        launcherPID = new ezPID(launcherMotors, 28, p, i, d, f, 1, toleranceRange, ezPID.movementType.SPEED);
         turret = robot.turret;
         // motor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(P, I, D, F));
-        motor.setDirection(REVERSE);
+        motor1.setDirection(REVERSE);
         waitingToFire = false;
     }
 
@@ -88,7 +95,8 @@ public class LauncherHardware {
     private ElapsedTime cooldownTimer = new ElapsedTime();
 
     public void updateLauncherHardware() {
-        robot.panelsTelemetry.addData("Launcher Velocity", motor.getVelocity());
+        robot.panelsTelemetry.addData("Launcher Motor 1 Velocity", motor1.getVelocity());
+        robot.panelsTelemetry.addData("Launcher Motor 2 Velocity", motor2.getVelocity());
         robot.panelsTelemetry.addData("Target Launcher Velocity", velocityTarget);
         robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
 
@@ -189,8 +197,7 @@ public class LauncherHardware {
         } else {
             steadiness = 0;
         }
-
-        motor.setPIDFCoefficients(RUN_USING_ENCODER, new PIDFCoefficients(p, i, d, f));
+        launcherPID.changeBehaviorValues(p, i, d, f, 1);
     }
 
     public boolean doneFiring() {
@@ -236,7 +243,7 @@ public class LauncherHardware {
     @Deprecated
     public void setLauncherSpeed(double targetSpeed) {
         velocityTarget = ticksPerRevolution * revolutionsPerSecond * targetSpeed;
-        motor.setVelocity(velocityTarget);
+        launcherPID.runCalledPID(velocityTarget);
         //turret.launcherController.runCalledPID(targetspeed);
     }
 
@@ -244,7 +251,7 @@ public class LauncherHardware {
         if (!manualTuneMode) {
             velocityTarget = targetVelocity;
         }
-        motor.setVelocity(velocityTarget);
+        launcherPID.runCalledPID(velocityTarget);
     }
     public void setPerfectLauncherVelocity() {
         setLauncherVelocity(findBestMotorVelocity(robot.targetTag.distanceZ));
@@ -254,7 +261,7 @@ public class LauncherHardware {
         /*if (atMaxSpeed()) {
             return true;
         }*/
-        double realVelocity = motor.getVelocity();
+        double realVelocity = motor1.getVelocity();
         return (realVelocity >= (speedTarget - toleranceRange)) && (realVelocity <= (speedTarget + toleranceRange));
     }
     public boolean motorSpeedCheck() {
@@ -264,7 +271,7 @@ public class LauncherHardware {
     //TODO retune this
     public boolean atMaxSpeed() {
         double voltageMax = -138.3958 * robot.voltageSensor.getVoltage() - 836.5097;
-        return motor.getVelocity() >= (voltageMax - toleranceRange);
+        return motor1.getVelocity() >= (voltageMax - toleranceRange);
     }
 
     public boolean motorSteady() {

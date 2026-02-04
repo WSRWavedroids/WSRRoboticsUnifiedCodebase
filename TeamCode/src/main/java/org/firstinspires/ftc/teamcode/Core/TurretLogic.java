@@ -11,24 +11,13 @@ import static org.firstinspires.ftc.teamcode.Core.TurretLogic.controlMode.*;
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Configurable
 public class TurretLogic {
     Robot robot;
-    public DcMotorEx swivelMotor;
-    public static double rawP = 0.00015;
-    public static double rawI = 0.00;
-    public static double rawD = 0.0;
-    public static double rawF = 0.0;
-
-    /*public static double fineP = 0.00008;
-    public static double fineI = 0.0002;
-    public static double fineD = 0.0;
-    public static double fineF = 0.0;*/
     public static double tolerance;
-    public ezPID rawSwivelController;
-    public ezPID fineSwivelController;
     double turretDegreesFromTarget;
     public static final int encoderResolution = 8192 * 132 / 16; // Actual encoder resolution * teeth on turret / teeth on motor side
     //public static double fineDegreeWindow = 0;
@@ -38,6 +27,7 @@ public class TurretLogic {
     public boolean goodAngle = false;
     public float inputModifier = 400;
     public float input;
+
 
     double offsetDegrees;
 
@@ -57,22 +47,6 @@ public class TurretLogic {
         this.robot = robot;
         follower = followerIN;
 
-        swivelMotor = robot.swivelMotor;
-
-
-        /*fineSwivelController = new ezPID(swivelMotor, 8192, fineP, fineI, fineD,
-                fineF, 1.0, tolerance, ezPID.movementType.POSITION);*/
-
-        rawSwivelController = new ezPID(swivelMotor, 8192, rawP, rawI, rawD,
-                rawF, 1.0, tolerance, ezPID.movementType.POSITION);
-
-        resetEncoder();
-    }
-
-    public void resetEncoder() {
-        swivelMotor.setMode(STOP_AND_RESET_ENCODER);
-        offsetDegrees = findStartingAngle();
-        swivelMotor.setMode(RUN_WITHOUT_ENCODER);
     }
 
     public void runTurret() {
@@ -83,54 +57,8 @@ public class TurretLogic {
             updateTurretPositionXY();
         }
 
-        rawSwivelController.tolerance = tolerance;
+        
 
-        /*if (Math.abs(turretDegreesFromTarget) < fineDegreeWindow)
-        {
-            if (lastUsedSwivelController == RAW)
-            {
-                fineSwivelController.grabInfoFromPID(rawSwivelController.shareInfo());
-            }
-            lastUsedSwivelController = swivelControllers.FINE;
-            fineSwivelController.changeBehaviorValues(fineP, fineI, fineD, fineF, 1);
-            fineSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
-            fineSwivelController.tolerance = tolerance;
-        } else if (Math.abs(turretDegreesFromTarget) > fineDegreeWindow)
-        {
-            if (lastUsedSwivelController == FINE)
-            {
-                rawSwivelController.grabInfoFromPID(fineSwivelController.shareInfo());
-            }
-            lastUsedSwivelController = RAW;
-            rawSwivelController.changeBehaviorValues(rawP, rawI, rawD, rawF, 1);
-            rawSwivelController.tolerance = tolerance;
-            rawSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
-        }
-        else
-        {
-            if (lastUsedSwivelController == RAW) {
-                fineSwivelController.grabInfoFromPID(rawSwivelController.shareInfo());
-            }
-            lastUsedSwivelController = swivelControllers.FINE;
-            fineSwivelController.changeBehaviorValues(fineP, fineI, fineD, fineF, 1);
-            fineSwivelController.tolerance = tolerance;
-            fineSwivelController.runCalledPID(runToSafeAngle(updateAngle()));
-        }*/
-
-        lastUsedSwivelController = RAW;
-        rawSwivelController.changeBehaviorValues(rawP, rawI, rawD, rawF, 1);
-        rawSwivelController.tolerance = tolerance;
-        rawSwivelController.runCalledPID(runToSafeAngle(updateAngle()));//Deleted the position overide because potent is out rn
-
-        /*robot.panelsTelemetry.addData("Turret position", robot.getMotorPosition());
-        robot.panelsTelemetry.addData("Turret target", runToSafeAngle(updateAngle()));
-        robot.panelsTelemetry.addData("Turret position (degrees)", ticksToDegrees(robot.getMotorPosition()));
-        robot.panelsTelemetry.addData("Turret target (degrees)", ticksToDegrees(runToSafeAngle(updateAngle())));
-
-        robot.panelsTelemetry.addData("Limelight cooldown", tagCooldown);
-        robot.panelsTelemetry.addData("Last known tag angle", lastKnownTagAngle);*/
-
-        //goodAngle = rawSwivelController.withinTolerance(runToSafeAngle(updateAngle()));
     }
 
     double checkDistance() {
@@ -194,46 +122,15 @@ public class TurretLogic {
         else return 0;
     }
 
-    double ticksToRPM(double ticksPerSecIn)
+    public static double degreesToServo(double degreesIN)
     {
-        return (ticksPerSecIn / encoderResolution) * 60;
+        return (1/240);
     }
 
-    public static int degreesToTicks(double degreesIN)
-    {
-        return (int) (((double) encoderResolution / 360) * degreesIN);
-    }
+    public double runToSafeAngle(double intINDegs) {
 
-    public static int ticksToDegrees(double ticksIN)
-    {
-        return (int) ((ticksIN / encoderResolution) * 360);
-    }
 
-    double ticksToTurretHeading()
-    {
-        return ticksToDegrees(getMotorPosition());
-    }
-
-    int inputToTicks()
-    {
-        return (int) (input * inputModifier);
-    }
-
-    public int runToSafeAngle(double intINDegs) {
-
-        double finalTargetDeg;
-        double currentPosDeg = ticksToDegrees(getMotorPosition());
-
-        while(intINDegs > upperLimit) {
-            intINDegs -= 360;
-        }
-        while (intINDegs < lowerLimit) {
-            intINDegs += 360;
-        }
-        finalTargetDeg = limitIfNeeded(intINDegs);
-
-        turretDegreesFromTarget = finalTargetDeg - currentPosDeg;
-        return degreesToTicks(finalTargetDeg);
+        return degreesToServoPWM(intINDegs);
     }
 
     double limitIfNeeded(double input) {
@@ -271,7 +168,7 @@ public class TurretLogic {
 
     void calibratePositionFromTag()
     {
-        //Angle from our robot heading to tag
+        /*//Angle from our robot heading to tag
         double testVal = ticksToDegrees(getMotorPosition()) + robot.targetTag.angleX;
 
         Vector2 goalPosition = new Vector2();
@@ -285,7 +182,7 @@ public class TurretLogic {
                 goalPosition.x = 123;
                 goalPosition.y = 132;
             }
-        }
+        }*/
     }
 
     private ElapsedTime tagCooldown = new ElapsedTime();
@@ -316,8 +213,20 @@ public class TurretLogic {
                 + 48.60426;
     }
 
-    public double getMotorPosition() {
-        return swivelMotor.getCurrentPosition() + degreesToTicks(offsetDegrees);
+    public double degreesToServoPWM(double degreesIn)
+    {
+        double leftLimitDegs = -90;
+        double rightLimitDegs = 150;
+        double goToValue;
+      if(degreesIn < 0)
+      {
+          goToValue = 0.5 - (0.5*(Math.abs(degreesIn) / Math.abs(leftLimitDegs)));
+      }
+      else
+      {
+          goToValue = 0.5 + (0.5*(Math.abs(degreesIn) / Math.abs(rightLimitDegs)));
+      }
+      return goToValue;
     }
 }
 

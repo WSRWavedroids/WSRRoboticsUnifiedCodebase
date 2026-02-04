@@ -78,7 +78,7 @@ public class ezPID {
     /// Check out that file's comments to understand setting it up better
     /// To make a PID for the motor group, use the following line
     /// private exPID singleMotorPID(PIDMotorGroup(numberOfMotorsIn, DcMotorEx["motors you want here without the "" "]), encoderResolutionValue, p, i, d, f, kneecap, toleranceInTicks, motorMode)
-    public ezPID(PIDMotorGroup motorsIN, int ticksPerRotationIN, Double inP, Double inI, Double inD, Double inF, Double kneecapIN, Double toleranceIN, movementType modeIN) {
+    public ezPID(PIDMotorGroup motorsIN, int ticksPerRotationIN, Double inP, Double inI, Double inD, Double inF, int kneecapIN, Double toleranceIN, movementType modeIN) {
         motorGroup = motorsIN;
         p = inP;
         i = inI;
