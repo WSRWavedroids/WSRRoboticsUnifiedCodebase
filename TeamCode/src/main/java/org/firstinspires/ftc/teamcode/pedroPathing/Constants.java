@@ -55,7 +55,8 @@ public class Constants {
             .xVelocity(41.66101458692175)
             .yVelocity(51.29496416707677)
 
-            .useBrakeModeInTeleOp(true);
+            .useBrakeModeInTeleOp(true)
+            .useVoltageCompensation(true);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(7.25)
