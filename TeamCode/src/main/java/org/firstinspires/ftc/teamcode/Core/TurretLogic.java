@@ -120,7 +120,7 @@ public class TurretLogic {
         lastUsedSwivelController = RAW;
         rawSwivelController.changeBehaviorValues(rawP, rawI, rawD, rawF, 1);
         rawSwivelController.tolerance = tolerance;
-        rawSwivelController.runCalledPID(runToSafeAngle(updateAngle()), getMotorPosition());
+        rawSwivelController.runCalledPID(runToSafeAngle(updateAngle()));//Deleted the position overide because potent is out rn
 
         /*robot.panelsTelemetry.addData("Turret position", robot.getMotorPosition());
         robot.panelsTelemetry.addData("Turret target", runToSafeAngle(updateAngle()));

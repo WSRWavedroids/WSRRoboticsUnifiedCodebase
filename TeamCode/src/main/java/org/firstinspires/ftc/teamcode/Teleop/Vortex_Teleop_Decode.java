@@ -249,7 +249,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         runTrackpadFunctions();
 
-        resetTurretEncoder();
+        //resetTurretEncoder();
 
         //robot.panelsTelemetry.addData("Motor Position", robot.launcher.motor.getCurrentPosition());
         robot.panelsTelemetry.update();
@@ -465,7 +465,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
     private void resetTurretEncoder() {
         if (gamepad1.dpadDownWasPressed()) {
-            robot.turret.resetEncoder();
+            //robot.turret.resetEncoder();
         }
     }
 
@@ -664,9 +664,9 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Turret Target", robot.turret.ticksToDegrees(robot.turret.runToSafeAngle(robot.turret.updateAngle())));
         telemetry.addData("Raw Turret Target", robot.turret.updateAngle());
         telemetry.addData("Potentiometer reading", robot.analogTurretTracker.getVoltage());
-        telemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
+        //telemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
         robot.panelsTelemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.turret.getMotorPosition()));
-        robot.panelsTelemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
+        //robot.panelsTelemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
 
         telemetry.addLine();
         telemetry.addLine("Color Sensors");
