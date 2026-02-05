@@ -301,7 +301,7 @@ public void runCalledPIDGroup(double reference)
         {
 
             // obtain the encoder position
-            double encoderPosition = motor.getCurrentPosition();
+            double encoderPosition = motorGroup.motorGroup.get(0).getCurrentPosition();
             // calculate the error
             double error = reference - encoderPosition;
 
@@ -349,7 +349,7 @@ public void runCalledPIDGroup(double reference)
         else if(mode == movementType.SPEED)
         {
             // obtain the encoder position
-            double encoderSpeed = motor.getVelocity();
+            double encoderSpeed = motorGroup.motorGroup.get(0).getVelocity();
             // calculate the error
             double error = reference - encoderSpeed;
 

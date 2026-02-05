@@ -81,7 +81,7 @@ public class BetaBlueBackAuto extends OpMode {
         telemetry.addData("Reference", robot.sorterHardware.reference);
 
         telemetry.addData("Equalized Target Position", robot.sorterLogic.offsetPositions.get(targetOffset));
-        telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
+//        telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
         telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
         telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
         telemetry.addData("Launcher on Cooldown", robot.launcher.onCooldown);
@@ -124,7 +124,7 @@ public class BetaBlueBackAuto extends OpMode {
     public void init() {
 
         robot = new Robot(hardwareMap, telemetry, this);
-        TurretLogic.tolerance = robot.turret.degreesToTicks(4);
+//        TurretLogic.tolerance = robot.turret.degreesToTicks(4);
         telemetry.addData("tolerance value test pt 1", TurretLogic.tolerance);
         telemetry.addData("tolerance value test pt 2", robot.turret.tolerance);
         auto = new AutonomousPlusPLUS(robot);
@@ -193,9 +193,9 @@ public class BetaBlueBackAuto extends OpMode {
 
         telemetry.addData("Distance", robot.targetTag.distanceZ);
         telemetry.addData("Angle", robot.targetTag.angleX);
-        telemetry.addData("Within Swivel Tolerance", robot.turret.rawSwivelController.withinTolerance);
-        telemetry.addData("Turret Tolerance", robot.turret.rawSwivelController.tolerance);
-        telemetry.addData("Swivel Velocity", robot.turret.swivelMotor.getVelocity());
+//        telemetry.addData("Within Swivel Tolerance", robot.turret.rawSwivelController.withinTolerance);
+//        telemetry.addData("Turret Tolerance", robot.turret.rawSwivelController.tolerance);
+//        telemetry.addData("Swivel Velocity", robot.turret.swivelMotor.getVelocity());
 
         robot.updateAllDaThings();
 
@@ -233,7 +233,7 @@ public class BetaBlueBackAuto extends OpMode {
                 nextStep(Steps.FIRE3);
                 break;
             case FIRE3:
-                if(!robot.turret.rawSwivelController.withinTolerance)
+                /*if(!robot.turret.rawSwivelController.withinTolerance)
                 {
                     telemetry.addData("Out of Position, can't fire", ":(");
                 }
@@ -243,7 +243,7 @@ public class BetaBlueBackAuto extends OpMode {
                     robot.launcher.setPerfectLauncherVelocity();
                     robot.queue.addPattern(robot.pattern);
                     nextStep(Steps.MOVEFORWARD);
-                }
+                }*/
                 break;
             case MOVEFORWARD:
                 if (robot.queue.noBallsQueued) {
@@ -308,7 +308,7 @@ public class BetaBlueBackAuto extends OpMode {
                 }
                 break;
             case UNPARK:
-                if(robot.sorterHardware.doneMoving() && robot.turret.rawSwivelController.withinTolerance)
+                /*if(robot.sorterHardware.doneMoving() && robot.turret.rawSwivelController.withinTolerance)
                 {
                     if(Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE"))
                     {
@@ -319,7 +319,7 @@ public class BetaBlueBackAuto extends OpMode {
                         auto.moveRobotLeft(1000);
                     }
                     nextStep(Steps.STOP);
-                }
+                }*/
                 break;
             case STOP:
                 if(auto.checkMovement())

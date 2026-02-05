@@ -36,7 +36,7 @@ public class LauncherHardware {
         robot = robotFile;
         motor1 = robot.launcherMotorOne;
         motor2 = robot.launcherMotorTwo;
-        launcherMotors = new PIDMotorGroup(2, motor1, motor2);
+        launcherMotors = new PIDMotorGroup(motor1, motor2);
         launcherMotors.setDirections(-1, -1);
         launcherPID = new ezPID(launcherMotors, 28, p, i, d, f, 1, toleranceRange, ezPID.movementType.SPEED);
         turret = robot.turret;
@@ -243,15 +243,15 @@ public class LauncherHardware {
     @Deprecated
     public void setLauncherSpeed(double targetSpeed) {
         velocityTarget = ticksPerRevolution * revolutionsPerSecond * targetSpeed;
-        launcherPID.runCalledPID(velocityTarget);
-        //turret.launcherController.runCalledPID(targetspeed);
+        launcherPID.runCalledPIDGroup(velocityTarget);
+        //turret.launcherController.runCalledPIDGroup(targetspeed);
     }
 
     public void setLauncherVelocity(double targetVelocity) {
         if (!manualTuneMode) {
             velocityTarget = targetVelocity;
         }
-        launcherPID.runCalledPID(velocityTarget);
+        launcherPID.runCalledPIDGroup(velocityTarget);
     }
     public void setPerfectLauncherVelocity() {
         setLauncherVelocity(findBestMotorVelocity(robot.targetTag.distanceZ));

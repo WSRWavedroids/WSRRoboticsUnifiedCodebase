@@ -24,7 +24,7 @@ public class BetaRedBackAuto extends BetaBlueBackAuto {
         super.init();
         // Override the alliance key set in the blue auto to run the red one
         robot = new Robot(hardwareMap, telemetry, this);
-        TurretLogic.tolerance = robot.turret.degreesToTicks(8);
+//        TurretLogic.tolerance = robot.turret.degreesToTicks(8);
         auto = new AutonomousPlusPLUS(robot);
         robot.turret.activeMode = TurretLogic.controlMode.FULL;
 

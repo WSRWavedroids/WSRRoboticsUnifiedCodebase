@@ -48,6 +48,7 @@ public class Robot {
     public DcMotorEx backRightDrive;
 
     public DcMotorEx sorterMotor;
+    public Servo turretServo;
     public DcMotorEx launcherMotorOne;
     public DcMotorEx launcherMotorTwo;
     public DcMotorEx intakeMotor;
@@ -61,8 +62,8 @@ public class Robot {
 
     public Limelight3A limelight;
 
-    public Servo turretServoOne;
-    public Servo turretServoTwo;
+//    public Servo turretServoOne;
+//    public Servo turretServoTwo;
 
     public Servo fireRGB;
     public Servo loadRGB;
@@ -155,8 +156,9 @@ public class Robot {
         backRightDrive = hardwareMap.get(DcMotorEx.class, "backRightDrive");
 
         sorterMotor = hardwareMap.get(DcMotorEx.class, "sorterMotor");
-        launcherMotorOne = hardwareMap.get(DcMotorEx.class, "launcherMotorOne");
-        launcherMotorTwo = hardwareMap.get(DcMotorEx.class, "launcherMotorTwo");
+        turretServo = hardwareMap.get(Servo.class, "turretServo");
+        launcherMotorOne = hardwareMap.get(DcMotorEx.class, "launcherMotor1");
+        launcherMotorTwo = hardwareMap.get(DcMotorEx.class, "launcherMotor2");
 
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
 
@@ -167,8 +169,8 @@ public class Robot {
 
         feedServo = hardwareMap.get(CRServo.class, "feedServo");
 
-        turretServoOne = hardwareMap.get(Servo.class, "turretServoOne");
-        turretServoTwo = hardwareMap.get(Servo.class, "turretServoTwo");
+//        turretServoOne = hardwareMap.get(Servo.class, "turretServoOne");
+//        turretServoTwo = hardwareMap.get(Servo.class, "turretServoTwo");
 
 
 

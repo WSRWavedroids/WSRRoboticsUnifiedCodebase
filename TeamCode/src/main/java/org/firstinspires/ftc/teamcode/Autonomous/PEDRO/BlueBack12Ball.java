@@ -49,7 +49,7 @@ public class BlueBack12Ball extends OpMode {
     public void init() {
 
         robot = new Robot(hardwareMap, telemetry, this);
-        TurretLogic.tolerance = TurretLogic.degreesToTicks(8);
+//        TurretLogic.tolerance = TurretLogic.degreesToTicks(8);
         follower = robot.turret.follower;
         follower.setMaxPowerScaling(1);
         follower.setMaxPower(1);
@@ -115,7 +115,7 @@ public class BlueBack12Ball extends OpMode {
         telemetry.addData("HYPE", "Let's do this!!!");
         robot.readyHardware(false);
         robot.sorterHardware.legalToSpin = true;
-        robot.turret.resetEncoder();
+//        robot.turret.resetEncoder();
         //speed = 1;
     }
 
@@ -286,11 +286,11 @@ private boolean eat = false;
                 setCurrentStep(FIRE_1);
                 break;
             case FIRE_1:
-                if(robot.turret.rawSwivelController.withinTolerance)
+                /*if(robot.turret.rawSwivelController.withinTolerance)
                 {
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_2);
-                }
+                }*/
                 break;
             case LINE_UP_2:
                 if (robot.queue.noBallsQueued) {
@@ -319,11 +319,11 @@ private boolean eat = false;
                 }
                 break;
             case FIRE_2:
-                if ((!follower.isBusy()) && robot.turret.rawSwivelController.withinTolerance) {
+                /*if ((!follower.isBusy()) && robot.turret.rawSwivelController.withinTolerance) {
 
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_3);
-                }
+                }*/
                 break;
             case LINE_UP_3:
                 if (robot.queue.noBallsQueued) {
@@ -347,10 +347,10 @@ private boolean eat = false;
                 }
                 break;
             case FIRE_3:
-                if ((!follower.isBusy()) && robot.turret.rawSwivelController.withinTolerance) {
+                /*if ((!follower.isBusy()) && robot.turret.rawSwivelController.withinTolerance) {
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_4);
-                }
+                }*/
                 break;
             case YOINK_4:
                 if(robot.queue.noBallsQueued)
@@ -371,11 +371,11 @@ private boolean eat = false;
                 }
                 break;
             case FIRE_4:
-                if(!follower.isBusy() && robot.turret.rawSwivelController.withinTolerance)
+                /*if(!follower.isBusy() && robot.turret.rawSwivelController.withinTolerance)
                 {
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(UNPARK);
-                }
+                }*/
                 break;
             case UNPARK:
                 if(robot.queue.noBallsQueued)

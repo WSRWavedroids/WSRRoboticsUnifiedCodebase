@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.Core;
 
+import androidx.annotation.NonNull;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 
 @Configurable
@@ -24,9 +27,11 @@ public class PIDMotorGroup {
     int numberOfMotorsInGroup;
     public ArrayList<DcMotorEx> motorGroup;
 
-    public PIDMotorGroup(int numberOfMotorsIN, DcMotorEx... motorsIN) {
-        numberOfMotorsInGroup = numberOfMotorsIN;
-        motorGroup.addAll(Arrays.asList(motorsIN));
+
+    public PIDMotorGroup(@NonNull DcMotorEx... motorsIN) {
+        motorGroup = new ArrayList<>();
+        numberOfMotorsInGroup = motorsIN.length;
+        Collections.addAll(motorGroup, motorsIN);
     }
 
     void setDirections(int... listOfDirectionsIN)

@@ -108,7 +108,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot.targetScanner.InitLimeLightTargeting(1, robot);
         robot.controlMode = ROBOT_CENTRIC;
         imu = hardwareMap.get(IMU.class, "imu");
-        robot.turret.rawSwivelController.tolerance = 0;
+//        robot.turret.rawSwivelController.tolerance = 0;
 
 
         // Tell the driver that initialization is complete.
@@ -647,7 +647,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         telemetry.addLine();
         telemetry.addLine("Launcher:");
-        telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
+//        telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
         telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
         telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
         telemetry.addData("LL Distance", robot.targetTag.distanceZ);
@@ -659,13 +659,13 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Robot X", robot.robotPosition.x);
         telemetry.addData("Robot Y", robot.robotPosition.y);
         telemetry.addData("Pedro Heading", robot.robotHeading);
-        telemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.turret.getMotorPosition()));
-        telemetry.addData("Turret Motor Position", robot.swivelMotor.getCurrentPosition());
-        telemetry.addData("Turret Target", robot.turret.ticksToDegrees(robot.turret.runToSafeAngle(robot.turret.updateAngle())));
-        telemetry.addData("Raw Turret Target", robot.turret.updateAngle());
+//        telemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.turret.getMotorPosition()));
+//        telemetry.addData("Turret Motor Position", robot.swivelMotor.getCurrentPosition());
+        telemetry.addData("Turret Target", TurretLogic.servoUnitsToDegrees(robot.turret.runToSafeAngle(robot.turret.updateAngle())));
+        telemetry.addData("Raw Turret Target", robot.turret.runToSafeAngle(robot.turret.updateAngle()));
         telemetry.addData("Potentiometer reading", robot.analogTurretTracker.getVoltage());
         //telemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
-        robot.panelsTelemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.turret.getMotorPosition()));
+//        robot.panelsTelemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.turret.getMotorPosition()));
         //robot.panelsTelemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
 
         telemetry.addLine();

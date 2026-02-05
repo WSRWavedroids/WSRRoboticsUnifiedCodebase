@@ -57,8 +57,11 @@ public class TurretLogic {
             updateTurretPositionXY();
         }
 
-        
-
+        robot.turretServo.setPosition(
+                runToSafeAngle(
+                        updateAngle()
+                )
+        );
     }
 
     double checkDistance() {
@@ -90,15 +93,10 @@ public class TurretLogic {
         {
             return manualOverridePositionInDegs;
         }
-        else if(activeMode.equals(PARTIAL) && checkTimeSinceKnownTag(5))
-        {
-            turretDegreesFromTarget = Math.abs(lastKnownTagAngle - ticksToTurretHeading());
-            return lastKnownTagAngle + ticksToTurretHeading();
-        }
-        else if(activeMode.equals(PARTIAL) && Math.abs(input) >= 0.1)
+        /*else if(activeMode.equals(PARTIAL) && Math.abs(input) >= 0.1)
         {
             return ticksToTurretHeading() + ticksToDegrees(inputToTicks());
-        }
+        }*/
         else if(activeMode.equals(FULL))
         {
             if(robot.alliance.equals(BLUE))
@@ -122,15 +120,20 @@ public class TurretLogic {
         else return 0;
     }
 
-    public static double degreesToServo(double degreesIN)
+    /*public static double degreesToServo(double degreesIN)
     {
         return (1/240);
-    }
+    }*/
 
     public double runToSafeAngle(double intINDegs) {
+        while(intINDegs > upperLimit) {
+            intINDegs -= 360;
+        }
+        while (intINDegs < lowerLimit) {
+            intINDegs += 360;
+        }
 
-
-        return degreesToServoPWM(intINDegs);
+        return degreesToServoUnits(limitIfNeeded(intINDegs));
     }
 
     double limitIfNeeded(double input) {
@@ -213,20 +216,28 @@ public class TurretLogic {
                 + 48.60426;
     }
 
-    public double degreesToServoPWM(double degreesIn)
-    {
-        double leftLimitDegs = -90;
-        double rightLimitDegs = 150;
-        double goToValue;
-      if(degreesIn < 0)
-      {
-          goToValue = 0.5 - (0.5*(Math.abs(degreesIn) / Math.abs(leftLimitDegs)));
-      }
-      else
-      {
-          goToValue = 0.5 + (0.5*(Math.abs(degreesIn) / Math.abs(rightLimitDegs)));
-      }
-      return goToValue;
+    public double degreesToServoUnits(double degrees) {
+        final double zeroLimitDegrees = 150;
+        final double halfPointDegrees = 0;
+        final double oneLimitDegrees = -90;
+        final double range = oneLimitDegrees - zeroLimitDegrees;
+
+        if (degrees < halfPointDegrees) {
+            return (0.5 - 1) / (halfPointDegrees - oneLimitDegrees) * (degrees - oneLimitDegrees) + 1;
+        }
+        else {
+            return (0 - 0.5) / (zeroLimitDegrees - halfPointDegrees) * (degrees - halfPointDegrees) + 0.5;
+        }
+
+        //return (degrees - zeroLimitDegrees) / range;
+    }
+
+    public static double servoUnitsToDegrees(double servoUnits) {
+        final double zeroLimitDegrees = 150;
+        final double oneLimitDegrees = -90;
+        final double range = oneLimitDegrees - zeroLimitDegrees;
+
+        return servoUnits * range + zeroLimitDegrees;
     }
 }
 
