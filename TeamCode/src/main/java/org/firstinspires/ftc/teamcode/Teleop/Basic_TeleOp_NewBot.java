@@ -105,7 +105,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
         telemetry.addData("HYPE", "Let's do this!!!");
         gamepad1.setLedColor(0, 0, 255, 100000000);
         gamepad2.setLedColor(255, 0, 240, 100000000);
-        robot.intake2.setPosition(0.5);
         robot.initLimelight();
         robot.tuningspd = 0.43;
     }
@@ -136,7 +135,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.setupLaunchers();
 
         intake1(1 ,0.5 ,0.85);
-        intake2(0.8 ,0.65 ,1);
+        intake3(0.8 ,0.65 ,1);
         launch(0.05, robot.tuningspd);
 
 
@@ -359,18 +358,22 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.intakeMotor.setPower(robot.intakeSpeed);
     }
 
-    private void intakeservo(double posOPEN, double posCLOSED){
-        if (gamepad2.xWasPressed()){
-            if (robot.intake2.getPosition() == posCLOSED){
-                robot.intake2.setPosition(posOPEN);
-            }else {
-                robot.intake2.setPosition(posCLOSED);
-            }
+    private void intakeservoforward(){
+        if (gamepad2.x){
+            robot.intake2.setPower(1);
+
+        }
+        else if (gamepad2.y) {
+            robot.intake2.setPower(-1);
+        }
+        else {
+            robot.intake2.setPower(0);
         }
     }
 
 
-    private void intake2(double fwdSPEED, double revSPEED, double master){
+
+    private void intake3(double fwdSPEED, double revSPEED, double master){
         if (currentStep == INPUT) {
             robot.intake3.setPower(0);
         }

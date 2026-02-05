@@ -12,6 +12,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.commands.standard.LynxSetModuleLEDPatternCommand;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -34,7 +35,7 @@ public class Robot {
     public DcMotorEx backRightDrive;
 
     public DcMotorEx intakeMotor;
-    public Servo intake2;
+    public CRServo intake2;
     public DcMotorEx intake3;
 
     public DcMotorEx launchLeft;
@@ -77,7 +78,7 @@ public class Robot {
         launchLeft = hardwareMap.get(DcMotorEx.class, "launchLeft");
         launchRight = hardwareMap.get(DcMotorEx.class, "launchRight");
         intake3 = hardwareMap.get(DcMotorEx.class, "intake3");
-        intake2 = hardwareMap.get(Servo.class, "servo");
+        intake2 = hardwareMap.get(CRServo.class, "servo1");
         limelight = hardwareMap.get(Limelight3A.class, "Limelight");
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
 
