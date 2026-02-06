@@ -157,8 +157,10 @@ public class SorterHardware {
         }
 
         if (!isCalibrating() && !robot.launcher.lockControls) {
-            blenderPID.changeBehaviorValues(kp, ki, kd, kf, kneecap);
-            blenderPID.runCalledPID(reference);
+            blenderPID.changeBehaviorValues(kp, ki, kd, kf, kneecap, tickTolerance);
+            if (Math.abs(motor.getCurrentPosition() - reference) > 50) {
+                blenderPID.runCalledPID(reference);
+            }
         }
 
         switch (currentFeederState) {
@@ -176,8 +178,8 @@ public class SorterHardware {
                 break;
         }
 
-        //robot.panelsTelemetry.addData("Reference", reference);
-        //robot.panelsTelemetry.addData("Blender Position", motor.getCurrentPosition());
+        robot.panelsTelemetry.addData("Reference", reference);
+        robot.panelsTelemetry.addData("Blender Position", motor.getCurrentPosition());
     }
     private void nextStep(BlenderSteps nextStep) {
         currentBlenderStep = nextStep;

@@ -197,7 +197,7 @@ public class LauncherHardware {
         } else {
             steadiness = 0;
         }
-        launcherPID.changeBehaviorValues(p, i, d, f, 1);
+        launcherPID.changeBehaviorValues(p, i, d, f, 1, toleranceRange);
     }
 
     public boolean doneFiring() {

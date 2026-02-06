@@ -11,6 +11,7 @@ import static org.firstinspires.ftc.teamcode.Core.TurretLogic.controlMode.*;
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -46,7 +47,6 @@ public class TurretLogic {
     public TurretLogic(Robot robot, Follower followerIN) {
         this.robot = robot;
         follower = followerIN;
-
     }
 
     public void runTurret() {
@@ -217,10 +217,9 @@ public class TurretLogic {
     }
 
     public double degreesToServoUnits(double degrees) {
-        final double zeroLimitDegrees = 150;
+        final double zeroLimitDegrees = 145;
         final double halfPointDegrees = 0;
         final double oneLimitDegrees = -90;
-        final double range = oneLimitDegrees - zeroLimitDegrees;
 
         if (degrees < halfPointDegrees) {
             return (0.5 - 1) / (halfPointDegrees - oneLimitDegrees) * (degrees - oneLimitDegrees) + 1;
@@ -228,8 +227,6 @@ public class TurretLogic {
         else {
             return (0 - 0.5) / (zeroLimitDegrees - halfPointDegrees) * (degrees - halfPointDegrees) + 0.5;
         }
-
-        //return (degrees - zeroLimitDegrees) / range;
     }
 
     public static double servoUnitsToDegrees(double servoUnits) {

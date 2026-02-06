@@ -113,13 +113,14 @@ public class ezPID {
 
     //Call this before a run call to get panels values
     //Feed the instance, not the core file
-    public void changeBehaviorValues(double inP, double inI, double inD, double inF, double kneecapIN)
+    public void changeBehaviorValues(double inP, double inI, double inD, double inF, double kneecapIN, double tolerance)
     {
         p = inP;
         i = inI;
         d = inD;
         f = inF;
         kneecap = kneecapIN;
+        this.tolerance = tolerance;
     }
 
     public void runCalledPID(double reference) {
@@ -141,7 +142,7 @@ public class ezPID {
 
             double derivative;
             // rate of change of the error
-            if(Timer.seconds()!= 0)
+            if(Timer.seconds() != 0)
             {
                 derivative = (error - lastError) / dt;
             }
@@ -173,8 +174,8 @@ public class ezPID {
             else
             {
                 withinTolerance = true;
-            }
 
+            }
         }
         else if(mode == movementType.SPEED)
         {
@@ -183,14 +184,7 @@ public class ezPID {
             // calculate the error
             double error = reference - encoderSpeed;
 
-            if(Math.abs(error) > tolerance)
-            {
-                withinTolerance = false;
-            }
-            else
-            {
-                withinTolerance = true;
-            }
+            withinTolerance = !(Math.abs(error) > tolerance);
 
             // rate of change of the error
             double derivative = (error - lastError) / dt;
