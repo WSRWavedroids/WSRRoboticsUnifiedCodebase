@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import static org.firstinspires.ftc.teamcode.Teleop.Basic_TeleOp_NewBot.AutoLaunchSteps.*;
 
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,9 +10,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
-
 import kotlin.reflect.KFunction;
 
 /**
@@ -168,15 +169,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         telemetry.addData("cam dist to apriltag", robot.getApriltagDistance());
 
-
-
-
-
-
-
-
-
-
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("velocityRight", robot.launchRight.getVelocity());
+        PanelsTelemetry.INSTANCE.getTelemetry().addData("velocityLeft", robot.launchLeft.getVelocity());
 
         doTelemetryStuff();
         //driver 1
@@ -359,29 +353,35 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.intakeMotor.setPower(robot.intakeSpeed);
     }
 
-    private void intakeservoforward(){
-        if (gamepad2.x){
-            robot.intake2.setPower(1);
-
-        }
-        else if (gamepad2.y) {
+    private void intakeservoforward() {
+        robot.intake2.setPower(0);
+        if (gamepad2.dpad_up) {
             robot.intake2.setPower(-1);
-        }
-        else {
-            robot.intake2.setPower(0);
+
+        } else if (gamepad2.dpad_down) {
+            robot.intake2.setPower(1);
         }
     }
 
-
+    private void autolaunch(){
+        if (gamepad2.right_bumper) {
+            robot.setupLaunchers();
+            if (robot.upToSpeed(80)){
+                robot.intake2.setPower(-1);
+                robot.intake3.setPower(1);
+                robot.intakeMotor.setPower(1);
+            }
+        }
+    }
 
     private void intake3(double fwdSPEED, double revSPEED, double master){
         if (currentStep == INPUT) {
             robot.intake3.setPower(0);
         }
-        if (gamepad2.right_bumper || gamepad2.dpad_down) {
+        if (gamepad2.dpad_down) {
             robot.intake3.setPower(-revSPEED);
             currentStep = INPUT;
-        }  else if (gamepad2.left_bumper || gamepad2.dpad_up) {
+        }  else if (gamepad2.dpad_up) {
             robot.intake3.setPower(fwdSPEED);
             currentStep = INPUT;
         }
@@ -406,7 +406,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
     private void launch(double deadzone, double pwrtuning){
         robot.triggerDeadzone = deadzone;
-        if (gamepad2.right_trigger > robot.triggerDeadzone) {
+        if (gamepad2.right_trigger > robot.triggerDeadzone || gamepad2.right_bumper) {
             robot.launchTune = robot.limelightAdjustedSpeed;
             setLaunchPower(gamepad2.right_trigger, robot.limelightAdjustedSpeed);
             currentStep = INPUT;
@@ -418,7 +418,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.launchTune = 0;
             setLaunchPower(0, 0);
         }
-        autoLaunch(robot.limelightAdjustedSpeed, pwrtuning);
+        //autoLaunch(robot.limelightAdjustedSpeed, pwrtuning);
+        autolaunch();
         override();
     }
 

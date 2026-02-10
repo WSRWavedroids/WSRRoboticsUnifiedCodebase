@@ -5,6 +5,8 @@ import static org.firstinspires.ftc.teamcode.Robot.launchSteps.*;
 
 import android.annotation.SuppressLint;
 
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -60,6 +62,13 @@ public class Robot {
     public double launchTune;
     public double triggerDeadzone;
 
+    public static double launcherP;
+    public static double launcherD;
+    public static double launcherI;
+    public static double launcherF;
+
+    public static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+
 
     //Initialize motors and servos
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, OpMode opmode){
@@ -113,6 +122,7 @@ public class Robot {
 
         launchRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         launchRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
 
         //This is new..
@@ -237,6 +247,7 @@ public class Robot {
         telemetry.addData("Motors", String.format("BR Power(%.2f) BR Location (%d) BR Target (%d)", backRightDrive.getPower(), backRightDrive.getCurrentPosition(), backRightDrive.getTargetPosition()));
 
         telemetry.update();
+        panelsTelemetry.update();
     }
 
     public double inchesToTicks(double inches) {
@@ -283,6 +294,8 @@ public class Robot {
     }
 
     public void launcherMath(double x,double m1, double m2, double m3, double m4, double add){
+        //launchLeft.setPIDFCoefficients();
+        //launchRight.setPIDFCoefficients();
         limelightAdjustedSpeed = m1*Math.pow(x,4) - m2*Math.pow(x,3) + m3*Math.pow(x,2) - m4*x + add;
     }
 
@@ -332,6 +345,7 @@ public boolean doneLaunching = false;
                     break;
                 case STARTINTAKE:
                     intake3.setPower(1);
+                    intake2.setPower(-1);
                     intakeMotor.setPower(1);
                     if (cooldown.milliseconds() >= sleep2) {
                         cooldown.reset();
@@ -340,6 +354,7 @@ public boolean doneLaunching = false;
                     break;
                 case END:
                     intake3.setPower(0);
+                    intake2.setPower(0);
                     intakeMotor.setPower(0);
                     launchLeft.setVelocity(-0);
                     launchRight.setVelocity(-0);
