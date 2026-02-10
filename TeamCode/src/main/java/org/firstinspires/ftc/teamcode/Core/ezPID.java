@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.Core;
 
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_WITHOUT_ENCODER;
+import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.*;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -124,80 +127,7 @@ public class ezPID {
     }
 
     public void runCalledPID(double reference) {
-        /// CALL THIS ONCE PER LOOP IN ANOTHER SCRIPT OR MOTOR WON'T MOVE
-        /// ONLY USE FOR ONE MOTOR ezPID INSTANCES OR WILL THROW ERRORS!
-        /// Use the following line to call this properly FOR ONE MOTOR
-        /// PIDINSTANCENAME.runCalledPID(Target position(Ticks) or speed (Ticks/s));
-
-        time = Timer.seconds();
-        dt = time - lastTime;
-        lastTime = time;
-
-        if(mode == movementType.POSITION)
-        {
-            // obtain the encoder position
-            double encoderPosition = motor.getCurrentPosition();
-            // calculate the error
-            double error = reference - encoderPosition;
-
-            double derivative;
-            // rate of change of the error
-            if(Timer.seconds() != 0)
-            {
-                derivative = (error - lastError) / dt;
-            }
-            else
-            {
-                derivative = (error - lastError);
-            }
-
-
-            double feedforward = f * reference;
-
-            if(Timer.seconds() != 0)
-            {
-                // sum of all error over time
-                integralSum = integralSum + (error * dt);
-            }
-
-            double out = kneecap * ((p * error) + (i * integralSum) + (d * derivative) + feedforward);
-
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            motor.setPower(out);
-
-            lastError = error;
-
-            if(Math.abs(error) > tolerance)
-            {
-                withinTolerance = false;
-            }
-            else
-            {
-                withinTolerance = true;
-
-            }
-        }
-        else if(mode == movementType.SPEED)
-        {
-            // obtain the encoder position
-            double encoderSpeed = motor.getVelocity();
-            // calculate the error
-            double error = reference - encoderSpeed;
-
-            withinTolerance = !(Math.abs(error) > tolerance);
-
-            // rate of change of the error
-            double derivative = (error - lastError) / dt;
-
-            // sum of all error over time
-            integralSum = integralSum + (error * dt);
-
-            double out = (p * error) + (i * integralSum) + (d * derivative);
-
-            motor.setPower(out);
-
-            lastError = error;
-        }
+        runCalledPID(reference, motor.getCurrentPosition());
     }
 
     public void runCalledPID(double reference, double encoderPosition)
@@ -211,7 +141,7 @@ public class ezPID {
         dt = time - lastTime;
         lastTime = time;
 
-        if(mode == movementType.POSITION)
+        if(mode == POSITION)
         {
             // calculate the error
             double error = reference - encoderPosition;
@@ -238,7 +168,7 @@ public class ezPID {
 
             double out = kneecap * ((p * error) + (i * integralSum) + (d * derivative) + feedforward);
 
-            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motor.setMode(RUN_WITHOUT_ENCODER);
             motor.setPower(out);
 
             lastError = error;
@@ -253,7 +183,7 @@ public class ezPID {
             }
 
         }
-        else if(mode == movementType.SPEED)
+        else if(mode == SPEED)
         {
             // obtain the encoder position
             double encoderSpeed = motor.getVelocity();
@@ -291,7 +221,7 @@ public void runCalledPIDGroup(double reference)
     /// Use the following line to call this properly FOR MOTOR GROUPS ONLY
     /// PIDGROUPINSTANCENAME.runCalledPID(Target position(Ticks) or speed (Ticks/s));
 
-        if(mode == movementType.POSITION)
+        if(mode == POSITION)
         {
 
             // obtain the encoder position
@@ -319,7 +249,6 @@ public void runCalledPIDGroup(double reference)
                 derivative = (error - lastError);
             }
 
-
             double feedforward = f * reference;
 
             if(Timer.seconds() != 0)
@@ -330,9 +259,9 @@ public void runCalledPIDGroup(double reference)
 
             double out = kneecap * ((p * error) + (i * integralSum) + (d * derivative) + feedforward);
 
-            for (int i = 0; i < motorGroup.motorGroup.size(); i++) {
-                motorGroup.motorGroup.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                motorGroup.motorGroup.get(i).setPower(out);
+            for (DcMotorEx motor : motorGroup.motorGroup) {
+                motor.setMode(RUN_WITHOUT_ENCODER);
+                motor.setPower(out);
             }
             lastError = error;
 
@@ -340,7 +269,7 @@ public void runCalledPIDGroup(double reference)
             Timer.reset();
 
         }
-        else if(mode == movementType.SPEED)
+        else if(mode == SPEED)
         {
             // obtain the encoder position
             double encoderSpeed = motorGroup.motorGroup.get(0).getVelocity();
@@ -364,9 +293,9 @@ public void runCalledPIDGroup(double reference)
 
             double out = (p * error) + (i * integralSum) + (d * derivative);
 
-            for (int i = 0; i < motorGroup.motorGroup.size(); i++) {
-                motorGroup.motorGroup.get(i).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                motorGroup.motorGroup.get(i).setPower(out);
+            for (DcMotorEx motor : motorGroup.motorGroup) {
+                motor.setMode(RUN_WITHOUT_ENCODER);
+                motor.setPower(out);
             }
 
             lastError = error;
