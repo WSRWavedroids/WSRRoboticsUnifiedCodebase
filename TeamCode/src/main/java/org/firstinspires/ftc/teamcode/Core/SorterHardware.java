@@ -47,10 +47,10 @@ public class SorterHardware {
     public boolean onCooldown = false;
     private ElapsedTime pidfTime = new ElapsedTime();
 
-    public static Double kneecap = 0.15;
-    public static double kp = 0.002025;
-    public static double ki = 0.000015;
-    public static double kd = 0.0001;
+    public static Double kneecap = 1.0;
+    public static double kp = 0.00045;
+    public static double ki = 0.0;
+    public static double kd = 0.00001;
     public static double kf = 0.0;
     double lastError = 0;
     double integralSum = 0;

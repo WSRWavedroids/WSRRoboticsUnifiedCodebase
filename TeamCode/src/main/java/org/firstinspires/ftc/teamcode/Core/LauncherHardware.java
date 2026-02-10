@@ -38,10 +38,9 @@ public class LauncherHardware {
         motor2 = robot.launcherMotorTwo;
         launcherMotors = new PIDMotorGroup(motor1, motor2);
         launcherMotors.setDirections(-1, -1);
-        launcherPID = new ezPID(launcherMotors, 28, p, i, d, f, 1, toleranceRange, ezPID.movementType.SPEED);
+        launcherPID = new ezPID(motor1, 28, p, i, d, f, 1, toleranceRange, ezPID.movementType.SPEED);
         turret = robot.turret;
         // motor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(P, I, D, F));
-        motor1.setDirection(REVERSE);
         waitingToFire = false;
     }
 
@@ -70,8 +69,8 @@ public class LauncherHardware {
     private double waitTime;
     private ElapsedTime waitForSafeTimer = new ElapsedTime();
 
-    public static double p = 100;
-    public static double i = 7.5;
+    public static double p = 0;
+    public static double i = 0;
     public static double d = 0;
     public static double f = 0;
 
@@ -197,7 +196,10 @@ public class LauncherHardware {
         } else {
             steadiness = 0;
         }
+
         launcherPID.changeBehaviorValues(p, i, d, f, 1, toleranceRange);
+        launcherPID.runCalledPID(velocityTarget);
+        motor2.setPower(motor1.getPower());
     }
 
     public boolean doneFiring() {
@@ -243,15 +245,12 @@ public class LauncherHardware {
     @Deprecated
     public void setLauncherSpeed(double targetSpeed) {
         velocityTarget = ticksPerRevolution * revolutionsPerSecond * targetSpeed;
-        launcherPID.runCalledPIDGroup(velocityTarget);
-        //turret.launcherController.runCalledPIDGroup(targetspeed);
     }
 
     public void setLauncherVelocity(double targetVelocity) {
         if (!manualTuneMode) {
             velocityTarget = targetVelocity;
         }
-        launcherPID.runCalledPIDGroup(velocityTarget);
     }
     public void setPerfectLauncherVelocity() {
         setLauncherVelocity(findBestMotorVelocity(robot.targetTag.distanceZ));
