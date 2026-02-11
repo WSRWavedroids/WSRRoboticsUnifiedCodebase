@@ -37,7 +37,7 @@ public class SorterHardware {
     public int[] positions;
     public static final int ticksPerRotation = 8192;
     public int currentTickCount;
-    public static Double tickTolerance = 200.0;
+    public static Double tickTolerance = 100.0;
     public boolean legalToSpin = false;
 
     public double flickyDownPosition = 0.51;
@@ -158,9 +158,7 @@ public class SorterHardware {
 
         if (!isCalibrating() && !robot.launcher.lockControls) {
             blenderPID.changeBehaviorValues(kp, ki, kd, kf, kneecap, tickTolerance);
-            if (Math.abs(motor.getCurrentPosition() - reference) > 50) {
-                blenderPID.runCalledPID(reference);
-            }
+            blenderPID.runCalledPID(reference);
         }
 
         switch (currentFeederState) {

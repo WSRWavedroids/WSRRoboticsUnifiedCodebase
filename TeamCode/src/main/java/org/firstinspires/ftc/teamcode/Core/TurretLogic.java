@@ -71,9 +71,9 @@ public class TurretLogic {
 
             if (robot.alliance.equals(BLUE)) {
                 //A^2 + B^2 = C^2
-                return Math.sqrt(Math.pow(robot.turretPosition.x - 12.5, 2) + Math.pow((robot.turretPosition.y - 135.73), 2));
+                return Math.sqrt(Math.pow(robot.turretPosition.x - 4, 2) + Math.pow((robot.turretPosition.y - 140), 2));
             } else if (robot.alliance.equals(RED)) {
-                return Math.sqrt(Math.pow(robot.turretPosition.x - 131.5, 2) + Math.pow((robot.turretPosition.y - 135.73), 2));
+                return Math.sqrt(Math.pow(robot.turretPosition.x - 140, 2) + Math.pow((robot.turretPosition.y - 140), 2));
             } else {
                 return 0;
             }

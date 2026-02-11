@@ -189,14 +189,14 @@ public class fireQueueWithStates {
          * Resets hardware and variables after a sequence is done
          */
         private void finishQueue() {
-        clearList();
-        wantToFireQueue = NONE;
-        state = CHECK;
-        //robot.launcher.setLauncherVelocity(0);
+            clearList();
+            wantToFireQueue = NONE;
+            state = CHECK;
+            robot.launcher.setLauncherVelocity(0);
 
-        // Return sorter to neutral/home position (usually index 0)
-        //sorterHardware.prepareNewMovement(sorterHardware.motor.getCurrentPosition(), sorterHardware.positions[0]);
-    }
+            // Return sorter to neutral/home position (usually index 0)
+            //sorterHardware.prepareNewMovement(sorterHardware.motor.getCurrentPosition(), sorterHardware.positions[0]);
+        }
 
     }
 

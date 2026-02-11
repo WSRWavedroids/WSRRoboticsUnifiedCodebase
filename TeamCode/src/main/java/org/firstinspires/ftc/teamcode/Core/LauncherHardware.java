@@ -162,6 +162,10 @@ public class LauncherHardware {
             case UNFLICK:
                 if(/*robot.sorterHardware.flickyInPosition() ||*/ cooldownTimer.seconds() >= flickTime) {
                     robot.sorterHardware.resetFlicky();
+
+                    // Set the slot to empty now that we're firing its contents
+                    robot.sorterLogic.findCurrentSlotInPosition(FIRE).setOccupied(EMPTY);
+
                     nextStep(LAUNCHING);
                 }
                 break;
@@ -177,8 +181,7 @@ public class LauncherHardware {
                 // Stop the motor if requested
                 if (stopMotorAfter) setLauncherVelocity(0);
 
-                // Set the slot to empty now that we fired its contents
-                robot.sorterLogic.findCurrentSlotInPosition(FIRE).setOccupied(EMPTY);
+
 
                 // Update the booleans
                 lockControls = false;
