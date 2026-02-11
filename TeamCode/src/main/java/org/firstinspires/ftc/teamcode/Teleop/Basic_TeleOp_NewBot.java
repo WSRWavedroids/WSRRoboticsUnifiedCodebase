@@ -169,10 +169,12 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         telemetry.addData("cam dist to apriltag", robot.getApriltagDistance());
 
-        PanelsTelemetry.INSTANCE.getTelemetry().addData("velocityRight", robot.launchRight.getVelocity());
-        PanelsTelemetry.INSTANCE.getTelemetry().addData("velocityLeft", robot.launchLeft.getVelocity());
+        robot.panelsTelemetry.addData("velocityRight", -robot.launchRight.getVelocity());
+        robot.panelsTelemetry.addData("velocityLeft", -robot.launchLeft.getVelocity());
+        robot.panelsTelemetry.addData("goalVelocityLimelight", robot.limelightAdjustedSpeed);
+        robot.panelsTelemetry.addData("goalVelocity", robot.tuningspd*2000);
 
-        doTelemetryStuff();
+        //doTelemetryStuff();
         //driver 1
     }
 

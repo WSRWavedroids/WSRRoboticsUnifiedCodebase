@@ -62,10 +62,10 @@ public class Robot {
     public double launchTune;
     public double triggerDeadzone;
 
-    public static double launcherP;
-    public static double launcherD;
-    public static double launcherI;
-    public static double launcherF;
+    public static double launcherP =0;
+    public static double launcherI =0;
+    public static double launcherD =0;
+    public static double launcherF =0;
 
     public static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
