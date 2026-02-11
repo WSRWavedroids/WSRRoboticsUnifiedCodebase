@@ -30,6 +30,7 @@ public class ezPID {
     public double i;
     public double d;
     public double f;
+
     public double kneecap;
     public ElapsedTime Timer;
     public double lastError;
@@ -37,7 +38,6 @@ public class ezPID {
     public double ticksPerRotation;
     public double tolerance;
     public boolean withinTolerance;
-
     private double time;
     private double lastTime;
     private double dt;
@@ -65,6 +65,7 @@ public class ezPID {
      */
     public ezPID(DcMotorEx motorIn, int ticksPerRotationIN, double inP, double inI, double inD, double inF, double kneecapIN, double toleranceIN, movementType modeIN) {
         motor = motorIn;
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         p = inP;
         i = inI;
         d = inD;

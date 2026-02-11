@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.*;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -20,7 +21,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class SorterHardware {
 
     private final Robot robot;
-    public ezPID blenderPID;
+    //public ezPID blenderPID;
+
+    public altPID tryController;
+
     private LauncherHardware launcher;
     public DcMotorEx motor;
     public Servo flicky;
@@ -81,7 +85,9 @@ public class SorterHardware {
         positions[1] = ticksPerRotation / 3;
         positions[2] = 2 * ticksPerRotation / 3;
 
-        blenderPID = new ezPID(motor, ticksPerRotation, kp, ki, kd, kf, kneecap, tickTolerance, POSITION);
+        //blenderPID = new ezPID(motor, ticksPerRotation, kp, ki, kd, kf, kneecap, tickTolerance, POSITION);
+        tryController = new altPID(motor, ticksPerRotation, kp, ki, kd, kf, tickTolerance);
+
         //reference = 0;
 
     }
@@ -157,9 +163,11 @@ public class SorterHardware {
         }
 
         if (!isCalibrating() && !robot.launcher.lockControls) {
-            blenderPID.changeBehaviorValues(kp, ki, kd, kf, kneecap, tickTolerance);
+            //blenderPID.changeBehaviorValues(kp, ki, kd, kf, kneecap, tickTolerance);
+            tryController.changeBehaviorValues(kp, ki, kd, reference);
             if (Math.abs(motor.getCurrentPosition() - reference) > 50) {
-                blenderPID.runCalledPID(reference);
+                //blenderPID.runCalledPID(reference);
+                tryController.runPID(reference, true);
             }
         }
 
@@ -195,6 +203,7 @@ public class SorterHardware {
 
     public void prepareNewMovement(int currentTickPose, int targetTickPose) {
         //lastSafePosition = currentTickPose;
+        tryController.f = tryController.recalculateFF(targetTickPose, 491520);
         reference = (findFastestRotationInTicks(currentTickPose, targetTickPose));
         tryToMove = true;
     }
@@ -202,7 +211,7 @@ public class SorterHardware {
     public boolean positionedCheck() {
         //int currentMotorPosition = motor.getCurrentPosition();
 
-        return blenderPID.withinTolerance; //currentMotorPosition > reference - tickTolerance && currentMotorPosition < reference + tickTolerance;
+        return /*blenderPID.withinTolerance;*/ tryController.motorConroller.atSetPoint();
     }
 
 
