@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -294,8 +295,9 @@ public class Robot {
     }
 
     public void launcherMath(double x,double m1, double m2, double m3, double m4, double add){
-        //launchLeft.setPIDFCoefficients();
-        //launchRight.setPIDFCoefficients();
+        //PIDFCoefficients  numbers = new PIDFCoefficients(launcherP, launcherI, launcherD, launcherF);
+        //launchLeft.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, numbers);
+        //launchRight.setPIDFCoefficients((DcMotor.RunMode.RUN_USING_ENCODER), numbers);
         limelightAdjustedSpeed = m1*Math.pow(x,4) - m2*Math.pow(x,3) + m3*Math.pow(x,2) - m4*x + add;
     }
 
