@@ -151,7 +151,7 @@ public class fireQueueWithStates {
                     ArtifactLocator.Slot targetSlot;
 
                     if (currentColor == UNKNOWN) {
-                        targetSlot = sorterLogic.findFirstNotType(EMPTY);
+                        targetSlot = sorterLogic.findBestPositionedNotType(EMPTY, FIRE);
                     } else {
                         targetSlot = sorterLogic.findBestPositionedType(currentColor, FIRE);
                     }

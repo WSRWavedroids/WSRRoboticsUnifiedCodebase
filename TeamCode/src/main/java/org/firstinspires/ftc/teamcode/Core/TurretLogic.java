@@ -230,11 +230,16 @@ public class TurretLogic {
     }
 
     public static double servoUnitsToDegrees(double servoUnits) {
-        final double zeroLimitDegrees = 150;
+        final double zeroLimitDegrees = 145;
+        final double halfPointDegrees = 0;
         final double oneLimitDegrees = -90;
-        final double range = oneLimitDegrees - zeroLimitDegrees;
 
-        return servoUnits * range + zeroLimitDegrees;
+        if (servoUnits < halfPointDegrees) {
+            return (halfPointDegrees - oneLimitDegrees) / (0.5 - 1)  * (servoUnits - 1) + oneLimitDegrees;
+        }
+        else {
+            return (zeroLimitDegrees - halfPointDegrees) / (0 - 0.5) * (servoUnits - 0.5) + halfPointDegrees;
+        }
     }
 }
 

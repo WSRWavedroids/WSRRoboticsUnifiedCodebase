@@ -147,7 +147,7 @@ public class SorterHardware {
                 nextStep(CALIBRATING);
                 break;
             case CALIBRATING:
-                motor.setPower(0.10);
+                motor.setPower(0.20);
                 if(robot.magsense.isPressed()) {
                     motor.setPower(0);
                     resetSorterEncoder();

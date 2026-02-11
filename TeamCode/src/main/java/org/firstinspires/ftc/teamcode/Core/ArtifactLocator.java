@@ -112,13 +112,13 @@ public class ArtifactLocator {
      */
     public ArtifactLocator.SlotState runSideScannersWithHSV()
     {
-        double purpleMinHue = 180;
+        double purpleMinHue = 170;
         double purpleMaxHue = 295;
         double purpleMinValue = 0.3;
         double purpleMaxValue = 1.2;
 
 
-        double greenMinHue = 150;
+        double greenMinHue = 130;
         double greenMaxHue = 160;
         double greenMinValue = 0.3;
         double greenMaxValue = 1.2;
@@ -313,6 +313,16 @@ public class ArtifactLocator {
         }
         else {
             return findFirstType(targetArtifact);
+        }
+    }
+
+    public Slot findBestPositionedNotType(SlotState targetArtifact, SorterHardware.PositionState targetPosition) {
+        Slot currentFireSlot = findCurrentSlotInPosition(targetPosition);
+        if (!currentFireSlot.contains(targetArtifact)) {
+            return currentFireSlot;
+        }
+        else {
+            return findFirstNotType(targetArtifact);
         }
     }
 
