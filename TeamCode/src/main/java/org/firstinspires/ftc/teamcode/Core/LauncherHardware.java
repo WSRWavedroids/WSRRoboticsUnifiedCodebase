@@ -69,10 +69,10 @@ public class LauncherHardware {
     private double waitTime;
     private ElapsedTime waitForSafeTimer = new ElapsedTime();
 
-    public static double p = 0;
+    public static double p = 0.0045;
     public static double i = 0;
     public static double d = 0;
-    public static double f = 0;
+    public static double f = 0.0004;
 
     public enum LauncherSteps {
         READY_FOR_COMMANDS,
