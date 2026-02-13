@@ -155,6 +155,9 @@ public class fireQueueWithStates {
 
                     if (!targetSlot.exists()) {
                         state = CHECK;
+                        if (robot.sorterLogic.inventory.getTotalCount() == 0) {
+                            finishQueue();
+                        }
                         break;
                     }
                     targetPosition = targetSlot.getFirePosition();
