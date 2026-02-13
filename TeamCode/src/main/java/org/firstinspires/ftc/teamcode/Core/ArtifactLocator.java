@@ -67,6 +67,8 @@ public class ArtifactLocator {
         this.sorterHardware = robot.sorterHardware;
         this.launcher = robot.launcher;
         initLogic();
+        leftResetTimer = new ElapsedTime();
+        rightResetTimer = new ElapsedTime();
     }
 
     /**
@@ -89,6 +91,7 @@ public class ArtifactLocator {
 
         // Define the inventory
         inventory = new SlotInventory();
+
     }
 
     /**
@@ -106,6 +109,8 @@ public class ArtifactLocator {
     public double rightHue;
     public double leftValue;
     public double rightValue;
+
+    private ElapsedTime leftResetTimer, rightResetTimer;
     /**
      * Checks the color sensors
      * @return The SlotState contents, PURPLE, GREEN, or EMPTY
@@ -128,34 +133,40 @@ public class ArtifactLocator {
         Color.RGBToHSV(robot.leftColorScanner.red(), robot.leftColorScanner.green(), robot.leftColorScanner.blue(), leftHSVValues);
         Color.RGBToHSV(robot.rightColorScanner.red(), robot.rightColorScanner.green(), robot.rightColorScanner.blue(), rightHSVValues);
 
-        leftHue = leftHSVValues[0];
-        double leftSaturation = leftHSVValues[1];
-        leftValue = leftHSVValues[2];
-
-        rightHue = rightHSVValues[0];
-        double rightSaturation = rightHSVValues[1];
-        rightValue = rightHSVValues[2];
-
-
-        //robot.telemetry.addData("H", leftHue + ", " + rightHue);
-        //robot.telemetry.addData("V", leftValue + ", " + rightValue);
-
-        if(leftHue > purpleMinHue && leftHue < purpleMaxHue &&
-                leftValue > purpleMinValue && leftValue < purpleMaxValue) {
-            return PURPLE;
+        if (leftHue != leftHSVValues[0] && leftValue != leftHSVValues[2]) {
+            leftResetTimer.reset();
+            leftHue = leftHSVValues[0];
+            double leftSaturation = leftHSVValues[1];
+            leftValue = leftHSVValues[2];
         }
-        else if(leftHue > greenMinHue && leftHue < greenMaxHue &&
-                leftValue > greenMinValue && leftValue < greenMaxValue) {
-            return GREEN;
+        if (rightHue != rightHSVValues[0] && rightValue != rightHSVValues[2]) {
+            rightResetTimer.reset();
+            rightHue = rightHSVValues[0];
+            double rightSaturation = rightHSVValues[1];
+            rightValue = rightHSVValues[2];
         }
-        else if(rightHue > purpleMinHue && rightHue < purpleMaxHue &&
-                rightValue > purpleMinValue && rightValue < purpleMaxValue) {
-            return PURPLE;
+
+        if (leftResetTimer.seconds() < 10) {
+            if (leftHue > purpleMinHue && leftHue < purpleMaxHue &&
+                    leftValue > purpleMinValue && leftValue < purpleMaxValue) {
+                return PURPLE;
+            } else if (leftHue > greenMinHue && leftHue < greenMaxHue &&
+                    leftValue > greenMinValue && leftValue < greenMaxValue) {
+                return GREEN;
+            }
         }
-        else if(rightHue > greenMinHue && rightHue < greenMaxHue &&
-                rightValue > greenMinValue && rightValue < greenMaxValue) {
-            return GREEN;
+
+        if (rightResetTimer.seconds() < 10) {
+            if(rightHue > purpleMinHue && rightHue < purpleMaxHue &&
+                    rightValue > purpleMinValue && rightValue < purpleMaxValue) {
+                return PURPLE;
+            }
+            else if(rightHue > greenMinHue && rightHue < greenMaxHue &&
+                    rightValue > greenMinValue && rightValue < greenMaxValue) {
+                return GREEN;
+            }
         }
+
         return EMPTY;
     }
 
@@ -318,7 +329,7 @@ public class ArtifactLocator {
 
     public Slot findBestPositionedNotType(SlotState targetArtifact, SorterHardware.PositionState targetPosition) {
         Slot currentFireSlot = findCurrentSlotInPosition(targetPosition);
-        if (!currentFireSlot.contains(targetArtifact)) {
+        if (currentFireSlot.doesNotContain(targetArtifact)) {
             return currentFireSlot;
         }
         else {
@@ -530,7 +541,7 @@ public class ArtifactLocator {
 
         @Override
         public boolean doesNotContain(SlotState... checkStates) {
-            return true;
+            return false;
         }
 
         @Override

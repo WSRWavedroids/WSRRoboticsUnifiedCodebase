@@ -52,6 +52,7 @@ public class LauncherHardware {
     boolean stopMotorAfter;
     boolean firing = false;
     boolean activeFiring = false;
+    ArtifactLocator.Slot activeFiringSlot;
 
     public static final int ticksPerRevolution = 28;
     public static final int revolutionsPerSecond = 100;
@@ -140,17 +141,24 @@ public class LauncherHardware {
                 }
                 break;
             case REV_MOTOR:
+                activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
                 setPerfectLauncherVelocity();
                 cooldownTimer.reset();
                 nextStep(STALL_WHILE_MOTOR_REVVING);
                 break;
             case STALL_WHILE_MOTOR_REVVING:
+                if (!activeFiringSlot.exists()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
+                }
                 setPerfectLauncherVelocity();
                 if (motorSpeedCheck(velocityTarget) && motorSteady() || cooldownTimer.seconds() >= 5) {
                     nextStep(FLICK);
                 }
                 break;
             case FLICK:
+                if (!activeFiringSlot.exists()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
+                }
                 lockControls = true;
                 activeFiring = true;
                 onCooldown = true;
@@ -160,16 +168,22 @@ public class LauncherHardware {
                 nextStep(UNFLICK);
                 break;
             case UNFLICK:
+                if (!activeFiringSlot.exists()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
+                }
                 if(/*robot.sorterHardware.flickyInPosition() ||*/ cooldownTimer.seconds() >= flickTime) {
                     robot.sorterHardware.resetFlicky();
 
                     // Set the slot to empty now that we're firing its contents
-                    robot.sorterLogic.findCurrentSlotInPosition(FIRE).setOccupied(EMPTY);
+                    activeFiringSlot.setOccupied(EMPTY);
 
                     nextStep(LAUNCHING);
                 }
                 break;
             case LAUNCHING:
+                if (!activeFiringSlot.exists()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
+                }
                 if (stopMotorAfter && cooldownTimer.seconds() >= launcherCooldownDuration && cooldownTimer.seconds() >= flickTime * 2) {
                     nextStep(RESET);
                 }
@@ -181,7 +195,7 @@ public class LauncherHardware {
                 // Stop the motor if requested
                 if (stopMotorAfter) setLauncherVelocity(0);
 
-
+                activeFiringSlot = robot.sorterLogic.noSlot;
 
                 // Update the booleans
                 lockControls = false;

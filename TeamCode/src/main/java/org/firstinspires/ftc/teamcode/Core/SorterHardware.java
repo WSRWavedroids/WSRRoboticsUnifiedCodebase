@@ -61,7 +61,7 @@ public class SorterHardware {
 
     public double reference;
 
-    private ElapsedTime outtakeTapTimer = new ElapsedTime();
+    public ElapsedTime outtakeTapTimer = new ElapsedTime();
     public static double outtakeTapTime = 0.5;
 
     public ElapsedTime timeSinceFlickyLastInPosition = new ElapsedTime();

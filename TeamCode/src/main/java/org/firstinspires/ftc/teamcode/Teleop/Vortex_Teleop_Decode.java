@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.outtakeTapTime;
 import static org.firstinspires.ftc.teamcode.Core.TurretLogic.controlMode.*;
 
 import com.bylazar.panels.Panels;
@@ -333,8 +334,8 @@ public class Vortex_Teleop_Decode extends OpMode {
     }
 
     private void controllerRumble() {
-        if (robot.targetTag.currentlyDetected) {
-            gamepad1.rumble(0.25, 0.25, 100);
+        if (robot.sorterLogic.inventory.getTotalCount() >= 3) {
+            gamepad1.rumble(1, 1, 100);
         }
 
         if (robot.launcher.isInFireSequence()) {
@@ -647,10 +648,11 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         telemetry.addLine();
         telemetry.addLine("Launcher:");
-//        telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
+        telemetry.addData("Launcher Velocity", robot.launcherMotorOne.getVelocity());
         telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
         telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
         telemetry.addData("LL Distance", robot.targetTag.distanceZ);
+        telemetry.addData("Fire Queue", robot.queue.ballQueue);
 
         telemetry.addLine();
         telemetry.addLine("Turret & PedroPathing:");

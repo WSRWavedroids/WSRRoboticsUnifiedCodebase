@@ -132,9 +132,6 @@ public class fireQueueWithStates {
                         clearList();
                     } else if (!ballQueue.isEmpty()) {
                         state = POSITIONING;
-                    } else {
-                        // Fallback: if triggered but empty, reset
-                        wantToFireQueue = NONE;
                     }
                     break;
                 case POSITIONING:
@@ -157,7 +154,6 @@ public class fireQueueWithStates {
                     }
 
                     if (!targetSlot.exists()) {
-                        ballQueue.remove(0);
                         state = CHECK;
                         break;
                     }
