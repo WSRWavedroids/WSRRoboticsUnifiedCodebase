@@ -154,10 +154,12 @@ public class fireQueueWithStates {
                     }
 
                     if (!targetSlot.exists()) {
-                        state = CHECK;
+                        ballQueue.remove(0);
+
                         if (robot.sorterLogic.inventory.getTotalCount() == 0) {
                             finishQueue();
                         }
+                        state = CHECK; 
                         break;
                     }
                     targetPosition = targetSlot.getFirePosition();
