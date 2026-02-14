@@ -226,8 +226,8 @@ public class Robot {
         telemetry.addData("Status", "Initialized");
 
         sorterHardware = new SorterHardware(this);
-        launcher = new LauncherHardware(this);
         sorterLogic = new ArtifactLocator(this);
+        launcher = new LauncherHardware(this);
         queue = new fireQueueWithStates(this);
         targetScanner = new Limelight_Target_Scanner(this);
         randomizationScanner = new Limelight_Randomization_Scanner(this);

@@ -29,8 +29,8 @@ public class fireQueueWithStates {
     public ArrayList<ArtifactLocator.SlotState> ballQueue;
 
     //State Machine innovation here
-    public enum QueueState {CHECK, POSITIONING, FIRING}
-    private QueueState state = CHECK;
+    public enum QueueState {READY, CHECK, POSITIONING, FIRING}
+    private QueueState state = READY;
 
     public QueueState getCurrentState() {
         return state;
@@ -122,15 +122,20 @@ public class fireQueueWithStates {
     {
             // If the driver isn't requesting a fire sequence, stay IDLE and reset index
             if (wantToFireQueue == NONE) {
-                state = CHECK;
+                state = READY;
             }
 
             switch (state) {
-                case CHECK:
+                case READY:
                     // If we have balls to fire, start the process
-                    if (robot.sorterLogic.inventory.getTotalCount() == 0) {
-                        clearList();
-                    } else if (!ballQueue.isEmpty()) {
+                    if (!ballQueue.isEmpty()) {
+                        state = CHECK;
+                    }
+                    break;
+                case CHECK:
+                    if(robot.sorterLogic.inventory.getTotalCount() == 0 || ballQueue.isEmpty()) {
+                        finishQueue();
+                    } else {
                         state = POSITIONING;
                     }
                     break;
@@ -155,11 +160,7 @@ public class fireQueueWithStates {
 
                     if (!targetSlot.exists()) {
                         ballQueue.remove(0);
-
-                        if (robot.sorterLogic.inventory.getTotalCount() == 0) {
-                            finishQueue();
-                        }
-                        state = CHECK; 
+                        state = CHECK;
                         break;
                     }
                     targetPosition = targetSlot.getFirePosition();
@@ -189,10 +190,10 @@ public class fireQueueWithStates {
         /**
          * Resets hardware and variables after a sequence is done
          */
-        private void finishQueue() {
+        public void finishQueue() {
             clearList();
             wantToFireQueue = NONE;
-            state = CHECK;
+            state = READY;
             robot.launcher.setLauncherVelocity(0);
 
             // Return sorter to neutral/home position (usually index 0)

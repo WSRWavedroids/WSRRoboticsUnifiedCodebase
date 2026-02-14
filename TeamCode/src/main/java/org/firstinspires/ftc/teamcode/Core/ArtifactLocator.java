@@ -53,7 +53,6 @@ public class ArtifactLocator {
 
     public Robot robot;
     public SorterHardware sorterHardware;
-    public LauncherHardware launcher;
 
     private ElapsedTime sortCooldown = new ElapsedTime();
     public double sortCooldownTime = 0;
@@ -65,7 +64,6 @@ public class ArtifactLocator {
     public ArtifactLocator(Robot robotFile) {
         robot = robotFile;
         this.sorterHardware = robot.sorterHardware;
-        this.launcher = robot.launcher;
         initLogic();
         leftResetTimer = new ElapsedTime();
         rightResetTimer = new ElapsedTime();
