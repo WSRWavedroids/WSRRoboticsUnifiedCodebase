@@ -7,8 +7,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class SlotLightManager {
 
-    private Robot robot;
-    private ElapsedTime blinkyTimer;
+    private final Robot robot;
+    private final ElapsedTime blinkyTimer;
+    private final ElapsedTime timeSinceUpdate;
     public Light fireLight;
     public Light loadLight;
     public Light storeLight;
@@ -20,12 +21,16 @@ public class SlotLightManager {
         storeLight = new Light(STORE, robot.storeRGB);
 
         blinkyTimer = new ElapsedTime();
+        timeSinceUpdate = new ElapsedTime();
     }
 
     public void update() {
-        fireLight.update();
-        loadLight.update();
-        storeLight.update();
+        if (timeSinceUpdate.seconds() >= 0.5) {
+            fireLight.update();
+            loadLight.update();
+            storeLight.update();
+            timeSinceUpdate.reset();
+        }
     }
 
     public class Light {
