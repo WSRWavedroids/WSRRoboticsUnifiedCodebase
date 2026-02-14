@@ -135,6 +135,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
 //intakes and launcher
         robot.setupLaunchers();
 
+
+
+
         intake1(1 ,1 ,0.85);
         intakeservoforward();
         intake3(1 ,1 ,1);
@@ -169,11 +172,16 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
         telemetry.addData("cam dist to apriltag", robot.getApriltagDistance());
 
+        telemetry.addData("Launch P", robot.launcherP);
+        telemetry.addData("Launch I", robot.launcherI);
+        telemetry.addData("Launch D", robot.launcherD);
+        telemetry.addData("Launch F", robot.launcherF);
+
         Robot.panelsTelemetry.addData("velocityRight", -robot.launchRight.getVelocity());
         Robot.panelsTelemetry.addData("velocityLeft", -robot.launchLeft.getVelocity());
         Robot.panelsTelemetry.addData("goalVelocityLimelight", robot.limelightAdjustedSpeed);
         Robot.panelsTelemetry.addData("goalVelocity", robot.tuningspd*2000);
-
+        Robot.panelsTelemetry.update();
         //doTelemetryStuff();
         //driver 1
     }

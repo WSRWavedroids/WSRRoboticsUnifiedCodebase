@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.Robot.launchSteps.*;
 
 import android.annotation.SuppressLint;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.paths.PathChain;
@@ -29,7 +30,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.List;
 import java.util.Objects;
 
-
+@Configurable
 public class Robot {
 //add motors w their names here
     public DcMotorEx frontLeftDrive;
@@ -63,10 +64,10 @@ public class Robot {
     public double launchTune;
     public double triggerDeadzone;
 
-    public static double launcherP =0;
-    public static double launcherI =0;
-    public static double launcherD =0;
-    public static double launcherF =0;
+    public static double launcherP =100;
+    public static double launcherI =0.00000001;
+    public static double launcherD =0.00145;
+    public static double launcherF =13;
 
     public static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
@@ -295,9 +296,9 @@ public class Robot {
     }
 
     public void launcherMath(double x,double m1, double m2, double m3, double m4, double add){
-        //PIDFCoefficients  numbers = new PIDFCoefficients(launcherP, launcherI, launcherD, launcherF);
-        //launchLeft.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, numbers);
-        //launchRight.setPIDFCoefficients((DcMotor.RunMode.RUN_USING_ENCODER), numbers);
+        PIDFCoefficients  numbers = new PIDFCoefficients(launcherP, launcherI, launcherD, launcherF);
+        launchLeft.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, numbers);
+        launchRight.setPIDFCoefficients((DcMotor.RunMode.RUN_USING_ENCODER), numbers);
         limelightAdjustedSpeed = m1*Math.pow(x,4) - m2*Math.pow(x,3) + m3*Math.pow(x,2) - m4*x + add;
     }
 
