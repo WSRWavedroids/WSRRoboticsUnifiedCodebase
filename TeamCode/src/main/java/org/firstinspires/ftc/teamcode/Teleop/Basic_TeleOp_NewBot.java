@@ -138,7 +138,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
-        intake1(1 ,1 ,0.85);
+        intake1(1 ,1 ,1);
         intakeservoforward();
         intake3(1 ,1 ,1);
         launch(0.05, robot.tuningspd);
