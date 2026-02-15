@@ -317,7 +317,7 @@ public class PedroGoDrive extends OpMode {
                 //dont jam while spinning to load
                 robot.cancelAutoIntake();
             }
-            else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
+            else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(true, EMPTY) &&
                             robot.sorterLogic.artifactSortCooldown())
             {
                 //if not in load position, go there and make sure we don't jam in the process

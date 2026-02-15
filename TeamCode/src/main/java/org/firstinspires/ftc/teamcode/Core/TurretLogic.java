@@ -241,6 +241,10 @@ public class TurretLogic {
             return (zeroLimitDegrees - halfPointDegrees) / (0 - 0.5) * (servoUnits - 0.5) + halfPointDegrees;
         }
     }
+
+    public boolean positioned() {
+        return Math.abs(robot.targetTag.angleX) <= 5;
+    }
 }
 
 

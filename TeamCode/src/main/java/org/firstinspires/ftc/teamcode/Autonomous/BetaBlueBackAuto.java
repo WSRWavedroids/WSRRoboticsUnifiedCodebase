@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.Robot;
-import org.firstinspires.ftc.teamcode.Core.SorterHardware;
 import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 
 import java.util.Objects;
@@ -29,7 +28,7 @@ public class BetaBlueBackAuto extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
     private ElapsedTime runtime = new ElapsedTime();
-    private double driveSpeed = 0.25;
+    double driveSpeed = 0.25;
 
     int slot = 0; // temp for testing lol
 
@@ -50,14 +49,14 @@ public class BetaBlueBackAuto extends OpMode {
         doTelemetryStuff();
     }
 
-    private void nextStep(Steps nextStep) {
+    void nextStep(Steps nextStep) {
         currentStep = nextStep;
     }
 
     private void nextPatternSpecificStep(Steps nextGeneralStep) {
 
     }
-    private void doTelemetryStuff() {
+    void doTelemetryStuff() {
         // This little section updates the driver hub on the runtime and the motor powers.
         // It's mostly used for troubleshooting.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -104,18 +103,18 @@ public class BetaBlueBackAuto extends OpMode {
         return x % 2 == 0;
     }
 
-    private enum Steps {
-        START, MOVETURRETONE, FIRE3, MOVEFORWARD, TURN, YOINK, BACKUP,
+    enum Steps {
+        START, MOVETURRETONE, FIRE3, STRAFE_1, TURN, YOINK, BACKUP,
         STRAFE, MOVETURRETTWO, FIRE3AGAIN, RESET, UNPARK, UN_TURN, STOP
 
     }
-    private Steps currentStep = Steps.START;
+    Steps currentStep = Steps.START;
 
     public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
     public static final String PATTERN_KEY = "Pattern";
 
 
-    private final Pose startPose = new Pose(56.5, 9, Math.PI / 2);
+    private final Pose startPose = new Pose(56.5, 9.200, Math.toRadians(180));
 
     /**
      * Code to run ONCE when the driver hits INIT
@@ -233,24 +232,24 @@ public class BetaBlueBackAuto extends OpMode {
                 nextStep(Steps.FIRE3);
                 break;
             case FIRE3:
-                /*if(!robot.turret.rawSwivelController.withinTolerance)
+                if(robot.turret.positioned())
                 {
-                    telemetry.addData("Out of Position, can't fire", ":(");
-                }
-                else
-                {
-                    telemetry.addData("In Position, trying to fire", ":(");
                     robot.launcher.setPerfectLauncherVelocity();
                     robot.queue.addPattern(robot.pattern);
-                    nextStep(Steps.MOVEFORWARD);
-                }*/
-                break;
-            case MOVEFORWARD:
-                if (robot.queue.noBallsQueued) {
-                    auto.moveRobotForward(825);
-                    nextStep(Steps.TURN);
+                    nextStep(Steps.STRAFE_1);
                 }
-
+                break;
+            case STRAFE_1:
+                if (robot.queue.noBallsQueued) {
+                    if (robot.alliance == BLUE) {
+                        auto.moveRobotRight(1000);
+                    }
+                    else {
+                        auto.moveRobotLeft(1000);
+                    }
+                    
+                    nextStep(Steps.YOINK);
+                }
                 break;
             case TURN:
                 if(auto.checkMovement())
@@ -270,7 +269,7 @@ public class BetaBlueBackAuto extends OpMode {
             case YOINK:
                 if(auto.checkMovement())
                 {
-                    auto.setSpeed(0.15);
+                    auto.setSpeed(0.075);
                     auto.moveRobotForward(1425);
                     auto.yoinkify(1425);
                     nextStep(Steps.BACKUP);
@@ -294,7 +293,7 @@ public class BetaBlueBackAuto extends OpMode {
                 }
                 break;
             case FIRE3AGAIN:
-                if(auto.checkMovement())
+                if(auto.checkMovement() && robot.turret.positioned())
                 {
                     robot.queue.addPattern(robot.pattern);
                     nextStep(Steps.RESET);
@@ -308,18 +307,12 @@ public class BetaBlueBackAuto extends OpMode {
                 }
                 break;
             case UNPARK:
-                /*if(robot.sorterHardware.doneMoving() && robot.turret.rawSwivelController.withinTolerance)
+                if(robot.sorterHardware.doneMoving())
                 {
-                    if(Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE"))
-                    {
-                        auto.moveRobotRight(1000);
-                    }
-                    else
-                    {
-                        auto.moveRobotLeft(1000);
-                    }
+                    auto.moveRobotForward(750);
+
                     nextStep(Steps.STOP);
-                }*/
+                }
                 break;
             case STOP:
                 if(auto.checkMovement())

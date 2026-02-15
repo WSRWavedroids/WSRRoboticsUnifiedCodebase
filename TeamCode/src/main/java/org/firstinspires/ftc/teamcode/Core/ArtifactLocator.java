@@ -133,7 +133,7 @@ public class ArtifactLocator {
 
         if (leftHue != leftHSVValues[0] && leftValue != leftHSVValues[2]) {
             leftResetTimer.reset();
-            leftHue = leftHSVValues[0];
+            leftHue = leftHSVValues[0] - 10;
             double leftSaturation = leftHSVValues[1];
             leftValue = leftHSVValues[2];
         }
@@ -282,7 +282,7 @@ public class ArtifactLocator {
      */
     public Slot findFirstNotType(SlotState slotType) {
         for (Slot currentSlot : allSlots) {
-            if (currentSlot.doesNotContain(slotType, UNKNOWN)) {
+            if (currentSlot.doesNotContain(false, slotType, UNKNOWN)) {
                 return currentSlot;
             }
         }
@@ -327,7 +327,7 @@ public class ArtifactLocator {
 
     public Slot findBestPositionedNotType(SlotState targetArtifact, SorterHardware.PositionState targetPosition) {
         Slot currentFireSlot = findCurrentSlotInPosition(targetPosition);
-        if (currentFireSlot.doesNotContain(targetArtifact)) {
+        if (currentFireSlot.doesNotContain(false, targetArtifact)) {
             return currentFireSlot;
         }
         else {
@@ -477,7 +477,7 @@ public class ArtifactLocator {
          *                    multiple.
          * @return Whether or not the Slot does not contain any of the contents checked against.
          */
-        public boolean doesNotContain(SlotState... checkStates) {
+        public boolean doesNotContain(boolean noSlotFallback, SlotState... checkStates) {
             for (SlotState currentCheckState : checkStates) {
                 if (currentCheckState == occupied) {
                     return false;
@@ -538,8 +538,8 @@ public class ArtifactLocator {
         }
 
         @Override
-        public boolean doesNotContain(SlotState... checkStates) {
-            return false;
+        public boolean doesNotContain(boolean noSlotFallback, SlotState... checkStates) {
+            return noSlotFallback;
         }
 
         @Override

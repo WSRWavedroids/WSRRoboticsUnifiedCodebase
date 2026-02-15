@@ -351,7 +351,7 @@ public class SorterHardware {
         // If there are empty slots
         outtakeTapTimer.reset();
 
-        if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
+        if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(true, EMPTY) &&
                 robot.sorterLogic.artifactSortCooldown())
         {
             ArtifactLocator.Slot emptySlot = robot.sorterLogic.findBestPositionedType(EMPTY, LOAD);
@@ -374,7 +374,7 @@ public class SorterHardware {
         if (robot.sorterLogic.inventory.getTotalCount() >= 3) {
             robot.cancelAutoIntake();
         }
-        else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) /*&&
+        else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(true, EMPTY) /*&&
                 robot.sorterLogic.artifactSortCooldown()*/)
         {
             ArtifactLocator.Slot emptySlot = robot.sorterLogic.findFirstType(EMPTY);

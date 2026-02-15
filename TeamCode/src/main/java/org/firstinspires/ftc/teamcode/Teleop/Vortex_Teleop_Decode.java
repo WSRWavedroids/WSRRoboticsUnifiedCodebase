@@ -217,8 +217,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
         else
         {
-            //holdInPlace();
-            singleJoystickDrive();
+            holdInPlace();
         }
 
         fireQueue();
@@ -377,6 +376,16 @@ public class Vortex_Teleop_Decode extends OpMode {
             SpinTargetBackRight = robot.backRightDrive.getCurrentPosition();
             spinTargetAcquired = true;
             speed = 1;
+        }
+        if (gamepad1.square) {
+            robot.setRunMode(RUN_TO_POSITION);
+            robot.frontLeftDrive.setTargetPosition(SpinTargetFrontLeft);
+            robot.frontRightDrive.setTargetPosition(SpinTargetFrontRight);
+            robot.backLeftDrive.setTargetPosition(SpinTargetBackLeft);
+            robot.backRightDrive.setTargetPosition(SpinTargetBackRight);
+        }
+        else {
+            singleJoystickDrive();
         }
     }
 
