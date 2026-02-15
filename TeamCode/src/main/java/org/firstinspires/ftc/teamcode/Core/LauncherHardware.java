@@ -46,7 +46,7 @@ public class LauncherHardware {
     }
 
     public static double launcherCooldownDuration = 0.3;
-    public static double flickTime = 0.20; //TODO Optimize
+    public static double flickTime = 0.1; //TODO Optimize
 
     public boolean waitingToFire = false;
     boolean lockControls = false;
