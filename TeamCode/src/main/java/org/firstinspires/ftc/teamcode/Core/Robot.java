@@ -63,16 +63,11 @@ public class Robot {
 
     public Limelight3A limelight;
 
-//    public Servo turretServoOne;
-//    public Servo turretServoTwo;
-
     public Servo fireRGB;
     public Servo loadRGB;
     public Servo storeRGB;
 
     public VoltageSensor voltageSensor;
-
-   // public HuskyLens husky;
 
     public RevColorSensorV3 leftColorScanner;
 
@@ -81,12 +76,11 @@ public class Robot {
     public GoBildaPinpointDriver pinpoint;
 
     public Telemetry telemetry;
-    //public BNO055IMU imu;
 
     //init and declare war
     public OpMode opmode;
     public HardwareMap hardwareMap;
-    public String startingPosition;
+
     public DriveMode controlMode = ROBOT_CENTRIC;
     public IMU.Parameters imuParameters;
     public WaveTag targetTag = new WaveTag();
@@ -170,12 +164,6 @@ public class Robot {
 
         feedServo = hardwareMap.get(CRServo.class, "feedServo");
 
-//        turretServoOne = hardwareMap.get(Servo.class, "turretServoOne");
-//        turretServoTwo = hardwareMap.get(Servo.class, "turretServoTwo");
-
-
-
-        //hammerServo = hardwareMap.get(Servo.class, "hammerServo");
         flicky = hardwareMap.get(Servo.class, "flicky");
         flickyFeedback = hardwareMap.get(AnalogInput.class, "flickyFeedback");
 
@@ -184,17 +172,11 @@ public class Robot {
 
         magsense = hardwareMap.get(TouchSensor.class, "magsense");
 
-
-        //CamCam = hardwareMap.get(WebcamName.class, "CamCam");
-        //expandyServo = hardwareMap.get(CRServo.class, "expandyServo");
-
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
         loadRGB = hardwareMap.get(Servo.class, "loadRGB");
         fireRGB = hardwareMap.get(Servo.class, "fireRGB");
         storeRGB = hardwareMap.get(Servo.class, "storeRGB");
-
-        //husky = hardwareMap.get(HuskyLens.class, "evenBetterMason");
 
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
@@ -241,8 +223,6 @@ public class Robot {
         turret.follower.setMaxPowerScaling(0);
 
         if (alliance == null) alliance = allianceSides.BLUE;
-
-
     }
 
 
@@ -449,7 +429,6 @@ public class Robot {
         //Find first empty
         runBasicIntake(1);
         sorterHardware.setFeeders(INTAKE);
-        //sorterHardware.prepareNewMovement(sorterHardware.motor.getCurrentPosition(), sorterLogic.findFirstType(EMPTY).getLoadPosition());/*replace with first empty*/
     }
 
     public void cancelAutoIntake()
@@ -471,89 +450,84 @@ public class Robot {
         }
     }
 
-    public ArtifactLocator.SlotState runSideScannersWithRGB()
-    {
-        float purpleMinRed = 150;
-        float purpleMaxRed = 215;
-        float greenMinRed = 70;
-        float greenMaxRed = 130;
-        float purpleMinGreen= 70;
-        float purpleMaxGreen= 130;
-        float greenMinGreen = 150;
-        float greenMaxGreen = 215;
-        float purpleMinBlue= 170;
-        float purpleMaxBlue= 230;
-        float greenMinBlue = 70;
-        float greenMaxBlue = 130;
-
-        //Normalize to prevent color shift from lighting intensity
-        float leftNormGreen, leftNormRed, leftNormBlue, rightNormGreen, rightNormRed, rightNormBlue;
-        NormalizedRGBA leftNormalizedColors = leftColorScanner.getNormalizedColors();
-        NormalizedRGBA rightNormalizedColors = rightColorScanner.getNormalizedColors();
-        leftNormGreen = leftNormalizedColors.green / leftNormalizedColors.alpha;
-        leftNormRed = leftNormalizedColors.red / leftNormalizedColors.alpha;
-        leftNormBlue = leftNormalizedColors.blue / leftNormalizedColors.alpha;
-        rightNormGreen = rightNormalizedColors.green / leftNormalizedColors.alpha;
-        rightNormRed = rightNormalizedColors.red / leftNormalizedColors.alpha;
-        rightNormBlue = rightNormalizedColors.blue / leftNormalizedColors.alpha;
-
-        //Average in case of ball holes
-        float averagedRed = (leftNormRed + rightNormRed)/2;
-        float averagedGreen = (leftNormGreen + rightNormGreen)/2;
-        float averagedBlue = (leftNormBlue + rightNormBlue)/2;
-
-        telemetry.addData("Red: ", averagedRed);
-        telemetry.addData("Green: ", averagedGreen);
-        telemetry.addData("Blue: ", averagedBlue);
-        telemetry.update();
-
-        //Now take our values and do something with them.
-
-        if(averagedBlue > purpleMinBlue && averagedBlue < purpleMaxBlue &&
-                averagedRed > purpleMinRed && averagedRed < purpleMaxRed &&
-                averagedGreen > purpleMinGreen && averagedGreen < purpleMaxGreen) {
-            return PURPLE;
-
-
-        }
-        else if(averagedBlue > greenMinBlue && averagedBlue < greenMaxBlue &&
-                averagedRed > greenMinRed && averagedRed < greenMaxRed &&
-                averagedGreen > greenMinGreen && averagedGreen < greenMaxGreen) {
-            return GREEN;
-        }
-        return EMPTY;
-
-    }
-
-    public ArtifactLocator.SlotState runSideScannersWithHSV()
-    {
-        int purpleMinHue = 255;
-        int purpleMaxHue = 295;
-
-        int greenMinHue = 85;
-        int greenMaxHue = 158;
-
-        int averagedRed = (leftColorScanner.red() + rightColorScanner.red())/2;
-        int averagedGreen = (leftColorScanner.green() + rightColorScanner.green())/2;
-        int averagedBlue = (leftColorScanner.blue() + rightColorScanner.blue())/2;
-
-        float[] hsvValues = new float[3];
-        Color.RGBToHSV(averagedRed, averagedGreen, averagedBlue, hsvValues);
-
-        if(hsvValues[0] > purpleMinHue && hsvValues[0] < purpleMaxHue)
-        {
-            return PURPLE;
-
-        }
-        else if(hsvValues[0] > greenMinHue && hsvValues[0] < greenMaxHue)
-        {
-            return GREEN;
-        }
-        return EMPTY;
-    }
-
-    //This will need to be moved, but for now...
-
-
-
+//    public ArtifactLocator.SlotState runSideScannersWithRGB()
+//    {
+//        float purpleMinRed = 150;
+//        float purpleMaxRed = 215;
+//        float greenMinRed = 70;
+//        float greenMaxRed = 130;
+//        float purpleMinGreen= 70;
+//        float purpleMaxGreen= 130;
+//        float greenMinGreen = 150;
+//        float greenMaxGreen = 215;
+//        float purpleMinBlue= 170;
+//        float purpleMaxBlue= 230;
+//        float greenMinBlue = 70;
+//        float greenMaxBlue = 130;
+//
+//        //Normalize to prevent color shift from lighting intensity
+//        float leftNormGreen, leftNormRed, leftNormBlue, rightNormGreen, rightNormRed, rightNormBlue;
+//        NormalizedRGBA leftNormalizedColors = leftColorScanner.getNormalizedColors();
+//        NormalizedRGBA rightNormalizedColors = rightColorScanner.getNormalizedColors();
+//        leftNormGreen = leftNormalizedColors.green / leftNormalizedColors.alpha;
+//        leftNormRed = leftNormalizedColors.red / leftNormalizedColors.alpha;
+//        leftNormBlue = leftNormalizedColors.blue / leftNormalizedColors.alpha;
+//        rightNormGreen = rightNormalizedColors.green / leftNormalizedColors.alpha;
+//        rightNormRed = rightNormalizedColors.red / leftNormalizedColors.alpha;
+//        rightNormBlue = rightNormalizedColors.blue / leftNormalizedColors.alpha;
+//
+//        //Average in case of ball holes
+//        float averagedRed = (leftNormRed + rightNormRed)/2;
+//        float averagedGreen = (leftNormGreen + rightNormGreen)/2;
+//        float averagedBlue = (leftNormBlue + rightNormBlue)/2;
+//
+//        telemetry.addData("Red: ", averagedRed);
+//        telemetry.addData("Green: ", averagedGreen);
+//        telemetry.addData("Blue: ", averagedBlue);
+//        telemetry.update();
+//
+//        //Now take our values and do something with them.
+//
+//        if(averagedBlue > purpleMinBlue && averagedBlue < purpleMaxBlue &&
+//                averagedRed > purpleMinRed && averagedRed < purpleMaxRed &&
+//                averagedGreen > purpleMinGreen && averagedGreen < purpleMaxGreen) {
+//            return PURPLE;
+//
+//
+//        }
+//        else if(averagedBlue > greenMinBlue && averagedBlue < greenMaxBlue &&
+//                averagedRed > greenMinRed && averagedRed < greenMaxRed &&
+//                averagedGreen > greenMinGreen && averagedGreen < greenMaxGreen) {
+//            return GREEN;
+//        }
+//        return EMPTY;
+//
+//    }
+//
+//    public ArtifactLocator.SlotState runSideScannersWithHSV()
+//    {
+//        int purpleMinHue = 255;
+//        int purpleMaxHue = 295;
+//
+//        int greenMinHue = 85;
+//        int greenMaxHue = 158;
+//
+//        int averagedRed = (leftColorScanner.red() + rightColorScanner.red())/2;
+//        int averagedGreen = (leftColorScanner.green() + rightColorScanner.green())/2;
+//        int averagedBlue = (leftColorScanner.blue() + rightColorScanner.blue())/2;
+//
+//        float[] hsvValues = new float[3];
+//        Color.RGBToHSV(averagedRed, averagedGreen, averagedBlue, hsvValues);
+//
+//        if(hsvValues[0] > purpleMinHue && hsvValues[0] < purpleMaxHue)
+//        {
+//            return PURPLE;
+//
+//        }
+//        else if(hsvValues[0] > greenMinHue && hsvValues[0] < greenMaxHue)
+//        {
+//            return GREEN;
+//        }
+//        return EMPTY;
+//    }
 }

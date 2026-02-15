@@ -20,8 +20,7 @@ public class TurretLogic {
     Robot robot;
     public static double tolerance;
     double turretDegreesFromTarget;
-    public static final int encoderResolution = 8192 * 132 / 16; // Actual encoder resolution * teeth on turret / teeth on motor side
-    //public static double fineDegreeWindow = 0;
+
     public static double upperLimit = 150;
     public static double lowerLimit = -90;
     public static double manualOverridePositionInDegs = 0;
@@ -50,11 +49,15 @@ public class TurretLogic {
     }
 
     public void runTurret() {
-        if (follower == null && activeMode.equals(FULL)) {
-            activeMode = LOCKED;
-        } else if(activeMode.equals(FULL))
+        if(activeMode.equals(FULL))
         {
-            updateTurretPositionXY();
+            if (follower == null) {
+                activeMode = LOCKED;
+            }
+            else {
+                updateTurretPositionXY();
+            }
+
         }
 
         robot.turretServo.setPosition(
@@ -99,23 +102,23 @@ public class TurretLogic {
         }*/
         else if(activeMode.equals(FULL))
         {
+            double rawAngle;
             if(robot.alliance.equals(BLUE))
             {
                 //gets the raw angle without accounting for heading
-                double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 12), (robot.turretPosition.y - 132)));
-                //Corrects for heading then hands off to safeAngle logic
-                // TODO make this update live
-                turretDegreesFromTarget = Math.abs(90 + rawAngle);
-                return robot.robotHeading + 90 + rawAngle;
+                rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 12), (robot.turretPosition.y - 132)));
             }
             else
             {
                 //gets the raw angle without accounting for heading
-                double rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 132), (robot.turretPosition.y - 132)));
+                rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 132), (robot.turretPosition.y - 132)));
                 //Corrects for heading then hands off to safeAngle logic
-                turretDegreesFromTarget =  Math.abs(90 + (rawAngle));
-                return robot.robotHeading + 90 + (rawAngle);
             }
+
+            //Corrects for heading then hands off to safeAngle logic
+            // TODO make this update live
+            turretDegreesFromTarget = Math.abs(90 + rawAngle);
+            return robot.robotHeading + 90 + rawAngle;
         }
         else return 0;
     }

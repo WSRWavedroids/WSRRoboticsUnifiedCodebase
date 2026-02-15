@@ -217,7 +217,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
         else
         {
-            holdInPlace();
+            holdInPlaceOrDrive();
         }
 
         fireQueue();
@@ -367,7 +367,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
     }
 
-    private void holdInPlace() {
+    private void holdInPlaceOrDrive() {
         if (gamepad1.squareWasPressed())//Holds in place...
         {
             SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();

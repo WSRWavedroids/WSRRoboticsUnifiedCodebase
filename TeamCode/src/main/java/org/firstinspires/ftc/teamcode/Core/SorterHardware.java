@@ -40,8 +40,8 @@ public class SorterHardware {
     public static Double tickTolerance = 100.0;
     public boolean legalToSpin = false;
 
-    public double flickyDownPosition = 0.51;
-    public double flickyUpPosition = 0;
+    public static double flickyDownPosition = 0.625;
+    public static double flickyUpPosition = 0;
 
     public ElapsedTime cooldownTimer = new ElapsedTime();
     public boolean onCooldown = false;
@@ -105,8 +105,6 @@ public class SorterHardware {
     private int ensureBlenderPosition = 0;
 
     public void updateSorterHardware() {
-        if (flickyInPosition()) timeSinceFlickyLastInPosition.reset();
-
         switch (currentBlenderStep) {
             case READY_FOR_COMMANDS:
                 if (tryToMove || !positionedCheck()) {
@@ -131,9 +129,9 @@ public class SorterHardware {
                     ensureBlenderPosition += 1;
                     nextStep(RESET);
                 }
-                if (ensureBlenderPosition >= 3) {
+                /*if (ensureBlenderPosition >= 3) {
                     nextStep(RESET);
-                }
+                }*/
                 break;
             case RESET:
                 ensureBlenderPosition = 0;
@@ -144,10 +142,10 @@ public class SorterHardware {
             case CALIBRATE:
                 tryToMove = false;
                 doneMoving = false;
+                motor.setPower(0.20);
                 nextStep(CALIBRATING);
                 break;
             case CALIBRATING:
-                motor.setPower(0.20);
                 if(robot.magsense.isPressed()) {
                     motor.setPower(0);
                     resetSorterEncoder();
@@ -163,16 +161,16 @@ public class SorterHardware {
 
         switch (currentFeederState) {
             case INTAKE:
-                runFeeders(feederIntakeSpeed);
+                feedServo.setPower(feederIntakeSpeed);
                 break;
             case ROTATE:
-                runFeeders(feederRotateSpeed);
+                feedServo.setPower(feederRotateSpeed);
                 break;
             case OUTTAKE:
-                runFeeders(-1);
+                feedServo.setPower(-1);
                 break;
             case PASSIVE:
-                runFeeders(passiveFeederSpeed);
+                feedServo.setPower(passiveFeederSpeed);
                 break;
         }
 
@@ -216,6 +214,7 @@ public class SorterHardware {
         return currentBlenderStep == CALIBRATE || currentBlenderStep == CALIBRATING;
     }
 
+    @Deprecated
     public void runPIDMotorStuffLol()
     {
         // obtain the encoder position
@@ -255,11 +254,6 @@ public class SorterHardware {
         // reset the timer for next time
         pidfTime.reset();
 
-    }
-
-    public void runFeeders(double speed)
-    {
-        feedServo.setPower(speed);
     }
 
     public int findFastestRotationInTicks(int currentPosition, int targetPosition) {

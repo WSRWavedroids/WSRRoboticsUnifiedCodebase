@@ -134,13 +134,13 @@ public class ArtifactLocator {
         if (leftHue != leftHSVValues[0] && leftValue != leftHSVValues[2]) {
             leftResetTimer.reset();
             leftHue = leftHSVValues[0] - 10;
-            double leftSaturation = leftHSVValues[1];
+//            double leftSaturation = leftHSVValues[1];
             leftValue = leftHSVValues[2];
         }
         if (rightHue != rightHSVValues[0] && rightValue != rightHSVValues[2]) {
             rightResetTimer.reset();
             rightHue = rightHSVValues[0];
-            double rightSaturation = rightHSVValues[1];
+//            double rightSaturation = rightHSVValues[1];
             rightValue = rightHSVValues[2];
         }
 
