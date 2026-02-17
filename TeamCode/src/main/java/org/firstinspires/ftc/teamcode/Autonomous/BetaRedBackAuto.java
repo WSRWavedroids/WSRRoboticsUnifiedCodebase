@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 @Autonomous(group = "0. FABIO NO PEDRO", name = "Red Back 6 Ball")
 public class BetaRedBackAuto extends BetaBlueBackAuto {
 
-    private Pose startPose = new Pose(85.25, 9, Math.PI / 2);
+    private Pose startPose = new Pose(144-56.5, 9.200, Math.toRadians(0));
 
     public void init() {
         super.init();

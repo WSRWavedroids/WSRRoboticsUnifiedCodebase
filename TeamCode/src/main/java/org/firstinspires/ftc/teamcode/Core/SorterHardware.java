@@ -21,9 +21,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class SorterHardware {
 
     private final Robot robot;
-    //public ezPID blenderPID;
+    public ezPID blenderPID;
 
-    public altPID tryController;
+    //public altPID tryController;
 
     private LauncherHardware launcher;
     public DcMotorEx motor;
@@ -41,20 +41,20 @@ public class SorterHardware {
     public int[] positions;
     public static final int ticksPerRotation = 8192;
     public int currentTickCount;
-    public static Double tickTolerance = 200.0;
+    public static Double tickTolerance = 100.0;
     public boolean legalToSpin = false;
 
-    public double flickyDownPosition = 0.51;
-    public double flickyUpPosition = 0;
+    public static double flickyDownPosition = 0.625;
+    public static double flickyUpPosition = 0;
 
     public ElapsedTime cooldownTimer = new ElapsedTime();
     public boolean onCooldown = false;
     private ElapsedTime pidfTime = new ElapsedTime();
 
-    public static Double kneecap = 0.15;
-    public static double kp = 0.002025;
-    public static double ki = 0.000015;
-    public static double kd = 0.0001;
+    public static Double kneecap = 1.0;
+    public static double kp = 0.00045;
+    public static double ki = 0.0;
+    public static double kd = 0.00001;
     public static double kf = 0.0;
     double lastError = 0;
     double integralSum = 0;
@@ -65,7 +65,7 @@ public class SorterHardware {
 
     public double reference;
 
-    private ElapsedTime outtakeTapTimer = new ElapsedTime();
+    public ElapsedTime outtakeTapTimer = new ElapsedTime();
     public static double outtakeTapTime = 0.5;
 
     public ElapsedTime timeSinceFlickyLastInPosition = new ElapsedTime();
@@ -85,9 +85,7 @@ public class SorterHardware {
         positions[1] = ticksPerRotation / 3;
         positions[2] = 2 * ticksPerRotation / 3;
 
-        //blenderPID = new ezPID(motor, ticksPerRotation, kp, ki, kd, kf, kneecap, tickTolerance, POSITION);
-        tryController = new altPID(motor, ticksPerRotation, kp, ki, kd, kf, tickTolerance);
-
+        blenderPID = new ezPID(motor, ticksPerRotation, kp, ki, kd, kf, kneecap, tickTolerance, POSITION);
         //reference = 0;
 
     }
@@ -111,8 +109,6 @@ public class SorterHardware {
     private int ensureBlenderPosition = 0;
 
     public void updateSorterHardware() {
-        if (flickyInPosition()) timeSinceFlickyLastInPosition.reset();
-
         switch (currentBlenderStep) {
             case READY_FOR_COMMANDS:
                 if (tryToMove || !positionedCheck()) {
@@ -137,9 +133,9 @@ public class SorterHardware {
                     ensureBlenderPosition += 1;
                     nextStep(RESET);
                 }
-                if (ensureBlenderPosition >= 3) {
+                /*if (ensureBlenderPosition >= 3) {
                     nextStep(RESET);
-                }
+                }*/
                 break;
             case RESET:
                 ensureBlenderPosition = 0;
@@ -150,10 +146,10 @@ public class SorterHardware {
             case CALIBRATE:
                 tryToMove = false;
                 doneMoving = false;
+                motor.setPower(0.20);
                 nextStep(CALIBRATING);
                 break;
             case CALIBRATING:
-                motor.setPower(0.10);
                 if(robot.magsense.isPressed()) {
                     motor.setPower(0);
                     resetSorterEncoder();
@@ -163,26 +159,22 @@ public class SorterHardware {
         }
 
         if (!isCalibrating() && !robot.launcher.lockControls) {
-            //blenderPID.changeBehaviorValues(kp, ki, kd, kf, kneecap, tickTolerance);
-            tryController.changeBehaviorValues(kp, ki, kd, reference);
-            if (Math.abs(motor.getCurrentPosition() - reference) > 50) {
-                //blenderPID.runCalledPID(reference);
-                tryController.runPID(reference, true);
-            }
+            blenderPID.changeBehaviorValues(kp, ki, kd, kf, kneecap, tickTolerance);
+            blenderPID.runCalledPID(reference);
         }
 
         switch (currentFeederState) {
             case INTAKE:
-                runFeeders(feederIntakeSpeed);
+                feedServo.setPower(feederIntakeSpeed);
                 break;
             case ROTATE:
-                runFeeders(feederRotateSpeed);
+                feedServo.setPower(feederRotateSpeed);
                 break;
             case OUTTAKE:
-                runFeeders(-1);
+                feedServo.setPower(-1);
                 break;
             case PASSIVE:
-                runFeeders(passiveFeederSpeed);
+                feedServo.setPower(passiveFeederSpeed);
                 break;
         }
 
@@ -203,7 +195,6 @@ public class SorterHardware {
 
     public void prepareNewMovement(int currentTickPose, int targetTickPose) {
         //lastSafePosition = currentTickPose;
-        tryController.f = tryController.recalculateFF(targetTickPose, 491520);
         reference = (findFastestRotationInTicks(currentTickPose, targetTickPose));
         tryToMove = true;
     }
@@ -211,7 +202,7 @@ public class SorterHardware {
     public boolean positionedCheck() {
         //int currentMotorPosition = motor.getCurrentPosition();
 
-        return /*blenderPID.withinTolerance;*/ tryController.motorConroller.atSetPoint();
+        return blenderPID.withinTolerance; //currentMotorPosition > reference - tickTolerance && currentMotorPosition < reference + tickTolerance;
     }
 
 
@@ -266,11 +257,6 @@ public class SorterHardware {
         // reset the timer for next time
         pidfTime.reset();
 
-    }
-
-    public void runFeeders(double speed)
-    {
-        feedServo.setPower(speed);
     }
 
     public int findFastestRotationInTicks(int currentPosition, int targetPosition) {

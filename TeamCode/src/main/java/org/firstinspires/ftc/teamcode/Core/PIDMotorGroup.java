@@ -27,8 +27,7 @@ public class PIDMotorGroup {
     int numberOfMotorsInGroup;
     public ArrayList<DcMotorEx> motorGroup;
 
-
-    public PIDMotorGroup(@NonNull DcMotorEx... motorsIN) {
+    public PIDMotorGroup(DcMotorEx... motorsIN) {
         motorGroup = new ArrayList<>();
         numberOfMotorsInGroup = motorsIN.length;
         Collections.addAll(motorGroup, motorsIN);

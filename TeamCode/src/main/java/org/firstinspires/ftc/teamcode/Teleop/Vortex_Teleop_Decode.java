@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
+import static org.firstinspires.ftc.teamcode.Core.SorterHardware.outtakeTapTime;
 import static org.firstinspires.ftc.teamcode.Core.TurretLogic.controlMode.*;
 
 import com.bylazar.panels.Panels;
@@ -52,7 +53,6 @@ public class Vortex_Teleop_Decode extends OpMode {
     private boolean spinTargetAcquired = false;
 
     private boolean automatedDrive;
-    boolean cadenON = false;
     boolean cadenHoldingReady = false;
     boolean cadenHoldingFire = false;
 
@@ -211,17 +211,14 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         controllerRumble();
 
-
         if(robot.controlMode == PEDRO)
         {
             pedroAutomation(robot.turret.follower);
         }
         else
         {
-            holdInPlace();
-            driveOrAutoLock();
+            holdInPlaceOrDrive();
         }
-
 
         fireQueue();
 
@@ -248,8 +245,6 @@ public class Vortex_Teleop_Decode extends OpMode {
         resetPedroPosition();
 
         runTrackpadFunctions();
-
-        //resetTurretEncoder();
 
         //robot.panelsTelemetry.addData("Motor Position", robot.launcher.motor.getCurrentPosition());
         robot.panelsTelemetry.update();
@@ -333,8 +328,8 @@ public class Vortex_Teleop_Decode extends OpMode {
     }
 
     private void controllerRumble() {
-        if (robot.targetTag.currentlyDetected) {
-            gamepad1.rumble(0.25, 0.25, 100);
+        if (robot.sorterLogic.inventory.getTotalCount() >= 3) {
+            gamepad1.rumble(1, 1, 100);
         }
 
         if (robot.launcher.isInFireSequence()) {
@@ -347,17 +342,13 @@ public class Vortex_Teleop_Decode extends OpMode {
 
             if (!cadenHoldingReady) {
                 cadenHoldingReady = true;
-                if (cadenON) {
-                    cadenON = false;
-                } else {
-                    cadenON = true;
-                }
             }
 
-            if (cadenON) {
+            if (!robot.launcher.launcherOn()) {
                 robot.launcher.setPerfectLauncherVelocity();
             } else {
-                robot.launcher.setLauncherVelocity(0);
+                // Will stop motor
+                robot.queue.finishQueue();
             }
 
         } else {
@@ -368,7 +359,6 @@ public class Vortex_Teleop_Decode extends OpMode {
     private void fireCurrentFireSlot() {
         if (gamepad2.right_trigger > 0.50 && !robot.launcher.isInFireSequence() /*&& robot.queue.wantToFireQueue == fireQueueWithStates.firingQueue.NONE*/) {
             if (!cadenHoldingFire) {
-                cadenON = true;
                 cadenHoldingFire = true;
                 robot.launcher.fireWithinTimeIfSafe(0.5, false, false, 0.5);
             }
@@ -377,7 +367,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
     }
 
-    private void holdInPlace() {
+    private void holdInPlaceOrDrive() {
         if (gamepad1.squareWasPressed())//Holds in place...
         {
             SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();
@@ -386,6 +376,16 @@ public class Vortex_Teleop_Decode extends OpMode {
             SpinTargetBackRight = robot.backRightDrive.getCurrentPosition();
             spinTargetAcquired = true;
             speed = 1;
+        }
+        if (gamepad1.square) {
+            robot.setRunMode(RUN_TO_POSITION);
+            robot.frontLeftDrive.setTargetPosition(SpinTargetFrontLeft);
+            robot.frontRightDrive.setTargetPosition(SpinTargetFrontRight);
+            robot.backLeftDrive.setTargetPosition(SpinTargetBackLeft);
+            robot.backRightDrive.setTargetPosition(SpinTargetBackRight);
+        }
+        else {
+            singleJoystickDrive();
         }
     }
 
@@ -461,12 +461,6 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         robot.setRunMode(RUN_TO_POSITION);
         robot.powerSet(speed);
-    }
-
-    private void resetTurretEncoder() {
-        if (gamepad1.dpadDownWasPressed()) {
-            //robot.turret.resetEncoder();
-        }
     }
 
     private void singleJoystickDrive() {
@@ -643,14 +637,16 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Flipper in positon", robot.sorterHardware.flickyInPosition());
         telemetry.addData("Flipper analog position", robot.flickyFeedback.getVoltage());
         telemetry.addData("Flipper target position", robot.flicky.getPosition());
-        telemetry.addData("Time Since Flicky In Position", robot.sorterHardware.timeSinceFlickyLastInPosition.milliseconds());
 
         telemetry.addLine();
         telemetry.addLine("Launcher:");
-//        telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
+        telemetry.addData("Launcher Velocity", robot.launcherMotorOne.getVelocity());
         telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
         telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
         telemetry.addData("LL Distance", robot.targetTag.distanceZ);
+
+        telemetry.addData("Currently Firing", robot.launcher.activeFiringSlot.getName());
+        telemetry.addData("Fire Queue", robot.queue.ballQueue);
 
         telemetry.addLine();
         telemetry.addLine("Turret & PedroPathing:");

@@ -206,7 +206,9 @@ public class ezPID {
             // sum of all error over time
             integralSum = integralSum + (error * dt);
 
-            double out = (p * error) + (i * integralSum) + (d * derivative);
+            double feedforward = f * reference;
+
+            double out = (p * error) + (i * integralSum) + (d * derivative) + feedforward;
 
             motor.setPower(out);
 
@@ -215,12 +217,16 @@ public class ezPID {
     }
 
 
-public void runCalledPIDGroup(double reference)
-{
-    /// CALL THIS ONCE PER LOOP IN ANOTHER SCRIPT OR MOTOR WON'T MOVE
-    /// ONLY USE FOR ONE MOTOR ezPID INSTANCES OR WILL THROW ERRORS!
-    /// Use the following line to call this properly FOR MOTOR GROUPS ONLY
-    /// PIDGROUPINSTANCENAME.runCalledPID(Target position(Ticks) or speed (Ticks/s));
+    public void runCalledPIDGroup(double reference)
+    {
+        /// CALL THIS ONCE PER LOOP IN ANOTHER SCRIPT OR MOTOR WON'T MOVE
+        /// ONLY USE FOR ONE MOTOR ezPID INSTANCES OR WILL THROW ERRORS!
+        /// Use the following line to call this properly FOR MOTOR GROUPS ONLY
+        /// PIDGROUPINSTANCENAME.runCalledPID(Target position(Ticks) or speed (Ticks/s));
+
+        time = Timer.seconds();
+        dt = time - lastTime;
+        lastTime = time;
 
         if(mode == POSITION)
         {
@@ -277,20 +283,13 @@ public void runCalledPIDGroup(double reference)
             // calculate the error
             double error = reference - encoderSpeed;
 
-            if(Math.abs(error) > tolerance)
-            {
-                withinTolerance = false;
-            }
-            else
-            {
-                withinTolerance = true;
-            }
+            withinTolerance = Math.abs(error) < tolerance;
 
             // rate of change of the error
-            double derivative = (error - lastError) / Timer.seconds();
+            double derivative = (error - lastError) / dt;
 
             // sum of all error over time
-            integralSum = integralSum + (error * Timer.seconds());
+            integralSum = integralSum + (error * dt);
 
             double out = (p * error) + (i * integralSum) + (d * derivative);
 
@@ -300,12 +299,9 @@ public void runCalledPIDGroup(double reference)
             }
 
             lastError = error;
-
-            // reset the timer for next time
-            Timer.reset();
         }
     }
-    }
+}
 
 
 class PIDDUMP {

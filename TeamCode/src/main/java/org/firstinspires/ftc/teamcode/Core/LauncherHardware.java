@@ -38,21 +38,22 @@ public class LauncherHardware {
         motor2 = robot.launcherMotorTwo;
         launcherMotors = new PIDMotorGroup(motor1, motor2);
         launcherMotors.setDirections(-1, -1);
-        launcherPID = new ezPID(launcherMotors, 28, p, i, d, f, 1, toleranceRange, ezPID.movementType.SPEED);
+        launcherPID = new ezPID(motor1, 28, p, i, d, f, 1, toleranceRange, ezPID.movementType.SPEED);
         turret = robot.turret;
         // motor.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(P, I, D, F));
-        motor1.setDirection(REVERSE);
         waitingToFire = false;
+        activeFiringSlot = robot.sorterLogic.noSlot;
     }
 
     public static double launcherCooldownDuration = 0.3;
-    public static double flickTime = 0.20; //TODO Optimize
+    public static double flickTime = 0.1; //TODO Optimize
 
     public boolean waitingToFire = false;
     boolean lockControls = false;
     boolean stopMotorAfter;
     boolean firing = false;
     boolean activeFiring = false;
+    public ArtifactLocator.Slot activeFiringSlot;
 
     public static final int ticksPerRevolution = 28;
     public static final int revolutionsPerSecond = 100;
@@ -61,7 +62,7 @@ public class LauncherHardware {
     public static double velocityTarget;
     public double percentSpeed;
     public int steadiness = 0;
-    public final int steadinessThreshold = 3;
+    public final int steadinessThreshold = 1;
 
     public boolean onCooldown = false;
     public static boolean manualTuneMode;
@@ -70,10 +71,10 @@ public class LauncherHardware {
     private double waitTime;
     private ElapsedTime waitForSafeTimer = new ElapsedTime();
 
-    public static double p = 100;
-    public static double i = 7.5;
+    public static double p = 0.0045;
+    public static double i = 0;
     public static double d = 0;
-    public static double f = 0;
+    public static double f = 0.0004;
 
     public enum LauncherSteps {
         READY_FOR_COMMANDS,
@@ -95,10 +96,10 @@ public class LauncherHardware {
     private ElapsedTime cooldownTimer = new ElapsedTime();
 
     public void updateLauncherHardware() {
-        robot.panelsTelemetry.addData("Launcher Motor 1 Velocity", motor1.getVelocity());
+        /*robot.panelsTelemetry.addData("Launcher Motor 1 Velocity", motor1.getVelocity());
         robot.panelsTelemetry.addData("Launcher Motor 2 Velocity", motor2.getVelocity());
         robot.panelsTelemetry.addData("Target Launcher Velocity", velocityTarget);
-        robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
+        robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);*/
 
         switch (currentLauncherStep) {
             case READY_FOR_COMMANDS:
@@ -121,11 +122,13 @@ public class LauncherHardware {
                 break;
             case STALLING_UNTIL_SAFE:
                 if (robot.sorterHardware.fireSafeCheck()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
                     nextStep(REV_MOTOR);
                 }
                 break;
             case WAIT_FOR_TIME_FOR_SAFE:
                 if (robot.sorterHardware.fireSafeCheck()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
                     // All good
                     nextStep(REV_MOTOR);
                 } else if (waitForSafeTimer.seconds() >= waitTime) {
@@ -135,23 +138,33 @@ public class LauncherHardware {
                 break;
             case CHECK_IF_SAFE:
                 if (robot.sorterHardware.fireSafeCheck()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
                     nextStep(REV_MOTOR);
                 } else {
                     nextStep(READY_FOR_COMMANDS);
                 }
                 break;
             case REV_MOTOR:
+                if (!activeFiringSlot.exists()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
+                }
                 setPerfectLauncherVelocity();
                 cooldownTimer.reset();
                 nextStep(STALL_WHILE_MOTOR_REVVING);
                 break;
             case STALL_WHILE_MOTOR_REVVING:
+                if (!activeFiringSlot.exists()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
+                }
                 setPerfectLauncherVelocity();
                 if (motorSpeedCheck(velocityTarget) && motorSteady() || cooldownTimer.seconds() >= 5) {
                     nextStep(FLICK);
                 }
                 break;
             case FLICK:
+                if (!activeFiringSlot.exists()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
+                }
                 lockControls = true;
                 activeFiring = true;
                 onCooldown = true;
@@ -161,12 +174,20 @@ public class LauncherHardware {
                 nextStep(UNFLICK);
                 break;
             case UNFLICK:
+                if (!activeFiringSlot.exists()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
+                }
+
                 if(/*robot.sorterHardware.flickyInPosition() ||*/ cooldownTimer.seconds() >= flickTime) {
                     robot.sorterHardware.resetFlicky();
                     nextStep(LAUNCHING);
                 }
                 break;
             case LAUNCHING:
+                if (!activeFiringSlot.exists()) {
+                    activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
+                }
+
                 if (stopMotorAfter && cooldownTimer.seconds() >= launcherCooldownDuration && cooldownTimer.seconds() >= flickTime * 2) {
                     nextStep(RESET);
                 }
@@ -179,7 +200,9 @@ public class LauncherHardware {
                 if (stopMotorAfter) setLauncherVelocity(0);
 
                 // Set the slot to empty now that we fired its contents
-                robot.sorterLogic.findCurrentSlotInPosition(FIRE).setOccupied(EMPTY);
+                activeFiringSlot.setOccupied(EMPTY);
+
+                activeFiringSlot = robot.sorterLogic.noSlot;
 
                 // Update the booleans
                 lockControls = false;
@@ -197,7 +220,10 @@ public class LauncherHardware {
         } else {
             steadiness = 0;
         }
+
         launcherPID.changeBehaviorValues(p, i, d, f, 1, toleranceRange);
+        launcherPID.runCalledPID(velocityTarget);
+        motor2.setPower(motor1.getPower());
     }
 
     public boolean doneFiring() {
@@ -243,15 +269,12 @@ public class LauncherHardware {
     @Deprecated
     public void setLauncherSpeed(double targetSpeed) {
         velocityTarget = ticksPerRevolution * revolutionsPerSecond * targetSpeed;
-        launcherPID.runCalledPIDGroup(velocityTarget);
-        //turret.launcherController.runCalledPIDGroup(targetspeed);
     }
 
     public void setLauncherVelocity(double targetVelocity) {
         if (!manualTuneMode) {
             velocityTarget = targetVelocity;
         }
-        launcherPID.runCalledPIDGroup(velocityTarget);
     }
     public void setPerfectLauncherVelocity() {
         setLauncherVelocity(findBestMotorVelocity(robot.targetTag.distanceZ));
@@ -300,6 +323,9 @@ public class LauncherHardware {
 
         }
         return (43.75095 * Math.pow(input, 2)) + (-73.54794 * input) + 1297.48932;
+    }
 
+    public boolean launcherOn() {
+        return velocityTarget != 0;
     }
 }

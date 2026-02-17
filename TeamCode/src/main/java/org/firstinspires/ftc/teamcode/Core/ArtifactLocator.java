@@ -53,10 +53,9 @@ public class ArtifactLocator {
 
     public Robot robot;
     public SorterHardware sorterHardware;
-    public LauncherHardware launcher;
 
     private ElapsedTime sortCooldown = new ElapsedTime();
-    public double sortCooldownTime = 0.1;
+    public double sortCooldownTime = 0;
 
     private final int slotALoad = 0;
     private final int slotBLoad = 2;
@@ -65,8 +64,9 @@ public class ArtifactLocator {
     public ArtifactLocator(Robot robotFile) {
         robot = robotFile;
         this.sorterHardware = robot.sorterHardware;
-        this.launcher = robot.launcher;
         initLogic();
+        leftResetTimer = new ElapsedTime();
+        rightResetTimer = new ElapsedTime();
     }
 
     /**
@@ -89,6 +89,7 @@ public class ArtifactLocator {
 
         // Define the inventory
         inventory = new SlotInventory();
+
     }
 
     /**
@@ -106,19 +107,21 @@ public class ArtifactLocator {
     public double rightHue;
     public double leftValue;
     public double rightValue;
+
+    private ElapsedTime leftResetTimer, rightResetTimer;
     /**
      * Checks the color sensors
      * @return The SlotState contents, PURPLE, GREEN, or EMPTY
      */
     public ArtifactLocator.SlotState runSideScannersWithHSV()
     {
-        double purpleMinHue = 180;
+        double purpleMinHue = 170;
         double purpleMaxHue = 295;
         double purpleMinValue = 0.3;
         double purpleMaxValue = 1.2;
 
 
-        double greenMinHue = 150;
+        double greenMinHue = 130;
         double greenMaxHue = 160;
         double greenMinValue = 0.3;
         double greenMaxValue = 1.2;
@@ -128,34 +131,40 @@ public class ArtifactLocator {
         Color.RGBToHSV(robot.leftColorScanner.red(), robot.leftColorScanner.green(), robot.leftColorScanner.blue(), leftHSVValues);
         Color.RGBToHSV(robot.rightColorScanner.red(), robot.rightColorScanner.green(), robot.rightColorScanner.blue(), rightHSVValues);
 
-        leftHue = leftHSVValues[0];
-        double leftSaturation = leftHSVValues[1];
-        leftValue = leftHSVValues[2];
-
-        rightHue = rightHSVValues[0];
-        double rightSaturation = rightHSVValues[1];
-        rightValue = rightHSVValues[2];
-
-
-        //robot.telemetry.addData("H", leftHue + ", " + rightHue);
-        //robot.telemetry.addData("V", leftValue + ", " + rightValue);
-
-        if(leftHue > purpleMinHue && leftHue < purpleMaxHue &&
-                leftValue > purpleMinValue && leftValue < purpleMaxValue) {
-            return PURPLE;
+        if (leftHue != leftHSVValues[0] && leftValue != leftHSVValues[2]) {
+            leftResetTimer.reset();
+            leftHue = leftHSVValues[0] - 10;
+//            double leftSaturation = leftHSVValues[1];
+            leftValue = leftHSVValues[2];
         }
-        else if(leftHue > greenMinHue && leftHue < greenMaxHue &&
-                leftValue > greenMinValue && leftValue < greenMaxValue) {
-            return GREEN;
+        if (rightHue != rightHSVValues[0] && rightValue != rightHSVValues[2]) {
+            rightResetTimer.reset();
+            rightHue = rightHSVValues[0];
+//            double rightSaturation = rightHSVValues[1];
+            rightValue = rightHSVValues[2];
         }
-        else if(rightHue > purpleMinHue && rightHue < purpleMaxHue &&
-                rightValue > purpleMinValue && rightValue < purpleMaxValue) {
-            return PURPLE;
+
+        if (leftResetTimer.seconds() < 10) {
+            if (leftHue > purpleMinHue && leftHue < purpleMaxHue &&
+                    leftValue > purpleMinValue && leftValue < purpleMaxValue) {
+                return PURPLE;
+            } else if (leftHue > greenMinHue && leftHue < greenMaxHue &&
+                    leftValue > greenMinValue && leftValue < greenMaxValue) {
+                return GREEN;
+            }
         }
-        else if(rightHue > greenMinHue && rightHue < greenMaxHue &&
-                rightValue > greenMinValue && rightValue < greenMaxValue) {
-            return GREEN;
+
+        if (rightResetTimer.seconds() < 10) {
+            if(rightHue > purpleMinHue && rightHue < purpleMaxHue &&
+                    rightValue > purpleMinValue && rightValue < purpleMaxValue) {
+                return PURPLE;
+            }
+            else if(rightHue > greenMinHue && rightHue < greenMaxHue &&
+                    rightValue > greenMinValue && rightValue < greenMaxValue) {
+                return GREEN;
+            }
         }
+
         return EMPTY;
     }
 
@@ -273,7 +282,7 @@ public class ArtifactLocator {
      */
     public Slot findFirstNotType(SlotState slotType) {
         for (Slot currentSlot : allSlots) {
-            if (currentSlot.doesNotContain(slotType, UNKNOWN)) {
+            if (currentSlot.doesNotContain(false, slotType, UNKNOWN)) {
                 return currentSlot;
             }
         }
@@ -313,6 +322,16 @@ public class ArtifactLocator {
         }
         else {
             return findFirstType(targetArtifact);
+        }
+    }
+
+    public Slot findBestPositionedNotType(SlotState targetArtifact, SorterHardware.PositionState targetPosition) {
+        Slot currentFireSlot = findCurrentSlotInPosition(targetPosition);
+        if (currentFireSlot.doesNotContain(false, targetArtifact)) {
+            return currentFireSlot;
+        }
+        else {
+            return findFirstNotType(targetArtifact);
         }
     }
 
@@ -458,7 +477,7 @@ public class ArtifactLocator {
          *                    multiple.
          * @return Whether or not the Slot does not contain any of the contents checked against.
          */
-        public boolean doesNotContain(SlotState... checkStates) {
+        public boolean doesNotContain(boolean noSlotFallback, SlotState... checkStates) {
             for (SlotState currentCheckState : checkStates) {
                 if (currentCheckState == occupied) {
                     return false;
@@ -519,8 +538,8 @@ public class ArtifactLocator {
         }
 
         @Override
-        public boolean doesNotContain(SlotState... checkStates) {
-            return true;
+        public boolean doesNotContain(boolean noSlotFallback, SlotState... checkStates) {
+            return noSlotFallback;
         }
 
         @Override
