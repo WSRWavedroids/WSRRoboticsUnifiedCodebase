@@ -52,9 +52,9 @@ public class SorterHardware {
     private ElapsedTime pidfTime = new ElapsedTime();
 
     public static Double kneecap = 1.0;
-    public static double kp = 0.00045;
-    public static double ki = 0.0;
-    public static double kd = 0.00001;
+    public static double kp = 0.00055; //0.00045;
+    public static double ki = 0;//0.0;
+    public static double kd = 0.000028;//0.00001;
     public static double kf = 0.0;
     double lastError = 0;
     double integralSum = 0;
@@ -348,7 +348,7 @@ public class SorterHardware {
         // If there are empty slots
         outtakeTapTimer.reset();
 
-        if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) &&
+        if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(true, EMPTY) &&
                 robot.sorterLogic.artifactSortCooldown())
         {
             ArtifactLocator.Slot emptySlot = robot.sorterLogic.findBestPositionedType(EMPTY, LOAD);
@@ -371,7 +371,7 @@ public class SorterHardware {
         if (robot.sorterLogic.inventory.getTotalCount() >= 3) {
             robot.cancelAutoIntake();
         }
-        else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(EMPTY) /*&&
+        else if(robot.sorterLogic.findCurrentSlotInPosition(LOAD).doesNotContain(true,EMPTY) /*&&
                 robot.sorterLogic.artifactSortCooldown()*/)
         {
             ArtifactLocator.Slot emptySlot = robot.sorterLogic.findFirstType(EMPTY);

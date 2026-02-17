@@ -151,23 +151,22 @@ public class ezPID {
             // rate of change of the error
             if(Timer.seconds()!= 0)
             {
-                derivative = (error - lastError) / dt;
+                derivative = (Math.abs(error) - Math.abs(lastError)) / time;
             }
             else
             {
-                derivative = (error - lastError);
+                derivative = (Math.abs(error) - Math.abs(lastError)) ;
             }
 
-
-            double feedforward = f * reference;
 
             if(Timer.seconds() != 0)
             {
                 // sum of all error over time
-                integralSum = integralSum + (error * dt);
+                integralSum = integralSum + (error * time);
             }
+            double feedforward = f * reference;
 
-            double out = kneecap * ((p * error) + (i * integralSum) + (d * derivative) + feedforward);
+            double out = (p * error) + (i * integralSum) + (d * derivative) + feedforward;
 
             motor.setMode(RUN_WITHOUT_ENCODER);
             motor.setPower(out);
@@ -182,6 +181,7 @@ public class ezPID {
             {
                 withinTolerance = true;
             }
+            Timer.reset();
 
         }
         else if(mode == SPEED)
@@ -201,10 +201,10 @@ public class ezPID {
             }
 
             // rate of change of the error
-            double derivative = (error - lastError) / dt;
+            double derivative = (error - lastError) / time;
 
             // sum of all error over time
-            integralSum = integralSum + (error * dt);
+            integralSum = integralSum + (error * time);
 
             double feedforward = f * reference;
 
@@ -213,6 +213,7 @@ public class ezPID {
             motor.setPower(out);
 
             lastError = error;
+            Timer.reset();
         }
     }
 
