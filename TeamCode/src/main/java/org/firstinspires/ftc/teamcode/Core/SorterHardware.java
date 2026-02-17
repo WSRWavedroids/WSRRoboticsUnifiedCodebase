@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.*;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -21,6 +22,9 @@ public class SorterHardware {
 
     private final Robot robot;
     public ezPID blenderPID;
+
+    //public altPID tryController;
+
     private LauncherHardware launcher;
     public DcMotorEx motor;
     public Servo flicky;
