@@ -7,12 +7,9 @@ import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
-import static org.firstinspires.ftc.teamcode.Core.SorterHardware.outtakeTapTime;
 import static org.firstinspires.ftc.teamcode.Core.TurretLogic.controlMode.*;
 
 import com.bylazar.panels.Panels;
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.BezierPoint;
@@ -646,7 +643,8 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("LL Distance", robot.targetTag.distanceZ);
 
         telemetry.addData("Currently Firing", robot.launcher.activeFiringSlot.getName());
-        telemetry.addData("Fire Queue", robot.queue.ballQueue);
+        telemetry.addData("Fire Color Queue", robot.queue.ballQueue);
+        //telemetry.addData("Fire Slot Queue", robot.queue.slotQueue);
 
         telemetry.addLine();
         telemetry.addLine("Turret & PedroPathing:");
@@ -692,7 +690,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addLine("State Machines:");
         telemetry.addData("Blender State", robot.sorterHardware.getCurrentBlenderStep());
         telemetry.addData("Launcher State", robot.launcher.getCurrentLauncherStep());
-        telemetry.addData("Queue State", robot.queue.getCurrentState());
+        telemetry.addData("Queue State", robot.queue.getCurrentHardwareState());
 
         telemetry.addLine();
         telemetry.addLine("Blackboard:");

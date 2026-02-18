@@ -227,7 +227,7 @@ public class ArtifactLocator {
      */
     public Slot findFirstType(SlotState slotType) {
         for (Slot currentSlot : allSlots) {
-            if (currentSlot.contains(slotType)) {
+            if (currentSlot.contains(slotType) && !currentSlot.claimed()) {
                 return currentSlot;
             }
         }
@@ -247,7 +247,7 @@ public class ArtifactLocator {
         int counter = 0;
         if((slotType == GREEN && inventory.greenCount >= nthBall) || (slotType == PURPLE && inventory.purpleCount >= nthBall)) {
             for (Slot currentSlot : allSlots) {
-                if (currentSlot.contains(slotType)) {
+                if (currentSlot.contains(slotType) && !currentSlot.claimed()) {
                     counter++;
                     if (counter == nthBall) {
                         return currentSlot;
@@ -265,7 +265,7 @@ public class ArtifactLocator {
      */
     public Slot findFirstOccupied() {
         for (Slot currentSlot : allSlots) {
-            if (currentSlot.contains(GREEN) || currentSlot.contains(PURPLE)) {
+            if (currentSlot.contains(GREEN) || currentSlot.contains(PURPLE) && !currentSlot.claimed()) {
                 return currentSlot;
             }
         }
@@ -282,7 +282,7 @@ public class ArtifactLocator {
      */
     public Slot findFirstNotType(SlotState slotType) {
         for (Slot currentSlot : allSlots) {
-            if (currentSlot.doesNotContain(false, slotType, UNKNOWN)) {
+            if (currentSlot.doesNotContain(false, slotType, UNKNOWN) && !currentSlot.claimed()) {
                 return currentSlot;
             }
         }
@@ -317,7 +317,7 @@ public class ArtifactLocator {
 
     public Slot findBestPositionedType(SlotState targetArtifact, SorterHardware.PositionState targetPosition) {
         Slot currentFireSlot = findCurrentSlotInPosition(targetPosition);
-        if (currentFireSlot.contains(targetArtifact)) {
+        if (currentFireSlot.contains(targetArtifact) && !currentFireSlot.claimed()) {
             return currentFireSlot;
         }
         else {
@@ -327,7 +327,7 @@ public class ArtifactLocator {
 
     public Slot findBestPositionedNotType(SlotState targetArtifact, SorterHardware.PositionState targetPosition) {
         Slot currentFireSlot = findCurrentSlotInPosition(targetPosition);
-        if (currentFireSlot.doesNotContain(false, targetArtifact)) {
+        if (currentFireSlot.doesNotContain(false, targetArtifact) && !currentFireSlot.claimed()) {
             return currentFireSlot;
         }
         else {
@@ -415,6 +415,7 @@ public class ArtifactLocator {
         private final int firePosition;
         private final int loadPosition;
         private final String name;
+        private boolean claimed = false;
 
         /**
          * This constructor creates a Slot. A Slot is a representation of a physical Slot in the
@@ -462,6 +463,16 @@ public class ArtifactLocator {
             occupied = newOccupation;
         }
 
+        public void claim() {
+            claimed = true;
+        }
+        public void release() {
+            claimed = false;
+        }
+        public boolean claimed() {
+            return claimed;
+        }
+
         /**
          * Checks to see if the Slot contains the specified contents
          * @param checkState The contents to check for, in the form iof a SlotState enum.
@@ -501,6 +512,7 @@ public class ArtifactLocator {
         public String getName() {
             return name;
         }
+
     }
 
     /**
@@ -544,6 +556,17 @@ public class ArtifactLocator {
 
         @Override
         public boolean exists() {
+            return false;
+        }
+
+        @Override
+        public void claim() {}
+
+        @Override
+        public void release() {}
+
+        @Override
+        public boolean claimed() {
             return false;
         }
     }
