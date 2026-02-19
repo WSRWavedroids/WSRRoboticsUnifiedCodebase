@@ -210,6 +210,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         if(robot.controlMode == PEDRO)
         {
+            robot.turret.follower.update();
             pedroAutomation(robot.turret.follower);
         }
         else
@@ -761,8 +762,17 @@ public class Vortex_Teleop_Decode extends OpMode {
         // Build the PathChain after adding all paths
     }
 
-    private void pedroAutomation(Follower follower) {
+    private PathChain makeDynamicChain(Pose initalPose, Pose secondaryPose, double targetHeadingRadians) {
+            return robot.turret.follower.pathBuilder()
+                    .addPath(new BezierLine(robot.turret.follower.getPose(), initalPose))
+                    .setLinearHeadingInterpolation(robot.turret.follower.getHeading(), targetHeadingRadians)
+                    .addPath(new BezierLine(initalPose, secondaryPose))
+                    .setLinearHeadingInterpolation(robot.turret.follower.getHeading(), targetHeadingRadians)
+                    .build();
+            // Build the PathChain after adding all paths
+        }
 
+    private void pedroAutomation(Follower follower) {
         if (!automatedDrive) {
             //Make the last parameter false for field-centric
             //In case the drivers want to use a "slowMode" you can scale the vectors
@@ -772,34 +782,68 @@ public class Vortex_Teleop_Decode extends OpMode {
                     gamepad1.left_stick_x * speed,//swapped these for mason
                     -gamepad1.left_stick_y * speed,//swapped these for mason
                     -gamepad1.right_stick_x * speed,
-                    false // Robot Centric
+                    true // Robot Centric
             );
 
         }
 
         //Automated PathFollowing
-        //Mason's Pedro
+
+        //Drive to trackpad point
         if (gamepad1.touchpadWasPressed()) {
             follower.followPath(makeDynamicPath(trackTarget, follower.getHeading()));
             automatedDrive = true;
-        } else if (gamepad1.triangle) //Do a 180
-        {
-            speed = 1;
-            follower.followPath(makeDynamicPath(follower.getPose(), follower.getHeading()+ Math.PI));
-            //Use holdpoint if no work but I think this turns way faster
-            automatedDrive = true;
         }
-        else if (gamepad1.left_bumper) {
+        else if (gamepad1.squareWasPressed()) { //Hold Position and heading
             follower.holdPoint(new BezierPoint(follower.getPose()), follower.getHeading());
 
             speed = 1;
             automatedDrive = true;
+        }
+        else if (gamepad1.left_stick_button) { //Autopark
+            Pose park;
+            if(robot.alliance == BLUE)
+            {
 
+                park = new Pose (105, 33.4, 90);
+            }
+            else
+            {
+                park = new Pose (38.6, 33.4, 90);
+            }
+            follower.followPath(makeDynamicPath(park, follower.getHeading()));
+
+
+            speed = 1;
+            automatedDrive = true;
+        }
+        else if (gamepad1.dpad_up  && robot.alliance != null) { //auto gate
+            Pose pregate;
+            Pose pressing;
+
+            if(robot.alliance == BLUE)
+            {
+                pregate = new Pose (22, 70, 270);
+                pressing = new Pose (16.5,70, 270);
+            }
+            else
+            {
+                pregate = new Pose (122, 70, 270);
+                pressing = new Pose (128,70, 270);
+            }
+
+            follower.followPath(makeDynamicChain(pregate, pressing, 270));
+
+            speed = 1;
+            automatedDrive = true;
         }
 
 
+
+
         //Stop automated following when the driver needs to
-        if (automatedDrive && (gamepad1.bWasPressed())) {
+        if (automatedDrive && (gamepad1.circle) || Math.abs(gamepad1.left_stick_x) >= 0.5
+                || Math.abs(gamepad1.left_stick_y) >= 0.5 || Math.abs(gamepad1.right_stick_x) >= 0.5) {
             follower.startTeleopDrive();
             automatedDrive = false;
         }

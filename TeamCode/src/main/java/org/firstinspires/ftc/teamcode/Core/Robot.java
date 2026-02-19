@@ -81,7 +81,7 @@ public class Robot {
     public OpMode opmode;
     public HardwareMap hardwareMap;
 
-    public DriveMode controlMode = ROBOT_CENTRIC;
+    public DriveMode controlMode = PEDRO;//ROBOT_CENTRIC;
     public IMU.Parameters imuParameters;
     public WaveTag targetTag = new WaveTag();
     public enum patternColors {PPG, GPP, PGP}
