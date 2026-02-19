@@ -4,6 +4,8 @@ import static org.firstinspires.ftc.teamcode.Teleop.Basic_TeleOp_NewBot.AutoLaun
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.BezierPoint;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -204,8 +206,81 @@ public class Basic_TeleOp_NewBot extends OpMode {
 //aple sinc please
 //    i praise tmmothy cooker
 
+//field centric
+        /*if (robot.alliance == RED) {
+            follower.setTeleOpDrive(
+                    gamepad1.left_stick_y,
+                    gamepad1.left_stick_x,
+                    gamepad1.right_stick_x,
+                    false,
+                    Math.toRadians(0)
+                    );
+        }
+        if (robot.alliance == BLUE) {
+            follower.setTeleOpDrive(
+                    gamepad1.left_stick_y,
+                    gamepad1.left_stick_x,
+                    gamepad1.right_stick_x,
+                    false,
+                    Math.toRadians(180)
+                    );
+        }*/
+    //auto locking and field centric
+    private void fieldCentric() {
+            follower.update();
+        double multiplier = 1;
+        double x = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
+        double y = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
+        double heading;
 
+                if (gamepad1.x) {
+            follower.resumePathFollowing();
+            if (robot.alliance == RED) {
+                heading = Math.atan2(144 - y, 144 - x);
+                follower.holdPoint(new BezierPoint(new Pose(x, y)), heading);
+                follower.followPath(follower.pathBuilder().addPath(
+                                new BezierLine(
+                                        new Pose(follower.getPose().getX(), follower.getPose().getY()),
 
+                                        new Pose(follower.getPose().getX(), follower.getPose().getY())
+                                )
+                        ).setLinearHeadingInterpolation(Math.toRadians(follower.getHeading()), heading)
+
+                        .build());
+            }
+            if (robot.alliance == BLUE) {
+                heading = Math.atan2(144 - y, 0 - x);
+                follower.followPath(follower.pathBuilder().addPath(
+                                new BezierLine(
+                                        new Pose(follower.getPose().getX(), follower.getPose().getY()),
+
+                                        new Pose(follower.getPose().getX(), follower.getPose().getY())
+                                )
+                        ).setLinearHeadingInterpolation(Math.toRadians(follower.getHeading()), heading)
+
+                        .build());
+            }
+        }
+                else {
+            follower.pausePathFollowing();
+            follower.setTeleOpDrive(
+                    -gamepad1.left_stick_y,
+                    -gamepad1.left_stick_x,
+                    -gamepad1.right_stick_x,
+                    false,
+                    Math.toRadians(90)
+            );
+        }
+            if (gamepad1.yWasPressed()){
+            if (robot.alliance == RED) {
+                robot.alliance = BLUE;
+            }
+            else if (robot.alliance == BLUE) {
+                robot.alliance = RED;
+            }
+
+        }
+}
 
 
 
