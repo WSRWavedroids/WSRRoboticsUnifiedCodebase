@@ -286,11 +286,11 @@ private boolean eat = false;
                 setCurrentStep(FIRE_1);
                 break;
             case FIRE_1:
-                /*if(robot.turret.rawSwivelController.withinTolerance)
+                if(robot.turret.positioned())
                 {
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_2);
-                }*/
+                }
                 break;
             case LINE_UP_2:
                 if (robot.queue.noBallsQueued) {
@@ -319,11 +319,11 @@ private boolean eat = false;
                 }
                 break;
             case FIRE_2:
-                /*if ((!follower.isBusy()) && robot.turret.rawSwivelController.withinTolerance) {
+                if ((!follower.isBusy()) && robot.turret.positioned()) {
 
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_3);
-                }*/
+                }
                 break;
             case LINE_UP_3:
                 if (robot.queue.noBallsQueued) {
@@ -347,10 +347,10 @@ private boolean eat = false;
                 }
                 break;
             case FIRE_3:
-                /*if ((!follower.isBusy()) && robot.turret.rawSwivelController.withinTolerance) {
+                if ((!follower.isBusy()) && robot.turret.positioned()) {
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_4);
-                }*/
+                }
                 break;
             case YOINK_4:
                 if(robot.queue.noBallsQueued)
@@ -371,11 +371,11 @@ private boolean eat = false;
                 }
                 break;
             case FIRE_4:
-                /*if(!follower.isBusy() && robot.turret.rawSwivelController.withinTolerance)
+                if(!follower.isBusy() && robot.turret.positioned())
                 {
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(UNPARK);
-                }*/
+                }
                 break;
             case UNPARK:
                 if(robot.queue.noBallsQueued)
