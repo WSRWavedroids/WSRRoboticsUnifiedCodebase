@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*
 import static org.firstinspires.ftc.teamcode.Core.Robot.OpenClosed.*;
 import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.*;
 
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -21,6 +22,9 @@ public class SorterHardware {
 
     private final Robot robot;
     public ezPID blenderPID;
+
+    //public altPID tryController;
+
     private LauncherHardware launcher;
     public DcMotorEx motor;
     public Servo flicky;
@@ -48,9 +52,9 @@ public class SorterHardware {
     private ElapsedTime pidfTime = new ElapsedTime();
 
     public static Double kneecap = 1.0;
-    public static double kp = 0.00045;
+    public static double kp = 0.000375;
     public static double ki = 0.0;
-    public static double kd = 0.00001;
+    public static double kd = 0.000005;
     public static double kf = 0.0;
     double lastError = 0;
     double integralSum = 0;

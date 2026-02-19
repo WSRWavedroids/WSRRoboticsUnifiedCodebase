@@ -79,7 +79,7 @@ public class LauncherHardware {
     public enum LauncherSteps {
         READY_FOR_COMMANDS,
         STALLING_UNTIL_SAFE, CHECK_IF_SAFE, WAIT_FOR_TIME_FOR_SAFE,
-        REV_MOTOR, STALL_WHILE_MOTOR_REVVING, FLICK, UNFLICK, LAUNCHING, RESET
+        REV_MOTOR, STALL_WHILE_MOTOR_REVVING, FLICK, UNFLICK, LAUNCHING
     }
     public enum LauncherMode {
         WAIT_FOREVER, WAIT_FOR_TIME, IF_SAFE_NOW
@@ -188,30 +188,12 @@ public class LauncherHardware {
                     activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
                 }
 
-                if (stopMotorAfter && cooldownTimer.seconds() >= launcherCooldownDuration && cooldownTimer.seconds() >= flickTime * 2) {
-                    nextStep(RESET);
+                if (stopMotorAfter && cooldownTimer.seconds() >= launcherCooldownDuration && cooldownTimer.seconds() >= flickTime * 1.5) {
+                    reset();
                 }
-                else if (/*robot.sorterHardware.flickyInPosition() ||*/ cooldownTimer.seconds() >= flickTime * 2) {
-                    nextStep(RESET);
+                else if (/*robot.sorterHardware.flickyInPosition() ||*/ cooldownTimer.seconds() >= flickTime * 1.5) {
+                    reset();
                 }
-                break;
-            case RESET:
-                // Stop the motor if requested
-                if (stopMotorAfter) setLauncherVelocity(0);
-
-                // Set the slot to empty now that we fired its contents
-                activeFiringSlot.setOccupied(EMPTY);
-
-                activeFiringSlot = robot.sorterLogic.noSlot;
-
-                // Update the booleans
-                lockControls = false;
-                activeFiring = false;
-                onCooldown = false;
-                firing = false;
-
-                // All done, ready for the next one
-                nextStep(READY_FOR_COMMANDS);
                 break;
         }
 
@@ -224,6 +206,26 @@ public class LauncherHardware {
         launcherPID.changeBehaviorValues(p, i, d, f, 1, toleranceRange);
         launcherPID.runCalledPID(velocityTarget);
         motor2.setPower(motor1.getPower());
+    }
+
+    private void reset() {
+        // Stop the motor if requested
+        if (stopMotorAfter) setLauncherVelocity(0);
+
+        // Set the slot to empty now that we fired its contents
+        activeFiringSlot.setOccupied(EMPTY);
+        activeFiringSlot.release();
+
+        activeFiringSlot = robot.sorterLogic.noSlot;
+
+        // Update the booleans
+        lockControls = false;
+        activeFiring = false;
+        onCooldown = false;
+        firing = false;
+
+        // All done, ready for the next one
+        nextStep(READY_FOR_COMMANDS);
     }
 
     public boolean doneFiring() {
