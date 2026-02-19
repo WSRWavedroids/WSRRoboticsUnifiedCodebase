@@ -213,7 +213,6 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                     robot.intake3.setPower(0.55);
                     robot.launchLeft.setPower(0.4);
                     robot.launchRight.setPower(0.4);
-                    follower.setMaxPower(0.25);
                     follower.followPath(runPath.Intake1);
                     nextStep(INTAKE1);
                 }
@@ -221,7 +220,6 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
 
             case INTAKE1:
                 if(!follower.isBusy()) {
-                    follower.setMaxPower(2);
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(-1);
                     robot.launchLeft.setPower(0);
@@ -256,7 +254,6 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                     robot.intake3.setPower(0.55);
                     robot.launchLeft.setPower(0.4);
                     robot.launchRight.setPower(0.4);
-                    follower.setMaxPower(.25);
                     follower.followPath(runPath.Intake2);
                     nextStep(INTAKE2);
                 }
@@ -265,7 +262,6 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
 
             case INTAKE2:
                 if(!follower.isBusy()) {
-                    follower.setMaxPower(2);
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(-1);
                     robot.launchLeft.setPower(0);
@@ -300,7 +296,6 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                     robot.intake3.setPower(0.55);
                     robot.launchLeft.setPower(0.4);
                     robot.launchRight.setPower(0.4);
-                    follower.setMaxPower(.25);
                     follower.followPath(runPath.Intake3);
                     nextStep(INTAKE3);
                 }
@@ -308,7 +303,6 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
 
             case INTAKE3:
                 if(!follower.isBusy()) {
-                    follower.setMaxPower(2);
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(-1);
                     robot.launchLeft.setPower(0);

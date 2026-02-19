@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
 import static org.firstinspires.ftc.teamcode.Teleop.Basic_TeleOp_NewBot.AutoLaunchSteps.*;
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,6 +15,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+
 import kotlin.reflect.KFunction;
 
 /**
@@ -78,6 +82,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
             imu.initialize(parameters);
         }
         //if using field centric youl need this lolzeez
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose(55, 9.275, Math.toRadians(90)));
+        follower.update();
     }
 
 
@@ -108,6 +115,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         gamepad2.setLedColor(255, 0, 240, 100000000);
         robot.initLimelight();
         robot.tuningspd = 0.43;
+        follower.update();
+        follower.startTeleOpDrive();
     }
 
 
