@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import static org.firstinspires.ftc.teamcode.Robot.allianceSides.BLUE;
+import static org.firstinspires.ftc.teamcode.Robot.allianceSides.RED;
+import static org.firstinspires.ftc.teamcode.Robot.driveMode.AUTOLAUNCHSPOT;
+import static org.firstinspires.ftc.teamcode.Robot.driveMode.FIELDCENTRIC;
+import static org.firstinspires.ftc.teamcode.Robot.driveMode.ROBOTCENTRIC;
 import static org.firstinspires.ftc.teamcode.Teleop.Basic_TeleOp_NewBot.AutoLaunchSteps.*;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
@@ -131,7 +136,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     public void loop() {
-
+        follower.update();
         singleJoystickDrive();
         //So Begins the input chain. At least try a bit to organise by driver
 
@@ -227,58 +232,80 @@ public class Basic_TeleOp_NewBot extends OpMode {
         }*/
     //auto locking and field centric
     private void fieldCentric() {
-            follower.update();
         double multiplier = 1;
         double x = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
         double y = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
         double heading;
+        if (gamepad1.y) {
+            robot.driveMode = AUTOLAUNCHSPOT;
 
-                if (gamepad1.x) {
-            follower.resumePathFollowing();
-            if (robot.alliance == RED) {
-                heading = Math.atan2(144 - y, 144 - x);
-                follower.holdPoint(new BezierPoint(new Pose(x, y)), heading);
-                follower.followPath(follower.pathBuilder().addPath(
-                                new BezierLine(
-                                        new Pose(follower.getPose().getX(), follower.getPose().getY()),
-
-                                        new Pose(follower.getPose().getX(), follower.getPose().getY())
-                                )
-                        ).setLinearHeadingInterpolation(Math.toRadians(follower.getHeading()), heading)
-
-                        .build());
-            }
-            if (robot.alliance == BLUE) {
-                heading = Math.atan2(144 - y, 0 - x);
-                follower.followPath(follower.pathBuilder().addPath(
-                                new BezierLine(
-                                        new Pose(follower.getPose().getX(), follower.getPose().getY()),
-
-                                        new Pose(follower.getPose().getX(), follower.getPose().getY())
-                                )
-                        ).setLinearHeadingInterpolation(Math.toRadians(follower.getHeading()), heading)
-
-                        .build());
-            }
         }
-                else {
-            follower.pausePathFollowing();
-            follower.setTeleOpDrive(
-                    -gamepad1.left_stick_y,
-                    -gamepad1.left_stick_x,
-                    -gamepad1.right_stick_x,
-                    false,
-                    Math.toRadians(90)
-            );
-        }
-            if (gamepad1.yWasPressed()){
-            if (robot.alliance == RED) {
-                robot.alliance = BLUE;
-            }
-            else if (robot.alliance == BLUE) {
-                robot.alliance = RED;
-            }
+        else {
 
+            //todo add double to save drivemode to return when Y is released
+        }
+        if (gamepad1.xWasPressed() & !gamepad1.y) {
+                if (robot.driveMode == FIELDCENTRIC) {
+                    robot.driveMode = ROBOTCENTRIC;
+                } else if (robot.driveMode == ROBOTCENTRIC) {
+                    robot.driveMode = FIELDCENTRIC;
+                }
+        }
+        switch (robot.driveMode) {
+            case FIELDCENTRIC:
+                    follower.setTeleOpDrive(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x,
+                            false,
+                            Math.toRadians(90)
+                    );
+                if (gamepad1.yWasPressed()) {
+                    if (robot.alliance == RED) {
+                        robot.alliance = BLUE;
+                    } else if (robot.alliance == BLUE) {
+                        robot.alliance = RED;
+                    }
+
+                }
+            break;
+
+            case ROBOTCENTRIC:
+                    follower.setTeleOpDrive(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x,
+                            true,
+                            Math.toRadians(90)
+                    );
+                break;
+            case AUTOLAUNCHSPOT:
+                    if (robot.alliance == RED) {
+                        heading = Math.atan2(144 - y, 144 - x);
+                        follower.holdPoint(new BezierPoint(new Pose(x, y)), heading);
+                        follower.followPath(follower.pathBuilder().addPath(
+                                        new BezierLine(
+                                                new Pose(follower.getPose().getX(), follower.getPose().getY()),
+
+                                                new Pose(follower.getPose().getX(), follower.getPose().getY())
+                                        )
+                                ).setLinearHeadingInterpolation(Math.toRadians(follower.getHeading()), heading)
+
+                                .build());
+                    }
+                    if (robot.alliance == BLUE) {
+                        heading = Math.atan2(144 - y, 0 - x);
+                        follower.followPath(follower.pathBuilder().addPath(
+                                        new BezierLine(
+                                                new Pose(follower.getPose().getX(), follower.getPose().getY()),
+
+                                                new Pose(follower.getPose().getX(), follower.getPose().getY())
+                                        )
+                                ).setLinearHeadingInterpolation(Math.toRadians(follower.getHeading()), heading)
+
+                                .build());
+                    }
+                break;
         }
 }
 

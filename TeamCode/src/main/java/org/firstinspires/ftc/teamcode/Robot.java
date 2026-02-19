@@ -367,6 +367,18 @@ public boolean doneLaunching = false;
             }
         }
 
+    public enum allianceSides {
+        BLUE,
+        RED
+    }
+    public allianceSides alliance;
+
+    public enum driveMode {
+        FIELDCENTRIC,
+        ROBOTCENTRIC,
+        AUTOLAUNCHSPOT
+    }
+    public driveMode driveMode;
 
     ElapsedTime timer = new ElapsedTime();
 
