@@ -24,7 +24,7 @@ public class Constants {
             // MORE PEDRO ???
             .useSecondaryTranslationalPIDF(true)
             .useSecondaryHeadingPIDF(true)
-            .useSecondaryDrivePIDF(true)
+            .useSecondaryDrivePIDF(false)
 
             .translationalPIDFCoefficients(new PIDFCoefficients(0.015, 0.1, 0.009, 0.02))
             .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.075,0.0001,0.001, 0.02))
@@ -32,7 +32,7 @@ public class Constants {
             .headingPIDFCoefficients(new PIDFCoefficients(0.9, 0, 0, 0.02))
             .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(0.9, 0.075, 0, 0.02))
 
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.01, 0.001, 0.001, 0.5, 0.02))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.003, 0, 0, 0.5, 0.02))
             .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.0, 0, 0, 0, 0.02))
 
             .centripetalScaling(0.5)

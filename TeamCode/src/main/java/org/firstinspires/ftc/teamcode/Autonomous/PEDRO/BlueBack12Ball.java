@@ -199,10 +199,9 @@ public class BlueBack12Ball extends OpMode {
                     .build();
 
             MoveToFireThird = follower.pathBuilder().addPath(
-                            new BezierCurve(
+                            new BezierLine(
                                     new Pose(9.747, 57.576),
-                                    new Pose(45.709, 62.047),
-                                    new Pose(52.000, 86.000)
+                                    new Pose(56.500, 12.000)
                             )
                     ).setConstantHeadingInterpolation(Math.toRadians(180))
 
@@ -230,11 +229,11 @@ public class BlueBack12Ball extends OpMode {
 
             UnparkWithRizz = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(52.000, 86.000),
+                                    new Pose(56.500, 12.000),
 
-                                    new Pose(23.506, 71.788)
+                                    new Pose(30.000, 12.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(270))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
         }
@@ -254,13 +253,13 @@ public class BlueBack12Ball extends OpMode {
 
 
     private Steps currentStep = START; // Current autonomous path state (state machine)
-private boolean eat = false;
+    private boolean eat = false;
     public int autonomousPathUpdate() {
         // Add your state machine Here
         // Access paths with paths.pathName
         // Refer to the Pedro Pathing Docs (Auto Example) for an example state machine
 
-        emergencyFinishIfNeeded();
+        //emergencyFinishIfNeeded();
 
         if(eat && robot.sorterLogic.inventory.getTotalCount()<3)
         {
@@ -275,18 +274,17 @@ private boolean eat = false;
             case START:
                 follower.setMaxPower(1);
                 robot.randomizationScanner.InitLimeLight(0);
-                robot.pattern = robot.randomizationScanner.GetRandomization();//One last Check
+
                 robot.targetScanner.InitLimeLightTargeting(robot.alliance.limelightPipeline, robot);
                 robot.scanningForTargetTag = true;
                 TurretLogic.activeMode = TurretLogic.controlMode.FULL;
                 robot.sorterLogic.sortOutBlobs(GREEN, LOAD);
                 robot.sorterLogic.sortOutBlobs(PURPLE, FIRE);
                 robot.sorterLogic.sortOutBlobs(PURPLE, STORE);
-                robot.updateAllDaThings();
                 setCurrentStep(FIRE_1);
                 break;
             case FIRE_1:
-                if(robot.turret.positioned())
+                if(robot.turret.positioned() && robot.sorterHardware.positionedCheck())
                 {
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_2);
@@ -307,20 +305,17 @@ private boolean eat = false;
                     setCurrentStep(MOVE_TO_FIRE_2);
                 }
                 break;
-
             case MOVE_TO_FIRE_2:
-
                 if (!follower.isBusy()) {
-                    eat = false;
+
                     follower.setMaxPower(1);
                     follower.followPath(paths.MoveToFireSecond);
-                    robot.runBasicIntake(0);
                     setCurrentStep(FIRE_2);
                 }
                 break;
             case FIRE_2:
                 if ((!follower.isBusy()) && robot.turret.positioned()) {
-
+                    eat = false;
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_3);
                 }
@@ -340,7 +335,6 @@ private boolean eat = false;
                 }
             case MOVE_TO_FIRE_3:
                 if (!follower.isBusy()) {
-                    eat = false;
                     follower.setMaxPower(1);
                     follower.followPath(paths.MoveToFireThird);
                     setCurrentStep(FIRE_3);
@@ -348,8 +342,9 @@ private boolean eat = false;
                 break;
             case FIRE_3:
                 if ((!follower.isBusy()) && robot.turret.positioned()) {
+                    eat = false;
                     robot.queue.addPattern(robot.pattern);
-                    setCurrentStep(LINE_UP_4);
+                    setCurrentStep(UNPARK);
                 }
                 break;
             case YOINK_4:

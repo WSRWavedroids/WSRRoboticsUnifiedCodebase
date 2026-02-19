@@ -145,6 +145,9 @@ public class fireQueueWithStates {
                 slotQueue.add(targetSlot);
             }
         }
+        else if (hardwareState == READY && slotQueue.isEmpty()) {
+            noBallsQueued = true;
+        }
 
         switch (hardwareState) {
             case READY:
