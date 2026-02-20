@@ -192,6 +192,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         telemetry.addData("Launch I", robot.launcherI);
         telemetry.addData("Launch D", robot.launcherD);
         telemetry.addData("Launch F", robot.launcherF);
+        telemetry.addData("Drive Mode", robot.driveMode);
 
         Robot.panelsTelemetry.addData("velocityRight", -robot.launchRight.getVelocity());
         Robot.panelsTelemetry.addData("velocityLeft", -robot.launchLeft.getVelocity());
