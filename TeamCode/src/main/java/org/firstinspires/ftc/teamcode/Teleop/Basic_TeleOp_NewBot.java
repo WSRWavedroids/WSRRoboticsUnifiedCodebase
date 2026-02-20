@@ -69,6 +69,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
     public boolean canManuallyControlVerticalSlides = true;
     ElapsedTime outtakeTimer = new ElapsedTime();
     public Follower follower;
+    double heading;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -96,6 +97,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
         follower.setStartingPose(new Pose(55, 9.275, Math.toRadians(90)));
         follower.update();
     }
+
+
+
 
 
 
@@ -153,7 +157,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         //intakes and launcher
         robot.setupLaunchers();
         intakeservoforward();
-        launch(0.05, robot.tuningspd);
+        robot.triggerDeadzone = 0.05;
+        launch(robot.tuningspd);
 
 
 
@@ -202,6 +207,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         telemetry.addData("Launch D", robot.launcherD);
         telemetry.addData("Launch F", robot.launcherF);
         telemetry.addData("Drive Mode", robot.driveMode);
+        telemetry.addData("heading", heading);
 
         Robot.panelsTelemetry.addData("velocityRight", -robot.launchRight.getVelocity());
         Robot.panelsTelemetry.addData("velocityLeft", -robot.launchLeft.getVelocity());
@@ -287,7 +293,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         double multiplier = 1;
         double x = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
         double y = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
-        double heading;
+
 
 
 
@@ -371,35 +377,35 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 follower.holdPoint(new BezierPoint(follower.getPose()), follower.getHeading());
                 break;
             case FARLAUNCH:
-                if (robot.alliance == RED) {
-
+                /*if (robot.alliance == RED) {
+                    follower.followPath(goTo());
                 }
                 if (robot.alliance == BLUE) {
-
-                }
+                    follower.followPath(goTo());
+                }*/
                 break;
             case CLOSELAUNCH:
-                if (robot.alliance == RED) {
-
+                /*if (robot.alliance == RED) {
+                    follower.followPath(goTo());
                 }
                 if (robot.alliance == BLUE) {
-
-                }
+                    follower.followPath(goTo());
+                }*/
                 break;
             case LEVER:
                 if (robot.alliance == RED) {
-
+                    follower.followPath(goTo(12, 59, 320));
                 }
                 if (robot.alliance == BLUE) {
-
+                    follower.followPath(goTo(132, 59, 220));
                 }
                 break;
             case PARK:
                 if (robot.alliance == RED) {
-
+                    follower.followPath(goTo(38.5, 31, 180));
                 }
                 if (robot.alliance == BLUE) {
-
+                    follower.followPath(goTo(105.5,31 ,0));
                 }
                 break;
         }
@@ -613,9 +619,6 @@ private PathChain goTo(double locationX, double locationY , double heading) {
 
 
     private void setLaunchPower(double input, double velocity) {;
-        //robot.launchSpeed = input - robot.triggerDeadzone;
-        //robot.launchSpeed = robot.launchSpeed + robot.triggerDeadzone * input;
-        //robot.launchSpeed = robot.launchSpeed * robot.launchTune;
         robot.launchLeft.setVelocity(-velocity);
         robot.launchRight.setVelocity(-velocity);
         if (gamepad2.right_stick_button) {
@@ -640,13 +643,12 @@ private PathChain goTo(double locationX, double locationY , double heading) {
             return (gamepad1.right_trigger > robot.triggerDeadzone);
         }
 
-    private void launch(double deadzone, double pwrtuning){
-        robot.triggerDeadzone = deadzone;
-        if (gamepad2.right_trigger > robot.triggerDeadzone || gamepad2.right_bumper) {
+    private void launch(double pwrtuning){
+        if (rightTrigger2Down() || gamepad2.right_bumper) {
             robot.launchTune = robot.limelightAdjustedSpeed;
             setLaunchPower(gamepad2.right_trigger, robot.limelightAdjustedSpeed);
             currentStep = INPUT;
-        } else if (gamepad2.left_trigger > robot.triggerDeadzone) {
+        } else if (leftTrigger2Down()) {
             robot.launchTune = pwrtuning * 2000;
             setLaunchPower(gamepad2.left_trigger, pwrtuning * 2000);
             currentStep = INPUT;
