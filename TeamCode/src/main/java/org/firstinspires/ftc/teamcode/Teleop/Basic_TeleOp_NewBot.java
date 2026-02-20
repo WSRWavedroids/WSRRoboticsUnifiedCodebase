@@ -3,16 +3,21 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 import static org.firstinspires.ftc.teamcode.Robot.allianceSides.BLUE;
 import static org.firstinspires.ftc.teamcode.Robot.allianceSides.RED;
-import static org.firstinspires.ftc.teamcode.Robot.driveMode.AUTOLAUNCHSPOT;
+import static org.firstinspires.ftc.teamcode.Robot.driveMode.AUTOTARGET;
+import static org.firstinspires.ftc.teamcode.Robot.driveMode.CLOSELAUNCH;
+import static org.firstinspires.ftc.teamcode.Robot.driveMode.FARLAUNCH;
 import static org.firstinspires.ftc.teamcode.Robot.driveMode.FIELDCENTRIC;
+import static org.firstinspires.ftc.teamcode.Robot.driveMode.HOLDPOINT;
+import static org.firstinspires.ftc.teamcode.Robot.driveMode.LEVER;
+import static org.firstinspires.ftc.teamcode.Robot.driveMode.PARK;
 import static org.firstinspires.ftc.teamcode.Robot.driveMode.ROBOTCENTRIC;
 import static org.firstinspires.ftc.teamcode.Teleop.Basic_TeleOp_NewBot.AutoLaunchSteps.*;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
-import com.bylazar.telemetry.PanelsTelemetry;
+import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.BezierPoint;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -20,12 +25,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-
-import kotlin.reflect.KFunction;
 
 /**
  * This file is our iterative (Non-Linear) "OpMode" for TeleOp.
@@ -66,7 +68,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
     public static final String PATTERN_KEY = "Pattern";
     public boolean canManuallyControlVerticalSlides = true;
     ElapsedTime outtakeTimer = new ElapsedTime();
-
+    public Follower follower;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -140,6 +142,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
     public void loop() {
         follower.update();
         driveMode();
+
         //So Begins the input chain. At least try a bit to organise by driver
 
         //Driver 2
@@ -240,21 +243,40 @@ public class Basic_TeleOp_NewBot extends OpMode {
     //auto locking and field centric
 
     private void switchdrivemode (Robot.driveMode mode){
-        if (mode == ROBOTCENTRIC) {
-            robot.driveMode = ROBOTCENTRIC;
-            follower.breakFollowing();
-            robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
-            robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
-            robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
-            robot.backRightDrive.setZeroPowerBehavior(BRAKE);
-        }
-        if (mode == FIELDCENTRIC) {
-            robot.driveMode = FIELDCENTRIC;
-            follower.startTeleOpDrive();
-        }
-        if (mode == AUTOLAUNCHSPOT){
-            robot.driveMode = AUTOLAUNCHSPOT;
-            follower.startTeleOpDrive();
+        switch(mode){
+            case ROBOTCENTRIC:
+                robot.driveMode = ROBOTCENTRIC;
+                follower.breakFollowing();
+                robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
+                robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
+                robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
+                robot.backRightDrive.setZeroPowerBehavior(BRAKE);
+                break;
+
+            case FIELDCENTRIC:
+                robot.driveMode = FIELDCENTRIC;
+                follower.startTeleOpDrive();
+                break;
+
+            case AUTOTARGET:
+                robot.driveMode = AUTOTARGET;
+                follower.startTeleOpDrive();
+                break;
+
+            case HOLDPOINT:
+                break;
+
+            case FARLAUNCH:
+                break;
+
+            case CLOSELAUNCH:
+                break;
+
+            case LEVER:
+                break;
+
+            case PARK:
+                break;
         }
     }
 
@@ -269,9 +291,26 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
 
-        //go to launch zone
-        if (gamepad1.y) switchdrivemode(AUTOLAUNCHSPOT);
+        //extra button functions
+        if (gamepad1.y) switchdrivemode(AUTOTARGET);
         else if (gamepad1.yWasReleased()) switchdrivemode(drivemodeSave);
+
+        if (gamepad1.a) switchdrivemode(HOLDPOINT);
+        else if (gamepad1.aWasReleased()) switchdrivemode(drivemodeSave);
+
+       if (leftTrigger1Down()) switchdrivemode(FARLAUNCH);
+       else if (gamepad1.leftTriggerWasReleased()) switchdrivemode(drivemodeSave);
+
+        if (rightTrigger1Down()) switchdrivemode(CLOSELAUNCH);
+        else if (gamepad1.rightTriggerWasReleased()) switchdrivemode(drivemodeSave);
+
+        if (gamepad1.left_bumper) switchdrivemode(LEVER);
+        else if (gamepad1.leftBumperWasReleased()) switchdrivemode(drivemodeSave);
+
+        if (gamepad1.right_bumper) switchdrivemode(PARK);
+        else if (gamepad1.rightBumperWasReleased()) switchdrivemode(drivemodeSave);
+
+
 
 
 
@@ -304,7 +343,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             case ROBOTCENTRIC:
                 singleJoystickDrive();
                 break;
-            case AUTOLAUNCHSPOT:
+            case AUTOTARGET:
                 if (gamepad1.bWasPressed()) {
                     if (robot.alliance == RED) {
                         robot.alliance = BLUE;
@@ -321,34 +360,58 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 if (robot.alliance == RED) {
                     heading = Math.atan2(144 - y, 144 - x);
                     follower.holdPoint(new BezierPoint(new Pose(x, y)), heading);
-                    follower.followPath(follower.pathBuilder().addPath(
-                                    new BezierLine(
-                                            new Pose(follower.getPose().getX(), follower.getPose().getY()),
-
-                                            new Pose(follower.getPose().getX(), follower.getPose().getY())
-                                    )
-                            ).setLinearHeadingInterpolation(Math.toRadians(follower.getHeading()), heading)
-
-                            .build());
+                    follower.followPath(goTo(follower.getPose().getX(), follower.getPose().getY(), heading));
                 }
                 if (robot.alliance == BLUE) {
                     heading = Math.atan2(144 - y, 0 - x);
-                    follower.followPath(follower.pathBuilder().addPath(
-                                    new BezierLine(
-                                            new Pose(follower.getPose().getX(), follower.getPose().getY()),
-
-                                            new Pose(follower.getPose().getX(), follower.getPose().getY())
-                                    )
-                            ).setLinearHeadingInterpolation(Math.toRadians(follower.getHeading()), heading)
-
-                            .build());
+                    follower.followPath(goTo(follower.getPose().getX(), follower.getPose().getY(), heading));
                 }
                 break;
+            case HOLDPOINT:
+                follower.holdPoint(new BezierPoint(follower.getPose()), follower.getHeading());
+                break;
+            case FARLAUNCH:
+                if (robot.alliance == RED) {
 
+                }
+                if (robot.alliance == BLUE) {
+
+                }
+                break;
+            case CLOSELAUNCH:
+                if (robot.alliance == RED) {
+
+                }
+                if (robot.alliance == BLUE) {
+
+                }
+                break;
+            case LEVER:
+                if (robot.alliance == RED) {
+
+                }
+                if (robot.alliance == BLUE) {
+
+                }
+                break;
+            case PARK:
+                if (robot.alliance == RED) {
+
+                }
+                if (robot.alliance == BLUE) {
+
+                }
+                break;
         }
 }
 
-
+private PathChain goTo(double locationX, double locationY , double heading) {
+    Pose pose = new Pose(locationX, locationY, heading);
+        return follower.pathBuilder()
+                .addPath(new BezierLine(follower.getPose(), pose))
+                .setLinearHeadingInterpolation(follower.getHeading(), Math.toRadians(heading))
+                .build();
+    }
 
 
 
@@ -563,6 +626,19 @@ public class Basic_TeleOp_NewBot extends OpMode {
     }
 
 
+
+        boolean leftTrigger2Down() {
+            return (gamepad2.left_trigger > robot.triggerDeadzone);
+        }
+        boolean leftTrigger1Down() {
+            return (gamepad1.left_trigger > robot.triggerDeadzone);
+        }
+        boolean rightTrigger2Down() {
+            return (gamepad2.right_trigger > robot.triggerDeadzone);
+        }
+        boolean rightTrigger1Down() {
+            return (gamepad1.right_trigger > robot.triggerDeadzone);
+        }
 
     private void launch(double deadzone, double pwrtuning){
         robot.triggerDeadzone = deadzone;
