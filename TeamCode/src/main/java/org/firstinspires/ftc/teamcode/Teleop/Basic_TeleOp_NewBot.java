@@ -231,26 +231,43 @@ public class Basic_TeleOp_NewBot extends OpMode {
                     );
         }*/
     //auto locking and field centric
+
+    private void switchdrivemode (double mode){
+        if (mode == 0){ robot.driveMode = ROBOTCENTRIC;         }
+        if (mode == 1){ robot.driveMode = FIELDCENTRIC;         }
+        if (mode == 2){ robot.driveMode = AUTOLAUNCHSPOT;       }
+    }
+    //todo this is robot movement modes - update accordingly
+
     private void fieldCentric() {
         double multiplier = 1;
         double x = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
         double y = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
         double heading;
-        if (gamepad1.y) {
-            robot.driveMode = AUTOLAUNCHSPOT;
+        double drivemodeSave =1;
 
-        }
-        else {
+        //go to launch zone
+        if (gamepad1.y) { switchdrivemode(2);  }
+        else { switchdrivemode(drivemodeSave);  }
 
-            //todo add double to save drivemode to return when Y is released
-        }
+
+        //toggle between centric modes
         if (gamepad1.xWasPressed() & !gamepad1.y) {
-                if (robot.driveMode == FIELDCENTRIC) {
-                    robot.driveMode = ROBOTCENTRIC;
-                } else if (robot.driveMode == ROBOTCENTRIC) {
-                    robot.driveMode = FIELDCENTRIC;
-                }
-        }
+            drivemodeSave = 1 - drivemodeSave;
+            switchdrivemode(drivemodeSave);  }
+
+            //OLD VERSION BELOW
+
+        //if (gamepad1.xWasPressed() & !gamepad1.y) {
+            //if (robot.driveMode == FIELDCENTRIC) {
+                //robot.driveMode = ROBOTCENTRIC;
+                //drivemodeSave = 0;  }
+            //else if (robot.driveMode == ROBOTCENTRIC) {
+                //robot.driveMode = FIELDCENTRIC;
+               // drivemodeSave = 1;  }  }
+
+
+
         switch (robot.driveMode) {
             case FIELDCENTRIC:
                     follower.setTeleOpDrive(
@@ -258,17 +275,15 @@ public class Basic_TeleOp_NewBot extends OpMode {
                             -gamepad1.left_stick_x,
                             -gamepad1.right_stick_x,
                             false,
-                            Math.toRadians(90)
-                    );
+                            Math.toRadians(90) );
+
                 if (gamepad1.yWasPressed()) {
                     if (robot.alliance == RED) {
                         robot.alliance = BLUE;
                     } else if (robot.alliance == BLUE) {
-                        robot.alliance = RED;
-                    }
-
+                        robot.alliance = RED;  }
                 }
-            break;
+                break;
 
             case ROBOTCENTRIC:
                     follower.setTeleOpDrive(
@@ -276,9 +291,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
                             -gamepad1.left_stick_x,
                             -gamepad1.right_stick_x,
                             true,
-                            Math.toRadians(90)
-                    );
+                            Math.toRadians(90) );
                 break;
+
             case AUTOLAUNCHSPOT:
                     if (robot.alliance == RED) {
                         heading = Math.atan2(144 - y, 144 - x);
