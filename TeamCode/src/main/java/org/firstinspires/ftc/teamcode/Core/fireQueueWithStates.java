@@ -143,6 +143,7 @@ public class fireQueueWithStates {
             else {
                 targetSlot.claim();
                 slotQueue.add(targetSlot);
+                ballQueue.remove(0);
             }
         }
         else if (hardwareState == READY && slotQueue.isEmpty()) {
