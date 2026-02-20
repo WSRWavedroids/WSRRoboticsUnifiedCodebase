@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 import static org.firstinspires.ftc.teamcode.Robot.allianceSides.BLUE;
 import static org.firstinspires.ftc.teamcode.Robot.allianceSides.RED;
 import static org.firstinspires.ftc.teamcode.Robot.driveMode.AUTOLAUNCHSPOT;
@@ -123,7 +124,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.initLimelight();
         robot.tuningspd = 0.43;
         follower.update();
-        follower.startTeleOpDrive();
+        robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
+        robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
+        robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
+        robot.backRightDrive.setZeroPowerBehavior(BRAKE);
     }
 
 
@@ -137,27 +141,31 @@ public class Basic_TeleOp_NewBot extends OpMode {
      */
     public void loop() {
         follower.update();
-        singleJoystickDrive();
+        driveMode();
         //So Begins the input chain. At least try a bit to organise by driver
 
         //Driver 2
 
-        controlMode();
+        //controlMode();
         driveSpeed();
 
-
-
-
-//intakes and launcher
+        //intakes and launcher
         robot.setupLaunchers();
+        intakeservoforward();
+        launch(0.05, robot.tuningspd);
 
 
 
+
+
+        //todo THIS is what NON-PROGRAMMERS can edit (intake speeds)
+        //note that the speeds are a decimal between -1 and 1
+        //note negative speeds(-1) are reverse, positive(1) are forward, 0 is neutral/off
 
         intake1(1 ,1 ,1);
-        intakeservoforward();
         intake3(1 ,1 ,1);
-        launch(0.05, robot.tuningspd);
+
+        //todo ONLY the stuff BETWEEN the green "TODO" lines are open to everyone
 
 
 
@@ -224,78 +232,93 @@ public class Basic_TeleOp_NewBot extends OpMode {
         }
         if (robot.alliance == BLUE) {
             follower.setTeleOpDrive(
-                    gamepad1.left_stick_y,
-                    gamepad1.left_stick_x,
-                    gamepad1.right_stick_x,
+                    -gamepad1.left_stick_y,
+                    -gamepad1.left_stick_x,
+                    -gamepad1.right_stick_x,
                     false,
                     Math.toRadians(180)
                     );
         }*/
     //auto locking and field centric
 
-    private void switchdrivemode (double mode){
-        if (mode == 0){ robot.driveMode = ROBOTCENTRIC;         }
-        if (mode == 1){ robot.driveMode = FIELDCENTRIC;         }
-        if (mode == 2){ robot.driveMode = AUTOLAUNCHSPOT;       }
+    private void switchdrivemode (Robot.driveMode mode){
+        if (mode == ROBOTCENTRIC) {
+            robot.driveMode = ROBOTCENTRIC;
+            follower.breakFollowing();
+        }
+        if (mode == FIELDCENTRIC)
+            robot.driveMode = FIELDCENTRIC;
+            follower.startTeleOpDrive();
+        if (mode == AUTOLAUNCHSPOT){
+            robot.driveMode = AUTOLAUNCHSPOT;
+            follower.startTeleOpDrive();
+        }
     }
     //todo this is robot movement modes - update accordingly
-
-    private void fieldCentric() {
+    Robot.driveMode drivemodeSave = ROBOTCENTRIC;
+    private void driveMode() {
         double multiplier = 1;
         double x = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
         double y = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
         double heading;
-        double drivemodeSave =1;
+
+
 
         //go to launch zone
-        if (gamepad1.y) { switchdrivemode(2);  }
-        else { switchdrivemode(drivemodeSave);  }
+        if (gamepad1.y) switchdrivemode(AUTOLAUNCHSPOT);
+        else switchdrivemode(drivemodeSave);
+
 
 
         //toggle between centric modes
         if (gamepad1.xWasPressed() & !gamepad1.y) {
-            drivemodeSave = 1 - drivemodeSave;
-            switchdrivemode(drivemodeSave);  }
+            switch(drivemodeSave) {
+                case ROBOTCENTRIC:
+                    drivemodeSave = FIELDCENTRIC;
+                    break;
+                case FIELDCENTRIC:
+                    drivemodeSave = ROBOTCENTRIC;
+                    break;
+            }
+            switchdrivemode(drivemodeSave);
+        }
 
-            //OLD VERSION BELOW
 
-        //if (gamepad1.xWasPressed() & !gamepad1.y) {
-            //if (robot.driveMode == FIELDCENTRIC) {
-                //robot.driveMode = ROBOTCENTRIC;
-                //drivemodeSave = 0;  }
-            //else if (robot.driveMode == ROBOTCENTRIC) {
-                //robot.driveMode = FIELDCENTRIC;
-               // drivemodeSave = 1;  }  }
 
 
 
         switch (robot.driveMode) {
             case FIELDCENTRIC:
+                if (robot.driveMode == FIELDCENTRIC) {
                     follower.setTeleOpDrive(
                             -gamepad1.left_stick_y,
                             -gamepad1.left_stick_x,
                             -gamepad1.right_stick_x,
                             false,
-                            Math.toRadians(90) );
+                            Math.toRadians(90));
 
-                if (gamepad1.yWasPressed()) {
-                    if (robot.alliance == RED) {
-                        robot.alliance = BLUE;
-                    } else if (robot.alliance == BLUE) {
-                        robot.alliance = RED;  }
                 }
-                break;
 
             case ROBOTCENTRIC:
+                follower.breakFollowing();
+                singleJoystickDrive();
+
+            case AUTOLAUNCHSPOT:
+                if (robot.driveMode == AUTOLAUNCHSPOT) {
+                    if (gamepad1.bWasPressed()) {
+                        if (robot.alliance == RED) {
+                            robot.alliance = BLUE;
+                        } else if (robot.alliance == BLUE) {
+                            robot.alliance = RED;
+                        }
+                    }
+                    follower.startTeleOpDrive();
                     follower.setTeleOpDrive(
                             -gamepad1.left_stick_y,
                             -gamepad1.left_stick_x,
                             -gamepad1.right_stick_x,
-                            true,
-                            Math.toRadians(90) );
-                break;
-
-            case AUTOLAUNCHSPOT:
+                            false,
+                            Math.toRadians(90));
                     if (robot.alliance == RED) {
                         heading = Math.atan2(144 - y, 144 - x);
                         follower.holdPoint(new BezierPoint(new Pose(x, y)), heading);
@@ -321,7 +344,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
                                 .build());
                     }
-                break;
+                }
+
         }
 }
 

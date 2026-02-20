@@ -374,9 +374,13 @@ public boolean doneLaunching = false;
     public allianceSides alliance;
 
     public enum driveMode {
-        FIELDCENTRIC,
-        ROBOTCENTRIC,
-        AUTOLAUNCHSPOT
+        FIELDCENTRIC(1),
+        ROBOTCENTRIC(0),
+        AUTOLAUNCHSPOT(2);
+        driveMode(int id) {
+            ID = id;
+        }
+        public final int ID;
     }
     public driveMode driveMode;
 
