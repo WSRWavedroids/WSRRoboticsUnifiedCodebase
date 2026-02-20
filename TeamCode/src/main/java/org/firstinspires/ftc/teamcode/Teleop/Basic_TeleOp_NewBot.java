@@ -502,7 +502,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
     private void autolaunch(){
         if (gamepad2.right_bumper) {
             robot.setupLaunchers();
-            if (robot.upToSpeed(80)){
+            if (robot.upToSpeed(60)){
                 robot.intake2.setPower(-1);
                 robot.intake3.setPower(1);
                 robot.intakeMotor.setPower(1);
@@ -633,7 +633,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
     private void override() {
-        if (gamepad2.right_trigger == 1 & gamepad2.left_trigger == 1 & gamepad2.right_stick_button) {
+        if (gamepad2.right_trigger > 0.5 & gamepad2.left_trigger > 0.5 & gamepad2.right_stick_button) {
             robot.launchRight.setVelocity(-6000);
             robot.launchLeft.setVelocity(-6000);
             telemetry.addLine("! CAUTION, LAUNCH OVERRIDE ACTIVE !");
