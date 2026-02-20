@@ -246,14 +246,17 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.driveMode = ROBOTCENTRIC;
             follower.breakFollowing();
         }
-        if (mode == FIELDCENTRIC)
+        if (mode == FIELDCENTRIC) {
             robot.driveMode = FIELDCENTRIC;
             follower.startTeleOpDrive();
+        }
         if (mode == AUTOLAUNCHSPOT){
             robot.driveMode = AUTOLAUNCHSPOT;
             follower.startTeleOpDrive();
         }
     }
+
+
     //todo this is robot movement modes - update accordingly
     Robot.driveMode drivemodeSave = ROBOTCENTRIC;
     private void driveMode() {
@@ -300,7 +303,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 }
 
             case ROBOTCENTRIC:
-                follower.breakFollowing();
                 singleJoystickDrive();
 
             case AUTOLAUNCHSPOT:
@@ -312,7 +314,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
                             robot.alliance = RED;
                         }
                     }
-                    follower.startTeleOpDrive();
                     follower.setTeleOpDrive(
                             -gamepad1.left_stick_y,
                             -gamepad1.left_stick_x,
