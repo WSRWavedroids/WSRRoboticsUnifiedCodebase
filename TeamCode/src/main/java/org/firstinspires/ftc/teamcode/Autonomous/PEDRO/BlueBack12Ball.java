@@ -23,6 +23,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Autonomous.AutonomousPlusPLUS;
+import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -114,8 +115,9 @@ public class BlueBack12Ball extends OpMode {
         opmodeTimer.resetTimer();
         telemetry.addData("HYPE", "Let's do this!!!");
         robot.readyHardware(false);
+        robot.sorterHardware.resetSorterEncoder();
+        robot.sorterHardware.reference = 0;
         robot.sorterHardware.legalToSpin = true;
-//        robot.turret.resetEncoder();
         //speed = 1;
     }
 
@@ -132,6 +134,8 @@ public class BlueBack12Ball extends OpMode {
         panelsTelemetry.debug("Heading", follower.getPose().getHeading());
         panelsTelemetry.debug("Max Power Scalar", follower.getMaxPowerScaling());
         panelsTelemetry.debug("Motor power", robot.frontLeftDrive.getVelocity());
+        telemetry.addData("Color Queue", robot.queue.ballQueue);
+        telemetry.addData("Slot Queue", ArtifactLocator.getNamesOfSlots(robot.queue.slotQueue));
         panelsTelemetry.update(telemetry);
     }
 
@@ -172,7 +176,7 @@ public class BlueBack12Ball extends OpMode {
                             new BezierLine(
                                     new Pose(11.500, 36.000),
 
-                                    new Pose(56.500, 12.000)
+                                    new Pose(57.500, 17.000)
                             )
                     ).setConstantHeadingInterpolation(Math.toRadians(180))
 
@@ -180,7 +184,7 @@ public class BlueBack12Ball extends OpMode {
 
             LineUpWithMiddle = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(56.500, 12.000),
+                                    new Pose(57.500, 17.000),
 
                                     new Pose(42.000, 60.000)
                             )
@@ -201,7 +205,7 @@ public class BlueBack12Ball extends OpMode {
             MoveToFireThird = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(9.747, 57.576),
-                                    new Pose(56.500, 12.000)
+                                    new Pose(57.500, 17.000)
                             )
                     ).setConstantHeadingInterpolation(Math.toRadians(180))
 
@@ -229,7 +233,7 @@ public class BlueBack12Ball extends OpMode {
 
             UnparkWithRizz = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(56.500, 12.000),
+                                    new Pose(57.500, 17.000),
 
                                     new Pose(30.000, 12.000)
                             )
@@ -259,9 +263,9 @@ public class BlueBack12Ball extends OpMode {
         // Access paths with paths.pathName
         // Refer to the Pedro Pathing Docs (Auto Example) for an example state machine
 
-        //emergencyFinishIfNeeded();
+        emergencyFinishIfNeeded();
 
-        if(eat && robot.sorterLogic.inventory.getTotalCount()<3)
+        if(eat)
         {
             robot.sorterHardware.runAdvancedIntake();
         }
@@ -273,18 +277,16 @@ public class BlueBack12Ball extends OpMode {
         switch (currentStep) {
             case START:
                 follower.setMaxPower(1);
-                robot.randomizationScanner.InitLimeLight(0);
-
-                robot.targetScanner.InitLimeLightTargeting(robot.alliance.limelightPipeline, robot);
-                robot.scanningForTargetTag = true;
-                TurretLogic.activeMode = TurretLogic.controlMode.FULL;
                 robot.sorterLogic.sortOutBlobs(GREEN, LOAD);
                 robot.sorterLogic.sortOutBlobs(PURPLE, FIRE);
                 robot.sorterLogic.sortOutBlobs(PURPLE, STORE);
+                robot.targetScanner.InitLimeLightTargeting(robot.alliance.limelightPipeline, robot);
+                robot.scanningForTargetTag = true;
+                TurretLogic.activeMode = TurretLogic.controlMode.FULL;
                 setCurrentStep(FIRE_1);
                 break;
             case FIRE_1:
-                if(robot.turret.positioned() && robot.sorterHardware.positionedCheck())
+                if(robot.turret.positioned() && robot.sorterHardware.positionedCheck() && !robot.sorterHardware.isCalibrating())
                 {
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(LINE_UP_2);
@@ -292,6 +294,11 @@ public class BlueBack12Ball extends OpMode {
                 break;
             case LINE_UP_2:
                 if (robot.queue.noBallsQueued) {
+                    robot.sorterLogic.takeInventory();
+                    if (robot.sorterLogic.inventory.getTotalCount() != 0) {
+                        robot.queue.fillSimple();
+                        break;
+                    }
                     follower.followPath(paths.LineUpWithClose);
                     setCurrentStep(YOINK_2);
                 }
@@ -300,14 +307,13 @@ public class BlueBack12Ball extends OpMode {
                 if(!follower.isBusy())
                 {
                     eat = true;
-                    follower.setMaxPower(0.5);
+                    follower.setMaxPower(0.40);
                     follower.followPath(paths.GrabClose);
                     setCurrentStep(MOVE_TO_FIRE_2);
                 }
                 break;
             case MOVE_TO_FIRE_2:
                 if (!follower.isBusy()) {
-
                     follower.setMaxPower(1);
                     follower.followPath(paths.MoveToFireSecond);
                     setCurrentStep(FIRE_2);
@@ -322,6 +328,11 @@ public class BlueBack12Ball extends OpMode {
                 break;
             case LINE_UP_3:
                 if (robot.queue.noBallsQueued) {
+                    robot.sorterLogic.takeInventory();
+                    if (robot.sorterLogic.inventory.getTotalCount() != 0) {
+                        robot.queue.fillSimple();
+                        break;
+                    }
                     follower.followPath(paths.LineUpWithMiddle);
                     setCurrentStep(YOINK_3);
                 }
@@ -350,6 +361,11 @@ public class BlueBack12Ball extends OpMode {
             case YOINK_4:
                 if(robot.queue.noBallsQueued)
                 {
+                    robot.sorterLogic.takeInventory();
+                    if (robot.sorterLogic.inventory.getTotalCount() != 0) {
+                        robot.queue.fillSimple();
+                        break;
+                    }
                     eat = true;
                     follower.setMaxPower(0.5);
                     follower.followPath(paths.GrabFar);
@@ -375,6 +391,11 @@ public class BlueBack12Ball extends OpMode {
             case UNPARK:
                 if(robot.queue.noBallsQueued)
                 {
+                    robot.sorterLogic.takeInventory();
+                    if (robot.sorterLogic.inventory.getTotalCount() != 0) {
+                        robot.queue.fillSimple();
+                        break;
+                    }
                     robot.sorterHardware.prepareNewMovement(0);
                     follower.followPath(paths.UnparkWithRizz);
                     setCurrentStep(END);
@@ -404,10 +425,9 @@ public class BlueBack12Ball extends OpMode {
 
     private void emergencyFinishIfNeeded()
     {
-        if(opmodeTimer.getElapsedTimeSeconds() >= 29)
+        if(opmodeTimer.getElapsedTimeSeconds() >= 29.5)
         {
             robot.turret.updateTurretPositionXY();
-            robot.sorterHardware.prepareNewMovement(0);
             setCurrentStep(END);
         }
     }

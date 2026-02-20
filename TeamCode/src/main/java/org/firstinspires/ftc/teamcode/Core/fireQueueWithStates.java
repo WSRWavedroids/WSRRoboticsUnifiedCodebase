@@ -76,7 +76,7 @@ public class fireQueueWithStates {
 
     public boolean checkForExistingQueue()
     {
-        return !ballQueue.isEmpty();
+        return !slotQueue.isEmpty() || !ballQueue.isEmpty();
     }
 
 
@@ -127,7 +127,7 @@ public class fireQueueWithStates {
         if (wantToFireQueue == NONE) {
             hardwareState = READY;
         }
-        if (!ballQueue.isEmpty()) {
+        if (!ballQueue.isEmpty() && wantToFireQueue != NONE) {
             ArtifactLocator.SlotState currentColor = ballQueue.get(0);
             ArtifactLocator.Slot targetSlot;
 

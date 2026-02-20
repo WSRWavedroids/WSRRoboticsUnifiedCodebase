@@ -201,7 +201,7 @@ public class ArtifactLocator {
     /**
      * Totals the number of Artifacts stored in the blender and updates the inventory class.
      */
-    private void takeInventory() {
+    public void takeInventory() {
         int currentPurpleCount = 0;
         int currentGreenCount = 0;
         for (Slot currentSlot : allSlots) {
@@ -402,6 +402,14 @@ public class ArtifactLocator {
      */
     public boolean isCurrentReferenceLogical(int reference) {
         return reference % ((double) SorterHardware.ticksPerRotation / 3) == 0;
+    }
+
+    public static ArrayList<String> getNamesOfSlots(ArrayList<Slot> slotList) {
+        ArrayList<String> list = new ArrayList<>();
+        for (Slot slot : slotList) {
+            list.add(slot.getName());
+        }
+        return list;
     }
 
     /**

@@ -68,6 +68,8 @@ public class SorterHardware {
     public ElapsedTime outtakeTapTimer = new ElapsedTime();
     public static double outtakeTapTime = 0.5;
 
+    public boolean calibrated = false;
+
     public ElapsedTime timeSinceFlickyLastInPosition = new ElapsedTime();
 
     public SorterHardware(Robot robot) {
@@ -146,13 +148,16 @@ public class SorterHardware {
             case CALIBRATE:
                 tryToMove = false;
                 doneMoving = false;
-                motor.setPower(0.20);
+                if (!robot.magsense.isPressed()) {
+                    motor.setPower(0.20);
+                }
                 nextStep(CALIBRATING);
                 break;
             case CALIBRATING:
                 if(robot.magsense.isPressed()) {
                     motor.setPower(0);
                     resetSorterEncoder();
+                    calibrated = true;
                     nextStep(RESET);
                 }
                 break;
