@@ -46,7 +46,7 @@ public class LauncherHardware {
     }
 
     public static double launcherCooldownDuration = 0.3;
-    public static double flickTime = 0.1; //TODO Optimize
+    public static double flickTime = 0.1;
 
     public boolean waitingToFire = false;
     boolean lockControls = false;
@@ -178,7 +178,7 @@ public class LauncherHardware {
                     activeFiringSlot = robot.sorterLogic.findCurrentSlotInPosition(FIRE);
                 }
 
-                if(/*robot.sorterHardware.flickyInPosition() ||*/ cooldownTimer.seconds() >= flickTime) {
+                if(robot.sorterHardware.flickyInPosition() || cooldownTimer.seconds() >= flickTime) {
                     robot.sorterHardware.resetFlicky();
                     nextStep(LAUNCHING);
                 }
@@ -191,7 +191,7 @@ public class LauncherHardware {
                 if (stopMotorAfter && cooldownTimer.seconds() >= launcherCooldownDuration && cooldownTimer.seconds() >= flickTime * 1.5) {
                     reset();
                 }
-                else if (/*robot.sorterHardware.flickyInPosition() ||*/ cooldownTimer.seconds() >= flickTime * 1.5) {
+                else if (robot.sorterHardware.flickyInPosition() || cooldownTimer.seconds() >= flickTime * 1.5) {
                     reset();
                 }
                 break;
@@ -324,7 +324,7 @@ public class LauncherHardware {
             input /= 39.37; //convert to meters
 
         }
-        return (43.75095 * Math.pow(input, 2)) + (-73.54794 * input) + 1297.48932;
+        return (43.75095 * Math.pow(input, 2)) + (-73.54794 * input) + 1297.48932 - 20;
     }
 
     public boolean launcherOn() {

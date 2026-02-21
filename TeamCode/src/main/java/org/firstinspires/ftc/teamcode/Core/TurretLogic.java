@@ -28,6 +28,8 @@ public class TurretLogic {
     public float inputModifier = 400;
     public float input;
 
+    public boolean blackboardSafe;
+
 
     double offsetDegrees;
 
@@ -160,9 +162,13 @@ public class TurretLogic {
             robot.robotPosition.y = follower.getPose().getY();
             robot.robotHeading = Math.toDegrees(follower.getHeading());
 
-            blackboard.put("PedroX", robot.robotPosition.x);
-            blackboard.put("PedroY", robot.robotPosition.y);
-            blackboard.put("PedroHeading", Math.toRadians(robot.robotHeading));
+            if(blackboardSafe)
+            {
+                blackboard.put("PedroX", robot.robotPosition.x);
+                blackboard.put("PedroY", robot.robotPosition.y);
+                blackboard.put("PedroHeading", Math.toRadians(robot.robotHeading));
+            }
+
 
             double rotatedX = robot.turretPositionOffsetXInches * Math.cos(robot.robotHeading) - robot.turretPositionOffsetYInches * Math.sin(robot.robotHeading);
             double rotatedY = robot.turretPositionOffsetXInches * Math.sin(robot.robotHeading) + robot.turretPositionOffsetYInches * Math.cos(robot.robotHeading);

@@ -44,7 +44,7 @@ public class SorterHardware {
     public static Double tickTolerance = 100.0;
     public boolean legalToSpin = false;
 
-    public static double flickyDownPosition = 0.625;
+    public static double flickyDownPosition = 1;
     public static double flickyUpPosition = 0;
 
     public ElapsedTime cooldownTimer = new ElapsedTime();
@@ -133,11 +133,10 @@ public class SorterHardware {
                 setFeeders(ROTATE);
                 if (this.positionedCheck()) {
                     ensureBlenderPosition += 1;
+                }
+                if (ensureBlenderPosition >= 3) {
                     nextStep(RESET);
                 }
-                /*if (ensureBlenderPosition >= 3) {
-                    nextStep(RESET);
-                }*/
                 break;
             case RESET:
                 ensureBlenderPosition = 0;
@@ -145,6 +144,7 @@ public class SorterHardware {
                 setFeeders(PASSIVE);
                 nextStep(READY_FOR_COMMANDS);
                 break;
+
             case CALIBRATE:
                 tryToMove = false;
                 doneMoving = false;
@@ -320,21 +320,14 @@ public class SorterHardware {
      * @return In position or not
      */
     public boolean flickyInPosition() {
-        final double tolerance = 0.05;
+        final double downFeedback = 1.658;
+        final double upFeedback = 1.365;
 
-        final double position1 = 0.51;
-        final double voltage1 = 1.695;
-        final double position2 = 0;
-        final double voltage2 = 1;
+        //y = m(x-x1) + y1
 
-        final double slope = (position2 - position1) / (voltage2 - voltage1);
+        double position = (flickyDownPosition - flickyUpPosition) / (downFeedback - upFeedback) * (flickyFeedback.getVoltage() - upFeedback) + flickyUpPosition;
 
-        final double yIntercept = position1 - (slope * voltage1);
-
-        double target = flicky.getPosition();
-        double voltage = flickyFeedback.getVoltage();
-        double position = (voltage * slope) + yIntercept;
-        return Math.abs(position - target) <= tolerance;
+        return Math.abs(position - flicky.getPosition()) <= 0.075;
     }
 
     public void runAdvancedIntake() {

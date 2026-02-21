@@ -20,8 +20,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.FramerateCalculator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
+import org.firstinspires.ftc.teamcode.Core.SorterHardware;
 import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 import org.firstinspires.ftc.teamcode.Core.fireQueueWithStates;
 
@@ -57,6 +59,8 @@ public class Vortex_Teleop_Decode extends OpMode {
     int SpinTargetFrontRight;
     int SpinTargetBackLeft;
     int SpinTargetBackRight;
+
+    Follower teleFollower;
 
     //Trackpad vars for automove
     public double trackpadXMax = 1920;
@@ -101,9 +105,9 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         // Call the initialization protocol from the Robot class.
         robot = new Robot(hardwareMap, telemetry, this);
-
+        teleFollower = robot.turret.follower;
         robot.targetScanner.InitLimeLightTargeting(1, robot);
-        robot.controlMode = ROBOT_CENTRIC;
+        robot.controlMode = PEDRO;
         imu = hardwareMap.get(IMU.class, "imu");
 //        robot.turret.rawSwivelController.tolerance = 0;
 
@@ -136,8 +140,10 @@ public class Vortex_Teleop_Decode extends OpMode {
         robot.robotPosition.x = startingPose.getX();
         robot.robotPosition.y = startingPose.getY();
         robot.robotHeading = startingPose.getHeading();
-        robot.turret.follower.setPose(startingPose);
-        robot.turret.follower.setHeading(startingPose.getHeading());
+        teleFollower.setPose(startingPose);
+        teleFollower.setHeading(startingPose.getHeading());
+
+        robot.turret.blackboardSafe = false;
     }
 
     private void grabStartPose() {
@@ -210,23 +216,19 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         if(robot.controlMode == PEDRO)
         {
-            robot.turret.follower.update();
-            pedroAutomation(robot.turret.follower);
+            teleFollower.update();
+            pedroAutomation();
         }
         else
         {
-            holdInPlaceOrDrive();
+            singleJoystickDrive();
         }
 
         fireQueue();
 
         intake();
 
-        //WSeñorMichael
-
         launcherToggle();
-
-        manualTuneLauncher();
 
         fireCurrentFireSlot();
 
@@ -262,7 +264,12 @@ public class Vortex_Teleop_Decode extends OpMode {
      */
     public void stop() {
         telemetry.addData("Status", "Robot Stopped");
-        if (killSwitchActivated) telemetry.addLine("Killswitch Hit!");
+        blackboard.put("PedroX", robot.robotPosition.x);
+        blackboard.put("PedroY", robot.robotPosition.y);
+        blackboard.put("PedroHeading", Math.toRadians(robot.robotHeading));
+        if (killSwitchActivated){
+            telemetry.addLine("Killswitch Hit!");
+        }
     }
 
 
@@ -365,36 +372,6 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
     }
 
-    private void holdInPlaceOrDrive() {
-        if (gamepad1.squareWasPressed())//Holds in place...
-        {
-            SpinTargetFrontLeft = robot.frontLeftDrive.getCurrentPosition();
-            SpinTargetFrontRight = robot.frontRightDrive.getCurrentPosition();
-            SpinTargetBackLeft = robot.backLeftDrive.getCurrentPosition();
-            SpinTargetBackRight = robot.backRightDrive.getCurrentPosition();
-            spinTargetAcquired = true;
-            speed = 1;
-        }
-        if (gamepad1.square) {
-            robot.setRunMode(RUN_TO_POSITION);
-            robot.frontLeftDrive.setTargetPosition(SpinTargetFrontLeft);
-            robot.frontRightDrive.setTargetPosition(SpinTargetFrontRight);
-            robot.backLeftDrive.setTargetPosition(SpinTargetBackLeft);
-            robot.backRightDrive.setTargetPosition(SpinTargetBackRight);
-        }
-        else {
-            singleJoystickDrive();
-        }
-    }
-
-    private void driveOrAutoLock() {
-        if (gamepad1.left_bumper || gamepad1.right_bumper || gamepad1.square) {
-            autoWheel(robot.targetTag.currentlyDetected, robot.targetTag.angleX);
-        } else {
-            singleJoystickDrive();
-            spinTargetAcquired = false;
-        }
-    }
 
     private void toggleTurretFullMode() {
         if (gamepad2.leftStickButtonWasPressed()) {
@@ -464,14 +441,14 @@ public class Vortex_Teleop_Decode extends OpMode {
     private void singleJoystickDrive() {
         // We don't really know how this function works, but it makes the wheels drive, so we don't question it.
         // Don't mess with this function unless you REALLY know what you're doing.
-        float leftY = this.gamepad1.left_stick_y;
-        float rightX = this.gamepad1.right_stick_x;
-        float leftX = this.gamepad1.left_stick_x;
+        float leftY = -this.gamepad1.left_stick_y;
+        float rightX = -this.gamepad1.right_stick_x;
+        float leftX = -this.gamepad1.left_stick_x;
 
 
         float[] motorPowers = new float[4];
 
-        if (robot.controlMode == ROBOT_CENTRIC) {
+        if (robot.controlMode != LEGACY_FIELD_CENTRIC) {
             motorPowers[0] = (leftY - leftX - rightX); // frontLeftDrive
             motorPowers[1] = (leftY + leftX + rightX); // frontRightDrive
             motorPowers[2] = (leftY + leftX - rightX); // backLeftDrive
@@ -480,7 +457,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         // backRightDrive
 
 
-        else if (robot.controlMode == LEGACY_FIELD_CENTRIC) {
+        else {
             double rotX = leftX * Math.cos(-robot.robotHeading) - leftY * Math.sin(-robot.robotHeading);
             double rotY = leftX * Math.sin(-robot.robotHeading) + leftY * Math.cos(-robot.robotHeading);
 
@@ -519,13 +496,13 @@ public class Vortex_Teleop_Decode extends OpMode {
     private void controlMode() {
         if (gamepad1.back && !gamepad1.start) {
             if (robot.controlMode == ROBOT_CENTRIC) {
-                robot.controlMode = LEGACY_FIELD_CENTRIC;
-            } else if (robot.controlMode == LEGACY_FIELD_CENTRIC) {
+                robot.controlMode = PEDRO;
+            } else if (robot.controlMode == PEDRO) {
                 robot.controlMode = ROBOT_CENTRIC;
             }
         }
 
-        if (gamepad1.options && robot.controlMode == LEGACY_FIELD_CENTRIC) {
+        if (gamepad1.options && robot.controlMode == PEDRO) {
             imu.resetYaw();
         }
     }
@@ -596,14 +573,14 @@ public class Vortex_Teleop_Decode extends OpMode {
         if (gamepad1.start) {
             boolean pressed = gamepad1.shareWasPressed();
             if (pressed && robot.alliance == BLUE) {
-                robot.turret.follower.setPose(new Pose(133.28, 10.75));
-                robot.turret.follower.setHeading(Math.PI / 2);
+                teleFollower.setPose(new Pose(133.28, 10.75));
+                teleFollower.setHeading(Math.PI / 2);
 
                 robot.turret.updateTurretPositionXY();
             }
             if (pressed && robot.alliance == RED) {
-                robot.turret.follower.setPose(new Pose(9.59, 9.67));
-                robot.turret.follower.setHeading(Math.PI / 2);
+                teleFollower.setPose(new Pose(9.59, 9.67));
+                teleFollower.setHeading(Math.PI / 2);
                 robot.turret.updateTurretPositionXY();
             }
         }
@@ -645,7 +622,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         telemetry.addData("Currently Firing", robot.launcher.activeFiringSlot.getName());
         telemetry.addData("Fire Color Queue", robot.queue.ballQueue);
-        //telemetry.addData("Fire Slot Queue", robot.queue.slotQueue);
+        telemetry.addData("Fire Slot Queue", ArtifactLocator.getNamesOfSlots(robot.queue.slotQueue));
 
         telemetry.addLine();
         telemetry.addLine("Turret & PedroPathing:");
@@ -754,48 +731,42 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
     }
 
-    private PathChain makeDynamicPath(Pose targetPose, double targetHeadingRadians) {
-        return robot.turret.follower.pathBuilder()
-                .addPath(new BezierLine(robot.turret.follower.getPose(), targetPose))
-                .setLinearHeadingInterpolation(robot.turret.follower.getHeading(), targetHeadingRadians)
+    private PathChain makeDynamicPath(Pose targetPose, double targetHeadingDegrees) {
+        return teleFollower.pathBuilder()
+                .addPath(new BezierLine(teleFollower.getPose(), targetPose))
+                .setLinearHeadingInterpolation(teleFollower.getHeading(), Math.toRadians(targetHeadingDegrees))
                 .build();
         // Build the PathChain after adding all paths
     }
 
-    private PathChain makeDynamicChain(Pose initalPose, Pose secondaryPose, double targetHeadingRadians) {
-            return robot.turret.follower.pathBuilder()
-                    .addPath(new BezierLine(robot.turret.follower.getPose(), initalPose))
-                    .setLinearHeadingInterpolation(robot.turret.follower.getHeading(), targetHeadingRadians)
+    private PathChain makeDynamicChain(Pose initalPose, Pose secondaryPose, double targetHeadingDegrees) {
+            return teleFollower.pathBuilder()
+                    .addPath(new BezierLine(teleFollower.getPose(), initalPose))
+                    .setLinearHeadingInterpolation(teleFollower.getHeading(), Math.toRadians(targetHeadingDegrees))
                     .addPath(new BezierLine(initalPose, secondaryPose))
-                    .setLinearHeadingInterpolation(robot.turret.follower.getHeading(), targetHeadingRadians)
+                    .setLinearHeadingInterpolation(teleFollower.getHeading(), Math.toRadians(targetHeadingDegrees))
                     .build();
             // Build the PathChain after adding all paths
         }
 
-    private void pedroAutomation(Follower follower) {
+    private void pedroAutomation() {
         if (!automatedDrive) {
             //Make the last parameter false for field-centric
             //In case the drivers want to use a "slowMode" you can scale the vectors
 
-            //This is the normal version to use in the TeleOp
-            follower.setTeleOpDrive(
-                    gamepad1.left_stick_x * speed,//swapped these for mason
-                    -gamepad1.left_stick_y * speed,//swapped these for mason
-                    -gamepad1.right_stick_x * speed,
-                    true // Robot Centric
-            );
+            singleJoystickDrive();
 
         }
-
+        teleFollower.setMaxPower(1);
         //Automated PathFollowing
+        speed = 1;
 
-        //Drive to trackpad point
         if (gamepad1.touchpadWasPressed()) {
-            follower.followPath(makeDynamicPath(trackTarget, follower.getHeading()));
+            teleFollower.followPath(makeDynamicPath(trackTarget, teleFollower.getHeading()));
             automatedDrive = true;
         }
         else if (gamepad1.squareWasPressed()) { //Hold Position and heading
-            follower.holdPoint(new BezierPoint(follower.getPose()), follower.getHeading());
+            teleFollower.holdPoint(new BezierPoint(teleFollower.getPose()), teleFollower.getHeading());
 
             speed = 1;
             automatedDrive = true;
@@ -805,13 +776,13 @@ public class Vortex_Teleop_Decode extends OpMode {
             if(robot.alliance == BLUE)
             {
 
-                park = new Pose (105, 33.4, 90);
+                park = new Pose (104, 35, 180);
             }
             else
             {
-                park = new Pose (38.6, 33.4, 90);
+                park = new Pose (38.6, 33.4, 180);
             }
-            follower.followPath(makeDynamicPath(park, follower.getHeading()));
+            teleFollower.followPath(makeDynamicPath(park, 180));
 
 
             speed = 1;
@@ -824,15 +795,15 @@ public class Vortex_Teleop_Decode extends OpMode {
             if(robot.alliance == BLUE)
             {
                 pregate = new Pose (22, 70, 270);
-                pressing = new Pose (16.5,70, 270);
+                pressing = new Pose (17.5,70, 270);
             }
             else
             {
                 pregate = new Pose (122, 70, 270);
-                pressing = new Pose (128,70, 270);
+                pressing = new Pose (126.5,70, 270);
             }
 
-            follower.followPath(makeDynamicChain(pregate, pressing, 270));
+            teleFollower.followPath(makeDynamicChain(pregate, pressing, 270));
 
             speed = 1;
             automatedDrive = true;
@@ -842,9 +813,9 @@ public class Vortex_Teleop_Decode extends OpMode {
 
 
         //Stop automated following when the driver needs to
-        if (automatedDrive && (gamepad1.circle) || Math.abs(gamepad1.left_stick_x) >= 0.5
-                || Math.abs(gamepad1.left_stick_y) >= 0.5 || Math.abs(gamepad1.right_stick_x) >= 0.5) {
-            follower.startTeleopDrive();
+        if (automatedDrive && (gamepad1.circle || Math.abs(gamepad1.left_stick_x) >= 0.25
+                || Math.abs(gamepad1.left_stick_y) >= 0.25 || Math.abs(gamepad1.right_stick_x) >= 0.25)) {
+            teleFollower.startTeleopDrive();
             automatedDrive = false;
         }
     }

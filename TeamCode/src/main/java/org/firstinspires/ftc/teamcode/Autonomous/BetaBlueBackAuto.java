@@ -140,6 +140,7 @@ public class BetaBlueBackAuto extends OpMode {
         robot.turret.follower.setHeading(startPose.getHeading());
 
         robot.alliance = BLUE;
+        robot.turret.blackboardSafe = true;
     }
 
     /**

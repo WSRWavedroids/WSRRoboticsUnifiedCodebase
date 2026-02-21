@@ -39,6 +39,7 @@ public class BetaRedBackAuto extends BetaBlueBackAuto {
         robot.turret.follower.setHeading(startPose.getHeading());
         blackboard.put(ALLIANCE_KEY, "RED");
         robot.alliance = RED;
+        robot.turret.blackboardSafe = true;
     }
 
     public void init_loop() {

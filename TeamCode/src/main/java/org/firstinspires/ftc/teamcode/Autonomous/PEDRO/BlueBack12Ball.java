@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Blue Back 12 Ball", group = "1. FABIO WITH PEDRO")
+@Autonomous(name = "Blue Back 9 Ball", group = "1. FABIO WITH PEDRO")
 @Configurable // Panels
 public class BlueBack12Ball extends OpMode {
 
@@ -79,6 +79,7 @@ public class BlueBack12Ball extends OpMode {
         panelsTelemetry.update(telemetry);
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+        robot.turret.blackboardSafe = true;
     }
 
     public void init_loop() {
@@ -250,7 +251,6 @@ public class BlueBack12Ball extends OpMode {
         MOVE_TO_FIRE_2, FIRE_2,
         LINE_UP_3, YOINK_3, MOVE_TO_FIRE_3, FIRE_3,
         LINE_UP_4, YOINK_4, MOVE_TO_FIRE_4, FIRE_4,
-
         UNPARK,
         END
     }
@@ -340,7 +340,7 @@ public class BlueBack12Ball extends OpMode {
             case YOINK_3:
                 if (!follower.isBusy()) {
                     eat = true;
-                    follower.setMaxPower(0.5);
+                    follower.setMaxPower(0.4);
                     follower.followPath(paths.GrabMiddle);
                     setCurrentStep(MOVE_TO_FIRE_3);
                 }
@@ -367,7 +367,7 @@ public class BlueBack12Ball extends OpMode {
                         break;
                     }
                     eat = true;
-                    follower.setMaxPower(0.5);
+                    follower.setMaxPower(0.4);
                     follower.followPath(paths.GrabFar);
                     setCurrentStep(MOVE_TO_FIRE_4);
                 }
