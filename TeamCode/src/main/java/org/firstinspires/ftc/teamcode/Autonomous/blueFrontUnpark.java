@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Vision.Limelight_Target_Scanner;
 import org.firstinspires.ftc.teamcode.Vision.WaveTag;
 
 import java.util.Objects;
-@Disabled
+
 @Autonomous(group = "Basic", name = "BLUE FRONT UNPARK")
 public class blueFrontUnpark extends AutonomousPLUS {
 

@@ -32,6 +32,12 @@ import static org.firstinspires.ftc.teamcode.Autonomous.AutonomousPlusPLUS.fireI
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.EMPTY;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
+
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
+import com.pedropathing.util.Timer;
 import static org.firstinspires.ftc.teamcode.Core.Robot.CardinalDirections.*;
 import static android.os.SystemClock.sleep;
 
@@ -39,6 +45,7 @@ import com.bylazar.panels.Panels;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball;
 import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 
@@ -515,5 +522,18 @@ public class AutonomousPlusPLUS {
         robot.frontRightDrive.setTargetPositionTolerance(tolerance);
         robot.backLeftDrive.setTargetPositionTolerance(tolerance);
         robot.backRightDrive.setTargetPositionTolerance(tolerance);
+    }
+
+    public double timeLeft(Timer opmodeTimer)
+    {
+       return (30 - opmodeTimer.getElapsedTimeSeconds());
+    }
+
+    public PathChain makeDynamicPath(Follower follower, Pose targetPose, double targetHeadingDegrees) {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(follower.getPose(), targetPose))
+                .setLinearHeadingInterpolation(follower.getHeading(), Math.toRadians(targetHeadingDegrees))
+                .build();
+        // Build the PathChain after adding all paths
     }
 }

@@ -1,17 +1,28 @@
 package org.firstinspires.ftc.teamcode.Autonomous.PEDRO;
 
-import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.EAT_OVERFLOW;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.END;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.FIRE_1;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.FIRE_3;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.FIRE_OVERFLOW;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.GRAB_FIRST;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.GRAB_SECOND;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.GRAB_THIRD;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.LINE_UP_2;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.MOVE_TO_FIRE_2;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.MOVE_TO_FIRE_3;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.MOVE_TO_FIRE_OVERFLOW;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.START;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.UNPARK;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
+import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.BLUE;
-import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueBack12Ball.Steps.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.FIRE;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.LOAD;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.STORE;
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
-import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
@@ -26,11 +37,10 @@ import org.firstinspires.ftc.teamcode.Autonomous.AutonomousPlusPLUS;
 import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.TurretLogic;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "Blue Back 9 Ball", group = "1. FABIO WITH PEDRO")
+@Autonomous(name = "Blue Corner Grab 9 Ball", group = "1. FABIO WITH PEDRO")
 @Configurable // Panels
-public class BlueBack12Ball extends OpMode {
+public class BlueCornerGrab9Ball extends OpMode {
 
     public Robot robot = null;
     public AutonomousPlusPLUS auto = null;
@@ -142,30 +152,33 @@ public class BlueBack12Ball extends OpMode {
 
     public static class PathsForBack12Blue {
 
-        public PathChain LineUpWithClose;
+        public PathChain Lineupwithclose;
         public PathChain GrabClose;
-        public PathChain MoveToFireSecond;
-        public PathChain LineUpWithMiddle;
-        public PathChain GrabMiddle;
-        public PathChain MoveToFireThird;
-        public PathChain GrabFar;
-        public PathChain FireLastPattern;
-        public PathChain UnparkWithRizz;
+        public PathChain MovetoFireSecondPattern;
+        public PathChain GrabFirstCornerBall;
+        public PathChain GrabSecondCornerBall;
+        public PathChain GrabLastCornerBall;
+        public PathChain MoveToFireCornerBalls;
+        public PathChain GrabOverflow;
+        public PathChain FireOverflow;
+        public PathChain Unpark;
+
+        public Pose unparkPose = new Pose (36.718, 14.882, Math.toRadians(180));
 
         public PathsForBack12Blue(Follower follower) {
-            LineUpWithClose = follower.pathBuilder().addPath(
+            Lineupwithclose = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(56.500, 9.200),
 
-                                    new Pose(42.000, 36.000)
+                                    new Pose(56.000, 36.000)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
             GrabClose = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(42.000, 36.000),
+                                    new Pose(56.000, 36.000),
 
                                     new Pose(11.500, 36.000)
                             )
@@ -173,7 +186,7 @@ public class BlueBack12Ball extends OpMode {
 
                     .build();
 
-            MoveToFireSecond = follower.pathBuilder().addPath(
+            MovetoFireSecondPattern = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(11.500, 36.000),
 
@@ -183,80 +196,93 @@ public class BlueBack12Ball extends OpMode {
 
                     .build();
 
-            LineUpWithMiddle = follower.pathBuilder().addPath(
+            GrabFirstCornerBall = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(57.500, 17.000),
 
-                                    new Pose(42.000, 60.000)
+                                    new Pose(11.718, 16.953)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(200))
 
                     .build();
 
-            GrabMiddle = follower.pathBuilder().addPath(
+            GrabSecondCornerBall = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(42.000, 60.000),
-                                    new Pose(36.544, 62.388),
-                                    new Pose(9.747, 57.576)
+                                    new Pose(11.718, 16.953),
+                                    new Pose(23.588, 16.147),
+                                    new Pose(11.718, 11.494)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(200), Math.toRadians(200))
 
                     .build();
 
-            MoveToFireThird = follower.pathBuilder().addPath(
+            GrabLastCornerBall = follower.pathBuilder().addPath(
+                            new BezierCurve(
+                                    new Pose(11.718, 11.494),
+                                    new Pose(22.900, 10.556),
+                                    new Pose(12.176, 9.500)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(200), Math.toRadians(180))
+
+                    .build();
+
+            MoveToFireCornerBalls = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(9.747, 57.576),
+                                    new Pose(12.176, 9.500),
+
                                     new Pose(57.500, 17.000)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
-            GrabFar = follower.pathBuilder().addPath(
-                            new BezierCurve(
-                                    new Pose(52.000, 86.000),
-                                    new Pose(37.444, 82.924),
-                                    new Pose(19.700, 84.035)
-                            )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
-
-                    .build();
-
-            FireLastPattern = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(19.700, 84.035),
-
-                                    new Pose(52.000, 86.000)
-                            )
-                    ).setConstantHeadingInterpolation(Math.toRadians(180))
-
-                    .build();
-
-            UnparkWithRizz = follower.pathBuilder().addPath(
+            GrabOverflow = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(57.500, 17.000),
 
-                                    new Pose(30.000, 12.000)
+                                    new Pose(12.212, 20.541)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(150))
+
+                    .build();
+
+            FireOverflow = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(12.212, 20.541),
+
+                                    new Pose(57.500, 17.000)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(150), Math.toRadians(180))
+
+                    .build();
+
+            Unpark = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(57.500, 17.000),
+
+                                    new Pose(36.718, 14.882)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(0))
 
                     .build();
         }
     }
 
-    public enum Steps {
+    enum StepsForCornerGrab {
         START,
         FIRE_1,
         LINE_UP_2, YOINK_2,
         MOVE_TO_FIRE_2, FIRE_2,
-        LINE_UP_3, YOINK_3, MOVE_TO_FIRE_3, FIRE_3,
-        LINE_UP_4, YOINK_4, MOVE_TO_FIRE_4, FIRE_4,
+        GRAB_FIRST, GRAB_SECOND, GRAB_THIRD,
+        MOVE_TO_FIRE_3, FIRE_3,
+        EAT_OVERFLOW,
+        MOVE_TO_FIRE_OVERFLOW, FIRE_OVERFLOW,
         UNPARK,
         END
     }
 
 
-    private Steps currentStep = START; // Current autonomous path state (state machine)
+    private StepsForCornerGrab currentStep = START; // Current autonomous path state (state machine)
     private boolean eat = false;
     public int autonomousPathUpdate() {
         // Add your state machine Here
@@ -299,8 +325,8 @@ public class BlueBack12Ball extends OpMode {
                         robot.queue.fillSimple();
                         break;
                     }
-                    follower.followPath(paths.LineUpWithClose);
-                    setCurrentStep(YOINK_2);
+                    follower.followPath(paths.Lineupwithclose);
+                    setCurrentStep(StepsForCornerGrab.YOINK_2);
                 }
                 break;
             case YOINK_2:
@@ -315,97 +341,102 @@ public class BlueBack12Ball extends OpMode {
             case MOVE_TO_FIRE_2:
                 if (!follower.isBusy()) {
                     follower.setMaxPower(1);
-                    follower.followPath(paths.MoveToFireSecond);
-                    setCurrentStep(FIRE_2);
+                    follower.followPath(paths.MovetoFireSecondPattern);
+                    setCurrentStep(StepsForCornerGrab.FIRE_2);
                 }
                 break;
             case FIRE_2:
                 if ((!follower.isBusy()) && robot.turret.positioned()) {
                     eat = false;
                     robot.queue.addPattern(robot.pattern);
-                    setCurrentStep(LINE_UP_3);
+                    setCurrentStep(GRAB_FIRST);
                 }
                 break;
-            case LINE_UP_3:
-                if (robot.queue.noBallsQueued) {
-                    robot.sorterLogic.takeInventory();
-                    if (robot.sorterLogic.inventory.getTotalCount() != 0) {
-                        robot.queue.fillSimple();
-                        break;
-                    }
-                    follower.followPath(paths.LineUpWithMiddle);
-                    setCurrentStep(YOINK_3);
-                }
-                break;
-            case YOINK_3:
-                if (!follower.isBusy()) {
+            case GRAB_FIRST:
+                if(robot.queue.noBallsQueued)
+                {
                     eat = true;
-                    follower.setMaxPower(0.4);
-                    follower.followPath(paths.GrabMiddle);
+                    follower.followPath(paths.GrabFirstCornerBall);
+                    setCurrentStep(GRAB_SECOND);
+                    break;
+                }
+            case GRAB_SECOND:
+                if (!follower.isBusy())
+                {
+                    eat = true;
+                    follower.followPath(paths.GrabSecondCornerBall);
+                    setCurrentStep(GRAB_THIRD);
+                    break;
+                }
+            case GRAB_THIRD:
+                if(!follower.isBusy())
+                {
+                    eat = true;
+                    follower.followPath(paths.GrabLastCornerBall);
                     setCurrentStep(MOVE_TO_FIRE_3);
+                    break;
                 }
             case MOVE_TO_FIRE_3:
-                if (!follower.isBusy()) {
-                    follower.setMaxPower(1);
-                    follower.followPath(paths.MoveToFireThird);
+                if(!follower.isBusy())
+                {
+                    eat = true;
+                    follower.followPath(paths.MoveToFireCornerBalls);
                     setCurrentStep(FIRE_3);
+                    break;
+                }
+            case FIRE_3:
+                if ((!follower.isBusy()) && robot.turret.positioned()) {
+                    eat = false;
+                    robot.queue.addPattern(robot.pattern);
+                    setCurrentStep(EAT_OVERFLOW);
                 }
                 break;
-            case FIRE_3:
+            case EAT_OVERFLOW:
+                if(robot.queue.noBallsQueued)
+                {
+                    eat = true;
+                    follower.followPath(paths.GrabOverflow);
+                    setCurrentStep(MOVE_TO_FIRE_OVERFLOW);
+                    break;
+                }
+            case MOVE_TO_FIRE_OVERFLOW:
+                if((auto.timeLeft(opmodeTimer) < 5 && robot.sorterLogic.inventory.getTotalCount() > 0) || (robot.sorterLogic.inventory.getTotalCount() >= 3))
+                {
+                    //If we have things to fire, go shoot!
+                    follower.followPath(paths.FireOverflow);
+                    setCurrentStep(FIRE_OVERFLOW);
+                    break;
+                }
+                else if(auto.timeLeft(opmodeTimer) < 2.8)
+                {
+                    //If its a loss, go unpark
+                    follower.followPath(auto.makeDynamicPath(follower, paths.unparkPose, follower.getHeading()));
+                    setCurrentStep(END);
+                    break;
+                }
+
+
+            case FIRE_OVERFLOW:
                 if ((!follower.isBusy()) && robot.turret.positioned()) {
                     eat = false;
                     robot.queue.addPattern(robot.pattern);
                     setCurrentStep(UNPARK);
                 }
                 break;
-            case YOINK_4:
-                if(robot.queue.noBallsQueued)
-                {
-                    robot.sorterLogic.takeInventory();
-                    if (robot.sorterLogic.inventory.getTotalCount() != 0) {
-                        robot.queue.fillSimple();
-                        break;
-                    }
-                    eat = true;
-                    follower.setMaxPower(0.4);
-                    follower.followPath(paths.GrabFar);
-                    setCurrentStep(MOVE_TO_FIRE_4);
-                }
-                break;
-            case MOVE_TO_FIRE_4:
-                if(!follower.isBusy())
-                {
-                    eat = false;
-                    follower.setMaxPower(1);
-                    follower.followPath(paths.FireLastPattern);
-                    setCurrentStep(FIRE_4);
-                }
-                break;
-            case FIRE_4:
-                if(!follower.isBusy() && robot.turret.positioned())
-                {
-                    robot.queue.addPattern(robot.pattern);
-                    setCurrentStep(UNPARK);
-                }
-                break;
+
+
             case UNPARK:
                 if(robot.queue.noBallsQueued)
                 {
-                    robot.sorterLogic.takeInventory();
-                    if (robot.sorterLogic.inventory.getTotalCount() != 0) {
-                        robot.queue.fillSimple();
-                        break;
-                    }
-                    robot.sorterHardware.prepareNewMovement(0);
-                    follower.followPath(paths.UnparkWithRizz);
+                    follower.followPath(paths.Unpark);
                     setCurrentStep(END);
                 }
+
             case END:
-                if(robot.sorterHardware.doneMoving())
+                if(robot.sorterHardware.doneMoving() && !follower.isBusy())
                 {
                     return 0;
                 }
-
         }
         return 0;
     }
@@ -413,9 +444,14 @@ public class BlueBack12Ball extends OpMode {
     /** These change the states of the paths and actions.
      * It will also reset the timers of the individual switches **/
 
-    void setCurrentStep(Steps nextStep) {
+    void setCurrentStep(StepsForCornerGrab nextStep) {
         currentStep = nextStep;
         pathTimer.resetTimer();
+    }
+
+    private void scan()
+    {
+
     }
 
     private void emergencyFinishIfNeeded()
@@ -426,4 +462,6 @@ public class BlueBack12Ball extends OpMode {
             setCurrentStep(END);
         }
     }
+
+
 }

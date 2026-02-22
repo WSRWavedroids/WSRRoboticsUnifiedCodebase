@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.Core.Robot;
-
+@Disabled
 @Autonomous(group = "Basic", name = "BLUE BACK UNPARK")
 public class BlueBackAuto extends AutonomousPLUS {
 

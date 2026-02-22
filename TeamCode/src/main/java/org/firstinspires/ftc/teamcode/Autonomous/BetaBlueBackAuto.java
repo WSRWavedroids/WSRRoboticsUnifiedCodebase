@@ -7,6 +7,7 @@ import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*
 
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,6 +24,7 @@ import java.util.Objects;
  * too, allowing us to keep both autos up to date in a single file. BetaRedFrontAuto is a shell that
  * basically just hijacks this file to work, which is neat.
  */
+@Disabled
 @Autonomous(group = "0. FABIO NO PEDRO", name = "Blue Back 6 Ball")
 public class BetaBlueBackAuto extends OpMode {
 

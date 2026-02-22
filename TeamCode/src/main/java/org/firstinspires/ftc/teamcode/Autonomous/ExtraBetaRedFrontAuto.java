@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * This is a shell that sets the alliance key to "RED" and runs BetaBlueFrontAuto with it. It's
  * efficient, at least. But this class is basically just a button on the control hub. The auto is
  * in BetaBlueFrontAuto. Your problem is probably there.
  */
+@Disabled
 @Autonomous(group = "Basic", name = "SUPERBETA Red Front 4 Ball")
 public class ExtraBetaRedFrontAuto extends ExtraBetaBlueFrontAuto {
 

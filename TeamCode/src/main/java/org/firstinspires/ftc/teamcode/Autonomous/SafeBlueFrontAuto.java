@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Autonomous.SafeBlueFrontAuto.Step.*
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -19,6 +20,7 @@ import java.util.Objects;
  * too, allowing us to keep both autos up to date in a single file. BetaRedFrontAuto is a shell that
  * basically just hijacks this file to work, which is neat.
  */
+@Disabled
 @Autonomous(group = "Basic", name = "Blue Front 3 Ball")
 public class SafeBlueFrontAuto extends OpMode {
 

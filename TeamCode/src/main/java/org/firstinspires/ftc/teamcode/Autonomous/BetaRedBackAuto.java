@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.RED;
 
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.Robot;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.Core.TurretLogic;
  * efficient, at least. But this class is basically just a button on the control hub. The auto is
  * in BetaBlueFrontAuto. Your problem is probably there.
  */
+@Disabled
 @Autonomous(group = "0. FABIO NO PEDRO", name = "Red Back 6 Ball")
 public class BetaRedBackAuto extends BetaBlueBackAuto {
 
