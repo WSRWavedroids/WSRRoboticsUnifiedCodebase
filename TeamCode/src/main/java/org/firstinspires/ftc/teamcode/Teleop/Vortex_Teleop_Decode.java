@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.*;
+import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.*;
 import static org.firstinspires.ftc.teamcode.Core.SorterHardware.PositionState.*;
@@ -132,6 +133,16 @@ public class Vortex_Teleop_Decode extends OpMode {
             robot.scanningForTargetTag = true;
         }
 
+        if (blackboard.get(PATTERN_KEY) == "GPP") {
+            robot.pattern = GPP;
+        } else if (blackboard.get(PATTERN_KEY) == "PGP") {
+            robot.pattern = Robot.patternColors.PGP;
+        } else if ((blackboard.get(PATTERN_KEY) == "PPG")) {
+            robot.pattern = PPG;
+        } else {
+            robot.pattern = PPG;
+        }
+
         robot.panels = Panels.INSTANCE;
         robot.readyHardware(true);//Might not be needed
 
@@ -224,7 +235,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             singleJoystickDrive();
         }
 
-        fireQueue();
+        fireAll();
 
         intake();
 
@@ -232,9 +243,9 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         fireCurrentFireSlot();
 
-        incrementThroughPositions();
+        firePatternWithOffset();
 
-        colorMovement();
+        incrementThroughPositions();
 
         switchAlliance();
 
@@ -302,7 +313,8 @@ public class Vortex_Teleop_Decode extends OpMode {
             robot.queue.addToNextSpotColor(GREEN);
             gamepad2.setLedColor(0, 255, 0, 100);
         }
-
+    }
+    private void fireAll() {
         if (gamepad2.rightBumperWasPressed()) {
             if (robot.queue.checkForExistingQueue()) {
                 robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.SMART;
@@ -315,6 +327,16 @@ public class Vortex_Teleop_Decode extends OpMode {
                 robot.queue.fillSimple(); // replace with the if when cam ready
                 robot.queue.wantToFireQueue = fireQueueWithStates.firingQueue.DUMB;
             }
+        }
+    }
+
+    private void firePatternWithOffset() {
+        if (gamepad2.leftBumperWasPressed()) {
+            robot.queue.addOffsetPattern(robot.pattern, 0);
+        } else if (gamepad2.squareWasPressed()) {
+            robot.queue.addOffsetPattern(robot.pattern, 1);
+        } else if (gamepad2.triangleWasPressed()) {
+            robot.queue.addOffsetPattern(robot.pattern, 2);
         }
     }
 

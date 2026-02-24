@@ -121,6 +121,15 @@ public class fireQueueWithStates {
         noBallsQueued = false;
     }
 
+    public void addOffsetPattern(Robot.patternColors pattern, int offset) {
+        addPattern(pattern);
+
+        for (int i = 0; i < offset; i++) {
+            ballQueue.add(ballQueue.get(0));
+            ballQueue.remove(0);
+        }
+    }
+
     public void updateQueueStates()
     {
         // If the driver isn't requesting a fire sequence, stay IDLE and reset index
