@@ -65,7 +65,7 @@ public class LauncherHardware {
     public final int steadinessThreshold = 1;
 
     public boolean onCooldown = false;
-    public static boolean manualTuneMode;
+    public static boolean manualTuneMode = false;
 
     LauncherMode mode;
     private double waitTime;
@@ -96,10 +96,10 @@ public class LauncherHardware {
     private ElapsedTime cooldownTimer = new ElapsedTime();
 
     public void updateLauncherHardware() {
-        /*robot.panelsTelemetry.addData("Launcher Motor 1 Velocity", motor1.getVelocity());
+        robot.panelsTelemetry.addData("Launcher Motor 1 Velocity", motor1.getVelocity());
         robot.panelsTelemetry.addData("Launcher Motor 2 Velocity", motor2.getVelocity());
         robot.panelsTelemetry.addData("Target Launcher Velocity", velocityTarget);
-        robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);*/
+        robot.panelsTelemetry.addData("LL Distance", robot.targetTag.distanceZ);
 
         switch (currentLauncherStep) {
             case READY_FOR_COMMANDS:

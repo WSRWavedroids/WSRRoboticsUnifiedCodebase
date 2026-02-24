@@ -754,6 +754,7 @@ public class Vortex_Teleop_Decode extends OpMode {
     }
 
     private PathChain makeDynamicPath(Pose targetPose, double targetHeadingDegrees) {
+
         return teleFollower.pathBuilder()
                 .addPath(new BezierLine(teleFollower.getPose(), targetPose))
                 .setLinearHeadingInterpolation(teleFollower.getHeading(), Math.toRadians(targetHeadingDegrees))
