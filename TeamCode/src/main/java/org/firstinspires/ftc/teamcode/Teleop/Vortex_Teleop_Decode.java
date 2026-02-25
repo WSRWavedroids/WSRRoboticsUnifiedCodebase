@@ -767,12 +767,19 @@ public class Vortex_Teleop_Decode extends OpMode {
                     .addPath(new BezierLine(teleFollower.getPose(), initalPose))
                     .setLinearHeadingInterpolation(teleFollower.getHeading(), Math.toRadians(targetHeadingDegrees))
                     .addPath(new BezierLine(initalPose, secondaryPose))
-                    .setLinearHeadingInterpolation(teleFollower.getHeading(), Math.toRadians(targetHeadingDegrees))
+                    .setLinearHeadingInterpolation(targetHeadingDegrees, targetHeadingDegrees)
                     .build();
             // Build the PathChain after adding all paths
         }
 
     private void pedroAutomation() {
+        //Stop automated following when the driver needs to
+        if (automatedDrive && (gamepad1.circle || Math.abs(gamepad1.left_stick_x) >= 0.25
+                || Math.abs(gamepad1.left_stick_y) >= 0.25 || Math.abs(gamepad1.right_stick_x) >= 0.25)) {
+            teleFollower.startTeleopDrive();
+            automatedDrive = false;
+        }
+
         if (!automatedDrive) {
             //Make the last parameter false for field-centric
             //In case the drivers want to use a "slowMode" you can scale the vectors
@@ -833,17 +840,7 @@ public class Vortex_Teleop_Decode extends OpMode {
         }
 
 
-
-
-        //Stop automated following when the driver needs to
-        if (automatedDrive && (gamepad1.circle || Math.abs(gamepad1.left_stick_x) >= 0.25
-                || Math.abs(gamepad1.left_stick_y) >= 0.25 || Math.abs(gamepad1.right_stick_x) >= 0.25)) {
-            teleFollower.startTeleopDrive();
-            automatedDrive = false;
-        }
     }
-
-
 
     private boolean isEven(int x) {
         return x % 2 == 0;
