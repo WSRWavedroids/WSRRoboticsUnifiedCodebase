@@ -37,7 +37,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
                             new BezierLine(
                                     new Pose(85.900, 16.600),
 
-                                    new Pose(100.000, 35.700)
+                                    new Pose(103.000, 35.700)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(67.5), Math.toRadians(180))
 
@@ -45,9 +45,9 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
             Intake1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(100.000, 35.700),
+                                    new Pose(103.000, 35.700),
 
-                                    new Pose(135.500, 35.700)
+                                    new Pose(134.000, 35.700)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -55,7 +55,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
             Launch1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(135.500, 35.700),
+                                    new Pose(134.000, 35.700),
 
                                     new Pose(85.900, 16.600)
                             )
@@ -77,7 +77,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
                             new BezierLine(
                                     new Pose(103.000, 60.000),
 
-                                    new Pose(120.900, 60.000)
+                                    new Pose(134.000, 60.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -85,7 +85,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
             Launch2 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(120.900, 60.000),
+                                    new Pose(134.000, 60.000),
 
                                     new Pose(85.900, 16.600)
                             )
@@ -107,7 +107,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
                             new BezierLine(
                                     new Pose(103.000, 84.000),
 
-                                    new Pose(120.900, 84.000)
+                                    new Pose(126.000, 84.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -115,7 +115,7 @@ public class PedroRedFarlaunch12Ball extends PedroBlueFarlaunch12Ball {
 
             Launch3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(120.900, 84.000),
+                                    new Pose(127.000, 84.000),
 
                                     new Pose(85.900, 16.600)
                             )

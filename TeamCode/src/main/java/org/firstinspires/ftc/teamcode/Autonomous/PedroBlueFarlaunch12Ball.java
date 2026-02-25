@@ -43,7 +43,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
         robot.limelightTelemetry();
     }
 
-    static class Paths {
+     static class Paths {
         public PathChain Launch0;
         public PathChain IntakeSetup1;
         public PathChain Intake1;
@@ -71,29 +71,29 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                             new BezierLine(
                                     new Pose(58.100, 16.600),
 
-                                    new Pose(44.000, 35.700)
+                                    new Pose(41.000, 35.700)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(360))
+                    ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(0))
 
                     .build();
 
             Intake1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(44.000, 35.700),
+                                    new Pose(41.000, 35.700),
 
-                                    new Pose(8.5, 35.700)
+                                    new Pose(9.000, 35.700)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
+                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 
                     .build();
 
             Launch1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(8.5, 35.700),
+                                    new Pose(9.000, 35.700),
 
                                     new Pose(58.100, 16.600)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(112.5))
+                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(112.5))
 
                     .build();
 
@@ -101,29 +101,29 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                             new BezierLine(
                                     new Pose(58.100, 16.600),
 
-                                    new Pose(44.000, 60.000)
+                                    new Pose(41.000, 60.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(360))
+                    ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(0))
 
                     .build();
 
             Intake2 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(44.000, 60.000),
+                                    new Pose(41.000, 60.000),
 
-                                    new Pose(8.5, 60.000)
+                                    new Pose(9.000, 60.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
+                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 
                     .build();
 
             Launch2 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(8.5, 60.000),
+                                    new Pose(9.000, 60.000),
 
                                     new Pose(58.100, 16.600)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(112.5))
+                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(112.5))
 
                     .build();
 
@@ -131,29 +131,29 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                             new BezierLine(
                                     new Pose(58.100, 16.600),
 
-                                    new Pose(44.000, 84.000)
+                                    new Pose(41.000, 84.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(360))
+                    ).setLinearHeadingInterpolation(Math.toRadians(112.5), Math.toRadians(0))
 
                     .build();
 
             Intake3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(44.000, 84.000),
+                                    new Pose(41.000, 84.000),
 
-                                    new Pose(17.5, 84.000)
+                                    new Pose(17.000, 84.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
+                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 
                     .build();
 
             Launch3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(17.5, 84.000),
+                                    new Pose(17.000, 84.000),
 
                                     new Pose(58.100, 16.600)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(112.5))
+                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(112.5))
 
                     .build();
 
@@ -167,9 +167,6 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
 
                     .build();
         }
-
-
-
     }
 
     Paths runPath;
@@ -186,6 +183,9 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
         telemetry.addData("Follower is Busy", follower.isBusy());
         robot.limelightTelemetry();
         follower.update();
+        OpMode.blackboard.put("poseX", follower.getPose().getX());
+        OpMode.blackboard.put("poseY", follower.getPose().getY());
+        OpMode.blackboard.put("poseHeading", follower.getPose().getHeading());
         switch(currentstep){
             case START:
                 nextStep(LAUNCH0);
@@ -213,6 +213,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                     robot.intake3.setPower(0.55);
                     robot.launchLeft.setPower(0.4);
                     robot.launchRight.setPower(0.4);
+                    follower.setMaxPower(0.85);
                     follower.followPath(runPath.Intake1);
                     nextStep(INTAKE1);
                 }
@@ -224,6 +225,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                     robot.intake3.setPower(-1);
                     robot.launchLeft.setPower(0);
                     robot.launchRight.setPower(0);
+                    follower.setMaxPower(2);
                     follower.followPath(runPath.Launch1);
                     nextStep(LAUNCH1);
                 }
@@ -254,6 +256,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                     robot.intake3.setPower(0.55);
                     robot.launchLeft.setPower(0.4);
                     robot.launchRight.setPower(0.4);
+                    follower.setMaxPower(0.85);
                     follower.followPath(runPath.Intake2);
                     nextStep(INTAKE2);
                 }
@@ -266,6 +269,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                     robot.intake3.setPower(-1);
                     robot.launchLeft.setPower(0);
                     robot.launchRight.setPower(0);
+                    follower.setMaxPower(2);
                     follower.followPath(runPath.Launch2);
                     nextStep(LAUNCH2);
                 }
@@ -296,6 +300,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                     robot.intake3.setPower(0.55);
                     robot.launchLeft.setPower(0.4);
                     robot.launchRight.setPower(0.4);
+                    follower.setMaxPower(0.85);
                     follower.followPath(runPath.Intake3);
                     nextStep(INTAKE3);
                 }
@@ -307,6 +312,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                     robot.intake3.setPower(-1);
                     robot.launchLeft.setPower(0);
                     robot.launchRight.setPower(0);
+                    follower.setMaxPower(2);
                     follower.followPath(runPath.Launch3);
                     nextStep(LAUNCH3);
                 }

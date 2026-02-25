@@ -28,6 +28,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.opencv.core.Mat;
 
 /**
  * This file is our iterative (Non-Linear) "OpMode" for TeleOp.
@@ -70,6 +71,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
     ElapsedTime outtakeTimer = new ElapsedTime();
     public Follower follower;
     double heading;
+    Pose startingPose;
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -93,23 +96,28 @@ public class Basic_TeleOp_NewBot extends OpMode {
             imu.initialize(parameters);
         }
         //if using field centric youl need this lolzeez
+
+        Object poseX = blackboard.getOrDefault("poseX", 72.0);
+        Object poseY = blackboard.getOrDefault("poseY", 72.0);
+        Object poseHeading = blackboard.getOrDefault("poseHeading", Math.PI / 2);
+        double goodX = 72;
+        double goodY = 72;
+        double goodHeading = Math.PI / 2;
+        if (poseX instanceof Number) {
+            goodX = (double) poseX;
+        }
+        if (poseY instanceof Number) {
+            goodY = (double) poseY;
+        }
+        if (poseHeading instanceof Number) {
+            goodHeading = (double) poseHeading;
+        }
+        startingPose = new Pose(goodX, goodY, goodHeading);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(55, 9.275, Math.toRadians(90)));
+        follower.setStartingPose(startingPose);
         follower.update();
+        robot.alliance = RED;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /*
@@ -131,13 +139,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         robot.tuningspd = 0.43;
         follower.update();
         switchdrivemode(ROBOTCENTRIC);
-
+        robot.alliance = RED;
     }
-
-
-
-
-
 
 
     /*
@@ -145,8 +148,9 @@ public class Basic_TeleOp_NewBot extends OpMode {
      */
     public void loop() {
         follower.update();
+        follower.setMaxPower(1);
         driveMode();
-
+        switchAlliance();
         //So Begins the input chain. At least try a bit to organise by driver
 
         //Driver 2
@@ -161,35 +165,25 @@ public class Basic_TeleOp_NewBot extends OpMode {
         launch(robot.tuningspd);
 
 
-
-
-
         //todo THIS is what NON-PROGRAMMERS can edit (intake speeds)
         //note that the speeds are a decimal between -1 and 1
         //note negative speeds(-1) are reverse, positive(1) are forward, 0 is neutral/off
 
-        intake1(1 ,1 ,1);
-        intake3(1 ,1 ,1);
+        intake1(1, 1, 1);
+        intake3(1, 1, 1);
 
         //todo ONLY the stuff BETWEEN the green "TODO" lines are open to everyone
 
 
-
-
-
-
-
-
-        if (gamepad1.leftBumperWasPressed()){
+        if (gamepad1.leftBumperWasPressed()) {
             robot.tuningspd = robot.tuningspd + 0.005;
         }
-        if (gamepad1.rightBumperWasPressed()){
+        if (gamepad1.rightBumperWasPressed()) {
             robot.tuningspd = robot.tuningspd - 0.005;
         }
-        if (robot.upToSpeed()){
+        if (robot.upToSpeed()) {
             gamepad2.rumble(500);
         }
-
 
 
         //Matthew Was Here
@@ -207,12 +201,17 @@ public class Basic_TeleOp_NewBot extends OpMode {
         telemetry.addData("Launch D", robot.launcherD);
         telemetry.addData("Launch F", robot.launcherF);
         telemetry.addData("Drive Mode", robot.driveMode);
+        telemetry.addData("alliance", robot.alliance);
         telemetry.addData("heading", heading);
+        telemetry.addData("starting pose", startingPose);
+        telemetry.addData("current X", follower.getPose().getX());
+        telemetry.addData("current Y", follower.getPose().getY());
+        telemetry.addData("current heading", follower.getPose().getHeading());
 
         Robot.panelsTelemetry.addData("velocityRight", -robot.launchRight.getVelocity());
         Robot.panelsTelemetry.addData("velocityLeft", -robot.launchLeft.getVelocity());
         Robot.panelsTelemetry.addData("goalVelocityLimelight", robot.limelightAdjustedSpeed);
-        Robot.panelsTelemetry.addData("goalVelocity", robot.tuningspd*2000);
+        Robot.panelsTelemetry.addData("goalVelocity", robot.tuningspd * 2000);
         Robot.panelsTelemetry.update();
         //doTelemetryStuff();
         //driver 1
@@ -226,7 +225,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
     }
 //aple sinc please
 //    i praise tmmothy cooker
-
 //field centric
         /*if (robot.alliance == RED) {
             follower.setTeleOpDrive(
@@ -248,8 +246,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         }*/
     //auto locking and field centric
 
-    private void switchdrivemode (Robot.driveMode mode){
-        switch(mode){
+    private void switchdrivemode(Robot.driveMode mode) {
+        switch (mode) {
             case ROBOTCENTRIC:
                 robot.driveMode = ROBOTCENTRIC;
                 follower.breakFollowing();
@@ -266,22 +264,51 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
             case AUTOTARGET:
                 robot.driveMode = AUTOTARGET;
-                follower.startTeleOpDrive();
                 break;
 
             case HOLDPOINT:
+                robot.driveMode = HOLDPOINT;
+                follower.holdPoint(new BezierPoint(follower.getPose()), follower.getHeading());
                 break;
 
             case FARLAUNCH:
+                robot.driveMode = FARLAUNCH;
+                if (robot.alliance == RED) {
+                    follower.followPath(goTo(85.9, 16.6, 67.5));
+                }
+                if (robot.alliance == BLUE) {
+                    follower.followPath(goTo(58.1, 16.6, 112.5));
+                }
                 break;
 
             case CLOSELAUNCH:
+                robot.driveMode = CLOSELAUNCH;
+                if (robot.alliance == RED) {
+                    follower.followPath(goTo(39, 135, 0));
+                }
+                if (robot.alliance == BLUE) {
+                    follower.followPath(goTo(100, 135, 180));
+                }
                 break;
 
             case LEVER:
+                robot.driveMode = LEVER;
+                if (robot.alliance == RED) {
+                    follower.followPath(goTo(12, 59, 320));
+                }
+                if (robot.alliance == BLUE) {
+                    follower.followPath(goTo(132, 59, 220));
+                }
                 break;
 
             case PARK:
+                robot.driveMode = PARK;
+                if (robot.alliance == RED) {
+                    follower.followPath(goTo(38, 30.5, 180));
+                }
+                if (robot.alliance == BLUE) {
+                    follower.followPath(goTo(102, 30.5, 0));
+                }
                 break;
         }
     }
@@ -289,40 +316,71 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
     //todo this is robot movement modes - update accordingly
     Robot.driveMode drivemodeSave = ROBOTCENTRIC;
+
     private void driveMode() {
         double multiplier = 1;
-        double x = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
-        double y = follower.getPose().getX() + gamepad1.left_stick_x * multiplier;
-
-
+        double x = follower.getPose().getX();
+        double y = follower.getPose().getX();
 
 
         //extra button functions
-        if (gamepad1.y) switchdrivemode(AUTOTARGET);
-        else if (gamepad1.yWasReleased()) switchdrivemode(drivemodeSave);
+        if (gamepad1.yWasPressed()) {
+            switchdrivemode(AUTOTARGET);
+            if (robot.alliance == RED) {
+                heading = Math.atan2(144 - y, 144 - x);
+                follower.holdPoint(new BezierPoint( follower.getPose()), heading);
+            }
+            if (robot.alliance == BLUE) {
+                heading = Math.atan2(144 - y, 0 - x);
+                follower.holdPoint(new BezierPoint( follower.getPose()), heading);
+            }
+        } else if (gamepad1.yWasReleased()) {
+            switchdrivemode(drivemodeSave);
+            robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
+            robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.backRightDrive.setZeroPowerBehavior(BRAKE);
+        }
 
-        if (gamepad1.a) switchdrivemode(HOLDPOINT);
-        else if (gamepad1.aWasReleased()) switchdrivemode(drivemodeSave);
+        if (gamepad1.aWasPressed()) {
+            switchdrivemode(HOLDPOINT);
 
-       if (leftTrigger1Down()) switchdrivemode(FARLAUNCH);
-       else if (gamepad1.leftTriggerWasReleased()) switchdrivemode(drivemodeSave);
+        } else if (gamepad1.aWasReleased()) {
+            follower.breakFollowing();
+            switchdrivemode(drivemodeSave);
+        }
 
-        if (rightTrigger1Down()) switchdrivemode(CLOSELAUNCH);
-        else if (gamepad1.rightTriggerWasReleased()) switchdrivemode(drivemodeSave);
+        if (gamepad1.leftTriggerWasPressed()) {
+            switchdrivemode(FARLAUNCH);
+        } else if (gamepad1.leftTriggerWasReleased()) {
+            follower.breakFollowing();
+            switchdrivemode(drivemodeSave);
+        }
 
-        if (gamepad1.left_bumper) switchdrivemode(LEVER);
-        else if (gamepad1.leftBumperWasReleased()) switchdrivemode(drivemodeSave);
+        if (gamepad1.rightTriggerWasPressed()) {
+            switchdrivemode(CLOSELAUNCH);
+        } else if (gamepad1.rightTriggerWasReleased()) {
+            follower.breakFollowing();
+            switchdrivemode(drivemodeSave);
+        }
 
-        if (gamepad1.right_bumper) switchdrivemode(PARK);
-        else if (gamepad1.rightBumperWasReleased()) switchdrivemode(drivemodeSave);
+        if (gamepad1.leftBumperWasPressed()) {
+            switchdrivemode(LEVER);
+        } else if (gamepad1.leftBumperWasReleased()) {
+            follower.breakFollowing();
+            switchdrivemode(drivemodeSave);
+        }
 
-
-
-
+        if (gamepad1.rightBumperWasPressed()) {
+            switchdrivemode(PARK);
+        } else if (gamepad1.rightBumperWasReleased()) {
+            follower.breakFollowing();
+            switchdrivemode(drivemodeSave);
+        }
 
         //toggle between centric modes
         if (gamepad1.xWasPressed() & !gamepad1.y) {
-            switch(drivemodeSave) {
+            switch (drivemodeSave) {
                 case ROBOTCENTRIC:
                     drivemodeSave = FIELDCENTRIC;
                     break;
@@ -332,9 +390,6 @@ public class Basic_TeleOp_NewBot extends OpMode {
             }
             switchdrivemode(drivemodeSave);
         }
-
-
-
 
 
         switch (robot.driveMode) {
@@ -350,69 +405,37 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 singleJoystickDrive();
                 break;
             case AUTOTARGET:
-                if (gamepad1.bWasPressed()) {
-                    if (robot.alliance == RED) {
-                        robot.alliance = BLUE;
-                    } else if (robot.alliance == BLUE) {
-                        robot.alliance = RED;
-                    }
-                }
-                follower.setTeleOpDrive(
-                        -gamepad1.left_stick_y,
-                        -gamepad1.left_stick_x,
-                        -gamepad1.right_stick_x,
-                        false,
-                        Math.toRadians(90));
                 if (robot.alliance == RED) {
                     heading = Math.atan2(144 - y, 144 - x);
-                    follower.holdPoint(new BezierPoint(new Pose(x, y)), heading);
-                    follower.followPath(goTo(follower.getPose().getX(), follower.getPose().getY(), heading));
                 }
                 if (robot.alliance == BLUE) {
                     heading = Math.atan2(144 - y, 0 - x);
-                    follower.followPath(goTo(follower.getPose().getX(), follower.getPose().getY(), heading));
                 }
                 break;
             case HOLDPOINT:
-                follower.holdPoint(new BezierPoint(follower.getPose()), follower.getHeading());
                 break;
             case FARLAUNCH:
-                /*if (robot.alliance == RED) {
-                    follower.followPath(goTo());
-                }
-                if (robot.alliance == BLUE) {
-                    follower.followPath(goTo());
-                }*/
                 break;
             case CLOSELAUNCH:
-                /*if (robot.alliance == RED) {
-                    follower.followPath(goTo());
-                }
-                if (robot.alliance == BLUE) {
-                    follower.followPath(goTo());
-                }*/
                 break;
             case LEVER:
-                if (robot.alliance == RED) {
-                    follower.followPath(goTo(12, 59, 320));
-                }
-                if (robot.alliance == BLUE) {
-                    follower.followPath(goTo(132, 59, 220));
-                }
                 break;
             case PARK:
-                if (robot.alliance == RED) {
-                    follower.followPath(goTo(38.5, 31, 180));
-                }
-                if (robot.alliance == BLUE) {
-                    follower.followPath(goTo(105.5,31 ,0));
-                }
                 break;
         }
-}
+    }
 
-private PathChain goTo(double locationX, double locationY , double heading) {
-    Pose pose = new Pose(locationX, locationY, heading);
+    private void switchAlliance() {
+        if(gamepad1.touchpadWasPressed())
+            if (robot.alliance == RED) {
+                robot.alliance = BLUE;
+            } else if (robot.alliance == BLUE) {
+                robot.alliance = RED;
+            }
+        }
+
+    private PathChain goTo(double locationX, double locationY , double heading) {
+        Pose pose = new Pose(locationX, locationY, Math.toRadians(heading));
         return follower.pathBuilder()
                 .addPath(new BezierLine(follower.getPose(), pose))
                 .setLinearHeadingInterpolation(follower.getHeading(), Math.toRadians(heading))

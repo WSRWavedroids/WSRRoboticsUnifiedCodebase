@@ -12,7 +12,7 @@ public class PedroBlueLaunchzone12Ball extends PedroBlueFarlaunch12Ball {
     @Override
     public void init() {
         super.init();
-        follower.setPose(new Pose(23.75, 130.5, Math.toRadians(143.5)));
+        follower.setPose(new Pose(23.75, 130.5, Math.toRadians(138)));
         robot.initLimelight();
         robot.limelightTelemetry();
     }
@@ -23,27 +23,27 @@ public class PedroBlueLaunchzone12Ball extends PedroBlueFarlaunch12Ball {
                                 new BezierLine(
                                         new Pose(23.750, 130.500),
 
-                                        new Pose(62.300, 94.000)
+                                        new Pose(58.000, 96.000)
                                 )
-                        ).setLinearHeadingInterpolation(Math.toRadians(143.5), Math.toRadians(135))
+                        ).setLinearHeadingInterpolation(Math.toRadians(138), Math.toRadians(137.5))
 
                         .build();
 
                 IntakeSetup1 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(62.300, 94.000),
+                                        new Pose(58.000, 96.000),
 
-                                        new Pose(44.000, 84.000)
+                                        new Pose(41.000, 84.000)
                                 )
-                        ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(360))
+                        ).setLinearHeadingInterpolation(Math.toRadians(137.5), Math.toRadians(360))
 
                         .build();
 
                 Intake1 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(44.000, 84.000),
+                                        new Pose(41.000, 84.000),
 
-                                        new Pose(17.5, 84.000)
+                                        new Pose(17.000, 84.000)
                                 )
                         ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
 
@@ -51,29 +51,29 @@ public class PedroBlueLaunchzone12Ball extends PedroBlueFarlaunch12Ball {
 
                 Launch1 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(23.100, 84.000),
+                                        new Pose(17.000, 84.000),
 
-                                        new Pose(62.300, 94.000)
+                                        new Pose(58.000, 96.000)
                                 )
-                        ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(135))
+                        ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(137.5))
 
                         .build();
 
                 IntakeSetup2 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(62.300, 94.000),
+                                        new Pose(58.000, 96.000),
 
-                                        new Pose(44.000, 60.000)
+                                        new Pose(41.000, 60.000)
                                 )
-                        ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(360))
+                        ).setLinearHeadingInterpolation(Math.toRadians(137.5), Math.toRadians(360))
 
                         .build();
 
                 Intake2 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(44.000, 60.000),
+                                        new Pose(41.000, 60.000),
 
-                                        new Pose(8.5, 60.000)
+                                        new Pose(9.000, 60.000)
                                 )
                         ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
 
@@ -81,29 +81,29 @@ public class PedroBlueLaunchzone12Ball extends PedroBlueFarlaunch12Ball {
 
                 Launch2 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(23.100, 60.000),
+                                        new Pose(9.000, 60.000),
 
-                                        new Pose(62.300, 94.000)
+                                        new Pose(58.000, 96.000)
                                 )
-                        ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(135))
+                        ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(137.5))
 
                         .build();
 
                 IntakeSetup3 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(62.300, 94.000),
+                                        new Pose(58.000, 96.000),
 
-                                        new Pose(44.000, 35.700)
+                                        new Pose(41.000, 35.700)
                                 )
-                        ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(360))
+                        ).setLinearHeadingInterpolation(Math.toRadians(137.5), Math.toRadians(360))
 
                         .build();
 
                 Intake3 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(44.000, 35.700),
+                                        new Pose(41.000, 35.700),
 
-                                        new Pose(8.500, 35.700)
+                                        new Pose(9.000, 35.700)
                                 )
                         ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(360))
 
@@ -111,25 +111,26 @@ public class PedroBlueLaunchzone12Ball extends PedroBlueFarlaunch12Ball {
 
                 Launch3 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(8.500, 35.700),
+                                        new Pose(9.000, 35.700),
 
-                                        new Pose(62.300, 94.000)
+                                        new Pose(58.000, 96.000)
                                 )
-                        ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(135))
+                        ).setLinearHeadingInterpolation(Math.toRadians(360), Math.toRadians(137.5))
 
                         .build();
 
                 Unpark = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(62.300, 94.000),
+                                        new Pose(58.000, 96.000),
 
                                         new Pose(45.700, 79.800)
                                 )
-                        ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(135))
+                        ).setLinearHeadingInterpolation(Math.toRadians(137.5), Math.toRadians(135))
 
                         .build();
             }
         }
+
     @Override
     public void start() {
         runPath = new PedroBlueLaunchzone12Ball.Paths(follower);
