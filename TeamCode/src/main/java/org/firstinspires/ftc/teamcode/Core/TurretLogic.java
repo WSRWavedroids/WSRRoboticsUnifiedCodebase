@@ -21,7 +21,7 @@ public class TurretLogic {
     public static double tolerance;
     double turretDegreesFromTarget;
 
-    public static double upperLimit = 150;
+    public static double upperLimit = 138;
     public static double lowerLimit = -90;
     public static double manualOverridePositionInDegs = 0;
     public boolean goodAngle = false;
@@ -226,7 +226,7 @@ public class TurretLogic {
     }
 
     public double degreesToServoUnits(double degrees) {
-        final double zeroLimitDegrees = 145;
+        final double zeroLimitDegrees = 138;
         final double halfPointDegrees = 0;
         final double oneLimitDegrees = -90;
 
@@ -239,7 +239,7 @@ public class TurretLogic {
     }
 
     public static double servoUnitsToDegrees(double servoUnits) {
-        final double zeroLimitDegrees = 145;
+        final double zeroLimitDegrees = 138;
         final double halfPointDegrees = 0;
         final double oneLimitDegrees = -90;
 
