@@ -108,12 +108,12 @@ public class TurretLogic {
             if(robot.alliance.equals(BLUE))
             {
                 //gets the raw angle without accounting for heading
-                rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 12), (robot.turretPosition.y - 132)));
+                rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 6), (robot.turretPosition.y - 138)));
             }
             else
             {
                 //gets the raw angle without accounting for heading
-                rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 132), (robot.turretPosition.y - 132)));
+                rawAngle = Math.toDegrees(Math.atan2((robot.turretPosition.x - 138), (robot.turretPosition.y - 138)));
                 //Corrects for heading then hands off to safeAngle logic
             }
 

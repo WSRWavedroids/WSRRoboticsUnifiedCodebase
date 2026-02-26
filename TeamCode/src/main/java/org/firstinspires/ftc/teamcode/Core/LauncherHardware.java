@@ -57,7 +57,7 @@ public class LauncherHardware {
 
     public static final int ticksPerRevolution = 28;
     public static final int revolutionsPerSecond = 100;
-    public static double toleranceRange = 50;
+    public static double toleranceRange = 40;
 
     public static double velocityTarget;
     public double percentSpeed;
@@ -324,7 +324,11 @@ public class LauncherHardware {
             input /= 39.37; //convert to meters
 
         }
-        return (43.75095 * Math.pow(input, 2)) + (-73.54794 * input) + 1297.48932 - 20;
+        return (21.20299 * Math.pow(input, 4)) +
+                (-233.8409 * Math.pow(input, 3)) +
+                (966.85113 * Math.pow(input, 2)) +
+                (-1610.42433 * input) +
+                2186.7502;
     }
 
     public boolean launcherOn() {

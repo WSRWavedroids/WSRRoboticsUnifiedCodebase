@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Configurable // Panels
 public class RedBack12Ball extends BlueBack12Ball {
 
-    private Pose startPose = new Pose(144-56.5, 9.200, Math.toRadians(0));
+    private Pose startPose = new Pose(84.25, 9.200, Math.toRadians(0));
 
     public void init() {
 
@@ -78,7 +78,7 @@ public class RedBack12Ball extends BlueBack12Ball {
 
             LineUpWithClose = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(144-56.500, 9.200),
+                                    new Pose(85.25, 9.200),
 
                                     new Pose(144-42.000, 36.000)
                             )

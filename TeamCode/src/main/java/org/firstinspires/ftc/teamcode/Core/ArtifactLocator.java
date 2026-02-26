@@ -122,7 +122,7 @@ public class ArtifactLocator {
 
 
         double greenMinHue = 130;
-        double greenMaxHue = 160;
+        double greenMaxHue = 165;
         double greenMinValue = 0.3;
         double greenMaxValue = 1.2;
 
@@ -144,7 +144,7 @@ public class ArtifactLocator {
             rightValue = rightHSVValues[2];
         }
 
-        if (leftResetTimer.seconds() < 10) {
+        if (leftResetTimer.seconds() < 5) {
             if (leftHue > purpleMinHue && leftHue < purpleMaxHue &&
                     leftValue > purpleMinValue && leftValue < purpleMaxValue) {
                 return PURPLE;
@@ -154,7 +154,7 @@ public class ArtifactLocator {
             }
         }
 
-        if (rightResetTimer.seconds() < 10) {
+        if (rightResetTimer.seconds() < 5) {
             if(rightHue > purpleMinHue && rightHue < purpleMaxHue &&
                     rightValue > purpleMinValue && rightValue < purpleMaxValue) {
                 return PURPLE;
