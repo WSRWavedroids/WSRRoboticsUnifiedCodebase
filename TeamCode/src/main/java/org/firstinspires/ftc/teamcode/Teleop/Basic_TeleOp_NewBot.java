@@ -246,14 +246,20 @@ public class Basic_TeleOp_NewBot extends OpMode {
         }*/
 
     //auto locking and field centric
-    private boolean cancelSpecialOPs(Robot.driveMode mode){
-        if (robot.driveMode == mode){
+    private void resetOP() {
+        if (cancelSpecialOPs()) {
+            follower.breakFollowing();
+            switchdrivemode(drivemodeSave);
+        }
+    }
+
+    private boolean cancelSpecialOPs(){
+        if (anyButtonPressed1() & !(robot.driveMode == FIELDCENTRIC) & !(robot.driveMode == ROBOTCENTRIC)){
             return true;
         } else {
             return false;
         }
     }
-
 
     private void switchdrivemode(Robot.driveMode mode) {
         switch (mode) {
@@ -330,15 +336,13 @@ public class Basic_TeleOp_NewBot extends OpMode {
         double multiplier = 1;
         double x = follower.getPose().getX();
         double y = follower.getPose().getX();
+        double opWasSwitched = 0;
 
-        if (anyButtonPressed1() & !(robot.driveMode == FIELDCENTRIC) & !(robot.driveMode == ROBOTCENTRIC)){
-            follower.breakFollowing();
-            switchdrivemode(drivemodeSave);
-        }
 
         //extra button functions
-        if (gamepad1.yWasPressed() & !cancelSpecialOPs(AUTOTARGET)) {
+        if (gamepad1.yWasPressed()) {
             switchdrivemode(AUTOTARGET);
+            opWasSwitched = 1;
             if (robot.alliance == RED) {
                 heading = Math.atan2(144 - y, 144 - x);
                 follower.holdPoint(new BezierPoint( follower.getPose()), heading);
@@ -347,52 +351,58 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 heading = Math.atan2(144 - y, 0 - x);
                 follower.holdPoint(new BezierPoint( follower.getPose()), heading);
             }
-        } else {
-            follower.breakFollowing();
+        } /*else if (gamepad1.yWasReleased()) {
             switchdrivemode(drivemodeSave);
-        }
+            robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
+            robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.backRightDrive.setZeroPowerBehavior(BRAKE);
+        }*/
 
-
-        if (gamepad1.aWasPressed() & !cancelSpecialOPs(HOLDPOINT)) {
+        if (gamepad1.aWasPressed()) {
             switchdrivemode(HOLDPOINT);
-        } else {
+            opWasSwitched = 1;
+        }/* else if (gamepad1.aWasReleased()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
-        }
+        }*/
 
-
-        if (gamepad1.leftTriggerWasPressed() & !cancelSpecialOPs(FARLAUNCH)) {
+        if (gamepad1.leftTriggerWasPressed()) {
             switchdrivemode(FARLAUNCH);
-        } else {
+            opWasSwitched = 1;
+        } /*else if (gamepad1.leftTriggerWasReleased()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
-        }
+        }*/
 
-
-        if (gamepad1.rightTriggerWasPressed() & !cancelSpecialOPs(CLOSELAUNCH)) {
+        if (gamepad1.rightTriggerWasPressed()) {
             switchdrivemode(CLOSELAUNCH);
-        } else {
+            opWasSwitched = 1;
+        } /*else if (gamepad1.rightTriggerWasReleased()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
-        }
+        }*/
 
-
-        if (gamepad1.leftBumperWasPressed() & !cancelSpecialOPs(LEVER)) {
+        if (gamepad1.leftBumperWasPressed()) {
             switchdrivemode(LEVER);
-        } else {
+            opWasSwitched = 1;
+        } /*else if (gamepad1.leftBumperWasReleased()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
-        }
+        }*/
 
-
-        if (gamepad1.rightBumperWasPressed() & !cancelSpecialOPs(PARK)) {
+        if (gamepad1.rightBumperWasPressed()) {
             switchdrivemode(PARK);
-        } else {
+            opWasSwitched = 1;
+        } /*else if (gamepad1.rightBumperWasReleased()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
+        }*/
+
+
+        if (opWasSwitched == 0) {
+            resetOP();
         }
-
-
 
         //toggle between centric modes
         if (gamepad1.xWasPressed() & !gamepad1.y) {
