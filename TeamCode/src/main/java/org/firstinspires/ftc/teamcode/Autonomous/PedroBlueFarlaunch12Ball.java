@@ -222,7 +222,8 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
             case INTAKE1:
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
-                    robot.intake3.setPower(-1);
+                    robot.intake3.setPower(1);
+                    robot.intake2.setPower(-1);
                     robot.launchLeft.setPower(0);
                     robot.launchRight.setPower(0);
                     follower.setMaxPower(2);
@@ -235,6 +236,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(0);
                     robot.intake3.setPower(0);
+                    robot.intake2.setPower(0);
                     nextStep(SHOOT1BALL1);
                 }
                 break;
@@ -266,7 +268,8 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
             case INTAKE2:
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
-                    robot.intake3.setPower(-1);
+                    robot.intake3.setPower(1);
+                    robot.intake2.setPower(-1);
                     robot.launchLeft.setPower(0);
                     robot.launchRight.setPower(0);
                     follower.setMaxPower(2);
@@ -279,6 +282,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(0);
                     robot.intake3.setPower(0);
+                    robot.intake2.setPower(0);
                     nextStep(SHOOT2BALL1);
                 }
                 break;
@@ -309,7 +313,8 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
             case INTAKE3:
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
-                    robot.intake3.setPower(-1);
+                    robot.intake3.setPower(1);
+                    robot.intake2.setPower(-1);
                     robot.launchLeft.setPower(0);
                     robot.launchRight.setPower(0);
                     follower.setMaxPower(2);
@@ -322,6 +327,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(0);
                     robot.intake3.setPower(0);
+                    robot.intake2.setPower(0);
                     nextStep(SHOOT3BALL1);
                 }
                 break;

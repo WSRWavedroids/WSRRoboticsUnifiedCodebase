@@ -421,15 +421,15 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
             robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
             robot.backRightDrive.setZeroPowerBehavior(BRAKE);
-        }
+        }*/
 
         if (gamepad1.aWasPressed()) {
             switchdrivemode(HOLDPOINT);
             opWasSwitched = 1;
-        } else if (gamepad1.aWasReleased()) {
+        } /*else if (gamepad1.aWasReleased()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
-        }*/
+        } */
 
         if (gamepad1.leftTriggerWasPressed()) {
             switchdrivemode(FARLAUNCH);
