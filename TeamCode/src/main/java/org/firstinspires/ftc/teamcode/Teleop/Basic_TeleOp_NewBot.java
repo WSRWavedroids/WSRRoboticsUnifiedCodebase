@@ -423,7 +423,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             robot.backRightDrive.setZeroPowerBehavior(BRAKE);
         }*/
 
-        if (gamepad1.aWasPressed()) {
+        /*if (gamepad1.aWasPressed()) {
             switchdrivemode(HOLDPOINT);
             opWasSwitched = 1;
         } /*else if (gamepad1.aWasReleased()) {
@@ -431,7 +431,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             switchdrivemode(drivemodeSave);
         } */
 
-        if (gamepad1.leftTriggerWasPressed()) {
+        /*if (gamepad1.leftTriggerWasPressed()) {
             switchdrivemode(FARLAUNCH);
             opWasSwitched = 1;
             switchOPcancel(58.1, 16.6, 85.9, 16.6);
@@ -441,7 +441,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             switchdrivemode(drivemodeSave);
         }*/
 
-        if (gamepad1.rightTriggerWasPressed()) {
+        /*if (gamepad1.rightTriggerWasPressed()) {
             switchdrivemode(CLOSELAUNCH);
             opWasSwitched = 1;
             switchOPcancel(100, 135, 39, 135);
@@ -451,7 +451,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             switchdrivemode(drivemodeSave);
         }*/
 
-        if (gamepad1.leftBumperWasPressed()) {
+        /*if (gamepad1.leftBumperWasPressed()) {
             switchdrivemode(LEVER);
             opWasSwitched = 1;
             switchOPcancel(132, 59, 12, 59);
@@ -460,7 +460,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
             switchdrivemode(drivemodeSave);
         }*/
 
-        if (gamepad1.rightBumperWasPressed()) {
+        /*if (gamepad1.rightBumperWasPressed()) {
             switchdrivemode(PARK);
             opWasSwitched = 1;
             switchOPcancel(102, 30.5, 38, 30.5);
