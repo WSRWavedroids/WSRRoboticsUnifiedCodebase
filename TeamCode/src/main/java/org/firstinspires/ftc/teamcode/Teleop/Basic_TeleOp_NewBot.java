@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.FLOAT;
 import static org.firstinspires.ftc.teamcode.Robot.allianceSides.BLUE;
 import static org.firstinspires.ftc.teamcode.Robot.allianceSides.RED;
 import static org.firstinspires.ftc.teamcode.Robot.driveMode.AUTOTARGET;
@@ -151,6 +152,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         follower.setMaxPower(1);
         driveMode();
         switchAlliance();
+        bandaid();
         //So Begins the input chain. At least try a bit to organise by driver
 
         //Driver 2
@@ -207,6 +209,10 @@ public class Basic_TeleOp_NewBot extends OpMode {
         telemetry.addData("current X", follower.getPose().getX());
         telemetry.addData("current Y", follower.getPose().getY());
         telemetry.addData("current heading", follower.getPose().getHeading());
+        telemetry.addData("FL", robot.frontLeftDrive.getZeroPowerBehavior());
+        telemetry.addData("FR", robot.frontRightDrive.getZeroPowerBehavior());
+        telemetry.addData("BL", robot.backLeftDrive.getZeroPowerBehavior());
+        telemetry.addData("BR", robot.backRightDrive.getZeroPowerBehavior());
 
         Robot.panelsTelemetry.addData("velocityRight", -robot.launchRight.getVelocity());
         Robot.panelsTelemetry.addData("velocityLeft", -robot.launchLeft.getVelocity());
@@ -246,16 +252,61 @@ public class Basic_TeleOp_NewBot extends OpMode {
         }*/
 
     //auto locking and field centric
+    private void bandaid() {
+        if (robot.driveMode == ROBOTCENTRIC && robot.frontLeftDrive.getZeroPowerBehavior() == FLOAT) {
+            robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
+            robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.backRightDrive.setZeroPowerBehavior(BRAKE);
+        }
+        if (robot.driveMode == ROBOTCENTRIC && robot.frontRightDrive.getZeroPowerBehavior() == FLOAT) {
+            robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
+            robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.backRightDrive.setZeroPowerBehavior(BRAKE);
+        }
+        if (robot.driveMode == ROBOTCENTRIC && robot.backLeftDrive.getZeroPowerBehavior() == FLOAT) {
+            robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
+            robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.backRightDrive.setZeroPowerBehavior(BRAKE);
+        }
+        if (robot.driveMode == ROBOTCENTRIC && robot.backRightDrive.getZeroPowerBehavior() == FLOAT) {
+            robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
+            robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.backRightDrive.setZeroPowerBehavior(BRAKE);
+        }
+    }
+    private void switchOPcancel(double xblue, double yblue, double xred, double yred) {
+        if (robot.alliance == RED) {
+            if (Math.abs(follower.getPose().getX() - xred) <= 5 && Math.abs(follower.getPose().getY() - yred) <= 5) {
+                follower.breakFollowing();
+            }
+        }
+        if (robot.alliance == BLUE) {
+            if (Math.abs(follower.getPose().getX() - xblue) <= 5 && Math.abs(follower.getPose().getY() - yblue) <= 5) {
+                follower.breakFollowing();
+            }
+        }
+
+    }
+
     private void resetOP() {
         if (cancelSpecialOPs()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
+            telemetry.addLine("OP was reset" );
         }
     }
 
     private boolean cancelSpecialOPs(){
-        if (anyButtonPressed1() & !(robot.driveMode == FIELDCENTRIC) & !(robot.driveMode == ROBOTCENTRIC)){
-            return true;
+        if (robot.driveMode != FIELDCENTRIC && robot.driveMode != ROBOTCENTRIC) {
+            if (anyButtonPressed1()) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -274,20 +325,27 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
             case FIELDCENTRIC:
                 robot.driveMode = FIELDCENTRIC;
+                follower.breakFollowing();
                 follower.startTeleOpDrive();
                 break;
 
             case AUTOTARGET:
                 robot.driveMode = AUTOTARGET;
+                follower.breakFollowing();
+                follower.startTeleOpDrive();
                 break;
 
             case HOLDPOINT:
                 robot.driveMode = HOLDPOINT;
+                follower.breakFollowing();
+                follower.startTeleOpDrive();
                 follower.holdPoint(new BezierPoint(follower.getPose()), follower.getHeading());
                 break;
 
             case FARLAUNCH:
                 robot.driveMode = FARLAUNCH;
+                follower.breakFollowing();
+                follower.startTeleOpDrive();
                 if (robot.alliance == RED) {
                     follower.followPath(goTo(85.9, 16.6, 67.5));
                 }
@@ -298,6 +356,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
             case CLOSELAUNCH:
                 robot.driveMode = CLOSELAUNCH;
+                follower.breakFollowing();
+                follower.startTeleOpDrive();
                 if (robot.alliance == RED) {
                     follower.followPath(goTo(39, 135, 0));
                 }
@@ -308,6 +368,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
             case LEVER:
                 robot.driveMode = LEVER;
+                follower.breakFollowing();
+                follower.startTeleOpDrive();
                 if (robot.alliance == RED) {
                     follower.followPath(goTo(12, 59, 320));
                 }
@@ -318,6 +380,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
             case PARK:
                 robot.driveMode = PARK;
+                follower.breakFollowing();
+                follower.startTeleOpDrive();
                 if (robot.alliance == RED) {
                     follower.followPath(goTo(38, 30.5, 180));
                 }
@@ -340,7 +404,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
 
 
         //extra button functions
-        if (gamepad1.yWasPressed()) {
+        /*if (gamepad1.yWasPressed()) {
             switchdrivemode(AUTOTARGET);
             opWasSwitched = 1;
             if (robot.alliance == RED) {
@@ -351,18 +415,18 @@ public class Basic_TeleOp_NewBot extends OpMode {
                 heading = Math.atan2(144 - y, 0 - x);
                 follower.holdPoint(new BezierPoint( follower.getPose()), heading);
             }
-        } /*else if (gamepad1.yWasReleased()) {
+        } else if (gamepad1.yWasReleased()) {
             switchdrivemode(drivemodeSave);
             robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
             robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
             robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
             robot.backRightDrive.setZeroPowerBehavior(BRAKE);
-        }*/
+        }
 
         if (gamepad1.aWasPressed()) {
             switchdrivemode(HOLDPOINT);
             opWasSwitched = 1;
-        }/* else if (gamepad1.aWasReleased()) {
+        } else if (gamepad1.aWasReleased()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
         }*/
@@ -370,6 +434,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         if (gamepad1.leftTriggerWasPressed()) {
             switchdrivemode(FARLAUNCH);
             opWasSwitched = 1;
+            switchOPcancel(58.1, 16.6, 85.9, 16.6);
+
         } /*else if (gamepad1.leftTriggerWasReleased()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
@@ -378,6 +444,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         if (gamepad1.rightTriggerWasPressed()) {
             switchdrivemode(CLOSELAUNCH);
             opWasSwitched = 1;
+            switchOPcancel(100, 135, 39, 135);
+
         } /*else if (gamepad1.rightTriggerWasReleased()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
@@ -386,6 +454,7 @@ public class Basic_TeleOp_NewBot extends OpMode {
         if (gamepad1.leftBumperWasPressed()) {
             switchdrivemode(LEVER);
             opWasSwitched = 1;
+            switchOPcancel(132, 59, 12, 59);
         } /*else if (gamepad1.leftBumperWasReleased()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
@@ -394,6 +463,8 @@ public class Basic_TeleOp_NewBot extends OpMode {
         if (gamepad1.rightBumperWasPressed()) {
             switchdrivemode(PARK);
             opWasSwitched = 1;
+            switchOPcancel(102, 30.5, 38, 30.5);
+
         } /*else if (gamepad1.rightBumperWasReleased()) {
             follower.breakFollowing();
             switchdrivemode(drivemodeSave);
