@@ -189,7 +189,7 @@ public class Vortex_Teleop_Decode extends OpMode {
      */
     public void init_loop() {
         telemetry.addData("HYPE", "ARE! YOU! READY?!?!?!?!");
-        doTelemetryStuff();
+        //doTelemetryStuff();
         telemetry.update();
     }
 
@@ -262,7 +262,10 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         //fps.update();
 
-        //doTelemetryStuff();
+        if (gamepad2.right_stick_button) {
+            doTelemetryStuff();
+        }
+
 
         if (gamepad2.touchpad) {
             killSwitchActivated = true;
