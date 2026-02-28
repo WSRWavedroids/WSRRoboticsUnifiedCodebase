@@ -57,7 +57,7 @@ public class LauncherHardware {
 
     public static final int ticksPerRevolution = 28;
     public static final int revolutionsPerSecond = 100;
-    public static double toleranceRange = 50;
+    public static double toleranceRange = 40;
 
     public static double velocityTarget;
     public double percentSpeed;
