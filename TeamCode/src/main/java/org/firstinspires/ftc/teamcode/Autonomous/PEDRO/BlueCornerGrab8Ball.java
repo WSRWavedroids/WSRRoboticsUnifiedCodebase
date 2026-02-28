@@ -1,19 +1,19 @@
 package org.firstinspires.ftc.teamcode.Autonomous.PEDRO;
 
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.EAT_OVERFLOW;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.END;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.FIRE_1;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.FIRE_3;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.FIRE_OVERFLOW;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.GRAB_FIRST;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.GRAB_SECOND;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.GRAB_THIRD;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.LINE_UP_2;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.MOVE_TO_FIRE_2;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.MOVE_TO_FIRE_3;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.MOVE_TO_FIRE_OVERFLOW;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.START;
-import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab9Ball.StepsForCornerGrab.UNPARK;
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.EAT_OVERFLOW;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.END;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.FIRE_1;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.FIRE_3;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.FIRE_OVERFLOW;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.GRAB_FIRST;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.GRAB_SECOND;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.LINE_UP_2;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.MOVE_TO_FIRE_2;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.MOVE_TO_FIRE_3;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.MOVE_TO_FIRE_OVERFLOW;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.START;
+import static org.firstinspires.ftc.teamcode.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.UNPARK;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.GREEN;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.PURPLE;
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.BLUE;
@@ -38,9 +38,9 @@ import org.firstinspires.ftc.teamcode.Core.ArtifactLocator;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 
-@Autonomous(name = "Blue Corner Grab 9 Ball", group = "1. FABIO WITH PEDRO")
+@Autonomous(name = "Blue Corner Grab 8 Ball", group = "1. FABIO WITH PEDRO")
 @Configurable // Panels
-public class BlueCornerGrab9Ball extends OpMode {
+public class BlueCornerGrab8Ball extends OpMode {
 
     public Robot robot = null;
     public AutonomousPlusPLUS auto = null;
@@ -170,7 +170,7 @@ public class BlueCornerGrab9Ball extends OpMode {
                             new BezierLine(
                                     new Pose(56.500, 9.200),
 
-                                    new Pose(56.000, 36.000)
+                                    new Pose(43, 36.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -219,8 +219,8 @@ public class BlueCornerGrab9Ball extends OpMode {
             GrabLastCornerBall = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(11.718, 11.494),
-                                    new Pose(22.900, 10.556),
-                                    new Pose(12.176, 9.500)
+                                    new Pose(28, 18),
+                                    new Pose(11.718, 11)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(200), Math.toRadians(180))
 
@@ -228,11 +228,11 @@ public class BlueCornerGrab9Ball extends OpMode {
 
             MoveToFireCornerBalls = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(12.176, 9.500),
+                                    new Pose(11.718, 16.953),
 
                                     new Pose(57.500, 17.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(200), Math.toRadians(180))
 
                     .build();
 
@@ -356,19 +356,21 @@ public class BlueCornerGrab9Ball extends OpMode {
                 if(robot.queue.noBallsQueued)
                 {
                     eat = true;
+                    follower.setMaxPower(0.65);
                     follower.followPath(paths.GrabFirstCornerBall);
                     setCurrentStep(GRAB_SECOND);
-                    break;
+
                 }
+                break;
             case GRAB_SECOND:
                 if (!follower.isBusy())
                 {
                     eat = true;
                     follower.followPath(paths.GrabSecondCornerBall);
-                    setCurrentStep(GRAB_THIRD);
+                    setCurrentStep(MOVE_TO_FIRE_3);
                     break;
                 }
-            case GRAB_THIRD:
+            case GRAB_THIRD://skipping for now
                 if(!follower.isBusy())
                 {
                     eat = true;
@@ -379,6 +381,7 @@ public class BlueCornerGrab9Ball extends OpMode {
             case MOVE_TO_FIRE_3:
                 if(!follower.isBusy())
                 {
+                    follower.setMaxPower(1);
                     eat = true;
                     follower.followPath(paths.MoveToFireCornerBalls);
                     setCurrentStep(FIRE_3);
@@ -458,6 +461,17 @@ public class BlueCornerGrab9Ball extends OpMode {
     {
         if(opmodeTimer.getElapsedTimeSeconds() >= 29.5)
         {
+            follower.breakFollowing();
+            robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
+            robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.backRightDrive.setZeroPowerBehavior(BRAKE);
+            robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
+
+            robot.frontRightDrive.setPower(0);
+            robot.backLeftDrive.setPower(0);
+            robot.backRightDrive.setPower(0);
+            robot.frontLeftDrive.setPower(0);
+
             robot.turret.updateTurretPositionXY();
             setCurrentStep(END);
         }

@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Core.TurretLogic;
 
 @Autonomous(name = "Red Corner Grab 9 Ball", group = "1. FABIO WITH PEDRO")
 @Configurable // Panels
-public class RedCornerGrab9Ball extends BlueCornerGrab9Ball {
+public class RedCornerGrab8Ball extends BlueCornerGrab8Ball {
 
     private Pose startPose = new Pose(144-56.5, 9.200, Math.toRadians(0));
 
@@ -69,7 +69,7 @@ public class RedCornerGrab9Ball extends BlueCornerGrab9Ball {
                             new BezierLine(
                                     new Pose(144-56.500, 9.200),
 
-                                    new Pose(144-56.000, 36.000)
+                                    new Pose(144-43, 36.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 
@@ -77,7 +77,7 @@ public class RedCornerGrab9Ball extends BlueCornerGrab9Ball {
 
             GrabClose = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(144-56.000, 36.000),
+                                    new Pose(144-43, 36.000),
 
                                     new Pose(144-11.500, 36.000)
                             )

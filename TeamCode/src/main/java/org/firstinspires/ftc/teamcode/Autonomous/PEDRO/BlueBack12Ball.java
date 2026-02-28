@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous.PEDRO;
 
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 import static org.firstinspires.ftc.teamcode.Core.ArtifactLocator.SlotState.*;
 import static org.firstinspires.ftc.teamcode.Core.Robot.allianceSides.BLUE;
 import static org.firstinspires.ftc.teamcode.Core.Robot.patternColors.*;
@@ -194,9 +195,9 @@ public class BlueBack12Ball extends OpMode {
                     .build();
 
             GrabMiddle = follower.pathBuilder().addPath(
-                            new BezierCurve(
+                            new BezierLine(
                                     new Pose(42.000, 60.000),
-                                    new Pose(36.544, 62.388),
+
                                     new Pose(9.747, 57.576)
                             )
                     ).setConstantHeadingInterpolation(Math.toRadians(180))
@@ -422,6 +423,17 @@ public class BlueBack12Ball extends OpMode {
     {
         if(opmodeTimer.getElapsedTimeSeconds() >= 29.5)
         {
+            follower.breakFollowing();
+            robot.frontRightDrive.setZeroPowerBehavior(BRAKE);
+            robot.backLeftDrive.setZeroPowerBehavior(BRAKE);
+            robot.backRightDrive.setZeroPowerBehavior(BRAKE);
+            robot.frontLeftDrive.setZeroPowerBehavior(BRAKE);
+
+            robot.frontRightDrive.setPower(0);
+            robot.backLeftDrive.setPower(0);
+            robot.backRightDrive.setPower(0);
+            robot.frontLeftDrive.setPower(0);
+
             robot.turret.updateTurretPositionXY();
             setCurrentStep(END);
         }

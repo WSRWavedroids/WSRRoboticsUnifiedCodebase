@@ -249,7 +249,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         switchAlliance();
 
-        turretAssist();
+        //turretAssist();
 
         toggleTurretFullMode();
 
@@ -262,7 +262,7 @@ public class Vortex_Teleop_Decode extends OpMode {
 
         //fps.update();
 
-        doTelemetryStuff();
+        //doTelemetryStuff();
 
         if (gamepad2.touchpad) {
             killSwitchActivated = true;
@@ -538,11 +538,11 @@ public class Vortex_Teleop_Decode extends OpMode {
     }
 
     private void driveSpeed() {
-        if (gamepad1.dpad_up || gamepad1.right_trigger >= 0.5) {
+        if (gamepad1.dpad_up || gamepad1.right_trigger >= 0.25) {
             speed = 1;
         } else if (gamepad1.dpad_down) {
             speed = 0.25;
-        } else if (gamepad1.dpad_left || gamepad1.left_trigger >= 0.5) {
+        } else if (gamepad1.dpad_left || gamepad1.left_trigger >= 0.25) {
             speed = 0.5;
         } else if (gamepad1.dpad_right) {
             speed = 0.75;
@@ -629,11 +629,6 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Current Position", robot.sorterHardware.motor.getCurrentPosition());
         telemetry.addData("Target Position", robot.sorterHardware.reference);
         telemetry.addData("Blender in position", robot.sorterHardware.positionedCheck());
-        telemetry.addData("Current Load Slot", robot.sorterLogic.findCurrentSlotInPosition(LOAD).getName());
-        telemetry.addData("Current Fire Slot", robot.sorterLogic.findCurrentSlotInPosition(FIRE).getName());
-        telemetry.addData("Flipper in positon", robot.sorterHardware.flickyInPosition());
-        telemetry.addData("Flipper analog position", robot.flickyFeedback.getVoltage());
-        telemetry.addData("Flipper target position", robot.flicky.getPosition());
 
         telemetry.addLine();
         telemetry.addLine("Launcher:");
@@ -645,52 +640,6 @@ public class Vortex_Teleop_Decode extends OpMode {
         telemetry.addData("Currently Firing", robot.launcher.activeFiringSlot.getName());
         telemetry.addData("Fire Color Queue", robot.queue.ballQueue);
         telemetry.addData("Fire Slot Queue", ArtifactLocator.getNamesOfSlots(robot.queue.slotQueue));
-
-        telemetry.addLine();
-        telemetry.addLine("Turret & PedroPathing:");
-        telemetry.addData("Turret X", robot.turretPosition.x);
-        telemetry.addData("Turret Y", robot.turretPosition.y);
-        telemetry.addData("Robot X", robot.robotPosition.x);
-        telemetry.addData("Robot Y", robot.robotPosition.y);
-        telemetry.addData("Pedro Heading", robot.robotHeading);
-//        telemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.turret.getMotorPosition()));
-//        telemetry.addData("Turret Motor Position", robot.swivelMotor.getCurrentPosition());
-        telemetry.addData("Turret Target", TurretLogic.servoUnitsToDegrees(robot.turret.runToSafeAngle(robot.turret.updateAngle())));
-        telemetry.addData("Raw Turret Target", robot.turret.runToSafeAngle(robot.turret.updateAngle()));
-        telemetry.addData("Potentiometer reading", robot.analogTurretTracker.getVoltage());
-        //telemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
-//        robot.panelsTelemetry.addData("Turret Position", robot.turret.ticksToDegrees(robot.turret.getMotorPosition()));
-        //robot.panelsTelemetry.addData("Potentiometer Degrees", robot.turret.findStartingAngle());
-
-        telemetry.addLine();
-        telemetry.addLine("Color Sensors");
-        robot.telemetry.addData("Color Detected", robot.sorterLogic.runSideScannersWithHSV());
-        robot.telemetry.addData("H", roundToThousandths(robot.sorterLogic.leftHue) + ", " + roundToThousandths(robot.sorterLogic.rightHue));
-        robot.telemetry.addData("V", roundToThousandths(robot.sorterLogic.leftValue) + ", " + roundToThousandths(robot.sorterLogic.rightValue));
-
-        telemetry.addLine();
-        telemetry.addLine("Target Tag:");
-        if (robot.targetTag.currentlyDetected) {
-            telemetry.addData("Tag ID", robot.targetTag.tagID);
-            telemetry.addData("X angle", robot.targetTag.angleX);
-            telemetry.addData("Y angle", robot.targetTag.angleY);
-            telemetry.addData("Distance X", robot.targetTag.distanceX);
-            telemetry.addData("Distance Y", robot.targetTag.distanceY);
-            telemetry.addData("Distance Z", robot.targetTag.distanceZ);
-        } else {
-            telemetry.addLine("NOT DETECTED");
-            telemetry.addLine("CAN'T FIND IT");
-            telemetry.addLine("WHERE IS IT");
-            telemetry.addLine("AHHHHHH");
-            telemetry.addLine("...");
-            telemetry.addLine("plz fix");
-        }
-
-        telemetry.addLine();
-        telemetry.addLine("State Machines:");
-        telemetry.addData("Blender State", robot.sorterHardware.getCurrentBlenderStep());
-        telemetry.addData("Launcher State", robot.launcher.getCurrentLauncherStep());
-        telemetry.addData("Queue State", robot.queue.getCurrentHardwareState());
 
         telemetry.addLine();
         telemetry.addLine("Blackboard:");
@@ -783,10 +732,9 @@ public class Vortex_Teleop_Decode extends OpMode {
         if (!automatedDrive) {
             //Make the last parameter false for field-centric
             //In case the drivers want to use a "slowMode" you can scale the vectors
-
             singleJoystickDrive();
-
         }
+
         teleFollower.setMaxPower(1);
         //Automated PathFollowing
         speed = 1;
@@ -822,19 +770,43 @@ public class Vortex_Teleop_Decode extends OpMode {
             Pose pregate;
             Pose pressing;
 
+            double gateHeading;
+            double distance;
+            double backOfRobotHeading;
+
             if(robot.alliance == BLUE)
             {
-                pregate = new Pose (22, 70, 270);
-                pressing = new Pose (17.5,70, 270);
+                backOfRobotHeading = 0;
             }
             else
             {
-                pregate = new Pose (122, 70, 270);
-                pressing = new Pose (126.5,70, 270);
+                backOfRobotHeading = 180;
             }
 
-            teleFollower.followPath(makeDynamicChain(pregate, pressing, 270));
+            gateHeading = backOfRobotHeading;
+            distance = Math.abs(robot.robotHeading - backOfRobotHeading);
+            if(Math.abs(robot.robotHeading - 270) < distance)
+            {
+                gateHeading = 270;
+                distance = Math.abs(robot.robotHeading - 270);
+            }
+            if(Math.abs(robot.robotHeading - 90) < distance)
+            {
+                gateHeading = 90;
+            }
 
+            if(robot.alliance == BLUE)
+            {
+                pregate = new Pose (22, 70, gateHeading);
+                pressing = new Pose (16.5,70, gateHeading);
+            }
+            else
+            {
+                pregate = new Pose (122, 70, gateHeading);
+                pressing = new Pose (127.5,70, gateHeading);
+            }
+
+            teleFollower.followPath(makeDynamicChain(pregate, pressing, gateHeading));
             speed = 1;
             automatedDrive = true;
         }
