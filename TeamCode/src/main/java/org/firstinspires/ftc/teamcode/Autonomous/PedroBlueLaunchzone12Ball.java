@@ -12,7 +12,7 @@ public class PedroBlueLaunchzone12Ball extends PedroBlueFarlaunch12Ball {
     @Override
     public void init() {
         super.init();
-        follower.setPose(new Pose(23.75, 130.5, Math.toRadians(138)));
+        follower.setPose(new Pose(27.5, 127.5, Math.toRadians(138)));
         robot.initLimelight();
         robot.limelightTelemetry();
     }
@@ -21,7 +21,7 @@ public class PedroBlueLaunchzone12Ball extends PedroBlueFarlaunch12Ball {
                 super(follower);
                 Launch0 = follower.pathBuilder().addPath(
                                 new BezierLine(
-                                        new Pose(23.750, 130.500),
+                                        new Pose(27.50, 127.5),
 
                                         new Pose(58.000, 96.000)
                                 )

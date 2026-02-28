@@ -38,7 +38,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
     public void init() {
         robot = new Robot(hardwareMap, telemetry, this);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(55,9.275, Math.PI/2));
+        follower.setStartingPose(new Pose(55,8.75, Math.PI/2));
         robot.initLimelight();
         robot.limelightTelemetry();
     }
@@ -59,7 +59,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
         public Paths(Follower follower) {
             Launch0 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(55.000, 9.275),
+                                    new Pose(55.000, 8.75),
 
                                     new Pose(58.100, 16.600)
                             )
@@ -211,6 +211,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(0.55);
+                    robot.intake2.setPower(1);
                     robot.launchLeft.setPower(0.4);
                     robot.launchRight.setPower(0.4);
                     follower.setMaxPower(0.85);
@@ -256,6 +257,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(0.55);
+                    robot.intake2.setPower(1);
                     robot.launchLeft.setPower(0.4);
                     robot.launchRight.setPower(0.4);
                     follower.setMaxPower(0.85);
@@ -302,6 +304,7 @@ public class PedroBlueFarlaunch12Ball extends OpMode {
                 if(!follower.isBusy()) {
                     robot.intakeMotor.setPower(1);
                     robot.intake3.setPower(0.55);
+                    robot.intake2.setPower(1);
                     robot.launchLeft.setPower(0.4);
                     robot.launchRight.setPower(0.4);
                     follower.setMaxPower(0.85);
