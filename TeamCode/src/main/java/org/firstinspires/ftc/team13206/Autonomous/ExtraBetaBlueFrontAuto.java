@@ -1,0 +1,482 @@
+package org.firstinspires.ftc.team13206.Autonomous;
+
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.CHECK_MOVE_1;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.CHECK_TAG;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.DISABLE_INTAKE;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.ENABLE_INTAKE;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.FINAL_INTAKE_RESET;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.FINE_TUNE_TARGETING;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.FINE_TUNE_TARGETING_AGAIN;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.FIRE2;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.FIRE_FIRST_PATTERN;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.FIRST_SPIN;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.LAUNCHER_ON;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.RESET_BLENDER1;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.SET_APRILTAG_PIPELINE;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.START;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.STRAFE_BACK;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.TURN_BACK_TOWARDS_GOAL;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.UNPARK_0;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.UNSTRAFE_BACK;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.UNYOINK;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.UN_TURN;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.YAY;
+import static org.firstinspires.ftc.team13206.Autonomous.ExtraBetaBlueFrontAuto.Step.YOINK;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.team13206.Core.Robot;
+
+import java.util.Objects;
+
+/**
+ * This is an iterative autonomous program. It runs in a state machine, which allows us to run the
+ * updateAllDaThings() function and properly run the blender without any... questionable code. And
+ * it's marginally more efficient. Also, this contains the proper code to run the red alliance auto
+ * too, allowing us to keep both autos up to date in a single file. BetaRedFrontAuto is a shell that
+ * basically just hijacks this file to work, which is neat.
+ */
+@Disabled
+@Autonomous(group = "Basic", name = "SUPERBETA Blue Front 4 Ball")
+public class ExtraBetaBlueFrontAuto extends OpMode {
+
+    // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
+    private ElapsedTime runtime = new ElapsedTime();
+    private double speed = 0.75;
+
+    int slot = 0; // temp for testing lol
+
+    int targetOffset = 0;
+    int patternCorrectedStrafeDistance;
+
+    //private double storedSpeed;
+    public Robot robot = null;
+    public AutonomousPlusPLUS auto = null;
+    public ElapsedTime stallTimer;
+    public IMU imu;
+
+    enum Step {
+        START,
+        CHECK_MOVE_1, CHECK_MOVE_2, CHECK_TAG, TAG_TELEMETRY, SET_APRILTAG_PIPELINE,
+        FIRST_SPIN, LAUNCHER_ON, TURN_BACK_TOWARDS_GOAL, FINE_TUNE_TARGETING, DRIVE_CLOSER_TO_GOAL,
+        FIRE_FIRST_PATTERN, RESET_BLENDER1, RESET_BLENDER2,
+        UNPARK_0, UNPARK_1, UNPARK_2,
+
+        ENABLE_INTAKE, YOINK, DISABLE_INTAKE, UNYOINK,
+
+        STRAFE_BACK, UN_TURN, FINE_TUNE_TARGETING_AGAIN,
+
+        FIRE2,
+
+        RE_TURN, UNSTRAFE_BACK, FINAL_INTAKE_RESET,
+        YAY
+    }
+    private Step currentStep = START;
+
+    public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
+    public static final String PATTERN_KEY = "Pattern";
+
+    /**
+     * Code to run ONCE when the driver hits INIT
+     */
+    public void init() {
+
+        // Call the initialization protocol from the Robot class.
+        // Go find pizza
+        robot = new Robot(hardwareMap, telemetry, this);
+        auto = new AutonomousPlusPLUS(robot);
+
+        // Tell the driver that initialization is complete.
+        telemetry.addData("Status", "Initialized");
+
+        robot.randomizationScanner.InitLimeLight(0);
+        blackboard.put(ALLIANCE_KEY, "BLUE");
+        stallTimer = new ElapsedTime();
+
+    }
+
+    /**
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     */
+    public void init_loop() {
+        telemetry.addData("HYPE", "ARE! YOU! READY?!?!?!?!");
+
+        robot.pattern = robot.randomizationScanner.GetRandomization();
+        telemetry.addData(String.valueOf(robot.pattern), " Works!");
+        telemetry.update();
+    }
+
+    /**
+     * Code to run ONCE when the driver hits PLAY
+     */
+    public void start() {
+        runtime.reset();
+        telemetry.addData("HYPE", "Let's do this!!!");
+        robot.readyHardware(true);
+        robot.sorterHardware.legalToSpin = true;
+        speed = 1;
+    }
+
+    /**
+     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+     */
+    public void loop() {
+        switch (currentStep) {
+            case START:
+                auto.setTolerances(7);
+                nextStep(CHECK_MOVE_1);
+                break;
+            case CHECK_MOVE_1:
+                auto.setSpeed(1);
+                if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                    auto.moveRobotLeft(1000);
+                } else {
+                    auto.moveRobotRight(1000);
+                }
+                nextStep(CHECK_TAG);
+                break;
+            case CHECK_MOVE_2:
+                if (auto.checkMovement()) {
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.turnRobotLeft(600);
+                    } else {
+                        auto.turnRobotRight(600);
+                    }
+                    nextStep(CHECK_TAG);
+                }
+                break;
+            case CHECK_TAG:
+                if (auto.checkMovement()) {
+                    robot.pattern = robot.randomizationScanner.GetRandomization();
+                    robot.sorterHardware.legalToSpin = true;
+                    nextStep(SET_APRILTAG_PIPELINE);
+                }
+                break;
+            case TAG_TELEMETRY: // Skipped
+                telemetry.addData("Our pattern is: ", String.valueOf(robot.pattern), " ...yay");
+
+                switch (robot.pattern) {
+                    case PPG:
+                        telemetry.addData("We doin", " PPG now");
+                        blackboard.put(PATTERN_KEY, "PPG");
+                        //patternCorrectedStrafeDistance = 425;
+                        break;
+                    case GPP:
+                        telemetry.addData("We doin", " GPP now");
+                        blackboard.put(PATTERN_KEY, "GPP");
+                        //patternCorrectedStrafeDistance = 1500;
+                        break;
+                    case PGP:
+                        telemetry.addData("We doin", " PGP now");
+                        blackboard.put(PATTERN_KEY, "PGP");
+                        //patternCorrectedStrafeDistance = 425;
+                        break;
+                    default:
+                        telemetry.addData("It failed ", "cry time");
+                        break;
+                }
+
+                nextStep(SET_APRILTAG_PIPELINE);
+                break;
+            case SET_APRILTAG_PIPELINE:
+                if (blackboard.get(ALLIANCE_KEY) == "BLUE") {
+                    robot.targetScanner.InitLimeLightTargeting(2, robot);
+                    robot.scanningForTargetTag = true;
+                } else if(blackboard.get(ALLIANCE_KEY) == "RED") {
+                    robot.targetScanner.InitLimeLightTargeting(1, robot);
+                    robot.scanningForTargetTag = true;
+                } else {
+                    robot.targetScanner.InitLimeLightTargeting(1, robot);
+                    robot.scanningForTargetTag = true;
+                }
+
+                nextStep(FIRST_SPIN);
+                break;
+            case FIRST_SPIN:
+
+                if (robot.pattern.equals(Robot.patternColors.PGP) || robot.pattern.equals(Robot.patternColors.PPG)) {
+                    robot.sorterHardware.prepareNewMovement(
+                            robot.sorterHardware.motor.getCurrentPosition(),
+                            robot.sorterLogic.slotB.getFirePosition());
+                } else {
+                    robot.sorterHardware.prepareNewMovement(
+                            robot.sorterHardware.motor.getCurrentPosition(),
+                            robot.sorterLogic.slotA.getFirePosition());
+                }
+
+                nextStep(LAUNCHER_ON);
+                break;
+            case LAUNCHER_ON:
+                if (robot.sorterHardware.positionedCheck()) {
+                    robot.launcher.setLauncherSpeed(1);
+                    robot.targetTag = robot.targetScanner.tagInfo();
+                    nextStep(TURN_BACK_TOWARDS_GOAL);
+                }
+                break;
+            case TURN_BACK_TOWARDS_GOAL:
+                auto.setSpeed(.6);
+                if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                    auto.turnRobotRight(600);
+                } else {
+                    auto.turnRobotLeft(600);
+                }
+
+                nextStep(FINE_TUNE_TARGETING);
+                break;
+            case FINE_TUNE_TARGETING:
+                if (auto.checkMovement()) {
+                    if (robot.targetTag.currentlyDetected) //Angle detect if possible / needed
+                    {
+                        auto.turnRobotRight((int) ((robot.targetTag.angleX +robot.limelightSideOffsetAngle) * ( (double) 1660 / 360)));
+                    }
+                    nextStep(FIRE_FIRST_PATTERN);
+                }
+                break;
+            case DRIVE_CLOSER_TO_GOAL:
+                auto.setSpeed(.5);
+                if (auto.checkMovement()) {
+                    auto.moveRobotBackward(200);
+                    nextStep(FINE_TUNE_TARGETING);
+                }
+            case FIRE_FIRST_PATTERN:
+                if (auto.checkMovement()) {
+                    if (robot.pattern.equals("PPG")) {
+                        auto.fireInSequence(robot.sorterLogic.slotB, robot.sorterLogic.slotC, robot.sorterLogic.slotA);
+                    } else if (robot.pattern.equals("PGP")) {
+                        auto.fireInSequence(robot.sorterLogic.slotB, robot.sorterLogic.slotA, robot.sorterLogic.slotC);
+                    } else {
+                        auto.fireInSequence(robot.sorterLogic.slotA, robot.sorterLogic.slotB, robot.sorterLogic.slotC);
+                    }
+
+                    if (auto.fireInSequenceComplete()) {
+                        nextStep(RESET_BLENDER1);
+                    }
+                }
+                break;
+            case RESET_BLENDER1:
+                robot.sorterHardware.prepareNewMovement(robot.sorterHardware.motor.getCurrentPosition(),
+                        robot.sorterLogic.slotA.getLoadPosition());
+                nextStep(UNPARK_0);
+                break;
+            case UNPARK_0:
+                auto.setSpeed(1);
+                if(robot.sorterHardware.doneMoving()) {
+                    auto.setSpeed(.4);
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.turnRobotLeft(500);
+                    } else {
+                        auto.turnRobotRight(500);
+                    }
+                }
+                break;
+            case UNPARK_1:
+                if (auto.checkMovement()) {
+                    auto.setSpeed(1);
+                    robot.launcher.setLauncherSpeed(0);
+
+                    if (robot.pattern.equals("GPP")) {
+                        patternCorrectedStrafeDistance = 300;
+                    } else {
+                        patternCorrectedStrafeDistance = 100;
+                    }
+
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.moveRobotLeft(patternCorrectedStrafeDistance);
+                    } else {
+                        auto.moveRobotRight(patternCorrectedStrafeDistance);
+                    }
+
+                    nextStep(ENABLE_INTAKE);
+                }
+                break;
+            case ENABLE_INTAKE:
+                if(auto.checkMovement())
+                {
+                    robot.runBasicIntake(1);
+                    stallTimer.reset();
+                    nextStep(YOINK);
+                }
+
+                break;
+            case YOINK:
+                if(stallTimer.seconds() > 0.5)
+                {
+                    auto.setSpeed(0.4);
+                    robot.launcher.setLauncherSpeed(0);
+                    auto.moveRobotForward(400);
+                    nextStep(UNYOINK);
+
+                }
+                break;
+            case DISABLE_INTAKE:
+                if(auto.checkMovement()) {
+                    robot.runBasicIntake(0);
+                    nextStep(UN_TURN);
+                }
+                break;
+            case UNYOINK:
+                if (auto.checkMovement()) {
+                    robot.launcher.setLauncherSpeed(0);
+                    auto.moveRobotBackward(400);
+                    nextStep(STRAFE_BACK);
+                }
+                break;
+            case STRAFE_BACK:
+                if (auto.checkMovement()) {
+                    auto.setSpeed(1);
+                    robot.launcher.setLauncherSpeed(0);
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.moveRobotRight(patternCorrectedStrafeDistance);
+                    } else {
+                        auto.moveRobotLeft(patternCorrectedStrafeDistance);
+                    }
+
+                    nextStep(DISABLE_INTAKE);
+                }
+                break;
+            case UN_TURN:
+                if (auto.checkMovement())
+                {
+                    auto.setSpeed(0.6);
+                    robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotA.getFirePosition());
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.turnRobotRight(500);
+                    } else {
+                        auto.turnRobotLeft(500);
+                    }
+
+                    nextStep(FINE_TUNE_TARGETING_AGAIN);
+                }
+                break;
+            case FINE_TUNE_TARGETING_AGAIN:
+                if (auto.checkMovement()) {
+                    if (robot.targetTag.currentlyDetected) //Angle detect if possible / needed
+                    {
+                        auto.turnRobotRight((int) ((robot.targetTag.angleX +robot.limelightSideOffsetAngle) * ( (double) 1660 / 360)));
+                    }
+                    nextStep(FIRE2);
+                }
+            case FIRE2:
+                if (auto.checkMovement())
+                {
+                    auto.fireOneArtifact(robot.sorterLogic.slotA);
+
+                    if (auto.fireInSequenceComplete()) {
+                        nextStep(FINAL_INTAKE_RESET);
+                    }
+                }
+                break;
+            case FINAL_INTAKE_RESET:
+                robot.sorterHardware.prepareNewMovement(robot.sorterLogic.slotA.getLoadPosition());
+                nextStep(UNSTRAFE_BACK);
+                break;
+            case RE_TURN:
+                if (robot.sorterHardware.doneMoving()) {
+                    auto.setSpeed(1);
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.turnRobotLeft(-1200);
+                    } else {
+                        auto.turnRobotRight(-1200);
+                    }
+
+                    nextStep(UNSTRAFE_BACK);
+                }
+                break;
+            case UNSTRAFE_BACK:
+                if (auto.checkMovement())
+                {
+                    robot.launcher.setLauncherSpeed(0);
+                    if (Objects.equals(blackboard.get(ALLIANCE_KEY), "BLUE")) {
+                        auto.moveRobotLeft(600);
+                    } else {
+                        auto.moveRobotRight(600);
+                    }
+
+                    nextStep(YAY);
+                }
+                break;
+            case YAY:
+                if(robot.sorterHardware.doneMoving())
+                {
+                    super.requestOpModeStop();
+                }
+                break;
+        }
+
+        robot.updateAllDaThings();
+        doTelemetryStuff();
+
+    }
+
+    /**
+     * Code to run ONCE after the driver hits STOP
+     */
+    public void stop() {
+        telemetry.addData("Status", "Robot Stopped");
+        doTelemetryStuff();
+    }
+
+
+    /*
+     * The holding cell for all of the random functions we call above.
+     */
+    private void nextStep(Step nextStep) {
+        currentStep = nextStep;
+    }
+
+    private void nextPatternSpecificStep(Step nextGeneralStep) {
+
+    }
+
+    private void doTelemetryStuff() {
+        // This little section updates the driver hub on the runtime and the motor powers.
+        // It's mostly used for troubleshooting.
+        telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Step", currentStep);
+        telemetry.addData("fireInSequenceStallingState", auto.fireInSequenceStallingState);
+
+        if(robot.targetTag.currentlyDetected)
+        {
+            telemetry.addData("last detected x angle: ", robot.targetTag.angleX);
+            telemetry.addData("last detected y angle: ", robot.targetTag.angleY);
+
+            telemetry.addData("last distance x: ", robot.targetTag.distanceX);
+            telemetry.addData("last detected distance y: ", robot.targetTag.distanceY);
+            telemetry.addData("last detected distance z: ", robot.targetTag.distanceZ);
+        }
+
+        telemetry.addData("Last saved pattern: ", blackboard.get(PATTERN_KEY));
+
+        telemetry.addData("Last saved Alliance: ", blackboard.get(ALLIANCE_KEY));
+
+        telemetry.addData("Reference", robot.sorterHardware.reference);
+
+        telemetry.addData("Equalized Target Position", robot.sorterLogic.offsetPositions.get(targetOffset));
+//        telemetry.addData("Launcher Velocity", robot.launcher.motor.getVelocity());
+        telemetry.addData("Launcher Target Velocity", robot.launcher.velocityTarget);
+        telemetry.addData("Launcher at Speed", robot.launcher.motorSpeedCheck(robot.launcher.velocityTarget));
+        telemetry.addData("Launcher on Cooldown", robot.launcher.onCooldown);
+
+        //robot.tellMotorOutput();
+    }
+    private float getLargestAbsVal(float[] values){
+        // This function does some math!
+        float max = 0;
+        for (float val : values) {
+            if (Math.abs(val) > max) {
+                max = Math.abs(val);
+            }
+        }
+        return max;
+    }
+
+    private boolean isEven(int x) {
+        return x % 2 == 0;
+    }
+}
+
+
