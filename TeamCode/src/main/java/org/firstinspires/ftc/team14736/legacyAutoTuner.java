@@ -1,14 +1,13 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.team14736;
 
 //import static org.firstinspires.ftc.teamcode.legacyAutoTuner.mode.PAUSE;
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.panels.Panels;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.teamcode.Autonomous.AutonomousPLUS;
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.team14736.Autonomous.AutonomousPLUS;
+
 @Disabled
 @Configurable
 @Autonomous(group = "Basic", name = "Legacy Auto Tuner")

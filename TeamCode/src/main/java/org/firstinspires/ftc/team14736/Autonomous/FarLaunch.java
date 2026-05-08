@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.team14736.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.team14736.Robot;
 
 @Autonomous(group =  "Auto", name = "FarLaunch")
 public class FarLaunch extends AutonomousPLUS {

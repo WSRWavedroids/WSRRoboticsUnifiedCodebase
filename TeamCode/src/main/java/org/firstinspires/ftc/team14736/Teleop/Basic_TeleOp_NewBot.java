@@ -1,18 +1,18 @@
-package org.firstinspires.ftc.teamcode.Teleop;
+package org.firstinspires.ftc.team14736.Teleop;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.FLOAT;
-import static org.firstinspires.ftc.teamcode.Robot.allianceSides.BLUE;
-import static org.firstinspires.ftc.teamcode.Robot.allianceSides.RED;
-import static org.firstinspires.ftc.teamcode.Robot.driveMode.AUTOTARGET;
-import static org.firstinspires.ftc.teamcode.Robot.driveMode.CLOSELAUNCH;
-import static org.firstinspires.ftc.teamcode.Robot.driveMode.FARLAUNCH;
-import static org.firstinspires.ftc.teamcode.Robot.driveMode.FIELDCENTRIC;
-import static org.firstinspires.ftc.teamcode.Robot.driveMode.HOLDPOINT;
-import static org.firstinspires.ftc.teamcode.Robot.driveMode.LEVER;
-import static org.firstinspires.ftc.teamcode.Robot.driveMode.PARK;
-import static org.firstinspires.ftc.teamcode.Robot.driveMode.ROBOTCENTRIC;
-import static org.firstinspires.ftc.teamcode.Teleop.Basic_TeleOp_NewBot.AutoLaunchSteps.*;
+import static org.firstinspires.ftc.team14736.Robot.allianceSides.BLUE;
+import static org.firstinspires.ftc.team14736.Robot.allianceSides.RED;
+import static org.firstinspires.ftc.team14736.Robot.driveMode.AUTOTARGET;
+import static org.firstinspires.ftc.team14736.Robot.driveMode.CLOSELAUNCH;
+import static org.firstinspires.ftc.team14736.Robot.driveMode.FARLAUNCH;
+import static org.firstinspires.ftc.team14736.Robot.driveMode.FIELDCENTRIC;
+import static org.firstinspires.ftc.team14736.Robot.driveMode.HOLDPOINT;
+import static org.firstinspires.ftc.team14736.Robot.driveMode.LEVER;
+import static org.firstinspires.ftc.team14736.Robot.driveMode.PARK;
+import static org.firstinspires.ftc.team14736.Robot.driveMode.ROBOTCENTRIC;
+import static org.firstinspires.ftc.team14736.Teleop.Basic_TeleOp_NewBot.AutoLaunchSteps.*;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -27,9 +27,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.opencv.core.Mat;
+import org.firstinspires.ftc.team14736.Robot;
+import org.firstinspires.ftc.team14736.pedroPathing.Constants;
 
 /**
  * This file is our iterative (Non-Linear) "OpMode" for TeleOp.

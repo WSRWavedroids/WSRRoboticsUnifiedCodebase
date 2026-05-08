@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.team14736;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,7 +19,7 @@ public class ezPID {
     private Robot robot;
     private DcMotorEx motor;
 
-    private org.firstinspires.ftc.teamcode.PIDMotorGroup motorGroup;
+    private org.firstinspires.ftc.team14736.PIDMotorGroup motorGroup;
     public double p;
     public double i;
     public double d;

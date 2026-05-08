@@ -1,26 +1,18 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.team14736.Autonomous;
 
-import static org.firstinspires.ftc.teamcode.Autonomous.PedroBlueFarlaunch12Ball.Steps.*;
+import static org.firstinspires.ftc.team14736.Autonomous.PedroBlueFarlaunch12Ball.Steps.*;
 
-import android.widget.Switch;
-
-import com.pedropathing.Drivetrain;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.localization.Localizer;
 import com.pedropathing.paths.PathChain;
-import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.team14736.Robot;
+import org.firstinspires.ftc.team14736.pedroPathing.Constants;
 
 
 @Autonomous(name="BlueFarlaunch", group = "Pedro")
