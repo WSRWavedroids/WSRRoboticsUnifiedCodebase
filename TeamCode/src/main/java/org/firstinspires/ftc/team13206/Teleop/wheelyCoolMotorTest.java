@@ -48,7 +48,7 @@ import org.firstinspires.ftc.team13206.Core.Robot;
  *
  */
 
-@TeleOp(name="Build issue detector", group="CompBot")
+@TeleOp(name="WD Build issue detector", group="CompBot")
 public class wheelyCoolMotorTest extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
