@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.pedroBot;
 
+import com.pedropathing.geometry.Pose;
+
 public class PedroBot {
 
     /*
@@ -19,7 +21,14 @@ public class PedroBot {
 
     -- Michael
      */
-    PathPlan pathPlan;
+    //PathPlan pathPlan;
+    public Pose goal;
+    double robotangle; //TODO capitalization conventions -- Michael
+    double tolerance; //TODO please be more specific -- Michael
+    double length;
+    double magnitudeToOffsetVector; // TODO vectored? -- Michael
+    double distanceToOffset;
+
     public PathPlan calculatePath(PathPlan input) {
         // calculate straight line to goal
         /*
@@ -27,8 +36,8 @@ public class PedroBot {
 
         -- Michael
          */
-        pathPlan.magnitudeToOffsetVectored = pathPlan.length - Math.abs(pathPlan.robotangle);
-        pathPlan.distanceToOffset = Math.sqrt(Math.pow(pathPlan.magnitudeToOffsetVectored *Math.cos(pathPlan.robotangle)-pathPlan.goal.getX(), 2) + Math.pow(pathPlan.magnitudeToOffsetVectored *Math.sin(pathPlan.robotangle)-pathPlan.goal.getY(), 2));
+        double magnitudeToOffsetVector = length - Math.abs(.robotAngle);
+        distanceToOffset = Math.sqrt(Math.pow(magnitudeToOffsetVector *Math.cos(robotangle)-goal.getX(), 2) + Math.pow(magnitudeToOffsetVector *Math.sin(robotangle)-goal.getY(), 2));
 
         /*
         These two if-else blocks can be simplified into one
@@ -36,7 +45,7 @@ public class PedroBot {
         -- Michael
          */
         boolean hit;
-        if (pathPlan.distanceToOffset <= pathPlan.offset) {
+        if (distanceToOffset <= tolerance) {
             hit = true;
         }
         else {
@@ -47,13 +56,15 @@ public class PedroBot {
             return input;
         }
         else {
+            PathPlan optionOne = input;
+            PathPlan optionTwo = new PathPlan(input);
             // calculate one path
-            pathPlan.length = Math.sqrt((Math.pow(pathPlan.robot.getX() - pathPlan.goal.getX(), 2) + (Math.pow(pathPlan.robot.getY() - pathPlan.goal.getY(), 2))));
-            pathPlan.w = Math.sqrt(Math.pow(pathPlan.length, 2) - Math.pow(pathPlan.offset, 2));
-            pathPlan.b = pathPlan.robotangle + Math.asin((pathPlan.offset/ pathPlan.length));
-            PathPlan optionOne = calculatePath(pathPlan);
+            findTangentPoint(optionOne, tolerance);
+            findTangentPoint(optionTwo, -tolerance);
+
+            optionOne = calculatePath(optionOne);
             // calulate the other path
-            PathPlan optionTwo = calculatePath(pathPlan);
+            optionTwo = calculatePath(optionTwo);
 
             if (optionOne.score >= optionTwo.score) {
                 return optionOne;
@@ -62,6 +73,19 @@ public class PedroBot {
             }
         }
     }
+    private void findTangentPoint(PathPlan option, double tolerance) {
+        double lengthOne = Math.sqrt((Math.pow(option.getLatestPose().getX() - goal.getX(), 2) + (Math.pow(option.getLatestPose().getY() - goal.getY(), 2))));
+        double magnitudeOne = Math.sqrt(Math.pow(length, 2) - Math.pow(tolerance, 2));
+        double directionOne = robotangle + Math.asin((tolerance / length));
+        option.points.add(
+                new Pose(
+                        option.getLatestPose().getX() + (magnitudeOne * Math.sin(directionOne)),
+                        option.getLatestPose().getY() + (magnitudeOne * Math.cos(directionOne))
+                )
+        );
+    }
+
+
 
 
 }
