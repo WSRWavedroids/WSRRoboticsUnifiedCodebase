@@ -2,6 +2,8 @@ package org.firstinspires.ftc.pedroBot;
 
 import com.pedropathing.geometry.Pose;
 
+import kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest;
+
 public class PedroBot {
 
     /*
@@ -23,11 +25,13 @@ public class PedroBot {
      */
     //PathPlan pathPlan;
     public Pose goal;
-    double robotangle; //TODO capitalization conventions -- Michael
-    double tolerance; //TODO please be more specific -- Michael
-    double length;
-    double magnitudeToOffsetVector; // TODO vectored? -- Michael
+    double robotAngle;
+    double tolerance;
+    double length;//TODO What is this
+    double magnitudeToOffsetVector;
     double distanceToOffset;
+    double X2 = Math.cos(robotAngle + Math.asin((tolerance / length))); //TODO Ask Michael what these represent exactly and magical simplification
+    double Y2 = Math.sin(robotAngle + Math.asin((tolerance / length)));
 
     public PathPlan calculatePath(PathPlan input) {
         // calculate straight line to goal
@@ -36,14 +40,18 @@ public class PedroBot {
 
         -- Michael
          */
-        double magnitudeToOffsetVector = length - Math.abs(.robotAngle);
-        distanceToOffset = Math.sqrt(Math.pow(magnitudeToOffsetVector *Math.cos(robotangle)-goal.getX(), 2) + Math.pow(magnitudeToOffsetVector *Math.sin(robotangle)-goal.getY(), 2));
+        //double magnitudeToOffsetVector = length - Math.abs(robotAngle);
+        //distanceToOffset = Math.sqrt(Math.pow(magnitudeToOffsetVector *Math.cos(robotAngle)-goal.getX(), 2) + Math.pow(magnitudeToOffsetVector *Math.sin(robotAngle)-goal.getY(), 2));
 
         /*
         These two if-else blocks can be simplified into one
 
         -- Michael
          */
+
+        //Math fixed I think
+        distanceToOffset =  (Math.abs((Y2/X2)*goal.getX()- goal.getY()))/(Math.sqrt(Math.pow((Y2/X2) , 2) + 1));
+
         boolean hit;
         if (distanceToOffset <= tolerance) {
             hit = true;
@@ -76,7 +84,7 @@ public class PedroBot {
     private void findTangentPoint(PathPlan option, double tolerance) {
         double lengthOne = Math.sqrt((Math.pow(option.getLatestPose().getX() - goal.getX(), 2) + (Math.pow(option.getLatestPose().getY() - goal.getY(), 2))));
         double magnitudeOne = Math.sqrt(Math.pow(length, 2) - Math.pow(tolerance, 2));
-        double directionOne = robotangle + Math.asin((tolerance / length));
+        double directionOne = robotAngle + Math.asin((tolerance / length));
         option.points.add(
                 new Pose(
                         option.getLatestPose().getX() + (magnitudeOne * Math.sin(directionOne)),
@@ -84,8 +92,6 @@ public class PedroBot {
                 )
         );
     }
-
-
 
 
 }
