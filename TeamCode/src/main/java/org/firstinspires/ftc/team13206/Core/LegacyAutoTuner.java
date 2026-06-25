@@ -12,7 +12,7 @@ import org.firstinspires.ftc.team13206.Autonomous.AutonomousPLUS;
 @Disabled
 @Configurable
 @Autonomous(group = "Basic", name = "Legacy Auto Tuner")
-public class legacyAutoTuner extends AutonomousPLUS {
+public class LegacyAutoTuner extends AutonomousPLUS {
 
     /// ///192.168.43.1:8001  IP Address of panels, type this into your browser when on robot wifi
     /// Opening panels will allow you to change the values effecting the built in motor PIDS
