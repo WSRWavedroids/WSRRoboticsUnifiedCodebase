@@ -13,6 +13,7 @@ import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -21,6 +22,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -33,6 +35,9 @@ import org.firstinspires.ftc.team13206.Vision.Limelight_Target_Scanner;
 import org.firstinspires.ftc.team13206.Vision.WaveTag;
 import org.firstinspires.ftc.team13206.Vision.Limelight_Randomization_Scanner;
 import org.firstinspires.ftc.team13206.pedroPathing.Constants;
+
+import java.util.List;
+import java.util.Objects;
 
 public class Robot {
 
@@ -365,73 +370,8 @@ public class Robot {
         //todo Reference that 1 inch ~= 50 ticks
     }
 
-    public ElapsedTime timer = new ElapsedTime();
 
-    @Deprecated
-    public void prepareAuto(){
-
-    }
-
-    /**
-     * Updates the SorterHardware, LauncherHardware, ArtifactLocator, Limelight, and HuskyLens.
-     * Also adds some data to telemetry.
-     */
-    public void updateAllDaThings()
-    {
-        if (callPartialPedro) turret.follower.updatePose();
-
-        sorterLogic.update();
-        sorterHardware.updateSorterHardware();
-        launcher.updateLauncherHardware();
-        queue.updateQueueStates();
-        turret.runTurret();
-        blinkies.update();
-
-        if(scanningForTargetTag)
-        {
-            targetTag = targetScanner.tagInfo();
-        }
-
-        //dumpAllTelemetryFromUpdate();
-    }
-
-    public void dumpAllTelemetryFromUpdate()
-    {
-        //Reliant functions not present
-        telemetry.addData("Sorter Position: ", sorterHardware.motor.getCurrentPosition());
-        telemetry.addData("Reference", sorterHardware.reference);
-        telemetry.addData("Launcher Velocity: ", launcher.motor1.getVelocity());
-        telemetry.addData("Sorter In Position", sorterHardware.positionedCheck());
-        telemetry.addData("Sorter State: ", sorterLogic.getCurrentOffset());
-        telemetry.addData("Limelight angleX: ", targetTag.angleX);
-        telemetry.addData("Analog Turret Voltage", analogTurretTracker);
-
-    }
-
-    /**
-     * Sets the intake and feeder servos to run.
-     * @param num The power input, from -1.0 to 1.0.
-     */
-    public void runBasicIntake(double num)
-    {
-        intakeMotor.setPower(num);
-    }
-
-    public void runAutoIntakeSequence() //Run in an update function for "fast" auto load
-    {
-        //Find first empty
-        runBasicIntake(1);
-        sorterHardware.setFeeders(INTAKE);
-    }
-
-    public void cancelAutoIntake()
-    {
-        sorterHardware.setFeeders(PASSIVE);
-        runBasicIntake(0);
-    }
-
-    public void readyHardware(boolean resetEncoder)
-    {
+    public void readyHardware(boolean resetEncoder) {
         sorterHardware.flicky.setPosition(sorterHardware.flickyDownPosition);
         launcher.setLauncherVelocity(0);
 
@@ -442,85 +382,4 @@ public class Robot {
             sorterHardware.reference = 0;
         }
     }
-
-//    public ArtifactLocator.SlotState runSideScannersWithRGB()
-//    {
-//        float purpleMinRed = 150;
-//        float purpleMaxRed = 215;
-//        float greenMinRed = 70;
-//        float greenMaxRed = 130;
-//        float purpleMinGreen= 70;
-//        float purpleMaxGreen= 130;
-//        float greenMinGreen = 150;
-//        float greenMaxGreen = 215;
-//        float purpleMinBlue= 170;
-//        float purpleMaxBlue= 230;
-//        float greenMinBlue = 70;
-//        float greenMaxBlue = 130;
-//
-//        //Normalize to prevent color shift from lighting intensity
-//        float leftNormGreen, leftNormRed, leftNormBlue, rightNormGreen, rightNormRed, rightNormBlue;
-//        NormalizedRGBA leftNormalizedColors = leftColorScanner.getNormalizedColors();
-//        NormalizedRGBA rightNormalizedColors = rightColorScanner.getNormalizedColors();
-//        leftNormGreen = leftNormalizedColors.green / leftNormalizedColors.alpha;
-//        leftNormRed = leftNormalizedColors.red / leftNormalizedColors.alpha;
-//        leftNormBlue = leftNormalizedColors.blue / leftNormalizedColors.alpha;
-//        rightNormGreen = rightNormalizedColors.green / leftNormalizedColors.alpha;
-//        rightNormRed = rightNormalizedColors.red / leftNormalizedColors.alpha;
-//        rightNormBlue = rightNormalizedColors.blue / leftNormalizedColors.alpha;
-//
-//        //Average in case of ball holes
-//        float averagedRed = (leftNormRed + rightNormRed)/2;
-//        float averagedGreen = (leftNormGreen + rightNormGreen)/2;
-//        float averagedBlue = (leftNormBlue + rightNormBlue)/2;
-//
-//        telemetry.addData("Red: ", averagedRed);
-//        telemetry.addData("Green: ", averagedGreen);
-//        telemetry.addData("Blue: ", averagedBlue);
-//        telemetry.update();
-//
-//        //Now take our values and do something with them.
-//
-//        if(averagedBlue > purpleMinBlue && averagedBlue < purpleMaxBlue &&
-//                averagedRed > purpleMinRed && averagedRed < purpleMaxRed &&
-//                averagedGreen > purpleMinGreen && averagedGreen < purpleMaxGreen) {
-//            return PURPLE;
-//
-//
-//        }
-//        else if(averagedBlue > greenMinBlue && averagedBlue < greenMaxBlue &&
-//                averagedRed > greenMinRed && averagedRed < greenMaxRed &&
-//                averagedGreen > greenMinGreen && averagedGreen < greenMaxGreen) {
-//            return GREEN;
-//        }
-//        return EMPTY;
-//
-//    }
-//
-//    public ArtifactLocator.SlotState runSideScannersWithHSV()
-//    {
-//        int purpleMinHue = 255;
-//        int purpleMaxHue = 295;
-//
-//        int greenMinHue = 85;
-//        int greenMaxHue = 158;
-//
-//        int averagedRed = (leftColorScanner.red() + rightColorScanner.red())/2;
-//        int averagedGreen = (leftColorScanner.green() + rightColorScanner.green())/2;
-//        int averagedBlue = (leftColorScanner.blue() + rightColorScanner.blue())/2;
-//
-//        float[] hsvValues = new float[3];
-//        Color.RGBToHSV(averagedRed, averagedGreen, averagedBlue, hsvValues);
-//
-//        if(hsvValues[0] > purpleMinHue && hsvValues[0] < purpleMaxHue)
-//        {
-//            return PURPLE;
-//
-//        }
-//        else if(hsvValues[0] > greenMinHue && hsvValues[0] < greenMaxHue)
-//        {
-//            return GREEN;
-//        }
-//        return EMPTY;
-//    }
 }
