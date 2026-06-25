@@ -138,11 +138,11 @@ public class Basic_Strafer_Bot_Tele_Op extends OpMode {
 
         //Driver 1
         if (gamepad1.back) {
-            if (Bot.controlMode == ROBOT_CENTRIC){
+            if (Bot.controlMode == STANDARD_ROBOT_CENTRIC){
                 Bot.controlMode = LEGACY_FIELD_CENTRIC;
                 telemetry.addData("Control Mode", "Field Centric Controls");
             } else if (Bot.controlMode == LEGACY_FIELD_CENTRIC){
-                Bot.controlMode = ROBOT_CENTRIC;
+                Bot.controlMode = STANDARD_ROBOT_CENTRIC;
                 telemetry.addData("Control Mode", "Robot Centric Controls");
             }
         }
@@ -241,7 +241,7 @@ public class Basic_Strafer_Bot_Tele_Op extends OpMode {
 
         float[] motorPowers = new float[4];
 
-        if (Bot.controlMode == ROBOT_CENTRIC) {
+        if (Bot.controlMode == STANDARD_ROBOT_CENTRIC) {
 
             motorPowers[0] = (leftY + leftX + rightX);
             motorPowers[1] = (leftY - leftX - rightX);

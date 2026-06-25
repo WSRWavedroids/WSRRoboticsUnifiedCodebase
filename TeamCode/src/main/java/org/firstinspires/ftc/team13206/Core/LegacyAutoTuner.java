@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.team13206.Core;
 
-//import static org.firstinspires.ftc.teamcode.legacyAutoTuner.mode.PAUSE;
+import static org.firstinspires.ftc.team13206.Core.LegacyAutoTuner.mode.*;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.panels.Panels;
@@ -45,7 +45,7 @@ public class LegacyAutoTuner extends AutonomousPLUS {
         robot.panels = Panels.INSTANCE;
         mode current = mode.PAUSE;
         waitForStart();
-        robot.encoderReset();
+        robot.resetDriveEncoders();
         while(opModeIsActive())
         {
             if(current == mode.FB)
@@ -59,7 +59,7 @@ public class LegacyAutoTuner extends AutonomousPLUS {
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = mode.PAUSE;
+                    current = PAUSE;
                 }
             }
             else if(current == mode.LR)
@@ -73,7 +73,7 @@ public class LegacyAutoTuner extends AutonomousPLUS {
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = mode.PAUSE;
+                    current = PAUSE;
                 }
             }
             else if(current == mode.TRN)
@@ -87,7 +87,7 @@ public class LegacyAutoTuner extends AutonomousPLUS {
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = mode.PAUSE;
+                    current = PAUSE;
                 }
             }
             else if(current == mode.DGNL)
@@ -101,7 +101,7 @@ public class LegacyAutoTuner extends AutonomousPLUS {
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = mode.PAUSE;
+                    current = PAUSE;
                 }
             }
             else if(current == mode.TRI)
@@ -118,7 +118,7 @@ public class LegacyAutoTuner extends AutonomousPLUS {
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = mode.PAUSE;
+                    current = PAUSE;
                 }
             }
             if(current == mode.PAUSE)

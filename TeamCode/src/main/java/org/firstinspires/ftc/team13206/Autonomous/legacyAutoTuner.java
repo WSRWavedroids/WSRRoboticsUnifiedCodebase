@@ -32,7 +32,7 @@ public class legacyAutoTuner extends AutonomousPLUS {
     private mode savedMode;
     //Panels changeable values
     public static double p = 5;
-    public static int tollerance;
+    public static int tolerance;
     public static int movementDistance = 900;
     public static double modularSpeed = 0.5;
     public static long timeBetweenMovements = 200;
@@ -43,15 +43,15 @@ public class legacyAutoTuner extends AutonomousPLUS {
         robot.panels = Panels.INSTANCE;
         mode current = mode.PAUSE;
         waitForStart();
-        robot.encoderReset();
+        robot.resetDriveEncoders();
         while(opModeIsActive())
         {
             if(current == mode.FB)
             {
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 moveRobotForward(movementDistance, timeBetweenMovements);
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 moveRobotBackward(movementDistance, timeBetweenMovements);
                 changeModes(current);
@@ -62,10 +62,10 @@ public class legacyAutoTuner extends AutonomousPLUS {
             }
             else if(current == mode.LR)
             {
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 moveRobotLeft(movementDistance, timeBetweenMovements);
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 moveRobotRight(movementDistance, timeBetweenMovements);
                 changeModes(current);
@@ -76,10 +76,10 @@ public class legacyAutoTuner extends AutonomousPLUS {
             }
             else if(current == mode.TRN)
             {
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 turnRobotLeft(movementDistance, timeBetweenMovements);
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 turnRobotRight(movementDistance, timeBetweenMovements);
                 changeModes(current);
@@ -90,10 +90,10 @@ public class legacyAutoTuner extends AutonomousPLUS {
             }
             else if(current == mode.DGNL)
             {
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 moveDiagonalLeft(movementDistance, timeBetweenMovements);
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 moveDiagonalRight(movementDistance, timeBetweenMovements);
                 changeModes(current);
@@ -104,13 +104,13 @@ public class legacyAutoTuner extends AutonomousPLUS {
             }
             else if(current == mode.TRI)
             {
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 moveDiagonalRight((int) Math.sqrt((2* (movementDistance^2))), timeBetweenMovements); // Do a little trig lol
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 moveRobotBackward(movementDistance, timeBetweenMovements);
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 moveRobotLeft(movementDistance, timeBetweenMovements);
                 changeModes(current);
@@ -122,12 +122,12 @@ public class legacyAutoTuner extends AutonomousPLUS {
             if(current == mode.PAUSE)
             {
                 telemetry.addData("Paused", savedMode);
-                calibrateDriveTrain(tollerance, p);
+                calibrateDriveTrain(tolerance, p);
                 speed = modularSpeed;
                 changeModes(current);
                 if(gamepad1.square)
                 {
-                    current = PAUSE;
+                    current = mode.PAUSE;
                 }
             }
             telemetry.addData("Current Mode is:", savedMode);

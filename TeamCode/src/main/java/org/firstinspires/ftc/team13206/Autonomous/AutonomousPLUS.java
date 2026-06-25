@@ -28,7 +28,7 @@ package org.firstinspires.ftc.team13206.Autonomous;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import static org.firstinspires.ftc.team13206.Core.Robot.CardinalDirections.*;
+import static org.firstinspires.ftc.team13206.Core.Robot.MoveDirection.*;
 
 import com.bylazar.panels.Panels;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -132,11 +132,11 @@ public class AutonomousPLUS extends LinearOpMode {
             robot.updateAllDaThings();
         }
 
-        robot.stopAllMotors();
+        robot.stopDriveMotors();
         robot.encoderRunningMode();
         sleep(pause);
 
-        //robot.encoderReset();
+        //robot.resetDriveEncoders();
     }
 
 
@@ -154,10 +154,10 @@ public class AutonomousPLUS extends LinearOpMode {
 
             }
 
-            robot.stopAllMotors();
+            robot.stopDriveMotors();
             robot.encoderRunningMode();
             sleep(pause);
-            //robot.encoderReset();
+            //robot.resetDriveEncoders();
         }
     }
 
@@ -175,12 +175,12 @@ public class AutonomousPLUS extends LinearOpMode {
                 robot.updateAllDaThings();
             }
 
-            robot.stopAllMotors();
+            robot.stopDriveMotors();
             /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
             robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
             robot.encoderRunningMode();
             sleep(pause);
-            //robot.encoderReset();
+            //robot.resetDriveEncoders();
         }
     }
 
@@ -198,10 +198,10 @@ public class AutonomousPLUS extends LinearOpMode {
                 robot.updateAllDaThings();
             }
 
-            robot.stopAllMotors();
+            robot.stopDriveMotors();
             robot.encoderRunningMode();
             sleep(pause);
-            //robot.encoderReset();
+            //robot.resetDriveEncoders();
         }
     }
 
@@ -219,10 +219,10 @@ public class AutonomousPLUS extends LinearOpMode {
                 robot.updateAllDaThings();
             }
 
-            robot.stopAllMotors();
+            robot.stopDriveMotors();
             robot.encoderRunningMode();
             sleep(pause);
-            //robot.encoderReset();
+            //robot.resetDriveEncoders();
         }
     }
 
@@ -240,10 +240,10 @@ public class AutonomousPLUS extends LinearOpMode {
                 robot.updateAllDaThings();
             }
 
-            robot.stopAllMotors();
+            robot.stopDriveMotors();
             robot.encoderRunningMode();
             sleep(pause);
-            //robot.encoderReset();
+            //robot.resetDriveEncoders();
 
         }
     }
@@ -263,10 +263,10 @@ public class AutonomousPLUS extends LinearOpMode {
                 robot.updateAllDaThings();
             }
 
-            robot.stopAllMotors();
+            robot.stopDriveMotors();
             robot.encoderRunningMode();
             sleep(pause);
-            //robot.encoderReset();
+            //robot.resetDriveEncoders();
         }
     }
 
@@ -285,10 +285,10 @@ public class AutonomousPLUS extends LinearOpMode {
                 robot.updateAllDaThings();
             }
 
-            robot.stopAllMotors();
+            robot.stopDriveMotors();
             robot.encoderRunningMode();
             sleep(pause);
-            //robot.encoderReset();
+            //robot.resetDriveEncoders();
         }
     }
 
@@ -306,7 +306,7 @@ public class AutonomousPLUS extends LinearOpMode {
 
             robot.updateAllDaThings();
         }
-        robot.stopAllMotors();
+        robot.stopDriveMotors();
         sleep(pause);
     }
 
@@ -324,7 +324,7 @@ public class AutonomousPLUS extends LinearOpMode {
 
             robot.updateAllDaThings();
         }
-        robot.stopAllMotors();
+        robot.stopDriveMotors();
         sleep(pause);
     }
 
@@ -342,7 +342,7 @@ public class AutonomousPLUS extends LinearOpMode {
 
             robot.updateAllDaThings();
         }
-        robot.stopAllMotors();
+        robot.stopDriveMotors();
         sleep(pause);
     }
 
@@ -360,7 +360,7 @@ public class AutonomousPLUS extends LinearOpMode {
 
             robot.updateAllDaThings();
         }
-        robot.stopAllMotors();
+        robot.stopDriveMotors();
         sleep(pause);
     }
 
@@ -378,7 +378,7 @@ public class AutonomousPLUS extends LinearOpMode {
 
             robot.updateAllDaThings();
         }
-        robot.stopAllMotors();
+        robot.stopDriveMotors();
         sleep(pause);
     }
 
@@ -396,7 +396,7 @@ public class AutonomousPLUS extends LinearOpMode {
 
             robot.updateAllDaThings();
         }
-        robot.stopAllMotors();
+        robot.stopDriveMotors();
         sleep(pause);
     }
 
@@ -414,7 +414,7 @@ public class AutonomousPLUS extends LinearOpMode {
 
             robot.updateAllDaThings();
         }
-        robot.stopAllMotors();
+        robot.stopDriveMotors();
         sleep(pause);
     }
 
@@ -432,7 +432,7 @@ public class AutonomousPLUS extends LinearOpMode {
 
             robot.updateAllDaThings();
         }
-        robot.stopAllMotors();
+        robot.stopDriveMotors();
         sleep(pause);
     }
 
@@ -456,7 +456,7 @@ public class AutonomousPLUS extends LinearOpMode {
 
     public void prepareNextAction(long pause) {
         sleep(pause);
-        //robot.encoderReset();
+        //robot.resetDriveEncoders();
     }
 
 

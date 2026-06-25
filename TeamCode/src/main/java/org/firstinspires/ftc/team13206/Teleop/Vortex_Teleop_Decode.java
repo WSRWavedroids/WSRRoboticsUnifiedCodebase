@@ -458,7 +458,7 @@ public class Vortex_Teleop_Decode extends OpMode {
             robot.backRightDrive.setTargetPosition(robot.backRightDrive.getCurrentPosition() - turnTicks);
         }
 
-        robot.setRunMode(RUN_TO_POSITION);
+        robot.setDriveTrainRunMode(RUN_TO_POSITION);
         robot.powerSet(speed);
     }
 
@@ -519,10 +519,10 @@ public class Vortex_Teleop_Decode extends OpMode {
 
     private void controlMode() {
         if (gamepad1.back && !gamepad1.start) {
-            if (robot.controlMode == ROBOT_CENTRIC) {
+            if (robot.controlMode == STANDARD_ROBOT_CENTRIC) {
                 robot.controlMode = PEDRO;
             } else if (robot.controlMode == PEDRO) {
-                robot.controlMode = ROBOT_CENTRIC;
+                robot.controlMode = STANDARD_ROBOT_CENTRIC;
             }
         }
 

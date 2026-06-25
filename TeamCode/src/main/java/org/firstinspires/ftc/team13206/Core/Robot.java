@@ -4,8 +4,6 @@ import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.*;
 import static org.firstinspires.ftc.team13206.Core.Robot.DriveMode.*;
-import static org.firstinspires.ftc.team13206.Core.SorterHardware.FeederState.INTAKE;
-import static org.firstinspires.ftc.team13206.Core.SorterHardware.FeederState.PASSIVE;
 
 import android.annotation.SuppressLint;
 
@@ -13,7 +11,6 @@ import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -22,22 +19,17 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team13206.Vision.Limelight_Target_Scanner;
 import org.firstinspires.ftc.team13206.Vision.WaveTag;
 import org.firstinspires.ftc.team13206.Vision.Limelight_Randomization_Scanner;
 import org.firstinspires.ftc.team13206.pedroPathing.Constants;
-
-import java.util.List;
-import java.util.Objects;
 
 public class Robot {
 
@@ -79,7 +71,7 @@ public class Robot {
     public OpMode opmode;
     public HardwareMap hardwareMap;
 
-    public DriveMode controlMode = PEDRO;//ROBOT_CENTRIC;
+    public DriveMode controlMode = PEDRO;//STANDARD_ROBOT_CENTRIC;
     public IMU.Parameters imuParameters;
     public WaveTag targetTag = new WaveTag();
     public enum patternColors {PPG, GPP, PGP}
@@ -100,8 +92,6 @@ public class Robot {
 
     public double robotHeading;
 
-    public double turretPositionOffsetXInches = 2.72, turretPositionOffsetYInches =1.57; //Inches from pedro position
-
     public boolean callPartialPedro = true;
 
 
@@ -119,15 +109,14 @@ public class Robot {
 
     public static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
-    public enum DriveMode {ROBOT_CENTRIC, PEDRO, LEGACY_FIELD_CENTRIC}
+    public enum DriveMode {STANDARD_ROBOT_CENTRIC, PEDRO, LEGACY_FIELD_CENTRIC}
     public enum OpenClosed {OPEN,CLOSED}
-    public enum CardinalDirections {
+    public enum MoveDirection {
         FORWARD, BACKWARD, LEFT, RIGHT,
         DIAGONAL_LEFT, DIAGONAL_RIGHT,
-        TURN_LEFT, TURN_RIGHT}
-    public enum UpDown {
-        UP, DOWN
+        TURN_LEFT, TURN_RIGHT
     }
+    public enum UpDown {UP, DOWN}
 
     public boolean scanningForTargetTag = false;
 
@@ -223,12 +212,25 @@ public class Robot {
         if (alliance == null) alliance = allianceSides.BLUE;
     }
 
+    /**
+     * Updates the state of every part of the robot. Should be called once per loop.
+     */
+    public void update() {
+        //TODO Make this function update the robot states
+    }
 
+    /**
+     * Checks to see if the wheels are moving to a target position.
+     * @return True, if any wheel is busy.
+     */
     public boolean isWheelsBusy() {
         return backLeftDrive.isBusy() || frontLeftDrive.isBusy() || frontRightDrive.isBusy() || backRightDrive.isBusy();
     }
 
-    public void stopAllMotors() {
+    /**
+     * Sets the drive train motors' powers to zero.
+     */
+    public void stopDriveMotors() {
         frontLeftDrive.setPower(0);
         frontRightDrive.setPower(0);
         backLeftDrive.setPower(0);
@@ -237,10 +239,10 @@ public class Robot {
 
     /**
      * Runs the drive train in a cardinal direction.
-     * @param direction The direction, a CardinalDirections enum
+     * @param direction The direction, a MoveDirection enum
      * @param ticks The distance to move in motor ticks
      */
-    public void setTargets(CardinalDirections direction, int ticks) {
+    public void setTargets(MoveDirection direction, int ticks) {
 
         // This is all inverted (big sigh)
 
@@ -296,7 +298,11 @@ public class Robot {
         }
     }
 
-    public void setRunMode(DcMotor.RunMode runMode) {
+    /**
+     * Sets the drive motors to the specified RunMode
+     * @param runMode DcMotor.RunMode enum
+     */
+    public void setDriveTrainRunMode(DcMotor.RunMode runMode) {
         frontLeftDrive.setMode(runMode);
         frontRightDrive.setMode(runMode);
         backLeftDrive.setMode(runMode);
@@ -308,50 +314,43 @@ public class Robot {
      * and Robot.setTargets() functions.
      */
     public void positionRunningMode() {
-
-        frontLeftDrive.setMode(RUN_TO_POSITION);
-        frontRightDrive.setMode(RUN_TO_POSITION);
-        backLeftDrive.setMode(RUN_TO_POSITION);
-        backRightDrive.setMode(RUN_TO_POSITION);
+        setDriveTrainRunMode(RUN_TO_POSITION);
     }
 
     /**
      * Turns off the motor encoders, to run purely on power.
      */
-    public void powerRunningMode()
-    {
-        frontLeftDrive.setMode(RUN_WITHOUT_ENCODER);
-        frontRightDrive.setMode(RUN_WITHOUT_ENCODER);
-        backLeftDrive.setMode(RUN_WITHOUT_ENCODER);
-        backRightDrive.setMode(RUN_WITHOUT_ENCODER);
-    }
-    public void powerSet(double speed) {
-        frontLeftDrive.setPower(speed);
-        frontRightDrive.setPower(speed);
-        backLeftDrive.setPower(speed);
-        backRightDrive.setPower(speed);
-
+    public void powerRunningMode() {
+        setDriveTrainRunMode(RUN_WITHOUT_ENCODER);
     }
 
     /**
      * Sets the motors to run with encoder feedback.
      */
     public void encoderRunningMode(){
-        frontLeftDrive.setMode(RUN_USING_ENCODER);
-        frontRightDrive.setMode(RUN_USING_ENCODER);
-        backLeftDrive.setMode(RUN_USING_ENCODER);
-        backRightDrive.setMode(RUN_USING_ENCODER);
-    }
-
-    public void encoderReset(){
-        frontLeftDrive.setMode(STOP_AND_RESET_ENCODER);
-        frontRightDrive.setMode(STOP_AND_RESET_ENCODER);
-        backLeftDrive.setMode(STOP_AND_RESET_ENCODER);
-        backRightDrive.setMode(STOP_AND_RESET_ENCODER);
+        setDriveTrainRunMode(RUN_USING_ENCODER);
     }
 
     /**
-     * Adds motor data to telemetry and updates it.
+     * Sets the motors to the specified speed
+     * @param speed A value from 0-1
+     */
+    public void powerSet(double speed) {
+        frontLeftDrive.setPower(speed);
+        frontRightDrive.setPower(speed);
+        backLeftDrive.setPower(speed);
+        backRightDrive.setPower(speed);
+    }
+
+    /**
+     * Stops the drive train and resets the encoder values to zero ticks.
+     */
+    public void resetDriveEncoders(){
+        setDriveTrainRunMode(STOP_AND_RESET_ENCODER);
+    }
+
+    /**
+     * Adds motor data to telemetry.
      */
     @SuppressLint("DefaultLocale")
     public void tellMotorOutput(){
@@ -360,26 +359,37 @@ public class Robot {
         telemetry.addData("Motors", String.format("FR Power(%.2f) FR Location (%d) FR Target (%d)", frontRightDrive.getPower(), frontRightDrive.getCurrentPosition(), frontRightDrive.getTargetPosition()));
         telemetry.addData("Motors", String.format("BL Power(%.2f) BL Location (%d) BL Target (%d)", backLeftDrive.getPower(), backLeftDrive.getCurrentPosition(), backLeftDrive.getTargetPosition()));
         telemetry.addData("Motors", String.format("BR Power(%.2f) BR Location (%d) BR Target (%d)", backRightDrive.getPower(), backRightDrive.getCurrentPosition(), backRightDrive.getTargetPosition()));
-
-        telemetry.update();
     }
 
-    public double inchesToTicks(double inches) {
-        // returns the inches * ticks per rotation / wheel circ
-        return ((inches/12.25) * 537.6 / .5);
-        //todo Reference that 1 inch ~= 50 ticks
+    /**
+     * Moves hardware to match-ready positions
+     */
+    public void readyHardware() {
+        // TODO Get your hardware ready here
     }
 
+    /**
+     * Figures out if an integer is even.
+     * @param x
+     * @return True or false, for even or odd
+     */
+    private boolean isEven(int x) {
+        return x % 2 == 0;
+    }
 
-    public void readyHardware(boolean resetEncoder) {
-        sorterHardware.flicky.setPosition(sorterHardware.flickyDownPosition);
-        launcher.setLauncherVelocity(0);
-
-        if(resetEncoder)
-        {
-            sorterHardware.resetSorterEncoder();
-            encoderReset();
-            sorterHardware.reference = 0;
+    /**
+     * Finds the largest absolute value of a list of numbers
+     * @param values A list of doubles
+     * @return The largest absolute values
+     */
+    private double getLargestAbsVal(double... values){
+        // This function does some math!
+        double max = 0;
+        for (double val : values) {
+            if (Math.abs(val) > max) {
+                max = Math.abs(val);
+            }
         }
+        return max;
     }
 }
