@@ -1,0 +1,109 @@
+package org.firstinspires.ftc.team13206.Templates;
+
+import static org.firstinspires.ftc.team13206.Templates.TemplateLegacyIterativeAuto.Steps.*;
+
+import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.team13206.Autonomous.AutonomousPlusPLUS;
+import org.firstinspires.ftc.team13206.Core.Robot;
+import org.firstinspires.ftc.team13206.Core.TurretLogic;
+
+import java.util.Objects;
+
+/**
+ * This is an iterative autonomous program. It runs in a state machine, which allows us to run the
+ * updateAllDaThings() function and properly run the blender without any... questionable code. And
+ * it's marginally more efficient. Also, this contains the proper code to run the red alliance auto
+ * too, allowing us to keep both autos up to date in a single file. BetaRedFrontAuto is a shell that
+ * basically just hijacks this file to work, which is neat.
+ */
+@Disabled
+@Autonomous(group = "Templates", name = "Legacy Iterative Autonomous")
+public class TemplateLegacyIterativeAuto extends OpMode {
+
+    public Robot robot;
+    public AutonomousPlusPLUS auto;
+
+    private ElapsedTime runtime = new ElapsedTime();
+
+    enum Steps {
+        EXAMPLE, EXAMPLE_2
+    }
+
+
+
+    void nextStep(Steps nextStep) {
+        currentStep = nextStep;
+    }
+
+    Steps currentStep;
+
+    public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
+    public static final String PATTERN_KEY = "Pattern";
+
+
+    private final Pose startPose = new Pose(56.5, 9.200, Math.toRadians(180));
+
+    /**
+     * Code to run ONCE when the driver hits INIT
+     */
+    public void init() {
+        robot = new Robot(hardwareMap, telemetry, this);
+        auto = new AutonomousPlusPLUS(robot);
+        currentStep = EXAMPLE; //The starting step
+
+        // Tell the driver that initialization is complete.
+        telemetry.addData("Status", "Initialized");
+    }
+
+    /**
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     */
+    public void init_loop() {
+        // Tell the driver that initialization is complete.
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("HYPE", "ARE! YOU! READY?!?!?!?!");
+    }
+
+    /**
+     * Code to run ONCE when the driver hits PLAY
+     */
+    public void start() {
+        auto.runtime.reset();
+        telemetry.addData("HYPE", "Let's do this!!!");
+    }
+
+    /**
+     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+     */
+    public void loop() {
+        //TODO Update things here as needed
+
+        switch (currentStep) {
+            case EXAMPLE:
+                //TODO Put a step here
+                nextStep(EXAMPLE);
+                break;
+            case EXAMPLE_2:
+                if (true) { //TODO Replace "true" with the finishing condition of step EXAMPLE
+                    //TODO Put another step here
+                    nextStep(EXAMPLE);
+                }
+                break;
+        }
+    }
+
+    /**
+     * Code to run ONCE after the driver hits STOP
+     */
+    public void stop() {
+        telemetry.addData("Status", "Robot Stopped");
+    }
+}
+
+
