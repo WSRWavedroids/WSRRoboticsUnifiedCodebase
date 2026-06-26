@@ -1,503 +1,129 @@
 package org.firstinspires.ftc.team13206.Autonomous;
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 
-import static org.firstinspires.ftc.team13206.Core.Robot.MoveDirection.*;
+import static org.firstinspires.ftc.team13206.Core.Robot.MoveDirection;
+
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
+import com.pedropathing.util.Timer;
+
+import static android.os.SystemClock.sleep;
 
 import com.bylazar.panels.Panels;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.team13206.Core.Robot;
-//import org.firstinspires.ftc.teamcode.OLD.Autonomous.AprilTags.MayFlowers;
 
 /**
- * This is the autonomous mode. It moves the robot without us having to touch the controller.
- * Previous programmers really sucked at explaining what any of this meant, so we're trying to do better.
- * This is our third year now of using this file. It's kind of poetic and also adorable.
+ * This class provides movement functions for autonomous.
  */
 
-public class AutonomousPLUS extends LinearOpMode {
+public class AutonomousPLUS {
+
+    public Robot robot;
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
-    private ElapsedTime runtime = new ElapsedTime();
-
-    public ElapsedTime stupidTimer = new ElapsedTime();
-    public double speed = 0.6;
-    public int sleepTime;
-    public boolean inMarker;
-    public double power;
-    public double slidePos;
-
-    //static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
-    //DO NOT DELETE THIS LINE! CAPITALIZATION IS VERY IMPORTANT!!!
-    public Robot robot = null;
-
-    @Override
-    public void runOpMode() {
-        robot = new Robot(hardwareMap, telemetry, this);
-        robot.panels = Panels.INSTANCE;
-    }
-
-    //These are the basic functions for mechnum movement during auto... Don't mess with these unless something is inverted
-    // Remember Without ODO pods there will be some inconsistency due to mechnum slippage
+    public ElapsedTime runtime = new ElapsedTime();
 
     /**
-     * Moves the robot in the provided X and Y directions and turns using... some value.
-     *
-     * Positive moveRight = Right
-     * Positive moveForward = Forward
-     * Positive turn = Clockwise
-     * @param moveRight negative = left, positive = right
-     * @param moveForward positive = forwards, negative = backwards
-     * @param turn negative = counterclockwise, positive = clockwise
-     * @param waitForCompletion Stall until movement complete
-     * @param pauseMS Pause in milliseconds
+     * The speed of the robot, expressed as potential motor power from 0-1. Make sure this is set on
+     * a per-opmode basis.
      */
-    public void moveXY(int moveRight, int moveForward, int turn, boolean waitForCompletion, long pauseMS) {
+    public double speed;
 
-        int[] motorTicks = new int[4];
+    public AutonomousPLUS(Robot robot) {
+        this.robot = robot;
+        this.robot.panels = Panels.INSTANCE;
+    }
 
-        motorTicks[0] = (-moveForward + moveRight + turn);
-        motorTicks[1] = (-moveForward - moveRight - turn);
-        motorTicks[2] = (-moveForward - moveRight + turn);
-        motorTicks[3] = (-moveForward + moveRight - turn);
-
-        robot.frontLeftDrive.setTargetPosition(-motorTicks[0] + robot.frontLeftDrive.getCurrentPosition());
-        robot.frontRightDrive.setTargetPosition(-motorTicks[1] + robot.frontRightDrive.getCurrentPosition());
-        robot.backLeftDrive.setTargetPosition(-motorTicks[2] + robot.backLeftDrive.getCurrentPosition());
-        robot.backRightDrive.setTargetPosition(-motorTicks[3] + robot.backRightDrive.getCurrentPosition());
-
-        if (waitForCompletion) {
-            while (opModeIsActive() && robot.isWheelsBusy()) {
-                robot.tellMotorOutput();
-                robot.updateAllDaThings();
-            } // And we stall...
+    /**
+     * Checks to see if a started movement is completed. If it is, does the cleanup work for it.
+     * @return True if completed, otherwise false.
+     */
+    public boolean checkMovement() {
+        if (robot.isWheelsBusy()) {
+            return false;
+        } else {
+            robot.stopDriveMotors();
+            robot.encoderRunningMode();
+            return true;
         }
-
-        sleep(pauseMS);
-    }
-    // No turn
-    public void moveXY(int moveRight, int moveForward, boolean waitForCompletion, long pauseMS) {
-        moveXY(moveRight,moveForward,0, waitForCompletion, pauseMS);
-    }
-    //No pauseMS
-    public void moveXY(int moveRight, int moveForward, int turn, boolean waitForCompletion) {
-        moveXY(moveRight,moveForward,turn,waitForCompletion,0);
-    }
-    // No turn or pauseMS
-    public void moveXY(int moveRight, int moveForward, boolean waitForCompletion) {
-        moveXY(moveRight,moveForward,0,waitForCompletion,0);
     }
 
-    public void moveRobotForward(int ticks, long pause) {
-        if (opModeIsActive()) {
-            robot.setTargets(FORWARD, ticks); // Inverted... Lol
-            robot.positionRunningMode();
-        }
+    /**
+     * Starts strafing or turning the robot a number of ticks in a direction.
+     * @param direction The Robot.MoveDirection enum, for the direction
+     * @param ticks The number of ticks to target moving
+     */
+    public void move(MoveDirection direction, int ticks) {
+        robot.setTargets(direction, ticks);
+        robot.positionRunningMode();
         robot.powerSet(speed);
-
-
-        while (opModeIsActive() && robot.isWheelsBusy()) {
-            robot.tellMotorOutput();
-            //robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-            robot.updateAllDaThings();
-        }
-
-        robot.stopDriveMotors();
-        robot.encoderRunningMode();
-        sleep(pause);
-
-        //robot.resetDriveEncoders();
     }
 
+    /**
+     * Strafes or turns the robot a number of ticks in a direction. It will only return after the
+     * movement is complete. Updates Robot while waiting.
+     * @param direction The Robot.MoveDirection enum, for the direction
+     * @param ticks The number of ticks to move
+     * @param pause Milliseconds to wait after the movement
+     */
+    public void moveAndStall(MoveDirection direction, int ticks, long pause) {
+        move(direction, ticks);
 
-    public void moveRobotBackward(int ticks, long pause) {
-        if (opModeIsActive()) {
-            robot.setTargets(BACKWARD, ticks);
-            robot.positionRunningMode();
-            robot.powerSet(speed);
-
-            while (opModeIsActive() && robot.isWheelsBusy()) {
-                robot.tellMotorOutput();
-                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
-                robot.updateAllDaThings();
-
-            }
-
-            robot.stopDriveMotors();
-            robot.encoderRunningMode();
-            sleep(pause);
-            //robot.resetDriveEncoders();
+        while (!checkMovement()) {
+            robot.update();
         }
-    }
 
-    public void moveRobotLeft(int ticks, long pause) {
-
-        if (opModeIsActive()) {
-            robot.setTargets(LEFT, ticks);
-            robot.positionRunningMode();
-            robot.powerSet(speed);
-
-            while (opModeIsActive() && robot.isWheelsBusy()) {
-                robot.tellMotorOutput();
-                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
-                robot.updateAllDaThings();
-            }
-
-            robot.stopDriveMotors();
-            /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-            robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
-            robot.encoderRunningMode();
-            sleep(pause);
-            //robot.resetDriveEncoders();
-        }
-    }
-
-    public void moveRobotRight(int ticks, long pause) {
-
-        if (opModeIsActive()) {
-            robot.setTargets(RIGHT, ticks);
-            robot.positionRunningMode();
-            robot.powerSet(speed);
-
-            while (opModeIsActive() && robot.isWheelsBusy()) {
-                robot.tellMotorOutput();
-                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
-                robot.updateAllDaThings();
-            }
-
-            robot.stopDriveMotors();
-            robot.encoderRunningMode();
-            sleep(pause);
-            //robot.resetDriveEncoders();
-        }
-    }
-
-    public void turnRobotRight(int ticks, long pause) {
-
-        if (opModeIsActive()) {
-            robot.setTargets(TURN_RIGHT, ticks);
-            robot.positionRunningMode();
-            robot.powerSet(speed);
-
-            while (opModeIsActive() && robot.isWheelsBusy()) {
-                robot.tellMotorOutput();
-                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
-                robot.updateAllDaThings();
-            }
-
-            robot.stopDriveMotors();
-            robot.encoderRunningMode();
-            sleep(pause);
-            //robot.resetDriveEncoders();
-        }
-    }
-
-    public void turnRobotLeft(int ticks, long pause) {
-
-        if (opModeIsActive()) {
-            robot.setTargets(TURN_LEFT, ticks);
-            robot.positionRunningMode();
-            robot.powerSet(speed);
-
-            while (opModeIsActive() && robot.isWheelsBusy()) {
-                robot.tellMotorOutput();
-                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
-                robot.updateAllDaThings();
-            }
-
-            robot.stopDriveMotors();
-            robot.encoderRunningMode();
-            sleep(pause);
-            //robot.resetDriveEncoders();
-
-        }
-    }
-
-    public void moveDiagonalRight(int ticks, long pause) {
-        //This moves along the 45/225 axis, Positive ticks move forward and negative move back
-        if (opModeIsActive()) {
-            robot.setTargets(DIAGONAL_RIGHT, ticks);
-            robot.frontLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.backRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.powerSet(speed);
-
-            while (opModeIsActive() && robot.isWheelsBusy()) {
-                robot.tellMotorOutput();
-                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
-                robot.updateAllDaThings();
-            }
-
-            robot.stopDriveMotors();
-            robot.encoderRunningMode();
-            sleep(pause);
-            //robot.resetDriveEncoders();
-        }
-    }
-
-    public void moveDiagonalLeft(int ticks, long pause) {
-        //moves along the 135/315 axis, positive ticks move forward and negative ticks move back
-        if (opModeIsActive()) {
-            robot.setTargets(DIAGONAL_LEFT, ticks);
-            robot.frontRightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.backLeftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.powerSet(speed);
-
-            while (opModeIsActive() && robot.isWheelsBusy()) {
-                robot.tellMotorOutput();
-                /*robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getCurrentPosition());
-                robot.panelsTelemetry.addData("FRD Position", robot.frontRightDrive.getVelocity());*/
-                robot.updateAllDaThings();
-            }
-
-            robot.stopDriveMotors();
-            robot.encoderRunningMode();
-            sleep(pause);
-            //robot.resetDriveEncoders();
-        }
-    }
-
-    public void timeDriveForward(long time, long pause)
-    {//time is in milliseconds
-        ElapsedTime timer = new ElapsedTime();
-        robot.encoderRunningMode();
-        timer.reset();
-        while (timer.milliseconds() < time)
-        {
-            robot.frontLeftDrive.setPower(-speed);
-            robot.backLeftDrive.setPower(-speed);
-            robot.frontRightDrive.setPower(-speed);
-            robot.backRightDrive.setPower(-speed);
-
-            robot.updateAllDaThings();
-        }
-        robot.stopDriveMotors();
         sleep(pause);
     }
 
-    public void timeDriveBackward(long time, long pause)
-    {//time is in milliseconds
-        ElapsedTime timer = new ElapsedTime();
-        robot.encoderRunningMode();
-        timer.reset();
-        while (opModeIsActive() && timer.milliseconds() < time)
-        {
-            robot.frontLeftDrive.setPower(speed);
-            robot.backLeftDrive.setPower(speed);
-            robot.frontRightDrive.setPower(speed);
-            robot.backRightDrive.setPower(speed);
-
-            robot.updateAllDaThings();
-        }
-        robot.stopDriveMotors();
-        sleep(pause);
-    }
-
-    public void timeDriveRight(long time, long pause)
-    {//time is in milliseconds
-        ElapsedTime timer = new ElapsedTime();
-        robot.encoderRunningMode();
-        timer.reset();
-        while (opModeIsActive() && timer.milliseconds() < time)
-        {
-            robot.frontLeftDrive.setPower(-speed);
-            robot.backLeftDrive.setPower(speed);
-            robot.frontRightDrive.setPower(speed);
-            robot.backRightDrive.setPower(-speed);
-
-            robot.updateAllDaThings();
-        }
-        robot.stopDriveMotors();
-        sleep(pause);
-    }
-
-    public void timeDriveLeft(long time, long pause)
-    {//time is in milliseconds
-        ElapsedTime timer = new ElapsedTime();
-        robot.encoderRunningMode();
-        timer.reset();
-        while (opModeIsActive() && timer.milliseconds() < time)
-        {
-            robot.frontLeftDrive.setPower(speed);
-            robot.backLeftDrive.setPower(-speed);
-            robot.frontRightDrive.setPower(-speed);
-            robot.backRightDrive.setPower(speed);
-
-            robot.updateAllDaThings();
-        }
-        robot.stopDriveMotors();
-        sleep(pause);
-    }
-
-    public void timeTurnleft(long time, long pause)
-    {//time is in milliseconds
-        ElapsedTime timer = new ElapsedTime();
-        robot.encoderRunningMode();
-        timer.reset();
-        while (opModeIsActive() && timer.milliseconds() < time)
-        {
-            robot.frontLeftDrive.setPower(speed);
-            robot.backLeftDrive.setPower(speed);
-            robot.frontRightDrive.setPower(-speed);
-            robot.backRightDrive.setPower(-speed);
-
-            robot.updateAllDaThings();
-        }
-        robot.stopDriveMotors();
-        sleep(pause);
-    }
-
-    public void timeTurnRight(long time, long pause)
-    {//time is in milliseconds
-        ElapsedTime timer = new ElapsedTime();
-        robot.encoderRunningMode();
-        timer.reset();
-        while (opModeIsActive() && timer.milliseconds() < time)
-        {
-            robot.frontLeftDrive.setPower(-speed);
-            robot.backLeftDrive.setPower(-speed);
-            robot.frontRightDrive.setPower(speed);
-            robot.backRightDrive.setPower(speed);
-
-            robot.updateAllDaThings();
-        }
-        robot.stopDriveMotors();
-        sleep(pause);
-    }
-
-    public void timeDiagonalRight(long time, long pause, int PosOneForward_MinusOneBack)
-    {// This moves along the 45/225 axis. Changing the last int to -1 will make it go back, pos 1 will go forward
-        ElapsedTime timer = new ElapsedTime();
-        robot.encoderRunningMode();
-        timer.reset();
-        while (opModeIsActive() && timer.milliseconds() < time)
-        {
-            robot.frontLeftDrive.setPower(-speed *  PosOneForward_MinusOneBack);
-            robot.backLeftDrive.setPower(0);
-            robot.frontRightDrive.setPower(0);
-            robot.backRightDrive.setPower(-speed * PosOneForward_MinusOneBack);
-
-            robot.updateAllDaThings();
-        }
-        robot.stopDriveMotors();
-        sleep(pause);
-    }
-
-    public void timeDiagonalLeft(long time, long pause, int PosOneForward_MinusOneBack)
-    {//Moves along the 135/315 degree axis. Changing the last int to -1 will make it go back, pos 1 will go forward
-        ElapsedTime timer = new ElapsedTime();
-        robot.encoderRunningMode();
-        timer.reset();
-        while (opModeIsActive() && timer.milliseconds() < time)
-        {
-            robot.frontLeftDrive.setPower(0);
-            robot.backLeftDrive.setPower(-speed * PosOneForward_MinusOneBack);
-            robot.frontRightDrive.setPower(-speed * PosOneForward_MinusOneBack);
-            robot.backRightDrive.setPower(0);
-
-            robot.updateAllDaThings();
-        }
-        robot.stopDriveMotors();
-        sleep(pause);
-    }
-
-
-
-
-
-
-    public void calibrateDriveTrain(int tollerance, double pValue) {
-        robot.frontLeftDrive.setTargetPositionTolerance(tollerance);
-        robot.frontRightDrive.setTargetPositionTolerance(tollerance);
-        robot.backLeftDrive.setTargetPositionTolerance(tollerance);
-        robot.backRightDrive.setTargetPositionTolerance(tollerance);
-
-        robot.frontLeftDrive.setPositionPIDFCoefficients(pValue);
-        robot.frontRightDrive.setPositionPIDFCoefficients(pValue);
-        robot.backLeftDrive.setPositionPIDFCoefficients(pValue);
-        robot.backRightDrive.setPositionPIDFCoefficients(pValue);
-
-    }
-
+    /**
+     * Pauses.
+     * @param pause The time to pause, in milliseconds
+     */
     public void prepareNextAction(long pause) {
         sleep(pause);
-        //robot.resetDriveEncoders();
     }
-
-
-
-    public int convertInchesToTicks(int inches){
-        int ticks = (int) ((537.6 * inches) / (3.77953 * 3.1415926535));
-        return ticks;
-    }
-
-    public void stallTillFalse(boolean condition) {
-        while (condition)
-        {
-            robot.updateAllDaThings();
-            robot.telemetry.update();
-        }
-    }
-
-
-
-
-
-
-
-
-    public void safeSorterSpin(int targetPosition)
-    {
-        while(robot.sorterHardware.motor.getCurrentPosition() > targetPosition - robot.sorterHardware.tickTolerance  && robot.sorterHardware.motor.getCurrentPosition() < targetPosition + robot.sorterHardware.tickTolerance)
-        {
-            //
-        }
-    }
-
-
-
-
-
 
     /**
-     * This is the autonomous mode. It moves the robot without us having to touch the controller.
-     * Previous programmers really sucked at explaining what any of this meant, so we're trying to do better.
-     * This is our third year now of using this file. It's kind of poetic and also adorable.
+     * Sets the speed of the robot as a value from 0-1.
      */
+    public void setSpeed(double speed) {
+        // Validate input
+        if (speed < 0) speed = 0;
+        else if (speed > 1) speed = 1;
+
+        // Set it
+        this.speed = speed;
+    }
+
+    /**
+     * Sets the tolerance for the drive train motors to accept as "in position" when in position
+     * running mode.
+     * @param tolerance The tolerance in ticks
+     */
+    public void setTolerances(int tolerance) {
+        robot.frontLeftDrive.setTargetPositionTolerance(tolerance);
+        robot.frontRightDrive.setTargetPositionTolerance(tolerance);
+        robot.backLeftDrive.setTargetPositionTolerance(tolerance);
+        robot.backRightDrive.setTargetPositionTolerance(tolerance);
+    }
+
+    public double timeLeft(Timer opmodeTimer)
+    {
+       return (30 - opmodeTimer.getElapsedTimeSeconds());
+    }
+
+    public PathChain makeDynamicPath(Follower follower, Pose targetPose, double targetHeadingDegrees) {
+        return follower.pathBuilder()
+                .addPath(new BezierLine(follower.getPose(), targetPose))
+                .setLinearHeadingInterpolation(follower.getHeading(), Math.toRadians(targetHeadingDegrees))
+                .build(); // Build the PathChain after adding all paths
+    }
+
+    // Game-specific auto-only functions can go here:
+
 
 }
