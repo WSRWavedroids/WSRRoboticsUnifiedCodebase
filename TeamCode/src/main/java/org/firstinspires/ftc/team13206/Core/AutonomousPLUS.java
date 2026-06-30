@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team13206.Autonomous;
+package org.firstinspires.ftc.team13206.Core;
 
 import static org.firstinspires.ftc.team13206.Core.Robot.MoveDirection;
 
@@ -12,8 +12,6 @@ import static android.os.SystemClock.sleep;
 
 import com.bylazar.panels.Panels;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.team13206.Core.Robot;
 
 /**
  * This class provides movement functions for autonomous.
