@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
@@ -38,32 +39,7 @@ public class Robot {
     public DcMotorEx backLeftDrive;
     public DcMotorEx backRightDrive;
 
-    public DcMotorEx sorterMotor;
-    public Servo turretServo;
-    public DcMotorEx launcherMotorOne;
-    public DcMotorEx launcherMotorTwo;
-    public DcMotorEx intakeMotor;
-
-    public Servo flicky;
-    public AnalogInput flickyFeedback;
-    public AnalogInput analogTurretTracker;
-    public CRServo feedServo;
-
-    public TouchSensor magsense;
-
-    public Limelight3A limelight;
-
-    public Servo fireRGB;
-    public Servo loadRGB;
-    public Servo storeRGB;
-
     public VoltageSensor voltageSensor;
-
-    public RevColorSensorV3 leftColorScanner;
-
-    public RevColorSensorV3 rightColorScanner;
-
-    public GoBildaPinpointDriver pinpoint;
 
     public Telemetry telemetry;
 
@@ -73,7 +49,6 @@ public class Robot {
 
     public DriveMode controlMode;//STANDARD_ROBOT_CENTRIC;
     public IMU.Parameters imuParameters;
-    public WaveTag targetTag = new WaveTag();
     public enum patternColors {PPG, GPP, PGP}
     public patternColors pattern;
 
@@ -86,23 +61,12 @@ public class Robot {
     }
     public Alliance alliance;
 
-    public Vector2 robotPosition;
-
-    public Vector2 turretPosition;
-
-    public double robotHeading;
+    public Pose robotPosition;
 
     public boolean callPartialPedro = true;
 
-
-    public SorterHardware sorterHardware;
-    public LauncherHardware launcher;
-    public ArtifactLocator sorterLogic;
-    public TurretLogic turret;
     public Limelight_Randomization_Scanner randomizationScanner;
     public Limelight_Target_Scanner targetScanner;
-    public fireQueueWithStates queue;
-    public SlotLightManager blinkies;
 
 
     public Panels panels;
@@ -135,34 +99,6 @@ public class Robot {
         backLeftDrive = hardwareMap.get(DcMotorEx.class, "backLeftDrive");
         backRightDrive = hardwareMap.get(DcMotorEx.class, "backRightDrive");
 
-        sorterMotor = hardwareMap.get(DcMotorEx.class, "sorterMotor");
-        turretServo = hardwareMap.get(Servo.class, "turretServo");
-        launcherMotorOne = hardwareMap.get(DcMotorEx.class, "launcherMotor1");
-        launcherMotorTwo = hardwareMap.get(DcMotorEx.class, "launcherMotor2");
-
-        intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
-
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
-
-        leftColorScanner = hardwareMap.get(RevColorSensorV3.class, "leftColorScanner");
-        rightColorScanner = hardwareMap.get(RevColorSensorV3.class, "rightColorScanner");
-
-        feedServo = hardwareMap.get(CRServo.class, "feedServo");
-
-        flicky = hardwareMap.get(Servo.class, "flicky");
-        flickyFeedback = hardwareMap.get(AnalogInput.class, "flickyFeedback");
-
-        analogTurretTracker = hardwareMap.get(AnalogInput.class, "analogTurretTracker");
-
-
-        magsense = hardwareMap.get(TouchSensor.class, "magsense");
-
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-
-        loadRGB = hardwareMap.get(Servo.class, "loadRGB");
-        fireRGB = hardwareMap.get(Servo.class, "fireRGB");
-        storeRGB = hardwareMap.get(Servo.class, "storeRGB");
-
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         imuParameters = new IMU.Parameters(
@@ -178,34 +114,18 @@ public class Robot {
         backLeftDrive.setDirection(REVERSE);
         backRightDrive.setDirection(FORWARD);
 
-        sorterMotor.setDirection(FORWARD);
-        intakeMotor.setDirection(REVERSE);
-
         // This tells the motors to chill when we're not powering them.
         frontRightDrive.setZeroPowerBehavior(BRAKE);
         backLeftDrive.setZeroPowerBehavior(BRAKE);
         backRightDrive.setZeroPowerBehavior(BRAKE);
         frontLeftDrive.setZeroPowerBehavior(BRAKE);
-        sorterMotor.setZeroPowerBehavior(FLOAT);
 
 
         //This is new..
         telemetry.addData("Status", "Initialized");
 
-        sorterHardware = new SorterHardware(this);
-        sorterLogic = new ArtifactLocator(this);
-        launcher = new LauncherHardware(this);
-        queue = new fireQueueWithStates(this);
         targetScanner = new Limelight_Target_Scanner(this);
         randomizationScanner = new Limelight_Randomization_Scanner(this);
-        turret = new TurretLogic(this, null);
-        blinkies = new SlotLightManager(this);
-
-        robotPosition = new Vector2();
-        turretPosition = new Vector2();
-
-        turret.follower = Constants.createFollower(hardwareMap);
-        turret.follower.setMaxPowerScaling(0);
 
         if (alliance == null) alliance = Alliance.BLUE;
     }

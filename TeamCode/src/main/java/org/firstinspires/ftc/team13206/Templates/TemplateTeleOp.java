@@ -11,6 +11,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -33,7 +34,8 @@ import java.util.Objects;
  * If you ever have problems with the program not showing up on the driver hub, it's probably because of that.
  * <p>
  */
-@TeleOp(name = "Fabio", group = "CompBot")
+@Disabled
+@TeleOp(name = "Basic TeleOp", group = "Templates")
 public class TemplateTeleOp extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.team13206.Core.AutonomousPLUS;
 import org.firstinspires.ftc.team13206.Core.Robot;
 
 /**
@@ -22,7 +23,7 @@ import org.firstinspires.ftc.team13206.Core.Robot;
 public class TemplateLegacyIterativeAuto extends OpMode {
 
     public Robot robot;
-    public AutonomousPlusPLUS auto;
+    public AutonomousPLUS auto;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -43,7 +44,7 @@ public class TemplateLegacyIterativeAuto extends OpMode {
      */
     public void init() {
         robot = new Robot(hardwareMap, telemetry, this);
-        auto = new AutonomousPlusPLUS(robot);
+        auto = new AutonomousPLUS(robot);
         currentStep = EXAMPLE; //The starting step
 
         // Tell the driver that initialization is complete.

@@ -11,6 +11,7 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -18,6 +19,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.team13206.Core.FramerateCalculator;
 import org.firstinspires.ftc.team13206.Core.Robot;
+import org.firstinspires.ftc.team13206.pedroPathing.Constants;
 
 import java.util.Objects;
 
@@ -33,7 +35,8 @@ import java.util.Objects;
  * If you ever have problems with the program not showing up on the driver hub, it's probably because of that.
  * <p>
  */
-@TeleOp(name = "Fabio", group = "CompBot")
+@Disabled
+@TeleOp(name = "Full TeleOp", group = "Templates")
 public class TemplateFullTeleOp extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
@@ -78,7 +81,7 @@ public class TemplateFullTeleOp extends OpMode {
 
         // Call the initialization protocol from the Robot class.
         robot = new Robot(hardwareMap, telemetry, this);
-        teleFollower = robot.turret.follower;
+        teleFollower = Constants.createFollower(hardwareMap);
         robot.targetScanner.InitLimeLightTargeting(1, robot);
         robot.controlMode = STANDARD_ROBOT_CENTRIC;
         imu = hardwareMap.get(IMU.class, "imu");
@@ -89,13 +92,14 @@ public class TemplateFullTeleOp extends OpMode {
 
         Pose startingPose = grabStartPose();
 
-        robot.robotPosition.x = startingPose.getX();
-        robot.robotPosition.y = startingPose.getY();
-        robot.robotHeading = startingPose.getHeading();
-        teleFollower.setPose(startingPose);
-        teleFollower.setHeading(startingPose.getHeading());
+        robot.robotPosition = new Pose(
+                startingPose.getX(),
+                startingPose.getY(),
+                startingPose.getHeading()
+        );
 
-        robot.turret.blackboardSafe = false;
+        teleFollower.setPose(startingPose);
+        teleFollower.setHeading(startingPose.getHeading()); // TODO Redundant?
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -195,9 +199,9 @@ public class TemplateFullTeleOp extends OpMode {
      */
     public void stop() {
         telemetry.addData("Status", "Robot Stopped");
-        blackboard.put("PedroX", robot.robotPosition.x);
-        blackboard.put("PedroY", robot.robotPosition.y);
-        blackboard.put("PedroHeading", Math.toRadians(robot.robotHeading));
+        blackboard.put("PedroX", robot.robotPosition.getX());
+        blackboard.put("PedroY", robot.robotPosition.getY());
+        blackboard.put("PedroHeading", Math.toRadians(robot.robotPosition.getHeading()));
         if (killSwitchActivated){
             telemetry.addLine("Killswitch Hit!");
         }
