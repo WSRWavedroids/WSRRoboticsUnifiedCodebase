@@ -7,8 +7,6 @@ import com.bylazar.panels.Panels;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import org.firstinspires.ftc.team13206.Autonomous.AutonomousPLUS;
-
 @Disabled
 @Configurable
 @Autonomous(group = "Basic", name = "Legacy Auto Tuner")

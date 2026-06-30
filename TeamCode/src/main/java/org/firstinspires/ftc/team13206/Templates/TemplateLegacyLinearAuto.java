@@ -4,11 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.team13206.Autonomous.AutonomousPLUS;
-import org.firstinspires.ftc.team13206.Core.LauncherHardware;
-import org.firstinspires.ftc.team13206.Core.SorterHardware;
+import org.firstinspires.ftc.team13206.Core.AutonomousPLUS;
 import org.firstinspires.ftc.team13206.Core.Robot;
-import org.firstinspires.ftc.team13206.Vision.WaveTag;
 
 @Disabled // TODO remove this if you ever want to run the program
 @Autonomous(group = "Templates", name = "Legacy Linear Autonomous")
