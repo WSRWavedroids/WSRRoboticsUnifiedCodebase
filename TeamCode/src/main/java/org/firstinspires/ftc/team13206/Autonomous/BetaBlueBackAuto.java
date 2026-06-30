@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.team13206.Autonomous;
 
 import static org.firstinspires.ftc.team13206.Core.ArtifactLocator.SlotState.*;
-import static org.firstinspires.ftc.team13206.Core.Robot.allianceSides.*;
+import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.*;
 import static org.firstinspires.ftc.team13206.Core.Robot.patternColors.*;
 import static org.firstinspires.ftc.team13206.Core.SorterHardware.PositionState.*;
 

@@ -16,7 +16,7 @@ import static org.firstinspires.ftc.team13206.Autonomous.PEDRO.BlueCornerGrab8Ba
 import static org.firstinspires.ftc.team13206.Autonomous.PEDRO.BlueCornerGrab8Ball.StepsForCornerGrab.UNPARK;
 import static org.firstinspires.ftc.team13206.Core.ArtifactLocator.SlotState.GREEN;
 import static org.firstinspires.ftc.team13206.Core.ArtifactLocator.SlotState.PURPLE;
-import static org.firstinspires.ftc.team13206.Core.Robot.allianceSides.BLUE;
+import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.BLUE;
 import static org.firstinspires.ftc.team13206.Core.SorterHardware.PositionState.FIRE;
 import static org.firstinspires.ftc.team13206.Core.SorterHardware.PositionState.LOAD;
 import static org.firstinspires.ftc.team13206.Core.SorterHardware.PositionState.STORE;

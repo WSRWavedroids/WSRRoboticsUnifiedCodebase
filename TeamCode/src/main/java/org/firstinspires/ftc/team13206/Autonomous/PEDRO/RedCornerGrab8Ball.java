@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.team13206.Autonomous.PEDRO;
 
-import static org.firstinspires.ftc.team13206.Core.Robot.allianceSides.RED;
+import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.RED;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.follower.Follower;

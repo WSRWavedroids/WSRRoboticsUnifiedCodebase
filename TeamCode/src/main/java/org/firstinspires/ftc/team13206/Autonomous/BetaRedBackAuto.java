@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.team13206.Autonomous;
 
-import static org.firstinspires.ftc.team13206.Core.Robot.allianceSides.RED;
+import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.RED;
 
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;

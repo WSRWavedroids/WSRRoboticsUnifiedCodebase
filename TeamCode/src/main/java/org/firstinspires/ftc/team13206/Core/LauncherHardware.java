@@ -5,7 +5,7 @@ import static org.firstinspires.ftc.team13206.Core.LauncherHardware.LauncherMode
 import static org.firstinspires.ftc.team13206.Core.LauncherHardware.LauncherMode.WAIT_FOREVER;
 import static org.firstinspires.ftc.team13206.Core.LauncherHardware.LauncherMode.WAIT_FOR_TIME;
 import static org.firstinspires.ftc.team13206.Core.LauncherHardware.LauncherSteps.*;
-import static org.firstinspires.ftc.team13206.Core.Robot.allianceSides.BLUE;
+import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.BLUE;
 import static org.firstinspires.ftc.team13206.Core.SorterHardware.PositionState.*;
 
 import com.bylazar.configurables.annotations.Configurable;

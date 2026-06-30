@@ -31,22 +31,16 @@ public class TemplateLegacyIterativeAuto extends OpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    enum Steps {
-        EXAMPLE, EXAMPLE_2
-    }
-
-
-
     void nextStep(Steps nextStep) {
         currentStep = nextStep;
     }
 
     Steps currentStep;
 
-    public static final String ALLIANCE_KEY = "Alliance"; //For blackboard
-    public static final String PATTERN_KEY = "Pattern";
+    // Storage keys for blackboard
+    public static final String ALLIANCE_KEY = "Alliance";
 
-
+    // TODO set the start pose if needed. Otherwise, this can be safely deleted.
     private final Pose startPose = new Pose(56.5, 9.200, Math.toRadians(180));
 
     /**
@@ -76,6 +70,13 @@ public class TemplateLegacyIterativeAuto extends OpMode {
     public void start() {
         auto.runtime.reset();
         telemetry.addData("HYPE", "Let's do this!!!");
+    }
+
+    /**
+     * The steps that happen within the main loop.
+     */
+    enum Steps {
+        EXAMPLE, EXAMPLE_2
     }
 
     /**

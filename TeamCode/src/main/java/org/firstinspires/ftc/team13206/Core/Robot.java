@@ -71,20 +71,20 @@ public class Robot {
     public OpMode opmode;
     public HardwareMap hardwareMap;
 
-    public DriveMode controlMode = PEDRO;//STANDARD_ROBOT_CENTRIC;
+    public DriveMode controlMode;//STANDARD_ROBOT_CENTRIC;
     public IMU.Parameters imuParameters;
     public WaveTag targetTag = new WaveTag();
     public enum patternColors {PPG, GPP, PGP}
     public patternColors pattern;
 
-    public enum allianceSides {
+    public enum Alliance {
         BLUE(2), RED(1);
         public final int limelightPipeline;
-        allianceSides(int limelightPipeline) {
+        Alliance(int limelightPipeline) {
             this.limelightPipeline = limelightPipeline;
         }
     }
-    public allianceSides alliance;
+    public Alliance alliance;
 
     public Vector2 robotPosition;
 
@@ -127,8 +127,6 @@ public class Robot {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
         this.opmode = opmode;
-
-        // There's pizza here!
 
         // This section turns the names of the pieces of hardware into variables that we can program with.
         // Make sure that the device name is the exact same thing you typed in on the configuration on the driver hub.
@@ -209,7 +207,7 @@ public class Robot {
         turret.follower = Constants.createFollower(hardwareMap);
         turret.follower.setMaxPowerScaling(0);
 
-        if (alliance == null) alliance = allianceSides.BLUE;
+        if (alliance == null) alliance = Alliance.BLUE;
     }
 
     /**
@@ -342,6 +340,13 @@ public class Robot {
         backRightDrive.setPower(speed);
     }
 
+    public void enableBrakes() {
+        frontLeftDrive.setZeroPowerBehavior(BRAKE);
+        frontRightDrive.setZeroPowerBehavior(BRAKE);
+        backLeftDrive.setZeroPowerBehavior(BRAKE);
+        backRightDrive.setZeroPowerBehavior(BRAKE);
+    }
+
     /**
      * Stops the drive train and resets the encoder values to zero ticks.
      */
@@ -373,7 +378,7 @@ public class Robot {
      * @param x
      * @return True or false, for even or odd
      */
-    private boolean isEven(int x) {
+    public static boolean isEven(int x) {
         return x % 2 == 0;
     }
 
@@ -382,7 +387,7 @@ public class Robot {
      * @param values A list of doubles
      * @return The largest absolute values
      */
-    private double getLargestAbsVal(double... values){
+    public static double getLargestAbsVal(double... values){
         // This function does some math!
         double max = 0;
         for (double val : values) {
@@ -391,5 +396,17 @@ public class Robot {
             }
         }
         return max;
+    }
+
+    /**
+     * Rounds a number to a specified level of precision.
+     * @param input The number to be rounded
+     * @param precision The degree of precision with which to round. For example, 0.001 will round
+     *                  to three decimal places. Make sure this value is a multiple of 10, otherwise
+     *                  some weird stuff will happen.
+     * @return The rounded number.
+     */
+    public static double roundToDecimalPoint(double input, double precision) {
+        return Math.round(input / precision) * precision;
     }
 }

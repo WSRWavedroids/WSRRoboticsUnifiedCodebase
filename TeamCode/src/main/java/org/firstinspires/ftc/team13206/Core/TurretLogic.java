@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.team13206.Core;
 
 import static com.qualcomm.robotcore.eventloop.opmode.OpMode.blackboard;
-import static org.firstinspires.ftc.team13206.Core.Robot.allianceSides.*;
+import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.*;
 import static org.firstinspires.ftc.team13206.Core.TurretLogic.controlMode.*;
 
 import com.bylazar.configurables.annotations.Configurable;

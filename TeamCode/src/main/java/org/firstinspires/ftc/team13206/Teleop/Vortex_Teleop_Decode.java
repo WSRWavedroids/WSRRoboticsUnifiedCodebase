@@ -3,7 +3,7 @@ package org.firstinspires.ftc.team13206.Teleop;
 import static org.firstinspires.ftc.team13206.Core.ArtifactLocator.SlotState.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
-import static org.firstinspires.ftc.team13206.Core.Robot.allianceSides.*;
+import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.*;
 import static org.firstinspires.ftc.team13206.Core.Robot.patternColors.*;
 import static org.firstinspires.ftc.team13206.Core.SorterHardware.FeederState.*;
 import static org.firstinspires.ftc.team13206.Core.Robot.DriveMode.*;

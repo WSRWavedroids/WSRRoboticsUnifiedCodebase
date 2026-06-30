@@ -2,7 +2,7 @@ package org.firstinspires.ftc.team13206.Autonomous.PEDRO;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 import static org.firstinspires.ftc.team13206.Core.ArtifactLocator.SlotState.*;
-import static org.firstinspires.ftc.team13206.Core.Robot.allianceSides.BLUE;
+import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.BLUE;
 import static org.firstinspires.ftc.team13206.Autonomous.PEDRO.BlueBack12Ball.Steps.*;
 import static org.firstinspires.ftc.team13206.Core.SorterHardware.PositionState.FIRE;
 import static org.firstinspires.ftc.team13206.Core.SorterHardware.PositionState.LOAD;
