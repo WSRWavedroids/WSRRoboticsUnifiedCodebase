@@ -10,7 +10,6 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.team13206.Autonomous.AutonomousPlusPLUS;
 import org.firstinspires.ftc.team13206.Core.Robot;
 import org.firstinspires.ftc.team13206.Core.TurretLogic;
 

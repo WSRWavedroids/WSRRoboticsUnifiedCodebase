@@ -6,14 +6,9 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.team13206.Autonomous.AutonomousPlusPLUS;
 import org.firstinspires.ftc.team13206.Core.Robot;
-import org.firstinspires.ftc.team13206.Core.TurretLogic;
-
-import java.util.Objects;
 
 /**
  * This is an iterative autonomous program. It runs in a state machine, which allows us to run the
