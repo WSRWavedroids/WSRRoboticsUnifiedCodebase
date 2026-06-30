@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.team13206.Autonomous.AutonomousPlusPLUS;
+import org.firstinspires.ftc.team13206.Autonomous.AutonomousPLUS;
 import org.firstinspires.ftc.team13206.Core.ArtifactLocator;
 import org.firstinspires.ftc.team13206.Core.Robot;
 import org.firstinspires.ftc.team13206.Core.TurretLogic;
@@ -43,7 +43,7 @@ import org.firstinspires.ftc.team13206.Core.TurretLogic;
 public class BlueCornerGrab8Ball extends OpMode {
 
     public Robot robot = null;
-    public AutonomousPlusPLUS auto = null;
+    public AutonomousPLUS auto = null;
     TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
     int pathState; // Current autonomous path state (state machine)
@@ -71,7 +71,7 @@ public class BlueCornerGrab8Ball extends OpMode {
         actionTimer = new Timer();
         telemetry.addData("tolerance value test pt 1", TurretLogic.tolerance);
         telemetry.addData("tolerance value test pt 2", TurretLogic.tolerance);
-        auto = new AutonomousPlusPLUS(robot);
+        auto = new AutonomousPLUS(robot);
         TurretLogic.activeMode = TurretLogic.controlMode.FULL;
 
         robot.randomizationScanner.InitLimeLight(0);
