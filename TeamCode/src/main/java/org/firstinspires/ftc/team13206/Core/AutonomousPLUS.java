@@ -44,6 +44,7 @@ public class AutonomousPLUS {
             return false;
         } else {
             robot.stopDriveMotors();
+            robot.resetDriveEncoders();
             robot.encoderRunningMode();
             return true;
         }
@@ -55,7 +56,7 @@ public class AutonomousPLUS {
      * @param ticks The number of ticks to target moving
      */
     public void move(MoveDirection direction, int ticks) {
-        robot.setTargets(direction, ticks);
+        robot.setTargets(direction, ticks, true);
         robot.positionRunningMode();
         robot.powerSet(speed);
     }
