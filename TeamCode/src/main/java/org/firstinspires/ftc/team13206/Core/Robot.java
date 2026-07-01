@@ -3,7 +3,6 @@ package org.firstinspires.ftc.team13206.Core;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.*;
-import static org.firstinspires.ftc.team13206.Core.Robot.DriveMode.*;
 
 import android.annotation.SuppressLint;
 
@@ -11,26 +10,17 @@ import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.Pose;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.team13206.Vision.Limelight_Target_Scanner;
-import org.firstinspires.ftc.team13206.Vision.WaveTag;
 import org.firstinspires.ftc.team13206.Vision.Limelight_Randomization_Scanner;
-import org.firstinspires.ftc.team13206.pedroPathing.Constants;
 
 public class Robot {
 
@@ -155,63 +145,87 @@ public class Robot {
         backRightDrive.setPower(0);
     }
 
+    boolean startPointLocked = false;
+    int frontLeftPos;
+    int frontRightPos;
+    int backLeftPos;
+    int backRightPos;
+
     /**
      * Runs the drive train in a cardinal direction.
      * @param direction The direction, a MoveDirection enum
      * @param ticks The distance to move in motor ticks
      */
-    public void setTargets(MoveDirection direction, int ticks) {
+    public void setTargets(MoveDirection direction, int ticks, boolean updateStartPoint) {
+
+        // So this is a weird looking block of code. Basically, if we want to lock the start point,
+        // we want to update it once when it's initially locked and then keep it there. So, the
+        // check to actually lock the start point is after the point where it updates, thus locking
+        // the current position, but the check to unlock it happens before, so that it unlocks
+        // immediately.
+        if (updateStartPoint) {
+            startPointLocked = false;
+        }
+        if (!startPointLocked) {
+            frontLeftPos = frontLeftDrive.getCurrentPosition();
+            frontRightPos = frontRightDrive.getCurrentPosition();
+            backLeftPos = backLeftDrive.getCurrentPosition();
+            backRightPos = backRightDrive.getCurrentPosition();
+        }
+        if (!updateStartPoint) {
+            startPointLocked = true;
+        }
 
         // This is all inverted (big sigh)
 
         switch (direction) {
             case RIGHT:
-                frontLeftDrive.setTargetPosition(-ticks + frontLeftDrive.getCurrentPosition());
-                frontRightDrive.setTargetPosition(ticks + frontRightDrive.getCurrentPosition());
-                backLeftDrive.setTargetPosition(ticks + backLeftDrive.getCurrentPosition());
-                backRightDrive.setTargetPosition(-ticks + backRightDrive.getCurrentPosition());
+                frontLeftDrive.setTargetPosition(-ticks + frontLeftPos);
+                frontRightDrive.setTargetPosition(ticks + frontRightPos);
+                backLeftDrive.setTargetPosition(ticks + backLeftPos);
+                backRightDrive.setTargetPosition(-ticks + backRightPos);
                 break;
             case LEFT:
-                frontLeftDrive.setTargetPosition(ticks + frontLeftDrive.getCurrentPosition());
-                frontRightDrive.setTargetPosition(-ticks + frontRightDrive.getCurrentPosition());
-                backLeftDrive.setTargetPosition(-ticks + backLeftDrive.getCurrentPosition());
-                backRightDrive.setTargetPosition(ticks + backRightDrive.getCurrentPosition());
+                frontLeftDrive.setTargetPosition(ticks + frontLeftPos);
+                frontRightDrive.setTargetPosition(-ticks + frontRightPos);
+                backLeftDrive.setTargetPosition(-ticks + backLeftPos);
+                backRightDrive.setTargetPosition(ticks + backRightPos);
                 break;
             case FORWARD:
-                frontLeftDrive.setTargetPosition(-ticks + frontLeftDrive.getCurrentPosition());
-                frontRightDrive.setTargetPosition(-ticks + frontRightDrive.getCurrentPosition());
-                backLeftDrive.setTargetPosition(-ticks + backLeftDrive.getCurrentPosition());
-                backRightDrive.setTargetPosition(-ticks + backRightDrive.getCurrentPosition());
+                frontLeftDrive.setTargetPosition(-ticks + frontLeftPos);
+                frontRightDrive.setTargetPosition(-ticks + frontRightPos);
+                backLeftDrive.setTargetPosition(-ticks + backLeftPos);
+                backRightDrive.setTargetPosition(-ticks + backRightPos);
                 break;
             case BACKWARD:
-                frontLeftDrive.setTargetPosition(ticks + frontLeftDrive.getCurrentPosition());
-                frontRightDrive.setTargetPosition(ticks + frontRightDrive.getCurrentPosition());
-                backLeftDrive.setTargetPosition(ticks + backLeftDrive.getCurrentPosition());
-                backRightDrive.setTargetPosition(ticks + backRightDrive.getCurrentPosition());
+                frontLeftDrive.setTargetPosition(ticks + frontLeftPos);
+                frontRightDrive.setTargetPosition(ticks + frontRightPos);
+                backLeftDrive.setTargetPosition(ticks + backLeftPos);
+                backRightDrive.setTargetPosition(ticks + backRightPos);
                 break;
             case TURN_RIGHT:
-                frontLeftDrive.setTargetPosition(-ticks + frontLeftDrive.getCurrentPosition());
-                frontRightDrive.setTargetPosition(ticks + frontRightDrive.getCurrentPosition());
-                backLeftDrive.setTargetPosition(-ticks + backLeftDrive.getCurrentPosition());
-                backRightDrive.setTargetPosition(ticks + backRightDrive.getCurrentPosition());
+                frontLeftDrive.setTargetPosition(-ticks + frontLeftPos);
+                frontRightDrive.setTargetPosition(ticks + frontRightPos);
+                backLeftDrive.setTargetPosition(-ticks + backLeftPos);
+                backRightDrive.setTargetPosition(ticks + backRightPos);
                 break;
             case TURN_LEFT:
-                frontLeftDrive.setTargetPosition(ticks + frontLeftDrive.getCurrentPosition());
-                frontRightDrive.setTargetPosition(-ticks + frontRightDrive.getCurrentPosition());
-                backLeftDrive.setTargetPosition(ticks + backLeftDrive.getCurrentPosition());
-                backRightDrive.setTargetPosition(-ticks + backRightDrive.getCurrentPosition());
+                frontLeftDrive.setTargetPosition(ticks + frontLeftPos);
+                frontRightDrive.setTargetPosition(-ticks + frontRightPos);
+                backLeftDrive.setTargetPosition(ticks + backLeftPos);
+                backRightDrive.setTargetPosition(-ticks + backRightPos);
                 break;
             case DIAGONAL_RIGHT:
-                frontLeftDrive.setTargetPosition(-ticks + frontLeftDrive.getCurrentPosition());
-                frontRightDrive.setPower(frontRightDrive.getCurrentPosition());
-                backLeftDrive.setPower(backLeftDrive.getCurrentPosition());
-                backRightDrive.setTargetPosition(-ticks + backRightDrive.getCurrentPosition());
+                frontLeftDrive.setTargetPosition(-ticks + frontLeftPos);
+                frontRightDrive.setPower(frontRightPos);
+                backLeftDrive.setPower(backLeftPos);
+                backRightDrive.setTargetPosition(-ticks + backRightPos);
                 break;
             case DIAGONAL_LEFT:
-                frontLeftDrive.setPower(frontLeftDrive.getCurrentPosition());
-                frontRightDrive.setTargetPosition(-ticks + frontRightDrive.getCurrentPosition());
-                backLeftDrive.setTargetPosition(-ticks + backLeftDrive.getCurrentPosition());
-                backRightDrive.setPower(backRightDrive.getCurrentPosition());
+                frontLeftDrive.setPower(frontLeftPos);
+                frontRightDrive.setTargetPosition(-ticks + frontRightPos);
+                backLeftDrive.setTargetPosition(-ticks + backLeftPos);
+                backRightDrive.setPower(backRightPos);
                 break;
         }
     }
