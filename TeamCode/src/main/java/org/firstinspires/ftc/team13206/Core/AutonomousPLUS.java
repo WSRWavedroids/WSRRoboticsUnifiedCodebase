@@ -62,6 +62,18 @@ public class AutonomousPLUS {
     }
 
     /**
+     * Moves without changing the anchor point of the movements. It's like an "absolute mode" of
+     * sorts.
+     * @param direction The Robot.MoveDirection enum, for the direction
+     * @param ticks The number of ticks to target moving
+     */
+    public void tentativeMove(MoveDirection direction, int ticks) {
+        robot.setTargets(direction, ticks, false);
+        robot.positionRunningMode();
+        robot.powerSet(speed);
+    }
+
+    /**
      * Strafes or turns the robot a number of ticks in a direction. It will only return after the
      * movement is complete. Updates Robot while waiting.
      * @param direction The Robot.MoveDirection enum, for the direction
