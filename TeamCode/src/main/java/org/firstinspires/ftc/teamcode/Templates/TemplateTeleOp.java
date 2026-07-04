@@ -1,26 +1,11 @@
-package org.firstinspires.ftc.team13206.Templates;
+package org.firstinspires.ftc.teamcode.Templates;
 
-import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_WITHOUT_ENCODER;
-import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.BLUE;
-import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.RED;
-import static org.firstinspires.ftc.team13206.Core.Robot.DriveMode.PEDRO;
-import static org.firstinspires.ftc.team13206.Core.Robot.DriveMode.STANDARD_ROBOT_CENTRIC;
-
-import com.bylazar.panels.Panels;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
-import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.team13206.Core.FramerateCalculator;
-import org.firstinspires.ftc.team13206.Core.Robot;
-
-import java.util.Objects;
+import org.firstinspires.ftc.teamcode.Core.Robot;
 
 /**
  * This file is our iterative (Non-Linear) "OpMode" for TeleOp.

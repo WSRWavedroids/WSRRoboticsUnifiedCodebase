@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.team13206.Templates;
+package org.firstinspires.ftc.teamcode.Templates;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.team13206.Core.AutonomousPLUS;
-import org.firstinspires.ftc.team13206.Core.Robot;
+import org.firstinspires.ftc.teamcode.Core.AutonomousPLUS;
+import org.firstinspires.ftc.teamcode.Core.Robot;
 
 @Disabled // TODO remove this if you ever want to run the program
 @Autonomous(group = "Templates", name = "Legacy Linear Autonomous")

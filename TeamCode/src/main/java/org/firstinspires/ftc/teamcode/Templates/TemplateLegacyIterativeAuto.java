@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.team13206.Templates;
+package org.firstinspires.ftc.teamcode.Templates;
 
-import static org.firstinspires.ftc.team13206.Templates.TemplateLegacyIterativeAuto.Steps.*;
+import static org.firstinspires.ftc.teamcode.Templates.TemplateLegacyIterativeAuto.Steps.*;
 
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.team13206.Core.AutonomousPLUS;
-import org.firstinspires.ftc.team13206.Core.Robot;
+import org.firstinspires.ftc.teamcode.Core.AutonomousPLUS;
+import org.firstinspires.ftc.teamcode.Core.Robot;
 
 /**
  * This is an iterative autonomous program. It runs in a state machine, which allows us to run the
