@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.team13206.Templates;
+package org.firstinspires.ftc.teamcode.Templates;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
-import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.BLUE;
-import static org.firstinspires.ftc.team13206.Templates.TemplatePedroAuto.Steps.*;
+import static org.firstinspires.ftc.teamcode.Core.Robot.Alliance.BLUE;
+import static org.firstinspires.ftc.teamcode.Templates.TemplatePedroAuto.Steps.*;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.TelemetryManager;
@@ -16,9 +16,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.team13206.Core.AutonomousPLUS;
-import org.firstinspires.ftc.team13206.Core.Robot;
-import org.firstinspires.ftc.team13206.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.Core.Robot;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Disabled
 @Autonomous(name = "PedroPathing Auto Template", group = "Templates")

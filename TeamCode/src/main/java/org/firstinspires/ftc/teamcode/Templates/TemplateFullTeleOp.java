@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.team13206.Templates;
+package org.firstinspires.ftc.teamcode.Templates;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_WITHOUT_ENCODER;
-import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.BLUE;
-import static org.firstinspires.ftc.team13206.Core.Robot.Alliance.RED;
-import static org.firstinspires.ftc.team13206.Core.Robot.DriveMode.PEDRO;
-import static org.firstinspires.ftc.team13206.Core.Robot.DriveMode.STANDARD_ROBOT_CENTRIC;
+import static org.firstinspires.ftc.teamcode.Core.Robot.Alliance.BLUE;
+import static org.firstinspires.ftc.teamcode.Core.Robot.Alliance.RED;
+import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.PEDRO;
+import static org.firstinspires.ftc.teamcode.Core.Robot.DriveMode.STANDARD_ROBOT_CENTRIC;
 
 import com.bylazar.panels.Panels;
 import com.pedropathing.follower.Follower;
@@ -17,9 +17,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.team13206.Core.FramerateCalculator;
-import org.firstinspires.ftc.team13206.Core.Robot;
-import org.firstinspires.ftc.team13206.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.Core.FramerateCalculator;
+import org.firstinspires.ftc.teamcode.Core.Robot;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import java.util.Objects;
 

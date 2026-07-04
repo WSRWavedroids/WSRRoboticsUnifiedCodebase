@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team13206.Core;
+package org.firstinspires.ftc.teamcode.Core;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.*;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
@@ -19,8 +19,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.team13206.Vision.Limelight_Target_Scanner;
-import org.firstinspires.ftc.team13206.Vision.Limelight_Randomization_Scanner;
+import org.firstinspires.ftc.teamcode.Vision.Limelight_Target_Scanner;
+import org.firstinspires.ftc.teamcode.Vision.Limelight_Randomization_Scanner;
 
 public class Robot {
 

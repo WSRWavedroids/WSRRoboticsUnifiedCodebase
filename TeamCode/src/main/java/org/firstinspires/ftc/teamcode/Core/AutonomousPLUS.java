@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.team13206.Core;
+package org.firstinspires.ftc.teamcode.Core;
 
-import static org.firstinspires.ftc.team13206.Core.Robot.MoveDirection;
+import static org.firstinspires.ftc.teamcode.Core.Robot.MoveDirection;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;

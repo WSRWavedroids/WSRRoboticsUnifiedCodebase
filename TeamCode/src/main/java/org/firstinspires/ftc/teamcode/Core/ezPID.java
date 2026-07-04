@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.team13206.Core;
+package org.firstinspires.ftc.teamcode.Core;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_WITHOUT_ENCODER;
-import static org.firstinspires.ftc.team13206.Core.ezPID.movementType.*;
+import static org.firstinspires.ftc.teamcode.Core.ezPID.movementType.*;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
