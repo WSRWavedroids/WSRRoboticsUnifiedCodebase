@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team13206.Teleop;
+package org.firstinspires.ftc.teamcode.Teleop;
 
 import static android.os.SystemClock.sleep;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_WITHOUT_ENCODER;
@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.team13206.Core.Robot;
 
 /**
  * This file is our iterative (Non-Linear) "OpMode" for TeleOp.
