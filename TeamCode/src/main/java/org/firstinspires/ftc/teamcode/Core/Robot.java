@@ -33,6 +33,14 @@ public class Robot {
 
     public Telemetry telemetry;
 
+    public DcMotor motor;
+    public Servo axonServo;
+    public CRServo colorServo;
+    public TouchSensor button;
+    public ColorSensor colorSensor;
+    public TouchSensor magnetSensor;
+    public DistanceSensor distanceSensor;
+
     //init and declare war
     public OpMode opmode;
     public HardwareMap hardwareMap;
@@ -110,6 +118,13 @@ public class Robot {
         backRightDrive.setZeroPowerBehavior(BRAKE);
         frontLeftDrive.setZeroPowerBehavior(BRAKE);
 
+        motor = hardwareMap.get(DcMotor.class, "Motor");
+        axonServo = hardwareMap.get(Servo.class, "Axon");
+        colorServo = hardwareMap.get(CRServo.class, "Color Servo");
+        button = hardwareMap.get(TouchSensor.class, "Button");
+        colorSensor = hardwareMap.get(ColorSensor.class, "Color Sensor");
+        magnetSensor = hardwareMap.get(TouchSensor.class, "Magnet Sensor");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
 
         //This is new..
         telemetry.addData("Status", "Initialized");
