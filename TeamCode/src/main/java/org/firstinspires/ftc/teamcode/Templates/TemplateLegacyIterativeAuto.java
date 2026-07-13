@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Core.AutonomousPLUS;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 
 /**
@@ -23,7 +22,6 @@ import org.firstinspires.ftc.teamcode.Core.Robot;
 public class TemplateLegacyIterativeAuto extends OpMode {
 
     public Robot robot;
-    public AutonomousPLUS auto;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -33,18 +31,11 @@ public class TemplateLegacyIterativeAuto extends OpMode {
 
     Steps currentStep;
 
-    // Storage keys for blackboard
-    public static final String ALLIANCE_KEY = "Alliance";
-
-    // TODO set the start pose if needed. Otherwise, this can be safely deleted.
-    private final Pose startPose = new Pose(56.5, 9.200, Math.toRadians(180));
-
     /**
      * Code to run ONCE when the driver hits INIT
      */
     public void init() {
         robot = new Robot(hardwareMap, telemetry, this);
-        auto = new AutonomousPLUS(robot);
         currentStep = EXAMPLE; //The starting step
 
         // Tell the driver that initialization is complete.
@@ -64,7 +55,6 @@ public class TemplateLegacyIterativeAuto extends OpMode {
      * Code to run ONCE when the driver hits PLAY
      */
     public void start() {
-        auto.runtime.reset();
         telemetry.addData("HYPE", "Let's do this!!!");
     }
 
