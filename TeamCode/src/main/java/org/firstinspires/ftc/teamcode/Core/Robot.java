@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Core;
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
-import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -37,9 +36,7 @@ public class Robot {
     public OpMode opmode;
     public HardwareMap hardwareMap;
 
-    public DriveMode controlMode;//STANDARD_ROBOT_CENTRIC;
     public IMU.Parameters imuParameters;
-    public enum patternColors {PPG, GPP, PGP}
 
     public enum Alliance {
         BLUE(2), RED(1);
@@ -48,16 +45,11 @@ public class Robot {
             this.limelightPipeline = limelightPipeline;
         }
     }
-    public Alliance alliance;
-
-    public Pose robotPosition;
 
 
     public Panels panels;
 
     public static TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-
-    public enum DriveMode {STANDARD_ROBOT_CENTRIC, PEDRO, LEGACY_FIELD_CENTRIC}
 
     //Initialize motors and servos
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, OpMode opmode) {
@@ -84,11 +76,6 @@ public class Robot {
                         RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
                 )
         );
-
-        telemetry.addData("Status", "Initialized");
-
-
-        if (alliance == null) alliance = Alliance.BLUE;
     }
 
     /**
