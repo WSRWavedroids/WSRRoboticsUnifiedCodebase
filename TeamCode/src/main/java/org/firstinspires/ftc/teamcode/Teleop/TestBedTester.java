@@ -4,7 +4,6 @@ import static android.os.SystemClock.sleep;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_WITHOUT_ENCODER;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -45,6 +44,10 @@ public class TestBedTester extends OpMode {
     private ColorSensor colorSensor;
     private TouchSensor magnetSensor;
     private DistanceSensor distanceSensor;
+    private Servo led;
+
+    private double ledColorValue = 0;
+    private final double colorIncrement = 0.01;
 
     /**
      * Code to run ONCE when the driver hits INIT
@@ -57,6 +60,7 @@ public class TestBedTester extends OpMode {
         colorSensor = hardwareMap.get(ColorSensor.class, "Color Sensor");
         magnetSensor = hardwareMap.get(TouchSensor.class, "Magnet Sensor");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
+        led = hardwareMap.get(Servo.class, "LED");
 
         motor.setMode(STOP_AND_RESET_ENCODER);
         sleep(500);
@@ -100,6 +104,10 @@ public class TestBedTester extends OpMode {
         } else if (gamepad1.circleWasPressed()) {
             axonServo.setPosition(1);
         }
+
+        ledColorValue += colorIncrement;
+        if (ledColorValue >= 1) ledColorValue -= 1;
+        led.setPosition(ledColorValue);
 
         telemetry.addData("Motor Position", motor.getCurrentPosition());
         telemetry.addData("Button Pressed", button.isPressed());
