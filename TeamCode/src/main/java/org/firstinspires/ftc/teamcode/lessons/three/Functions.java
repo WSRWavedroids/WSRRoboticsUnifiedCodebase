@@ -32,7 +32,7 @@ public class Functions extends LinearOpMode {
         //The code to run once play has been pressed goes here.
 
         while (opModeIsActive()){
-            robot.colorServo.setPower(gamepad1.right_stick_x / 10);
+            robot.colorServo.setPower(gamepad1.right_stick_x / 8);
             telemetry.addData("Sensor Color", robot.getColor());
             telemetry.update();
         }
