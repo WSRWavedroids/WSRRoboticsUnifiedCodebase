@@ -38,6 +38,8 @@ public class Robot {
 
     public IMU.Parameters imuParameters;
 
+    public enum Color {PINK, ORANGE, YELLOW, GREEN, BLUE, LAUNDRY, BANANA, TURTLE, PUMPKIN, UNICORN, RIVER, MICHAELSSHIRT }
+
     public enum Alliance {
         BLUE(2), RED(1);
         public final int limelightPipeline;
@@ -91,6 +93,32 @@ public class Robot {
     public void readyHardware() {
         // TODO Get your hardware ready here
     }
+
+    public Color getColor() {
+        int red = colorSensor.red();
+        int green = colorSensor.green();
+        int blue = colorSensor.blue();
+
+        if (red > 1050 && red < 1500 && green > 300 && green < 550 && blue > 250 && blue < 500) {
+            return Color.ORANGE;
+        }
+        else if (red > 100 && red < 380 && green > 350 && green < 650 && blue > 750 && blue < 1000) {
+            return Color.BLUE;
+        }
+        else if (red > 300 && red < 650 && green > 900 && green <1200 && blue > 500 && blue < 750){
+            return Color.GREEN;
+        }
+        else if (red > 1900 && red <2600 && green > 2200 && green < 2750 && blue > 900 && blue < 1150){
+            return Color.YELLOW;
+        }
+        else if (red > 1350 && red <1700 && green > 600 && green < 900 && blue > 800 && blue < 1200) {
+            return Color.PINK;
+        }
+        else{
+            return Color.LAUNDRY;
+        }
+    }
+
 
     /**
      * Figures out if an integer is even.
