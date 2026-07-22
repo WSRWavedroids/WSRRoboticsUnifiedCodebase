@@ -45,7 +45,7 @@ public class Robot {
             this.limelightPipeline = limelightPipeline;
         }
     }
-
+    public enum Color { PINK, ORANGE, YELLOW, GREEN, BLUE }
 
     public Panels panels;
 
@@ -90,6 +90,10 @@ public class Robot {
      */
     public void readyHardware() {
         // TODO Get your hardware ready here
+    }
+
+    public Color getColor() {
+             
     }
 
     /**
