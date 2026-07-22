@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Core.Robot;
 
 /**
  * This file is our iterative (Non-Linear) "OpMode" for TeleOp.
@@ -32,7 +33,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "Test Bed Tester", group = "0.")
 public class TestBedTester extends OpMode {
-
     // This section tells the program all of the different pieces of hardware that are on our robot
     // that we will use in the program.
     private ElapsedTime runtime = new ElapsedTime();
@@ -115,9 +115,34 @@ public class TestBedTester extends OpMode {
         telemetry.addData("R", colorSensor.red());
         telemetry.addData("G", colorSensor.green());
         telemetry.addData("B", colorSensor.blue());
+        telemetry.addData("Sensor Color", getColor());
         telemetry.addData("Magnet Detected", magnetSensor.isPressed());
         telemetry.addData("Distance Sensor (inches)", distanceSensor.getDistance(DistanceUnit.INCH));
         telemetry.update();
+    }
+    public enum Color {PINK, RED, YELLOW, GREEN, BLUE, EMPTY}
+    public Color getColor() {
+        double red = colorSensor.red();
+        double blue = colorSensor.blue();
+        double green = colorSensor.green();
+        Color color = Color.EMPTY;
+        if (red < 300 & blue > 950 & green < 600) {
+            color = Color.BLUE;
+        }
+        if (red > 1650 & blue > 1025 & green < 850 & green > 750) {
+            color = Color.PINK;
+        }
+        if (red > 1350 & blue < 450 & green < 500) {
+            color = Color.RED;
+        }
+        if (red > 2600 & green > 2700 & blue > 1075) {
+            color = Color.YELLOW;
+        }
+        if (red < 525 & green > 1050 & blue > 600) {
+            color = Color.GREEN;
+        }
+        return color;
+
     }
 
     /**

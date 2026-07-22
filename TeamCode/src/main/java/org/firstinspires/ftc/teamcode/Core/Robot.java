@@ -92,6 +92,31 @@ public class Robot {
         // TODO Get your hardware ready here
     }
 
+    public enum Color {PINK, RED, YELLOW, GREEN, BLUE, EMPTY}
+    public Color getColor() {
+        double red = colorSensor.red();
+        double blue = colorSensor.blue();
+        double green = colorSensor.green();
+        Color color = Color.EMPTY;
+        if (red < 300 & blue > 950 & green < 600) {
+            color = Color.BLUE;
+        }
+        if (red > 1650 & blue > 1025 & green < 850 & green > 750) {
+            color = Color.PINK;
+        }
+        if (red > 1350 & blue < 450 & green < 500) {
+            color = Color.RED;
+        }
+        if (red > 2575 & green > 2675 & blue > 1050) {
+            color = Color.YELLOW;
+        }
+        if (red < 525 & green > 1050 & blue > 600) {
+            color = Color.GREEN;
+        }
+        return color;
+
+    }
+
     /**
      * Figures out if an integer is even.
      * @param x

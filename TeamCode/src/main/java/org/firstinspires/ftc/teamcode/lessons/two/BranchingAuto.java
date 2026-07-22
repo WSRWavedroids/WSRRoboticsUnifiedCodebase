@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Core.Robot;
 
-@Autonomous(group = "Templates", name = "BranchingAutos")
+@Autonomous(group = "2", name = "BranchingAutos")
 public class BranchingAuto extends LinearOpMode {
     private Robot robot;
 
