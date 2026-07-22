@@ -45,7 +45,7 @@ public class Robot {
             this.limelightPipeline = limelightPipeline;
         }
     }
-    public enum Color { PINK, ORANGE, YELLOW, GREEN, BLUE }
+    public enum Color { PINK, ORANGE, YELLOW, GREEN, BLUE, NOCOLOR }
 
     public Panels panels;
 
@@ -93,7 +93,42 @@ public class Robot {
     }
 
     public Color getColor() {
-             
+        int red = colorSensor.red();
+        int green  = colorSensor.green();
+        int blue = colorSensor.blue();
+
+        if (
+                red > 500 && red < 700
+                && blue > 600 && blue < 800
+                && green > 1200 && green < 1500
+        ){
+            return Color.GREEN;
+        } else if (
+                red > 1600 && red < 1900
+                && blue > 900 && blue < 1200
+                && green > 700 && green < 1000
+        ) {
+            return Color.PINK;
+        } else if (
+                red > 3000 && red < 3300
+                && blue > 1100 && blue < 1400
+                && green > 3200 && green < 3500
+        ) {
+            return Color.YELLOW;
+        } else if (
+                red > 1400 && red < 1700
+                        && blue > 300 && blue < 600
+                        && green > 300 && green < 600
+        ) {
+            return Color.ORANGE;
+        } else if (
+                red > 250 && red < 300
+                        && blue > 1000 && blue < 1200
+                        && green > 630 && green < 700
+        ) {
+            return Color.BLUE;
+        }
+        return  Color.NOCOLOR;
     }
 
     /**
