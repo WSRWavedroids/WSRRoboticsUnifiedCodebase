@@ -29,7 +29,7 @@ public class Fun_ctions extends LinearOpMode {
         waitForStart();
 
         //The code to run once play has been pressed goes here.
-        robot.colorServo.setPower(0.08);
+        robot.colorServo.setPower(0.07);
         while (opModeIsActive()) {
             telemetry.addData("color", robot.getColor());
             telemetry.update();
