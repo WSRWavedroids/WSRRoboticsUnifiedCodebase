@@ -1,54 +1,38 @@
 package org.firstinspires.ftc.teamcode.Core;
 
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.VIOLET;
+
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class LED_GIVER_THINGY {
-    public LED.GIVER.THIGY(Servo led) {
-        this.led = led;
+public class LED {
+    private final Servo ledInterface;
+    public LED(Servo ledFromHardwareMap) {
+        ledInterface = ledFromHardwareMap;
     }
-    private Servo led;
 
-    public enum Color {ledoff, ledred, ledorange, ledyellow, ledsage, ledgreen,ledazure, ledblue, ledindigo, ledviolet, ledwhite};
-    public double ledoff = 0;
-    public double ledred = 0.227;
-    public double ledorange = 0.333;
-    public double ledyellow = 0.388;
-    public double ledsage = 0.444;
-    public double ledgreen = 0.500;
-    public double ledazure = 0.555;
-    public double ledblue = 0.611;
-    public double ledindigo = 666;
-    public double ledviolet = 0.722;
-    public double ledwhite = 1;
+    public enum LEDColors {
+        OFF(0),
+        RED(0.277),
+        ORANGE(0.333),
+        YELLOW(0.388),
+        SAGE(0.444),
+        GREEN(0.5),
+        AZURE(0.555),
+        BLUE(0.611),
+        INDIGO(0.666),
+        VIOLET(0.722),
+        WHITE(1);
+        public final double colorOutputValue;
 
-    public void setColor(Color color) {
-        if( color == Color.ledoff ) {
-            led.setPosition(ledoff);
-        }else if(color == Color.ledred ) {
-            led.setPosition(ledred);
-        }else if(color == Color.ledorange) {
-            led.setPosition(ledorange);
-        }else if(color == Color.ledyellow) {
-            led.setPosition(ledyellow);
-        }else if(color == Color.ledsage) {
-            led.setPosition(ledsage);
-        }else if(color == Color.ledgreen) {
-            led.setPosition(ledgreen);
-        }else if(color == Color.ledazure) {
-            led.setPosition(ledazure);
-        }else if(color == Color.ledblue) {
-            led.setPosition(ledblue);
-        } else if (color == Color.ledindigo) {
-            led.setPosition(ledindigo);
-        } else if (color == Color.ledviolet) {
-            led.setPosition(ledviolet);
-        } else if (color == Color.ledwhite) {
-            led.setPosition(ledwhite);
+        LEDColors(double servoOutputValue) {
+            this.colorOutputValue = servoOutputValue;
         }
     }
+    public void setColor(LEDColors color) {
+        ledInterface.setPosition(color.colorOutputValue);
+    }
 
-
-
-    //note: robot.led.setPosition(ledoff);
-
+    public void setPosition(double colorOutputValue) {
+        ledInterface.setPosition(colorOutputValue);
+    }
 }
