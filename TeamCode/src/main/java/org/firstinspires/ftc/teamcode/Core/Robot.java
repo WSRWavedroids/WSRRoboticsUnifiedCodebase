@@ -30,7 +30,7 @@ public class Robot {
     public ColorSensor colorSensor;
     public TouchSensor magnetSensor;
     public DistanceSensor distanceSensor;
-    public Servo led; // silly LED thinks it's a servo
+    public LED led; // silly LED thinks it's a servo
 
     //init and declare war
     public OpMode opmode;
@@ -66,7 +66,7 @@ public class Robot {
         colorSensor = hardwareMap.get(ColorSensor.class, "Color Sensor");
         magnetSensor = hardwareMap.get(TouchSensor.class, "Magnet Sensor");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
-        led = hardwareMap.get(Servo.class, "LED");
+        led = new LED(hardwareMap.get(Servo.class, "LED"));
 
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
