@@ -67,6 +67,9 @@ public class Functions extends OpMode {
      */
     public void loop() {
         telemetry.addData("color", robot.getColor());
+        telemetry.addData("Red", robot.colorSensor.red());
+        telemetry.addData("Green", robot.colorSensor.green());
+        telemetry.addData("Blue", robot.colorSensor.blue());
         telemetry.update();
 
     }
