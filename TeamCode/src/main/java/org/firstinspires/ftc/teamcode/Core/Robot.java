@@ -117,14 +117,14 @@ public class Robot {
             return Color.YELLOW;
         } else if (
                 red > 1400 && red < 1700
-                        && blue > 300 && blue < 600
-                        && green > 300 && green < 600
+                && blue > 300 && blue < 600
+                && green > 300 && green < 600
         ) {
             return Color.ORANGE;
         } else if (
                 red > 250 && red < 300
-                        && blue > 1000 && blue < 1200
-                        && green > 630 && green < 700
+                && blue > 1000 && blue < 1200
+                && green > 630 && green < 700
         ) {
             return Color.BLUE;
         }
