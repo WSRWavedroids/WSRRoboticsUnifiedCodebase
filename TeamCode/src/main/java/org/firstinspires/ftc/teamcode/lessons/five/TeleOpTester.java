@@ -5,7 +5,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Core.EasyLED;
+import org.firstinspires.ftc.teamcode.Core.LED;
 import org.firstinspires.ftc.teamcode.Core.Robot;
+
+import java.util.Random;
+import java.util.Timer;
 
 /**
  * This file is our iterative (Non-Linear) "OpMode" for TeleOp.
@@ -26,10 +31,15 @@ public class TeleOpTester extends OpMode {
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
     private ElapsedTime runtime = new ElapsedTime();
 
+    private double goTime;
+
     public Robot robot = null;
+
+    Random rand = new Random();
 
     public double axonServoPosition;
     public double colorServoSpeed;
+    public int ledStatus = 0;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -66,7 +76,7 @@ public class TeleOpTester extends OpMode {
      */
     public void loop() {
         axonServoPosition = robot.axonServo.getPosition();
-        if (gamepad1.crossWasPressed()) {
+        if (gamepad1.cross) {
             robot.colorServo.setPower(colorServoSpeed);
 
             }
@@ -90,6 +100,28 @@ public class TeleOpTester extends OpMode {
             colorServoSpeed = colorServoSpeed + 0.1;
 
         }
+        if (gamepad1.triangleWasPressed()) {
+            if (ledStatus == 0) {
+                ledStatus = 1;
+                goTime = runtime.seconds();
+            } else {
+                ledStatus = 0;
+            }
+        }
+        if (ledStatus == 0) {
+
+            robot.led.setColor(LED.LEDColors.OFF);
+
+        } else {
+            if (runtime.seconds() - goTime > 1) {
+                robot.led.setColor(findRandomColor());
+                goTime = runtime.seconds();
+            }
+        }
+
+        telemetry.addData("ledStatus",ledStatus);
+
+
     }
 
     /**
@@ -97,6 +129,31 @@ public class TeleOpTester extends OpMode {
      */
     public void stop() {
 
+    }
+
+    public LED.LEDColors findRandomColor() {
+        int i = rand.nextInt(10);
+        if (i == 0) {
+            return LED.LEDColors.RED;
+        } else if (i == 1) {
+            return LED.LEDColors.ORANGE;
+        } else if (i == 2) {
+            return LED.LEDColors.YELLOW;
+        } else if (i == 3) {
+            return LED.LEDColors.SAGE;
+        } else if (i == 4) {
+            return LED.LEDColors.GREEN;
+        } else if (i == 5) {
+            return LED.LEDColors.INDIGO;
+        } else if (i == 6) {
+            return LED.LEDColors.AZURE;
+        } else if (i == 7) {
+            return LED.LEDColors.BLUE;
+        } else if (i == 8) {
+            return LED.LEDColors.VIOLET;
+        } else {
+            return LED.LEDColors.WHITE;
+        }
     }
 }
 
