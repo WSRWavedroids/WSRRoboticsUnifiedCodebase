@@ -2,15 +2,16 @@ package org.firstinspires.ftc.teamcode.lessons.five;
 
 import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.*;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Core.LED;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 
 /**
- * This file is our iterative (Non-Linear) "OpMode" for TeleOp.
+ * This file is our iterative (Non-Linear) "OpMode"              startTime = runtime.seconds();
+for TeleOp.
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
  * The names of OpModes appear on the menu of the FTC Driver Station.
  * When an selection is made from the menu, the corresponding OpMode
@@ -34,9 +35,15 @@ public class Purple_Banana_Op extends OpMode {
 
     private double servoSpeed = 0.5;
 
-    private double startTime = 0;
+    private double startLEDTime = 0;
 
-    boolean ledIsOn = false;
+    private boolean ledIsOn = false;
+    private boolean ledTimerIsRunning = false;
+
+    public double prevServoPosition = 0;
+    private boolean waveIsRunning = false;
+
+    private double endWAVETime = 0;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -103,15 +110,45 @@ public class Purple_Banana_Op extends OpMode {
          telemetry.update();
 
 
-        if (gamepad1.triangle){
-             robot.led.setColor(RED);
-             startTime = runtime.seconds();
-             ledIsOn = true;
-         }
-         else if(ledIsOn && runtime.seconds() - startTime >= 1) {
-             robot.led.setColor(OFF);
-             ledIsOn = false;
-         }
+        if (gamepad1.triangleWasPressed() ) {
+            if ( ledTimerIsRunning ) {
+                ledTimerIsRunning = false;
+            } else {
+                ledTimerIsRunning = true;
+            }
+        }
+        if (ledTimerIsRunning && runtime.seconds() - startLEDTime >= 1){
+            startLEDTime = runtime.seconds();
+            if (! ledIsOn ) {
+                robot.led.setColor(LED.LEDColors.randomColor());
+                ledIsOn = true;
+            } else {
+                robot.led.setColor(OFF);
+                ledIsOn = false;
+            }
+        }
+
+        // 6
+        if (gamepad1.dpadUpWasPressed()) {
+            prevServoPosition = servoPosition;
+            waveIsRunning = true;
+            endWAVETime = runtime.seconds() + 3;
+            // startTime =
+            // servoPosition =
+        }
+        if (waveIsRunning){
+            if( runtime.seconds() >= endWAVETime ){
+                waveIsRunning = false;
+                servoPosition = prevServoPosition;
+            } else {
+                // actual wave code
+                if (servoPosition != 0.6) {
+                    servoPosition = 0.6;
+                } else {
+                    servoPosition = 0.4;
+                }
+            }
+        }
 
 
     }

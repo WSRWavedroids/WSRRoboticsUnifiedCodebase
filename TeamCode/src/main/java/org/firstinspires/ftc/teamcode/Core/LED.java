@@ -4,6 +4,11 @@ import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.VIOLET;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 public class LED {
     private final Servo ledInterface;
     public LED(Servo ledFromHardwareMap) {
@@ -26,6 +31,37 @@ public class LED {
 
         LEDColors(double servoOutputValue) {
             this.colorOutputValue = servoOutputValue;
+        }
+
+
+        // Cache the array and size to avoid garbage collection overhead
+        //private static final LEDColors[] VALUES = values();
+        //private static final int SIZE = VALUES.length;
+        private static final Random RANDOM = new Random();
+        public static LEDColors randomColor () {
+            //return VALUES[RANDOM.nextInt(SIZE)];
+            int rand =  RANDOM.nextInt(10);
+            if ( rand == 0){
+                return RED;
+            } else if ( rand == 1){
+                return ORANGE;
+            } else if ( rand == 2){
+                return YELLOW;
+            } else if ( rand == 3){
+                return SAGE;
+            } else if ( rand == 4){
+                return GREEN;
+            } else if ( rand == 5){
+                return AZURE;
+            } else if ( rand == 6){
+                return BLUE;
+            } else if ( rand == 7){
+                return INDIGO;
+            } else if ( rand == 8){
+                return VIOLET;
+            } else {
+                return WHITE;
+            }
         }
     }
     public void setColor(LEDColors color) {
