@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Core.Robot;
 @Autonomous(group = "2", name = "BranchingAutos")
 public class BranchingAuto extends LinearOpMode {
     private Robot robot;
-
+    private double AMOUNT_OF_RED = 450;
     public void runOpMode() {
 
         robot = new Robot(hardwareMap, telemetry, this);
@@ -42,20 +42,26 @@ public class BranchingAuto extends LinearOpMode {
         sleep(10000);
     }
 
+    /**
+     * This uses the color sensor to constantly check what color is appearing more while slowly rotating the color servo.
+     */
     private void searchForRed(double power){
         robot.colorServo.setPower(power);
         while (robot.colorSensor.red() < 750 || robot.colorSensor.blue() > 450 || robot.colorSensor.green() > 550) {
             robot.colorServo.setPower(0.1);
+            //Tells user that it is searching for red on the driver hub.
             telemetry.addLine("searching for color... RED");
+            //Updates telemetry to show new information on the driver hub.
             telemetry.update();
         }
+        //Tells user that it found red on the driver hub.
         telemetry.addLine("FOUND RED!");
         telemetry.update();
         robot.colorServo.setPower(0);
     }
 
     private void searchForBlue(double power){
-        while (robot.colorSensor.blue() < 750 || robot.colorSensor.red() > 450 || robot.colorSensor.green() > 550) {
+        while (robot.colorSensor.blue() < 750 || robot.colorSensor.red() > AMOUNT_OF_RED || robot.colorSensor.green() > 550) {
             robot.colorServo.setPower(0.1);
             telemetry.addLine("searching for color... BLUE");
             telemetry.update();
@@ -64,5 +70,6 @@ public class BranchingAuto extends LinearOpMode {
         telemetry.update();
         robot.colorServo.setPower(0);
     }
+    //TODO Add green
 }
 
