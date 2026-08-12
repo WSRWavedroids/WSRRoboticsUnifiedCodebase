@@ -31,7 +31,11 @@ public class TemplateLegacyLinearAuto extends LinearOpMode {
 
         //The code to run once play has been pressed goes here.
 
-        // I want to change this
+        /*
+        Actually, I want it to look like this
+        I want to change this
+        */
+
     }
 }
 
