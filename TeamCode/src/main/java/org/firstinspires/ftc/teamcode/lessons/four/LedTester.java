@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.lessons.four;
 
-import org.firstinspires.ftc.teamcode.Core.LED.SetColor.*;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.*;
+
 import static java.lang.Thread.sleep;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -66,7 +67,7 @@ public class LedTester extends OpMode {
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     public void loop() {
-        robot.led.setColor(LED.SetColor.RED);
+        robot.led.setColor(RED);
     }
 
     /**

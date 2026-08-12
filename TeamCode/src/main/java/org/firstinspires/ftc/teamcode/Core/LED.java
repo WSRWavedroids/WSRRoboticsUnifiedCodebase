@@ -1,57 +1,95 @@
 package org.firstinspires.ftc.teamcode.Core;
 
-import android.icu.text.Transliterator;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.AZURE;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.BLUE;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.GREEN;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.INDIGO;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.ORANGE;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.RED;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.SAGE;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.VIOLET;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.WHITE;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.YELLOW;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class LED {
-    public enum SetColor {OFF, RED, ORANGE, YELLOW, SAGE, GREEN, AZURE, BLUE, INDIGO, VIOLET, WHITE}
+    private final Servo ledInterface;
+    public boolean ledIsOn = false;
 
-    public Servo servo;
-    public LED(Servo servo) {
-        this.servo = servo;
+    public LED(Servo ledFromHardwareMap) {
+        ledInterface = ledFromHardwareMap;
     }
 
-    public void setColor(SetColor color){
-        switch (color){
-            case OFF: {
-                servo.setPosition(0);
-            }
-            case RED: {
-                servo.setPosition(0.277);
-            }
-            case ORANGE: {
-                servo.setPosition(0.333);
-            }
-            case YELLOW: {
-                servo.setPosition(0.388);
-            }
-            case SAGE: {
-                servo.setPosition(0.444);
-            }
-            case GREEN: {
-                servo.setPosition(0.5);
-            }
-            case AZURE: {
-                servo.setPosition(0.555);
-            }
-            case BLUE: {
-                servo.setPosition(0.611);
-            }
-            case INDIGO: {
-                servo.setPosition(0.666);
-            }
-            case VIOLET: {
-                servo.setPosition(0.722);
-            }
-            case WHITE: {
-                servo.setPosition(1);
-            }
+    public enum LEDColors {
+        OFF(0),
+        RED(0.277),
+        ORANGE(0.333),
+        YELLOW(0.388),
+        SAGE(0.444),
+        GREEN(0.5),
+        AZURE(0.555),
+        BLUE(0.611),
+        INDIGO(0.666),
+        VIOLET(0.722),
+        WHITE(1);
+        public final double colorOutputValue;
+
+        LEDColors(double servoOutputValue) {
+            this.colorOutputValue = servoOutputValue;
+        }
+    }
+
+    public void setColor(LEDColors color) {
+        ledInterface.setPosition(color.colorOutputValue);
+        if (color == LEDColors.OFF) {
+            ledIsOn = false;
+        } else {
+            ledIsOn = true;
+        }
+    }
+
+    public void setPosition(double colorOutputValue) {
+        ledInterface.setPosition(colorOutputValue);
+        if (colorOutputValue == 0) {
+            ledIsOn = false;
+        } else {
+            ledIsOn = true;
+        }
+    }
+
+    public void setRandomColor() {
+        double color = Math.round(Math.random() * 10);
+        if (color == 0) {
+            setColor(RED);
+        }
+        if (color == 1) {
+            setColor(ORANGE);
+        }
+        if (color == 2) {
+            setColor(YELLOW);
+        }
+        if (color == 3) {
+            setColor(SAGE);
+        }
+        if (color == 4) {
+            setColor(GREEN);
+        }
+        if (color == 5) {
+            setColor(AZURE);
+        }
+        if (color == 6) {
+            setColor(BLUE);
+        }
+        if (color == 7) {
+            setColor(INDIGO);
+        }
+        if (color == 8) {
+            setColor(VIOLET);
+        }
+        if (color == 9) {
+            setColor(WHITE);
         }
 
     }
-    public void setPosition(double position){
-        servo.setPosition(position);
-    }
-
 }
