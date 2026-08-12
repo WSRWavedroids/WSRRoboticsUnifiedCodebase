@@ -29,6 +29,8 @@ public class BranchingAutos extends LinearOpMode {
         waitForStart();
 
         //The code to run once play has been pressed goes here.
+        //this code is annoying to look at, we need to find a way to fix that
+
         int blue = robot.colorSensor.blue();
         if (blue > 900 & blue < 1200) {
             robot.colorServo.setPower(1);
