@@ -6,9 +6,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Core.Robot;
 
-@Disabled // TODO remove this if you ever want to run the program
+@Disabled // TODO remember to remove before pushing to robot
 @Autonomous(group = "Templates", name = "Legacy Linear Autonomous")
 public class TemplateLegacyLinearAuto extends LinearOpMode {
+    /**
+     * this is a robot
+     */
     private Robot robot;
 
     public void runOpMode() {
@@ -17,6 +20,7 @@ public class TemplateLegacyLinearAuto extends LinearOpMode {
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+        // this is the telemetry stuff
 
         while (opModeInInit()) {
             // This is the equivalent of init_loop(). It will repeat until the play button is

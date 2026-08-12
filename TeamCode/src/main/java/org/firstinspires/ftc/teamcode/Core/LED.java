@@ -38,6 +38,10 @@ public class LED {
         //private static final LEDColors[] VALUES = values();
         //private static final int SIZE = VALUES.length;
         private static final Random RANDOM = new Random();
+
+        /**
+         * this function returns a random color
+         */
         public static LEDColors randomColor () {
             //return VALUES[RANDOM.nextInt(SIZE)];
             int rand =  RANDOM.nextInt(10);

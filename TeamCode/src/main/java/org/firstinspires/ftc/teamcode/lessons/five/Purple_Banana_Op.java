@@ -44,6 +44,8 @@ public class Purple_Banana_Op extends OpMode {
     private boolean waveIsRunning = false;
 
     private double endWAVETime = 0;
+
+    private static final double SERVO_POSITION_INCREMENTS = 0.1;
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -85,9 +87,9 @@ public class Purple_Banana_Op extends OpMode {
             robot.colorServo.setPower(0);
         }
         if (gamepad1.leftBumperWasPressed()) {
-            servoPosition -= 0.1;
+            servoPosition -= SERVO_POSITION_INCREMENTS;
         } else if(gamepad1.rightBumperWasPressed()) {
-            servoPosition += 0.1;
+            servoPosition += SERVO_POSITION_INCREMENTS;
         }
 
         if (servoPosition < 0) servoPosition = 0;
