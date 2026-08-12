@@ -28,6 +28,10 @@ public class LED {
             this.colorOutputValue = servoOutputValue;
         }
     }
+    /**
+    * This function takes a color value as input and sets the RGB indicator
+    * to that color.
+     */
     public void setColor(LEDColors color) {
         ledInterface.setPosition(color.colorOutputValue);
     }

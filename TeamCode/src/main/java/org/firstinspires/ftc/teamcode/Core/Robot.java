@@ -92,11 +92,16 @@ public class Robot {
         // TODO Get your hardware ready here
     }
 
+    /**
+     * This function returns the closest color on the flower motor due to its RGB value
+     */
     public Color getColor() {
+        //
         int red = colorSensor.red();
         int green  = colorSensor.green();
         int blue = colorSensor.blue();
 
+        // The numbers used to represent the filament to show green are unique to itself so it will return to the green
         if (
                 red > 500 && red < 700
                 && blue > 600 && blue < 800
