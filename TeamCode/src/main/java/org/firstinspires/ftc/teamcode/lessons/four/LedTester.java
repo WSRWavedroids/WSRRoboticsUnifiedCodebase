@@ -68,12 +68,13 @@ public class LedTester extends OpMode {
      */
     public void loop() {
         robot.led.setColor(RED);
-    }
+    } //sets LED to red to make sure it turns on
 
     /**
      * Code to run ONCE after the driver hits STOP
      */
     public void stop() {
+        //Code is now stopped. It won't run anymore.
 
     }
 }

@@ -31,6 +31,7 @@ public class TeleopPractice extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     public Robot robot = null;
+    private double axonWaveSeconds = 3;
     private double colorServoSpeed = 0;
     private double axonServoSpeed = 0;
     private double colorServoSpeedIncrement = 0.1;
@@ -103,7 +104,7 @@ public class TeleopPractice extends OpMode {
         if (gamepad1.bWasPressed()) {
             robot.colorServo.setPower(robot.colorServo.getPower() + 0.1);
         }*/
-        //OPTIMIZED
+        //TODO finish making it flash for 1 second intervals (0.5 on 0.5 off)
         if (gamepad1.yWasPressed()) {
             ledFlashing = 1 - ledFlashing;
         }
@@ -117,7 +118,7 @@ public class TeleopPractice extends OpMode {
             robot.colorServo.setPower(colorServoSpeed);
         }
         if (gamepad1.dpadUpWasPressed()) {
-            axonWaving = getRuntime() + 3;
+            axonWaving = getRuntime() + axonWaveSeconds;
         }
         if (gamepad1.dpadDownWasPressed()) {
             axonWaving = getRuntime();

@@ -42,6 +42,9 @@ public class BranchingAuto extends LinearOpMode {
         sleep(10000);
     }
 
+    /**
+     * This function rotates the colorservo at the speed specified until the sensor finds the red paddle
+    **/
     private void searchForRed(double power){
         robot.colorServo.setPower(power);
         while (robot.colorSensor.red() < 750 || robot.colorSensor.blue() > 450 || robot.colorSensor.green() > 550) {
@@ -54,6 +57,10 @@ public class BranchingAuto extends LinearOpMode {
         robot.colorServo.setPower(0);
     }
 
+    /**
+     * This is the code searching for blue while it rotates the colorservo.
+     * @param power
+     */
     private void searchForBlue(double power){
         while (robot.colorSensor.blue() < 750 || robot.colorSensor.red() > 450 || robot.colorSensor.green() > 550) {
             robot.colorServo.setPower(0.1);

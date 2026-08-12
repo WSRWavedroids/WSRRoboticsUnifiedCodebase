@@ -25,14 +25,14 @@ public class HelloWorld extends LinearOpMode {
         }
 
 
-        robot.readyHardware();
+        robot.readyHardware(); //Hardware is now ready.
 
         waitForStart();
 
         //The code to run once play has been pressed goes here.
 
         telemetry.addLine("Hello, World");
-        telemetry.update();
+        telemetry.update(); //Updating current telemetry.
         robot.motor.setPower(0.5);
         robot.motor.setDirection(DcMotorSimple.Direction.FORWARD);
         robot.axonServo.setPosition(0.75);
