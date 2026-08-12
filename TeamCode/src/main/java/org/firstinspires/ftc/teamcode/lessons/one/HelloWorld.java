@@ -38,9 +38,11 @@ public class HelloWorld extends LinearOpMode {
 
         robot.motor.setDirection(REVERSE);
         robot.motor.setPower(1);
+        //Turns the wheel counterclockwise
 
-        robot.axonServo.setPosition(1.50);
+        robot.axonServo.setPosition(0.50);
         robot.axonServo.setPosition(0.25);
+        //TODO add something for the colorwheel to do
         sleep(10000);
 
     }
