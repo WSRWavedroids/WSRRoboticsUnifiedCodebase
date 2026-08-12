@@ -4,11 +4,15 @@ import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.VIOLET;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
+
+
 public class LED {
     private final Servo ledInterface;
     public LED(Servo ledFromHardwareMap) {
         ledInterface = ledFromHardwareMap;
     }
+
+
 
     public enum LEDColors {
         OFF(0),
@@ -34,5 +38,9 @@ public class LED {
 
     public void setPosition(double colorOutputValue) {
         ledInterface.setPosition(colorOutputValue);
+    }
+
+    public void setRandomColor(){
+
     }
 }

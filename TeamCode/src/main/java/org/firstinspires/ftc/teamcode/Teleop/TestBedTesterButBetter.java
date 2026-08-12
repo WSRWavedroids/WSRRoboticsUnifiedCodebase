@@ -2,12 +2,10 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.*;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Core.LED;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 
 import java.util.Random;
@@ -32,11 +30,24 @@ public class TestBedTesterButBetter extends OpMode {
 
     public Robot robot = null;
 
+    //this is the vabale for the axon servo pos
     private double axonServoPos = 0;
 
+
+    //this is starting speed for the color servo
     private double colorServoSpeed = 0.50;
 
+    //TODO make this do something use full
     private Random random = new Random();
+
+    int randomcolor = random.nextInt(10);
+
+    /**
+     * this is a longer way to write 0
+     */
+    private static final double OFF = 0;
+
+    private static final double SERVOLIMET = 1;
 
 
     /*
@@ -56,6 +67,7 @@ public class TestBedTesterButBetter extends OpMode {
     public void init_loop() {
         telemetry.addData("HYPE", "ARE! YOU! READY?!?!?!?!");
         telemetry.update();
+
     }
 
     /**
@@ -64,8 +76,8 @@ public class TestBedTesterButBetter extends OpMode {
     public void start() {
         runtime.reset();
         telemetry.addData("HYPE", "Let's do this!!!");
-        gamepad1.setLedColor(0, 0, 255, 10);
-        gamepad2.setLedColor(0, 0, 255, 10);
+        gamepad1.setLedColor(255, 0, 0, 10);
+        gamepad2.setLedColor(255, 0, 0, 10);
 
     }
 
@@ -73,12 +85,14 @@ public class TestBedTesterButBetter extends OpMode {
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     public void loop() {
+        //this tells the color servo to start moving when the X is presed
         if (gamepad1.cross) {
             robot.colorServo.setPower(colorServoSpeed);
         } else {
             robot.colorServo.setPower(0);
         }
 
+        //this controls the drection and position of the axon servo
         if(gamepad1.rightBumperWasPressed()){
             axonServoPos += 0.1;
             robot.axonServo.setPosition(axonServoPos);
@@ -87,34 +101,39 @@ public class TestBedTesterButBetter extends OpMode {
             robot.axonServo.setPosition(axonServoPos);
         }
 
-        if (axonServoPos > 1){
-            axonServoPos = 1;
+        //this limits the axon servo position
+        if (axonServoPos > SERVOLIMET){
+            axonServoPos = SERVOLIMET;
         } else if (axonServoPos < 0){
             axonServoPos = 0;
         }
 
+        //this contorls the speed and drection of the motor
         if (gamepad1.left_stick_x > 0.1){
             robot.motor.setPower(gamepad1.left_stick_x);
         } else if (gamepad1.left_stick_x < -0.1) {
             robot.motor.setPower(gamepad1.left_stick_x);
         } else if (gamepad1.left_stick_x == 0) {
-            robot.motor.setPower(0);
+            robot.motor.setPower(OFF);
         }
 
+        //this controls the speed of color servo
        if (gamepad1.squareWasPressed()){
            colorServoSpeed += 0.1;
        } else if (gamepad1.circleWasPressed()) {
            colorServoSpeed -= 0.1;
        }
 
-        if (colorServoSpeed > 1){
-            colorServoSpeed = 1;
+       //this limtits the color servo speed
+        if (colorServoSpeed > SERVOLIMET){
+            colorServoSpeed = SERVOLIMET;
         } else if (colorServoSpeed < 0){
             colorServoSpeed = 0;
         }
 
-        if (gamepad1.triangle){
-            robot.led.setColor(WHITE);
+        //TODO MAKE THIS DO SOMETHING USEFUL
+        if (gamepad1.triangleWasPressed()){
+            robot.led.setRandomColor();
         }
 
     }
