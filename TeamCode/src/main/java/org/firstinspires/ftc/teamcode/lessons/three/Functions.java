@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.teamcode.Core.Robot;
 
+
 @Autonomous(group = "Templates", name = "Color")
 public class Functions extends LinearOpMode {
     private Robot robot;
@@ -33,6 +34,7 @@ public class Functions extends LinearOpMode {
 
         ColorSensor colorSensor;
         colorSensor = hardwareMap.get(ColorSensor.class, "Color Sensor");
+        //this creates a color sensor class
 
         while (opModeIsActive()) {
             telemetry.addData("Color",robot.getColor());
