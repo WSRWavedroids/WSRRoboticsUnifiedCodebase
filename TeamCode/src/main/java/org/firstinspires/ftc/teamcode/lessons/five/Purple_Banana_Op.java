@@ -34,19 +34,20 @@ public class Purple_Banana_Op extends OpMode {
     private double servoPosition = 0.5;
 
     private double servoSpeed = 0.5;
-
+// this makes servo speed 50%
     private double startLEDTime = 0;
-
+// the led start time starts at 0
     private boolean ledIsOn = false;
     private boolean ledTimerIsRunning = false;
 
     public double prevServoPosition = 0;
     private boolean waveIsRunning = false;
-
+private final static double SERVO_SPEED_INCREMENT = 0.1;
     private double endWAVETime = 0;
 
     private static final double SERVO_POSITION_INCREMENTS = 0.1;
     /*
+    /**
      * Code to run ONCE when the driver hits INIT
      */
     public void init() {
@@ -102,10 +103,10 @@ public class Purple_Banana_Op extends OpMode {
         if (servoSpeed < -1) servoSpeed = -1;
 
         if (gamepad1.squareWasPressed()) {
-            servoSpeed -= 0.1;
+            servoSpeed -= SERVO_SPEED_INCREMENT;
         }
          else if (gamepad1.circleWasPressed()) {
-             servoSpeed += 0.1;
+             servoSpeed += SERVO_SPEED_INCREMENT;
         }
 
          telemetry.addData("Servo Speed", servoSpeed);
