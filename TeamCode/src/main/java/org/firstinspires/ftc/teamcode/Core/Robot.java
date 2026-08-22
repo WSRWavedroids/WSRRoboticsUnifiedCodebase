@@ -98,10 +98,10 @@ public class Robot {
         int blue = colorSensor.blue();
 
 
-        if (red > 2935-100 && red < 2935+100 && green > 1088-100 && green < 1088+100 && blue > 1014-100 && blue < 1088+100) {
+        if (red > 3845-50 && red < 3845+50 && green > 2135-50 && green < 2135+50 && blue > 2699-50 && blue < 2699+50) {
             return Color.PINK;
         }
-        if (red > 300 && red < 500 && green > 25 && green < 220 && blue > 50 && blue < 200) {
+        if (red > 2855-50 && red < 2855+50 && green > 1033-50 && green < 1033+50 && blue > 915-50 && blue < 915+50) {
             return Color.ORANGE;
         }
         if (red > 500 && red < 700 && green > 550 && green < 700 && blue > 200 && blue < 400) {

@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Core.LED;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 
 /**
@@ -32,9 +31,11 @@ public class Async_Move extends OpMode {
 
     public Robot robot = null;
 
-    private double crossStartTime = 0;
+    private double crossRunTime = 0;
 
-    private double circleStartTime = 0;
+    private double circleRunTime = 0;
+
+    private double squareRunTime = 0;
 
     private enum MotorState {
         HALF_SPEED_CLOCKWISE,
@@ -53,7 +54,15 @@ public class Async_Move extends OpMode {
 
     private LedState currentLedState = LedState.OFF;
 
+    private enum SquareFunction {
+        COLORWHEEL_RED,
+        AXON_SERVO_MAX,
+        AXON_SERVO_MIN,
+        AXON_CENTER,
+        OFF
+    }
 
+    private SquareFunction currentSquareFunction = SquareFunction.OFF;
 
 
 
@@ -121,27 +130,30 @@ public class Async_Move extends OpMode {
         switch (currentMotorState) {
             case STILL:
                 robot.motor.setPower(0);
-                if (gamepad1.cross) {
+                if (gamepad1.cross && !gamepad1.start) {
                     currentMotorState = MotorState.HALF_SPEED_CLOCKWISE;
                     robot.motor.setPower(0.5);
-                    crossStartTime = runtime.seconds();
+                    crossRunTime = runtime.seconds();
                 }
                 break;
             case HALF_SPEED_CLOCKWISE:
-                if (runtime.seconds() - crossStartTime >= 2) {
+                if (runtime.seconds() - crossRunTime >= 2) {
                     currentMotorState = MotorState.HALF_SPEED_COUNTERCLOCKWISE;
                     robot.motor.setPower(-0.5);
+                    crossRunTime = runtime.seconds();
                 }
                 break;
             case HALF_SPEED_COUNTERCLOCKWISE:
-                if (runtime.seconds() - crossStartTime >= 4) {
+                if (runtime.seconds() - crossRunTime >= 4) {
                     currentMotorState = MotorState.FULL_SPEED_COUNTERCLOCKWISE;
-                    robot.motor.setPower(1);
+                    robot.motor.setPower(-1);
+                    crossRunTime = runtime.seconds();
                 }
                 break;
             case FULL_SPEED_COUNTERCLOCKWISE:
-                if (runtime.seconds() - crossStartTime >= 5) {
+                if (runtime.seconds() - crossRunTime >= 5) {
                     currentMotorState = MotorState.STILL;
+                    crossRunTime = runtime.seconds();
                 }
 
 
@@ -151,24 +163,71 @@ public class Async_Move extends OpMode {
         switch (currentLedState){
             case OFF:
                 robot.led.setColor(OFF);
-                if (gamepad1.circle) {
+                if (gamepad1.circle && !gamepad1.start) {
                     currentLedState = LedState.RED;
-                    circleStartTime = runtime.seconds();
+                    circleRunTime = runtime.seconds();
                     robot.led.setColor(RED);
                 }
                 break;
             case RED:
-                if (runtime.seconds() - circleStartTime >= 1) {
+                if (runtime.seconds() - circleRunTime >= 1) {
                     currentLedState = LedState.GREEN;
                     robot.led.setColor(GREEN);
+                    circleRunTime = runtime.seconds();
                 }
                 break;
             case GREEN:
-                if (runtime.seconds() - circleStartTime >= 3) {
+                if (runtime.seconds() - circleRunTime >= 2) {
                     currentLedState = LedState.OFF;
+                    currentLedState = LedState.OFF;
+                    circleRunTime = runtime.seconds();
                 }
         }
 
+        switch (currentSquareFunction) {
+            case OFF:
+                robot.colorServo.setPower(0);
+                if (gamepad1.square) {
+                    currentSquareFunction = SquareFunction.COLORWHEEL_RED;
+                    robot.colorServo.setPower(0.25);
+                    squareRunTime = runtime.seconds();
+                }
+                break;
+            case COLORWHEEL_RED:
+                if (robot.getColor() == Robot.Color.PINK) {
+                    robot.colorServo.setPower(0);
+                    currentSquareFunction = SquareFunction.AXON_SERVO_MAX;
+                    robot.axonServo.setPosition(1);
+                    squareRunTime = runtime.seconds();
+                }
+                break;
+            case AXON_SERVO_MAX:
+                if (runtime.seconds() - squareRunTime >= 0.5) {
+                    currentSquareFunction = SquareFunction.AXON_SERVO_MIN;
+                    squareRunTime = runtime.seconds();
+                }
+                break;
+            case AXON_SERVO_MIN:
+                robot.axonServo.setPosition(0);
+                if (robot.button.isPressed()) {
+                    currentSquareFunction = SquareFunction.AXON_CENTER;
+                    squareRunTime = runtime.seconds();
+                } else {
+                    currentSquareFunction = SquareFunction.OFF;
+                    squareRunTime = runtime.seconds();
+                }
+                break;
+            case AXON_CENTER:
+                robot.axonServo.setPosition(0.50);
+                currentSquareFunction = SquareFunction.OFF;
+                squareRunTime = runtime.seconds();
+        }
+
+        if (gamepad1.triangle) {
+            currentMotorState = MotorState.STILL;
+            currentLedState = LedState.OFF;
+            currentSquareFunction = SquareFunction.OFF;
+        }
     }
 
 

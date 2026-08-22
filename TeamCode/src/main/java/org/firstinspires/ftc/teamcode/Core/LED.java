@@ -16,7 +16,7 @@ public class LED {
 
     public enum LEDColors {
         OFF(0),
-        RED(0.277),
+        RED(0.28),
         ORANGE(0.333),
         YELLOW(0.388),
         SAGE(0.444),
