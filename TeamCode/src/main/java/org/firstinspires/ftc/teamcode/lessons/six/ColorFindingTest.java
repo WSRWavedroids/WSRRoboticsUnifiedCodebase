@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.lessons.six;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.Robot;
-import org.firstinspires.ftc.teamcode.lessons.six.ColorFinding;
 
 /**
  * This file is our iterative (Non-Linear) "OpMode" for TeleOp.
@@ -28,6 +26,7 @@ public class ColorFindingTest extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     public Robot robot = null;
+    public ColorFinding colorFinding = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -63,21 +62,11 @@ public class ColorFindingTest extends OpMode {
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     public void loop() {
-        if (gamepad1.triangle) {
-            robot.colorFinding.currentStep = ColorFinding.FindColorSteps.PINK;
-        }
-        if (gamepad1.square) {
-            robot.colorFinding.currentStep = ColorFinding.FindColorSteps.RED;
-        }
-        if (gamepad1.circle) {
-            robot.colorFinding.currentStep = ColorFinding.FindColorSteps.BLUE;
-        }
-        if (gamepad1.cross) {
-            robot.colorFinding.currentStep = ColorFinding.FindColorSteps.GREEN;
-        }
-        if (gamepad1.dpad_left) {
-            robot.colorFinding.currentStep = ColorFinding.FindColorSteps.YELLOW;
-        }
+        colorFinding.findColor(Robot.Color.RED, gamepad1.triangleWasPressed());
+        colorFinding.findColor(Robot.Color.PINK, gamepad1.circleWasPressed());
+        colorFinding.findColor(Robot.Color.YELLOW, gamepad1.crossWasPressed());
+        colorFinding.findColor(Robot.Color.GREEN, gamepad1.squareWasPressed());
+        colorFinding.findColor(Robot.Color.BLUE, gamepad1.dpadDownWasPressed());
     }
 
     /**
