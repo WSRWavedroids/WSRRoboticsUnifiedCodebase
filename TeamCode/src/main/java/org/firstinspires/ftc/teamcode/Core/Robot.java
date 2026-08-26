@@ -32,13 +32,15 @@ public class Robot {
     public DistanceSensor distanceSensor;
     public LED led; // silly LED thinks it's a servo
 
+    public Colorful_Banana_Op colorFinder;
+
     //init and declare war
     public OpMode opmode;
     public HardwareMap hardwareMap;
 
     public IMU.Parameters imuParameters;
 
-    public enum Color {PINK, ORANGE, YELLOW, GREEN, BLUE, LAUNDRY, BANANA, TURTLE, PUMPKIN, UNICORN, RIVER, MICHAELSSHIRT }
+    public enum Color {PINK, ORANGE, YELLOW, GREEN, BLUE, OFF, BANANA, TURTLE, PUMPKIN, UNICORN, RIVER, MICHAELSSHIRT }
 
     public enum Alliance {
         BLUE(2), RED(1);
@@ -70,6 +72,8 @@ public class Robot {
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
         led = new LED(hardwareMap.get(Servo.class, "LED"));
 
+        colorFinder = new Colorful_Banana_Op(this);
+
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         imuParameters = new IMU.Parameters(
@@ -85,6 +89,7 @@ public class Robot {
      */
     public void update() {
         //TODO Make this function update the robot states
+        colorFinder.update();
     }
 
     /**
@@ -115,7 +120,7 @@ public class Robot {
             return Color.PINK;
         }
         else{
-            return Color.LAUNDRY;
+            return Color.OFF;
         }
     }
 
