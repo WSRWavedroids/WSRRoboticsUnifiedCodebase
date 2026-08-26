@@ -3,11 +3,16 @@ package org.firstinspires.ftc.teamcode.lessons.five;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.FORWARD;
 
 import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.*;
-
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.GREEN;
+import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.RED;
+import static org.firstinspires.ftc.teamcode.lessons.five.TeleopPractice.christmasLedSteps.*;
+import static org.firstinspires.ftc.teamcode.lessons.five.TeleopPractice.motorDanceSteps.*;
+import static org.firstinspires.ftc.teamcode.lessons.five.TeleopPractice.servoStuffSteps.*;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Core.LED;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 
@@ -47,7 +52,6 @@ public class TeleopPractice extends OpMode {
     private double bPressed = 0;
     private double xPressed = 0;
     private double yPressed = 0;
-
 
 
     /*
@@ -103,20 +107,20 @@ public class TeleopPractice extends OpMode {
         }
         if (gamepad1.bWasPressed()) {
             robot.colorServo.setPower(robot.colorServo.getPower() + 0.1);
-        }*/
+        }
         //TODO finish making it flash for 1 second intervals (0.5 on 0.5 off)
         if (gamepad1.yWasPressed()) {
             ledFlashing = 1 - ledFlashing;
         }
         if (ledFlashing == 1 || robot.led.ledIsOn) {
             loopRandomColors();
-        }
+        }*/
         checkButtonPress();
-        colorServoSpeed = colorServoSpeed + colorServoSpeedIncrement * (xPressed - bPressed);
-        robot.motor.setPower(gamepad1.left_stick_x);
-        if (gamepad1.a) {
+        //colorServoSpeed = colorServoSpeed + colorServoSpeedIncrement * (xPressed - bPressed);
+        //robot.motor.setPower(gamepad1.left_stick_x);
+        /*if (gamepad1.a) {
             robot.colorServo.setPower(colorServoSpeed);
-        }
+        }*/
         if (gamepad1.dpadUpWasPressed()) {
             axonWaving = getRuntime() + axonWaveSeconds;
         }
@@ -128,7 +132,15 @@ public class TeleopPractice extends OpMode {
         } else {
             waveAxon(axonServoSpeedIncrement / 5, 0.25);
         }
+        motorDance();
+        christmasLed();
+        servoStuff();
+        stopAll();
 
+        telemetry.addData("Motor Current Step", motorCurrentStep);
+        telemetry.addData("LED Current Step", ledCurrentStep);
+        telemetry.addData("SERVOS Current Step", servoCurrentStep);
+        telemetry.update();
     }
 
     /**
@@ -157,21 +169,25 @@ public class TeleopPractice extends OpMode {
             aPressed = 0;
         }
 
-        if (gamepad1.bWasPressed()) {bPressed = 1;
+        if (gamepad1.bWasPressed()) {
+            bPressed = 1;
         } else {
             bPressed = 0;
         }
 
-        if (gamepad1.xWasPressed()) {xPressed = 1;
+        if (gamepad1.xWasPressed()) {
+            xPressed = 1;
         } else {
             xPressed = 0;
         }
 
-        if (gamepad1.yWasPressed()) {yPressed = 1;
+        if (gamepad1.yWasPressed()) {
+            yPressed = 1;
         } else {
             yPressed = 0;
         }
     }
+
     /*public enum numberColor {
         ZERO,
         ONE,
@@ -187,8 +203,7 @@ public class TeleopPractice extends OpMode {
         if (position > range) {
             axonWaveDir = -1;
             position = range;
-        }
-        else if (position < -range) {
+        } else if (position < -range) {
             axonWaveDir = 1;
             position = -range;
         }
@@ -204,6 +219,125 @@ public class TeleopPractice extends OpMode {
                 robot.led.setRandomColor();
 
             }
+        }
+    }
+
+    public double motorDanceTime;
+    public double christmasLedTime;
+    public double servoStuffTime;
+    private motorDanceSteps motorCurrentStep = MOTOR_DANCE_STOP;
+    private christmasLedSteps ledCurrentStep = STOP;
+    private servoStuffSteps servoCurrentStep = SERVO_STOP;
+
+    enum motorDanceSteps {
+        MOTOR_DANCE_STOP, HALF_CLOCKWISE, HALF_COUNTERCLOCKWISE, FULL_COUNTERCLOCKWISE
+    }
+
+    private void motorDance() {
+        double currentRuntime = getRuntime();
+        switch (motorCurrentStep) {
+            case MOTOR_DANCE_STOP:
+                if (gamepad1.cross) {
+                    motorDanceTime = getRuntime();
+                    robot.motor.setPower(0.5);
+                    motorCurrentStep = HALF_CLOCKWISE;
+                }
+                break;
+            case HALF_CLOCKWISE:
+                if (currentRuntime >= motorDanceTime + 2) {
+                    robot.motor.setPower(-0.5);
+                    motorCurrentStep = HALF_COUNTERCLOCKWISE;
+                }
+                break;
+            case HALF_COUNTERCLOCKWISE:
+                if (currentRuntime >= motorDanceTime + 4) {
+                    robot.motor.setPower(-1);
+                    motorCurrentStep = FULL_COUNTERCLOCKWISE;
+                }
+                break;
+            case FULL_COUNTERCLOCKWISE:
+                if (currentRuntime >= motorDanceTime + 5) {
+                    robot.motor.setPower(0);
+                    motorCurrentStep = motorDanceSteps.MOTOR_DANCE_STOP;
+                }
+                break;
+
+        }
+    }
+    enum christmasLedSteps {
+        STOP, RED, GREEN
+    }
+    private void christmasLed() {
+        double currentRuntime = getRuntime();
+        switch (ledCurrentStep) {
+            case STOP:
+                if (gamepad1.circle) {
+                    christmasLedTime = getRuntime();
+                    robot.led.setColor(RED);
+                    ledCurrentStep = christmasLedSteps.RED;
+                }
+                break;
+            case RED:
+                if (currentRuntime >= motorDanceTime + 1) {
+                    robot.led.setColor(GREEN);
+                    ledCurrentStep = christmasLedSteps.GREEN;
+                }
+                break;
+            case GREEN:
+                if (currentRuntime >= motorDanceTime + 2) {
+                    robot.led.setColor(OFF);
+                    ledCurrentStep = christmasLedSteps.STOP;
+                }
+                break;
+        }
+    }
+    enum servoStuffSteps {
+        SERVO_STOP, RED_SEEN, AXON_DANCE, AXON_CENTER
+    }
+    private void servoStuff() {
+        double currentRuntime = getRuntime();
+        switch (servoCurrentStep) {
+            case SERVO_STOP:
+                if (gamepad1.square) {
+                    robot.colorServo.setPower(.1);
+                    servoCurrentStep = RED_SEEN;
+                }
+                break;
+            case RED_SEEN:
+                if (robot.getColor() == Robot.Color.PINK) {
+                    robot.colorServo.setPower(0);
+                    robot.axonServo.setPosition(1);
+                    servoCurrentStep = AXON_DANCE;
+                }
+                break;
+            case AXON_DANCE:
+                servoStuffTime = getRuntime();
+                if (robot.axonServo.getPosition() == 1) {
+                    robot.axonServo.setPosition(0);
+                    servoCurrentStep = AXON_CENTER;
+                }
+                break;
+            case AXON_CENTER:
+                if (robot.axonServo.getPosition() == 0 && robot.button.isPressed()) {
+                    if (robot.button.isPressed()) {
+                        robot.axonServo.setPosition(.5);
+                        servoCurrentStep = SERVO_STOP;
+                    } else if (currentRuntime >= servoStuffTime + 1){
+                        servoCurrentStep = SERVO_STOP;
+                    }
+                }
+                break;
+        }
+    }
+    private void stopAll() {
+        if (gamepad1.triangleWasPressed()) {
+            motorCurrentStep = MOTOR_DANCE_STOP;
+            robot.motor.setPower(0);
+            ledCurrentStep = STOP;
+            robot.led.setColor(OFF);
+            servoCurrentStep = SERVO_STOP;
+            robot.colorServo.setPower(0);
+            robot.axonServo.setPosition(robot.axonServo.getPosition());
         }
     }
 }

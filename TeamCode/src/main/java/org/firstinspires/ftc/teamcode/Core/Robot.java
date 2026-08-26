@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.lessons.six.ColorFinding;
 
 public class Robot {
 
@@ -31,6 +32,8 @@ public class Robot {
     public TouchSensor magnetSensor;
     public DistanceSensor distanceSensor;
     public LED led; // silly LED thinks it's a servo
+
+    public ColorFinding colorFinding;
 
     //init and declare war
     public OpMode opmode;
@@ -67,6 +70,8 @@ public class Robot {
         magnetSensor = hardwareMap.get(TouchSensor.class, "Magnet Sensor");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
         led = new LED(hardwareMap.get(Servo.class, "LED"));
+
+        colorFinding = new ColorFinding(this);
 
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
