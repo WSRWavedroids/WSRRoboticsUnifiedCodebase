@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.Core.Robot;
  * If you ever have problems with the program not showing up on the driver hub, it's probably because of that.
  * <p>
  */
-@TeleOp(name = "Basic TeleOp", group = "Templates")
+@TeleOp(name = "ColorFinderCode", group = "Templates")
 public class ColorFinderCode extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.

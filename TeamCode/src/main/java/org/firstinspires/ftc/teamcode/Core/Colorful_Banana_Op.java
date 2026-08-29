@@ -13,10 +13,9 @@ public class Colorful_Banana_Op {
         int movePosition = colorToNumber(moveColor);
         targetColor = moveColor;
 
-        if (movePosition - currentPosition <= 2.5 && >= 0 ) {
+        if (movePosition - currentPosition <= 2.5 && movePosition - currentPosition >= 0) robot.colorServo.setPower(-0.1);
+        else {
             robot.colorServo.setPower(0.1);
-        } else {
-            robot.colorServo.setPower(-0.1);
         }
     }
     public void update(){
