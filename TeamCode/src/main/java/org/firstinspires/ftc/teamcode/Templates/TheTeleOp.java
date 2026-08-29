@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Core.Robot;
  * The names of OpModes appear on the menu of the FTC Driver Station.
  * When an selection is made from the menu, the corresponding OpMode
  * class is selected on the Robot Controller and executed.
- * This OpMode controls the functions of the robot during the driver-controlled period.
+ * This OpMode controls the functions of the bob during the driver-controlled period.
  * <p>
  * If the "@Disabled" line is not commented out, the program will not show up on the driver hub.
  * If you ever have problems with the program not showing up on the driver hub, it's probably because of that.
@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.Core.Robot;
 @TeleOp(name = "Basic TeleOp", group = "Templates")
 public class TheTeleOp extends OpMode {
 
-    // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
+    // This section tells the program all of the different pieces of hardware that are on our bob that we will use in the program.
     private ElapsedTime runtime = new ElapsedTime();
 
     public Robot robot = null;
@@ -81,16 +81,16 @@ public class TheTeleOp extends OpMode {
     public void loop() {
         /*if (gamepad1.crossWasPressed()) {
             crossStartTime = runtime.seconds();
-            robot.motor.setPower(0.5);
+            bob.motor.setPower(0.5);
         }
         if (runtime.seconds() - crossStartTime >= 2) {
-            robot.motor.setPower(-0.5);
+            bob.motor.setPower(-0.5);
         }
         if(runtime.seconds() - crossStartTime >= 4) {
-            robot.motor.setPower(-1.0);
+            bob.motor.setPower(-1.0);
         }
         if(runtime.seconds() - crossStartTime >= 5){
-            robot.motor.setPower(0.0);
+            bob.motor.setPower(0.0);
         }*/
 
         switch (currentLEDStep) {

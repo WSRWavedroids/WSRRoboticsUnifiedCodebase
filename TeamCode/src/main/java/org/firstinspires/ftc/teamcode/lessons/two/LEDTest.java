@@ -19,7 +19,7 @@ public class LEDTest extends LinearOpMode {
     public void runOpMode() {
 
         robot = new Robot(hardwareMap, telemetry, this);
-        EasyLED Leds = new EasyLED(robot.led);
+        LED led = robot.led;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -38,11 +38,11 @@ public class LEDTest extends LinearOpMode {
 
         waitForStart();
         while(true) {
-            Leds.setColor(EasyLED.Color.SAGE);
+            robot.led.setColor(SAGE);
             sleep(sleepTime);
-            Leds.setColor(EasyLED.Color.OFF);
+            robot.led.setColor(OFF);
             sleep(sleepTime);
-            Leds.setColor(EasyLED.Color.GREEN);
+            robot.led.setColor(GREEN);
             sleep(sleepTime);
         }
 

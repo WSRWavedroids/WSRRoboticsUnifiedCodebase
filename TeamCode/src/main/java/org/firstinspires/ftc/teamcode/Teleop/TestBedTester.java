@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * The names of OpModes appear on the menu of the FTC Driver Station.
  * When a selection is made from the menu, the corresponding OpMode
  * class is selected on the Robot Controller and executed.
- * This OpMode controls the functions of the robot during the driver-controlled period.
+ * This OpMode controls the functions of the bob during the driver-controlled period.
  * <p>
  * If the "@Disabled" tag is present, the program will not show up on the driver hub.
  * If you ever have problems with the program not showing up on the driver hub, it's probably
@@ -33,7 +33,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(name = "Test Bed Tester", group = "0.")
 public class TestBedTester extends OpMode {
 
-    // This section tells the program all of the different pieces of hardware that are on our robot
+    // This section tells the program all of the different pieces of hardware that are on our bob
     // that we will use in the program.
     private ElapsedTime runtime = new ElapsedTime();
 

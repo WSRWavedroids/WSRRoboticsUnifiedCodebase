@@ -31,7 +31,7 @@ public class HelloWorld extends LinearOpMode {
         waitForStart();
 
         //The code to run once play has been pressed goes here.
-      //robot.colorSensor.
+      //bob.colorSensor.
     }
 }
 

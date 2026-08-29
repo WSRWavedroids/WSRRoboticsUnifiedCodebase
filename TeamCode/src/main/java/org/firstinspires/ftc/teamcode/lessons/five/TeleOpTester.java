@@ -18,7 +18,7 @@ import java.util.Timer;
  * The names of OpModes appear on the menu of the FTC Driver Station.
  * When an selection is made from the menu, the corresponding OpMode
  * class is selected on the Robot Controller and executed.
- * This OpMode controls the functions of the robot during the driver-controlled period.
+ * This OpMode controls the functions of the bob during the driver-controlled period.
  * <p>
  * If the "@Disabled" line is not commented out, the program will not show up on the driver hub.
  * If you ever have problems with the program not showing up on the driver hub, it's probably because of that.
@@ -28,7 +28,7 @@ import java.util.Timer;
 @TeleOp(name = "Basic TeleOp", group = "Templates")
 public class TeleOpTester extends OpMode {
 
-    // This section tells the program all of the different pieces of hardware that are on our robot that we will use in the program.
+    // This section tells the program all of the different pieces of hardware that are on our bob that we will use in the program.
     private ElapsedTime runtime = new ElapsedTime();
 
     private double goTime;
@@ -79,16 +79,16 @@ public class TeleOpTester extends OpMode {
         if (gamepad1.cross) {
             robot.colorServo.setPower(colorServoSpeed);
 
-            }
+        }
         if (gamepad1.crossWasReleased()) {
             robot.colorServo.setPower(0.0);
 
         }
         if (gamepad1.leftBumperWasPressed()) {
-            robot.axonServo.setPosition(axonServoPosition-0.1);
+            robot.axonServo.setPosition(axonServoPosition - 0.1);
         }
         if (gamepad1.rightBumperWasPressed()) {
-            robot.axonServo.setPosition(axonServoPosition+0.1);
+            robot.axonServo.setPosition(axonServoPosition + 0.1);
         }
         robot.motor.setPower(gamepad1.left_stick_x);
 
@@ -96,65 +96,9 @@ public class TeleOpTester extends OpMode {
             colorServoSpeed = colorServoSpeed - 0.1;
 
         }
-        if(gamepad1.circleWasPressed()) {
+        if (gamepad1.circleWasPressed()) {
             colorServoSpeed = colorServoSpeed + 0.1;
-
-        }
-        if (gamepad1.triangleWasPressed()) {
-            if (ledStatus == 0) {
-                ledStatus = 1;
-                goTime = runtime.seconds();
-            } else {
-                ledStatus = 0;
-            }
-        }
-        if (ledStatus == 0) {
-
-            robot.led.setColor(LED.LEDColors.OFF);
-
-        } else {
-            if (runtime.seconds() - goTime > 1) {
-                robot.led.setColor(findRandomColor());
-                goTime = runtime.seconds();
-            }
-        }
-
-        telemetry.addData("ledStatus",ledStatus);
-
-
-    }
-
-    /**
-     * Code to run ONCE after the driver hits STOP
-     */
-    public void stop() {
-
-    }
-
-    public LED.LEDColors findRandomColor() {
-        int i = rand.nextInt(10);
-        if (i == 0) {
-            return LED.LEDColors.RED;
-        } else if (i == 1) {
-            return LED.LEDColors.ORANGE;
-        } else if (i == 2) {
-            return LED.LEDColors.YELLOW;
-        } else if (i == 3) {
-            return LED.LEDColors.SAGE;
-        } else if (i == 4) {
-            return LED.LEDColors.GREEN;
-        } else if (i == 5) {
-            return LED.LEDColors.INDIGO;
-        } else if (i == 6) {
-            return LED.LEDColors.AZURE;
-        } else if (i == 7) {
-            return LED.LEDColors.BLUE;
-        } else if (i == 8) {
-            return LED.LEDColors.VIOLET;
-        } else {
-            return LED.LEDColors.WHITE;
         }
     }
+
 }
-
-

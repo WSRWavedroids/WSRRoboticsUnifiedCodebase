@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Templates;
 
+import static org.firstinspires.ftc.teamcode.Core.Robot.Color.*;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -21,19 +23,19 @@ import org.firstinspires.ftc.teamcode.Core.Robot;
  */
 @Disabled
 @TeleOp(name = "Basic TeleOp", group = "Templates")
-public class TemplateTeleOp extends OpMode {
+public class ColorFindingTeleOp extends OpMode {
 
     // This section tells the program all of the different pieces of hardware that are on our bob that we will use in the program.
     private ElapsedTime runtime = new ElapsedTime();
 
-    public Robot robot = null;
+    public Robot bob = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     public void init() {
         // Call the initialization protocol from the Robot class.
-        robot = new Robot(hardwareMap, telemetry, this);
+        bob = new Robot(hardwareMap, telemetry, this);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -62,6 +64,34 @@ public class TemplateTeleOp extends OpMode {
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     public void loop() {
+        bob.update();
+        if (gamepad1.crossWasPressed()) {
+            bob.targetColor = PINK;
+        }
+        if (gamepad1.circleWasPressed()) {
+            bob.targetColor = YELLOW;
+        }
+        if (gamepad1.crossWasPressed()) {
+            bob.targetColor = PINK;
+        }
+        if (gamepad1.triangleWasPressed()) {
+            bob.targetColor = BLUE;
+        }
+        if (gamepad1.squareWasPressed()) {
+            bob.targetColor = ORANGE;
+        }
+        if (gamepad1.dpadLeftWasPressed()) {
+            bob.targetColor = GREEN;
+        }
+        if (gamepad1.crossWasPressed()) {
+            bob.targetColor = PINK;
+        }
+        if (gamepad1.circleWasPressed()) {
+            bob.targetColor = YELLOW;
+        }
+        if (gamepad1.triangleWasPressed()) {
+            bob.targetColor = BLUE;
+        }
 
     }
 
@@ -69,6 +99,10 @@ public class TemplateTeleOp extends OpMode {
      * Code to run ONCE after the driver hits STOP
      */
     public void stop() {
+
+    }
+    public void colorFindingTeleOp() {
+
 
     }
 }

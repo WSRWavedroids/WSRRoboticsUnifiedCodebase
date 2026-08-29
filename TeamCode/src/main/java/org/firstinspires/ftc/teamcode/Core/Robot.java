@@ -32,6 +32,8 @@ public class Robot {
     public DistanceSensor distanceSensor;
     public LED led; // silly LED thinks it's a servo
 
+    public ColorFinding colorFinding;
+
     //init and declare war
     public OpMode opmode;
     public HardwareMap hardwareMap;
@@ -78,11 +80,14 @@ public class Robot {
         );
     }
 
+    public Robot.Color targetColor = Color.PINK;
+
     /**
-     * Updates the state of every part of the robot. Should be called once per loop.
+     * Updates the state of every part of the bob. Should be called once per loop.
      */
     public void update() {
-        //TODO Make this function update the robot states
+        //TODO Make this function update the bob states
+        colorFinding.update(targetColor);
     }
 
     /**
