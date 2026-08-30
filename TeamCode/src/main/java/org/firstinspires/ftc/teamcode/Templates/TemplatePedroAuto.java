@@ -50,7 +50,6 @@ public class TemplatePedroAuto extends OpMode {
         pathTimer = new Timer();
         actionTimer = new Timer();
 
-        robot.randomizationScanner.InitLimeLight(0);
         blackboard.put(ALLIANCE_KEY, "BLUE");
         stallTimer = new ElapsedTime();
 
@@ -58,6 +57,8 @@ public class TemplatePedroAuto extends OpMode {
         follower.setHeading(startPose.getHeading()); // TODO check if this is actually needed. I think it's redundant
 
         robot.alliance = BLUE;
+
+        robot.limelight.initLimeLightTargeting(robot.alliance.limelightPipeline);
 
         paths = new PathsForBack12Blue(follower); // Build paths
 
