@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.lessons.six;
 
+import static org.firstinspires.ftc.teamcode.Core.Robot.Color.*;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -26,7 +28,6 @@ public class ColorFindingTest extends OpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     public Robot robot = null;
-    public ColorFinding colorFinding = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -62,11 +63,26 @@ public class ColorFindingTest extends OpMode {
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     public void loop() {
-        colorFinding.findColor(Robot.Color.RED, gamepad1.triangleWasPressed());
-        colorFinding.findColor(Robot.Color.PINK, gamepad1.circleWasPressed());
-        colorFinding.findColor(Robot.Color.YELLOW, gamepad1.crossWasPressed());
-        colorFinding.findColor(Robot.Color.GREEN, gamepad1.squareWasPressed());
-        colorFinding.findColor(Robot.Color.BLUE, gamepad1.dpadDownWasPressed());
+        robot.update();
+        if (gamepad1.triangleWasPressed()) {
+            robot.colorFinding.findColor(RED);
+        }
+        if (gamepad1.circleWasPressed()) {
+            robot.colorFinding.findColor(BLUE);
+        }
+        if (gamepad1.crossWasPressed()) {
+            robot.colorFinding.findColor(GREEN);
+        }
+        if (gamepad1.dpadDownWasPressed()) {
+            robot.colorFinding.findColor(PINK);
+        }
+        if (gamepad1.dpadUpWasPressed()) {
+            robot.colorFinding.findColor(YELLOW);
+        }
+        telemetry.addData("current color", robot.colorFinding.currentColor);
+        telemetry.addData("next color", robot.colorFinding.findColor);
+        telemetry.update();
+
     }
 
     /**

@@ -88,6 +88,7 @@ public class Robot {
      */
     public void update() {
         //TODO Make this function update the robot states
+        colorFinding.updateFindColor();
     }
 
     /**
