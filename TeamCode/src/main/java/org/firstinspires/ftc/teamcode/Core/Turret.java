@@ -8,10 +8,15 @@ import com.pedropathing.geometry.BezierPoint;
 public class Turret {
     private Robot robot;
     public double heading;
+    public double turretOffsetX;
+    public double turretOffsetY;
+    //TODO Give values to these
+
     public Turret(Robot robot) {
 
         this.robot = robot;
     }
+
     public double degreesToServoUnits(double degrees) {
         final double zeroLimitDegrees = 138;
         final double halfPointDegrees = 0;
@@ -19,14 +24,14 @@ public class Turret {
 
         if (degrees < halfPointDegrees) {
             return (0.5 - 1) / (halfPointDegrees - oneLimitDegrees) * (degrees - oneLimitDegrees) + 1;
-        }
-        else {
+        } else {
             return (0 - 0.5) / (zeroLimitDegrees - halfPointDegrees) * (degrees - halfPointDegrees) + 0.5;
         }
     }
-    public void startLockOn() {
-        double x = follower.getPose().getX() +;
-        double y = follower.getPose().getY() +;
+
+    public void lockOn() {
+        double x = follower.getPose().getX() + turretOffsetX;
+        double y = follower.getPose().getY() + turretOffsetY;
         if (robot.alliance == RED) {
             heading = Math.toDegrees(Math.atan2(144 - y, 144 - x));
             robot.turretServo.setPosition(degreesToServoUnits(heading));
@@ -36,11 +41,15 @@ public class Turret {
             robot.turretServo.setPosition(degreesToServoUnits(heading));
         }
     }
-    public boolean isLockedOn() {
 
-        return false;
+    public boolean isLockedOn() {
+        if (Math.abs(robot.limelight.getTargetTag().angleX) <= 5) {
+            return true;
+        } else {
+            return false;
+        }
     }
     public void update() {
-
+        lockOn();
     }
 }
