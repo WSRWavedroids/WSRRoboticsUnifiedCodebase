@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Core;
 
-import static org.firstinspires.ftc.teamcode.Core.Blender.slotNames.*;
+import static org.firstinspires.ftc.teamcode.Core.Blender.SlotNames.*;
+
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class Blender {
 
@@ -16,37 +18,37 @@ public class Blender {
     public int launcherSlotColor = 0;
     public int intakeSlotColor = 0;
     public int storageSlotColor = 0;
-    public int tickOffset = 0;
     public boolean forceBlenderLock = false;
 
 
 //TODO if possible link variable values in enum
-    enum slotNames {INTAKE, LAUNCHER, STORAGE}
-    public slotNames rotationSlot = INTAKE;
-    public void rotateToSlot(slotNames slot) {
+    enum SlotNames {SLOT_1, SLOT_2, SLOT_3}
+    public SlotNames rotationSlot = SLOT_1;
+    public void rotateToSlot(SlotNames slot) {
         switch (rotationSlot) {
-            case INTAKE:
+            case SLOT_1:
                 break;
-            case LAUNCHER:
+            case SLOT_2:
                 break;
-            case STORAGE:
+            case SLOT_3:
                 break;
         }
     }
 
     public void initBlender() {
         //rotate until found in place by magnets
-        tickOffset = robot.sorterMotor.getCurrentPosition();
+        robot.sorterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.sorterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //one slot movement is 2730.666666 ticks, or one third of a rotation, rounded to 2731 to make ints happy
     public void rotateClockwise() {
-        int currentPos = robot.sorterMotor.getCurrentPosition() - tickOffset;
-        robot.sorterMotor.setTargetPosition(currentPos + 2731 + tickOffset);
+        int currentPos = robot.sorterMotor.getCurrentPosition();
+        robot.sorterMotor.setTargetPosition(currentPos + 2731);
     }
     public void rotateCounterClockwise() {
-        int currentPos = robot.sorterMotor.getCurrentPosition() - tickOffset;
-        robot.sorterMotor.setTargetPosition(currentPos - 2731 + tickOffset);
+        int currentPos = robot.sorterMotor.getCurrentPosition();
+        robot.sorterMotor.setTargetPosition(currentPos - 2731);
     }
 
 
