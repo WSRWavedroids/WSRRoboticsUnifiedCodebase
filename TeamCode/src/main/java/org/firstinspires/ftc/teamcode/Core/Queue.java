@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Core;
 
-import static org.firstinspires.ftc.teamcode.Core.Blender.slotNames.CURRENT;
-
 import java.util.ArrayList;
 
 public class Queue {
@@ -9,15 +7,12 @@ public class Queue {
     public Queue(Robot robot) {
         this.robot = robot;
     }
-    public enum ballColor{ // Consider putting this in ArtifactLocator. Also it's BallColor -- Michael
-        PURPLE, GREEN
-    }
-            ArrayList<ballColor> queue = new ArrayList<>(); // Indentation please -- Michael
+            ArrayList<Robot.BallColor> queue = new ArrayList<>(); // Indentation please -- Michael
 
     // Consider consolidating this into one addToQueue(BallColor color) function
-    public void addGreenToQueue(/*ballColor[] args I think this is part of the System thing*/) {
+    public void addToQueue(Robot.BallColor ballColor) {
         if (queue.size() < 3) {
-            queue.add(queue.size() + 1, ballColor.GREEN); //TODO check if Indexing works
+            queue.add(queue.size() + 1, ballColor); //TODO check if Indexing works
             // queue.add() will add it to the end of the list if you don't specify an index at all.
             // Do that. -- Michael
         }
@@ -28,19 +23,9 @@ public class Queue {
             // that aren't in the blender anyway, so who cares if the list is too long? -- Michael
         }
     }
-    public void addPurpleToQueue(/*ballColor[] args I think this is part of the System thing*/) {
-        queue.add(ballColor.GREEN); // Green? -- Michael
-        if (queue.size() < 3) {
-            queue.add(queue.size() + 1, ballColor.GREEN); //TODO check if Indexing works
-        }
-        else {
-            //TODO add something that happens if the queue is fulla nd you try to add more
 
-            // See above
-        }
-    }
 
-    public void setQueue(ballColor ball1, ballColor ball2, ballColor ball3) {
+    public void setQueue(Robot.BallColor ball1, Robot.BallColor ball2, Robot.BallColor ball3) {
         queue.add(1, ball1);
         queue.add(2, ball2);
         queue.add(3, ball3);
@@ -73,14 +58,9 @@ public class Queue {
         queue.clear();
     }
     public void getWholeQueue() {
-            queue.get(1); // Fix indentation por favor -- Michael
-            queue.get(2);
-            queue.get(3);
-
-        //system.out.println(queue); This is something google showed me when I was researching array lists
-        //It could be better I'm not sure
-
-        // We don't have access to the system console. This is an example of AI not knowing how FTC works -- Michael
+        queue.get(1);
+        queue.get(2);
+        queue.get(3);
         queue.clear();
     }
     public void getNextBall() {
