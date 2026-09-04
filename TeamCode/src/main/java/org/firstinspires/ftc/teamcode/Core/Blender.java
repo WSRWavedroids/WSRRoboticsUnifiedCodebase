@@ -24,17 +24,46 @@ public class Blender {
     public boolean forceBlenderLock = false;
 
 
-    enum SlotNames {SLOT_1, SLOT_2, SLOT_3}
+    enum SlotNames {SLOT_1, SLOT_2, SLOT_3, NONE}
     public SlotNames rotationSlot = SLOT_1;
-    public void rotateToSlot(SlotNames slot) {
+
+    /**
+     * rotates the specified slot to the launcher position
+     * @param slot
+     */
+    public void rotateSlotToLauncher(SlotNames slot) {
         switch (rotationSlot) {
+            case NONE:
+                break;
             case SLOT_1:
+                //rotate slot 1 to launcher
                 break;
             case SLOT_2:
+                //rotate slot 2 to launcher
                 break;
             case SLOT_3:
+                //rotate slot 3 to launcher
                 break;
         }
+    }
+    public void rotateSlotToIntake(SlotNames slot) {
+        switch (rotationSlot) {
+            case NONE:
+                break;
+            case SLOT_1:
+                //rotate slot 1 to intake
+                break;
+            case SLOT_2:
+                //rotate slot 2 to intake
+                break;
+            case SLOT_3:
+                //rotate slot 3 to intake
+                break;
+        }
+    }
+
+    public void rotateToSlot(SlotNames slot, SlotNames targetPosition) {
+        //math :)
     }
 
     public void initBlender() {
@@ -45,14 +74,18 @@ public class Blender {
 
     //one slot movement is 2730.666666 ticks, or one third of a rotation, rounded to 2731 to make ints happy
     public void rotateClockwise() {
-        int currentPos = robot.sorterMotor.getCurrentPosition();
-        robot.sorterMotor.setTargetPosition(currentPos + 2731);
-        rotateSlotVariables(1);
+        if (!forceBlenderLock) {
+            int currentPos = robot.sorterMotor.getCurrentPosition();
+            robot.sorterMotor.setTargetPosition(currentPos + 2731);
+            rotateSlotVariables(1);
+        }
     }
     public void rotateCounterClockwise() {
-        int currentPos = robot.sorterMotor.getCurrentPosition();
-        robot.sorterMotor.setTargetPosition(currentPos - 2731);
-        rotateSlotVariables(-1);
+        if (!forceBlenderLock) {
+            int currentPos = robot.sorterMotor.getCurrentPosition();
+            robot.sorterMotor.setTargetPosition(currentPos - 2731);
+            rotateSlotVariables(-1);
+    }
     }
     public boolean isBlenderPositioned() {
         return robot.blenderMagnetSensor.isPressed();
@@ -85,11 +118,20 @@ public class Blender {
         return input;
     }
 
-
+    /**
+     * force lock/unlock blender rotation
+     * @param true_false
+     */
     public void lockBlender(boolean true_false) {
         forceBlenderLock = true_false;
     }
 
+
+    /**
+     * checks if it is safe to move the blender
+     */
+
+    //don't think I need this but not deleting it just in case
     public void checkSlotPositions() {
         //do stuff
     }
