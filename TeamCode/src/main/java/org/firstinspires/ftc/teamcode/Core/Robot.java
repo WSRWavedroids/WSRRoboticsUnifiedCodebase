@@ -46,6 +46,7 @@ public class Robot {
 
 
     public LED fireRGB, loadRGB, storeRGB;
+    public Blender blender;
 
     public RevColorSensorV3 leftColorScanner;
     public RevColorSensorV3 rightColorScanner;
