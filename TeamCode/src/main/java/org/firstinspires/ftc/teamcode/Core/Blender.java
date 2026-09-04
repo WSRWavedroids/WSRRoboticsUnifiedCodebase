@@ -18,10 +18,12 @@ public class Blender {
     public int launcherSlotColor = 0;
     public int intakeSlotColor = 0;
     public int storageSlotColor = 0;
+    public int launcherPositionSlotNumber = 2;
+    public int intakePositionSlotNumber = 1;
+    public int storagePositionSlotNumber = 3;
     public boolean forceBlenderLock = false;
 
 
-//TODO if possible link variable values in enum
     enum SlotNames {SLOT_1, SLOT_2, SLOT_3}
     public SlotNames rotationSlot = SLOT_1;
     public void rotateToSlot(SlotNames slot) {
@@ -45,10 +47,42 @@ public class Blender {
     public void rotateClockwise() {
         int currentPos = robot.sorterMotor.getCurrentPosition();
         robot.sorterMotor.setTargetPosition(currentPos + 2731);
+        rotateSlotVariables(1);
     }
     public void rotateCounterClockwise() {
         int currentPos = robot.sorterMotor.getCurrentPosition();
         robot.sorterMotor.setTargetPosition(currentPos - 2731);
+        rotateSlotVariables(-1);
+    }
+    public boolean isBlenderPositioned() {
+        return robot.blenderMagnetSensor.isPressed();
+    }
+
+    /**
+     * cycles position variables by +-1
+     * @param direction
+     */
+    public void rotateSlotVariables(int direction) {
+        launcherPositionSlotNumber = clampVariable(launcherPositionSlotNumber + direction);
+        intakePositionSlotNumber = clampVariable(intakePositionSlotNumber + direction);
+        storagePositionSlotNumber = clampVariable(storagePositionSlotNumber + direction);
+    }
+
+    /**
+     * used inside rotateSlotVariables function, clamps the input between 1 and 3
+     * it also loops them (IMPORTANT), meaning when variable is <1, sets it to 3, when >3, sets it to 1
+     *
+     * @param input
+     * @return
+     */
+    public int clampVariable(int input) {
+        if (input < 1) {
+            return 3;
+        }
+        if (input >3) {
+            return 1;
+        }
+        return input;
     }
 
 
