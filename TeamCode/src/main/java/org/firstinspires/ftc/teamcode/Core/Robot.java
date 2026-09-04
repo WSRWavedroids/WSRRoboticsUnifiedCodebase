@@ -93,6 +93,9 @@ public class Robot {
         DIAGONAL_LEFT, DIAGONAL_RIGHT,
         TURN_LEFT, TURN_RIGHT
     }
+    public enum BallColor {
+        EMPTY, ANY, PURPLE, GREEN
+    }
     public enum UpDown {UP, DOWN}
 
     //Initialize motors and servos
