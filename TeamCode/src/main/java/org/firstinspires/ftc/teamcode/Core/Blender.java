@@ -26,15 +26,44 @@ public class Blender {
 
     enum SlotNames {SLOT_1, SLOT_2, SLOT_3, NONE}
     public SlotNames rotationSlot = SLOT_1;
-    public void rotateToSlot(SlotNames slot) {
+
+    /**
+     * rotates the specified slot to the launcher position
+     * @param slot
+     */
+    public void rotateSlotToLauncher(SlotNames slot) {
         switch (rotationSlot) {
+            case NONE:
+                break;
             case SLOT_1:
+                //rotate slot 1 to launcher
                 break;
             case SLOT_2:
+                //rotate slot 2 to launcher
                 break;
             case SLOT_3:
+                //rotate slot 3 to launcher
                 break;
         }
+    }
+    public void rotateSlotToIntake(SlotNames slot) {
+        switch (rotationSlot) {
+            case NONE:
+                break;
+            case SLOT_1:
+                //rotate slot 1 to intake
+                break;
+            case SLOT_2:
+                //rotate slot 2 to intake
+                break;
+            case SLOT_3:
+                //rotate slot 3 to intake
+                break;
+        }
+    }
+
+    public void rotateToSlot(SlotNames slot, SlotNames targetPosition) {
+        //math :)
     }
 
     public void initBlender() {
