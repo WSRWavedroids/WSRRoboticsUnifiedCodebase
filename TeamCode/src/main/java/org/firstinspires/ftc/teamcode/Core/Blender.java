@@ -24,7 +24,7 @@ public class Blender {
     public boolean forceBlenderLock = false;
 
 
-    enum SlotNames {SLOT_1, SLOT_2, SLOT_3}
+    enum SlotNames {SLOT_1, SLOT_2, SLOT_3, NONE}
     public SlotNames rotationSlot = SLOT_1;
     public void rotateToSlot(SlotNames slot) {
         switch (rotationSlot) {
