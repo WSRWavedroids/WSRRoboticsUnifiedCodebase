@@ -45,14 +45,18 @@ public class Blender {
 
     //one slot movement is 2730.666666 ticks, or one third of a rotation, rounded to 2731 to make ints happy
     public void rotateClockwise() {
-        int currentPos = robot.sorterMotor.getCurrentPosition();
-        robot.sorterMotor.setTargetPosition(currentPos + 2731);
-        rotateSlotVariables(1);
+        if (!forceBlenderLock) {
+            int currentPos = robot.sorterMotor.getCurrentPosition();
+            robot.sorterMotor.setTargetPosition(currentPos + 2731);
+            rotateSlotVariables(1);
+        }
     }
     public void rotateCounterClockwise() {
-        int currentPos = robot.sorterMotor.getCurrentPosition();
-        robot.sorterMotor.setTargetPosition(currentPos - 2731);
-        rotateSlotVariables(-1);
+        if (!forceBlenderLock) {
+            int currentPos = robot.sorterMotor.getCurrentPosition();
+            robot.sorterMotor.setTargetPosition(currentPos - 2731);
+            rotateSlotVariables(-1);
+    }
     }
     public boolean isBlenderPositioned() {
         return robot.blenderMagnetSensor.isPressed();
@@ -85,11 +89,20 @@ public class Blender {
         return input;
     }
 
-
+    /**
+     * force lock/unlock blender rotation
+     * @param true_false
+     */
     public void lockBlender(boolean true_false) {
         forceBlenderLock = true_false;
     }
 
+
+    /**
+     * checks if it is safe to move the blender
+     */
+
+    //don't think I need this but not deleting it just in case
     public void checkSlotPositions() {
         //do stuff
     }
