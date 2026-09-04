@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Vision.LimelightDriver;
@@ -80,6 +81,10 @@ public class Robot {
     @Deprecated
     public LimelightDriver randomizationScanner;
     public LimelightDriver limelight;
+    public Blender blender;
+    public Launcher launcher;
+    public Turret turret;
+    public LaunchSequence launchSequence;
 
 
     public Panels panels;
@@ -98,6 +103,7 @@ public class Robot {
     }
     public enum UpDown {UP, DOWN}
 
+    public ElapsedTime runtime;
     //Initialize motors and servos
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, OpMode opmode) {
         this.hardwareMap = hardwareMap;
@@ -161,6 +167,8 @@ public class Robot {
         limelight = new LimelightDriver(this);
 
         if (alliance == null) alliance = Alliance.BLUE;
+
+        runtime = new ElapsedTime();
     }
 
     /**
