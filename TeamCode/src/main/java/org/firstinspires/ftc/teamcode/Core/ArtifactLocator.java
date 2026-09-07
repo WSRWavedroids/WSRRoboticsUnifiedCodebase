@@ -20,6 +20,7 @@ public class ArtifactLocator {
     public void storeColor(Robot.BallColor color, int slotNumber) {
         colorList[slotNumber] = color;
     }
+
     public Blender.SlotNames findColor(Robot.BallColor ballColor) {
         if (colorList[0] == ballColor) {
             return SLOT_1;
@@ -32,24 +33,36 @@ public class ArtifactLocator {
         }
         return NONE;
     }
+
     public Robot.BallColor findSlotContents(Blender.SlotNames slot) {
-        if(slot == SLOT_1){
+        if (slot == SLOT_1) {
             return colorList[0];
         }
-        if(slot == SLOT_2) {
+        if (slot == SLOT_2) {
             return colorList[1];
         }
-        if(slot == SLOT_3){
+        if (slot == SLOT_3) {
             return colorList[2];
-        } else {{
-            return EMPTY;
-        }
-        }
-    }
-    public Robot.BallColor getInventory(Robot.BallColor color){
-        if(ballColor == GREEN){
-            return GREEN;
+        } else {
+            {
+                return EMPTY;
+            }
         }
     }
+
+    public int getInventory(Robot.BallColor color) {
+        int total = 0;
+        if (findSlotContents(SLOT_1) == color) {
+            total += 1;
+        }
+        if (findSlotContents(SLOT_2) == color) {
+            total += 2;
+        }
+        if (findSlotContents(SLOT_3) == color) {
+            total += 3;
+        }
+        return total;
+    }
+
 }
 
