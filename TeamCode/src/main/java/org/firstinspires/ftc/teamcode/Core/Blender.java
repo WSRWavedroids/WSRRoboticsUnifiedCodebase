@@ -18,52 +18,65 @@ public class Blender {
     public int launcherSlotColor = 0;
     public int intakeSlotColor = 0;
     public int storageSlotColor = 0;
-    public int launcherPositionSlotNumber = 2;
-    public int intakePositionSlotNumber = 1;
-    public int storagePositionSlotNumber = 3;
+    public int launcherPositionSlot = 2;
+    public int intakePositionSlot = 1;
+    public int storagePositionSlot = 3;
     public boolean forceBlenderLock = false;
 
 
-    enum SlotNames {SLOT_1, SLOT_2, SLOT_3, NONE}
+    public enum SlotNames {SLOT_1, SLOT_2, SLOT_3, NONE}
     public SlotNames rotationSlot = SLOT_1;
 
     /**
-     * rotates the specified slot to the launcher position
+     * rotates a slot to the specified position
      * @param slot
      */
-    public void rotateSlotToLauncher(SlotNames slot) {
+    public void rotateSlotToPosition(SlotNames slot, int position) {
+        rotationSlot = slot;
+        int targetRotation = 0;
         switch (rotationSlot) {
             case NONE:
                 break;
             case SLOT_1:
-                //rotate slot 1 to launcher
+                targetRotation = position - findSlot(1);
+                if (targetRotation > 0) {
+                    rotateClockwise(targetRotation);
+                } else if (targetRotation < 0) {
+                    rotateCounterClockwise(-targetRotation);
+                }
                 break;
             case SLOT_2:
-                //rotate slot 2 to launcher
+                targetRotation = position - findSlot(2);
+                if (targetRotation > 0) {
+                    rotateClockwise(targetRotation);
+                } else if (targetRotation < 0) {
+                    rotateCounterClockwise(-targetRotation);
+                }
                 break;
             case SLOT_3:
-                //rotate slot 3 to launcher
-                break;
-        }
-    }
-    public void rotateSlotToIntake(SlotNames slot) {
-        switch (rotationSlot) {
-            case NONE:
-                break;
-            case SLOT_1:
-                //rotate slot 1 to intake
-                break;
-            case SLOT_2:
-                //rotate slot 2 to intake
-                break;
-            case SLOT_3:
-                //rotate slot 3 to intake
+                targetRotation = position - findSlot(3);
+                if (targetRotation > 0) {
+                    rotateClockwise(targetRotation);
+                } else if (targetRotation < 0) {
+                    rotateCounterClockwise(-targetRotation);
+                }
                 break;
         }
     }
 
-    public void rotateToSlot(SlotNames slot, SlotNames targetPosition) {
-        //math :)
+
+
+    public int findSlot(int slot) {
+        if (intakePositionSlot == slot){
+            return 1;
+        }
+        if (launcherPositionSlot == slot){
+            return 2;
+        }
+        if (storagePositionSlot == slot){
+            return 3;
+        }
+        return 0;
     }
 
     public void initBlender() {
@@ -73,18 +86,23 @@ public class Blender {
     }
 
     //one slot movement is 2730.666666 ticks, or one third of a rotation, rounded to 2731 to make ints happy
-    public void rotateClockwise() {
+    public void rotateClockwise(int amount) {
         if (!forceBlenderLock) {
             int currentPos = robot.sorterMotor.getCurrentPosition();
-            robot.sorterMotor.setTargetPosition(currentPos + 2731);
-            rotateSlotVariables(1);
+            robot.sorterMotor.setTargetPosition(currentPos + (2731 * amount));
+            for (int i = 0; i < amount; i++) {
+                rotateSlotVariables(1);
+            }
+
         }
     }
-    public void rotateCounterClockwise() {
+    public void rotateCounterClockwise(int amount) {
         if (!forceBlenderLock) {
             int currentPos = robot.sorterMotor.getCurrentPosition();
-            robot.sorterMotor.setTargetPosition(currentPos - 2731);
-            rotateSlotVariables(-1);
+            robot.sorterMotor.setTargetPosition(currentPos - (2731 * amount));
+            for (int i = 0; i < amount; i++) {
+                rotateSlotVariables(-1);
+            }
     }
     }
     public boolean isBlenderPositioned() {
@@ -96,14 +114,14 @@ public class Blender {
      * @param direction
      */
     public void rotateSlotVariables(int direction) {
-        launcherPositionSlotNumber = clampVariable(launcherPositionSlotNumber + direction);
-        intakePositionSlotNumber = clampVariable(intakePositionSlotNumber + direction);
-        storagePositionSlotNumber = clampVariable(storagePositionSlotNumber + direction);
+        launcherPositionSlot = clampVariable(launcherPositionSlot + direction);
+        intakePositionSlot = clampVariable(intakePositionSlot + direction);
+        storagePositionSlot = clampVariable(storagePositionSlot + direction);
     }
 
     /**
-     * used inside rotateSlotVariables function, clamps the input between 1 and 3
-     * it also loops them (IMPORTANT), meaning when variable is <1, sets it to 3, when >3, sets it to 1
+     * used inside rotateSlotVariables function, clamps the input between 1 and 3.
+     * It also loops them (IMPORTANT), meaning when variable is <1, sets it to 3, when >3, sets it to 1
      *
      * @param input
      * @return
