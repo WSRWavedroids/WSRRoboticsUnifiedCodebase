@@ -84,6 +84,7 @@ public class Robot {
     public Blender blender;
     public Launcher launcher;
     public Turret turret;
+    public Intake intake;
     public LaunchSequence launchSequence;
     public ArtifactLocator artifactLocator;
 
@@ -175,7 +176,10 @@ public class Robot {
      * Updates the state of every part of the robot. Should be called once per loop.
      */
     public void update() {
-        //TODO Make this function update the robot states
+        intake.update();
+        launcher.update();
+        launchSequence.update();
+        turret.update();
     }
 
     /**

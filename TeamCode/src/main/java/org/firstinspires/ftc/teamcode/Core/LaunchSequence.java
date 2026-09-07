@@ -11,7 +11,7 @@ public class LaunchSequence {
     }
     ArrayList<Robot.BallColor> queue = new ArrayList<>();
     public void addToQueue(Robot.BallColor ballColor) {
-            queue.add(ballColor);
+        queue.add(ballColor);
 
     }
     public void clearQueue() {
@@ -35,8 +35,8 @@ public class LaunchSequence {
                 break;
             case CHECK:
                 if (ballCheck()) {
-                    robot.blender.rotateSlotToPosition();
-                    robot.launcher.launch();
+                    robot.blender.rotateSlotToPosition(robot.artifactLocator.findColor(queue.get(0)), Blender.SlotPositions.LAUNCH);
+                    robot.launcher.fireBall();
                 } else {
                     queue.remove(0);
                     launchSequenceSteps = READY;

@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Core.FramerateCalculator;
+import org.firstinspires.ftc.teamcode.Core.Intake;
 import org.firstinspires.ftc.teamcode.Core.Robot;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -160,6 +161,8 @@ public class FabioTeleOp extends OpMode {
         gamepad2.setLedColor(0, 0, 255, 10);
 
         robot.enableBrakes();
+        robot.turret.lockOn();
+        robot.blender.initBlender();
     }
 
     /**
@@ -187,20 +190,19 @@ public class FabioTeleOp extends OpMode {
         controlMode();
 
         if(gamepad2.circle){
-        //TODO Intake code goes here
+            robot.intake.intakeStep = Intake.IntakeSteps.INTAKE;
         }
-
         if(gamepad2.cross){
-        //TODO Outtake code goes here
+            robot.intake.intakeStep = Intake.IntakeSteps.OUTTAKE;
         }
         if(gamepad2.dpadUpWasPressed()){
-        robot.launchSequence.addToQueue(Robot.BallColor.GREEN);
+            robot.launchSequence.addToQueue(Robot.BallColor.GREEN);
         }
         if(gamepad2.dpadDownWasPressed()){
-        robot.launchSequence.addToQueue(Robot.BallColor.PURPLE);
+            robot.launchSequence.addToQueue(Robot.BallColor.PURPLE);
         }
         if(gamepad2.rightBumperWasPressed()){
-        robot.launchSequence.addToQueue(Robot.BallColor.ANY);
+            robot.launchSequence.addToQueue(Robot.BallColor.ANY);
         }
 
 
