@@ -12,12 +12,7 @@ public class Launcher {
         robot.launcherMotorOne.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, launcherPIDValues);
         robot.launcherMotorTwo.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, launcherPIDValues);
     }
-
-    private int launcherSpeed = 0;
     public boolean isLaunching = false;
-    public boolean launched = false;
-    public boolean readyToLaunch = false;
-    private boolean flickyIsUp = true;
     private double targetVelocity = 0;
     private double currentTime = 0;
 
@@ -40,7 +35,6 @@ public class Launcher {
     public void update() {
        switch (currentState) {
             case STALL:
-                //add a way to switch to launching
                 if (goLaunch) {
                     currentState = launcherState.CHECK_BLENDER;
                 }
@@ -56,7 +50,6 @@ public class Launcher {
                if (Math.abs(robot.launcherMotorOne.getVelocity() - targetVelocity) <= 40) {
                    currentState = launcherState.FLICKY_UP;
                    robot.flicky.setPosition(0);
-                   flickyIsUp = true;
                    currentTime = robot.runtime.seconds();
                }
                break;
@@ -68,6 +61,7 @@ public class Launcher {
                break;
            case FLICKY_DOWN:
                if (robot.runtime.seconds() - currentTime >= 2) {
+                   setLaunchSpeedZero();
                    goLaunch = false;
                    currentState = launcherState.STALL;
                }
@@ -83,5 +77,10 @@ public class Launcher {
                 + 2186.7502;
         robot.launcherMotorOne.setVelocity(targetVelocity);
         robot.launcherMotorTwo.setVelocity(targetVelocity);
+    }
+    private void setLaunchSpeedZero() {
+        robot.launcherMotorOne.setVelocity(0);
+        robot.launcherMotorTwo.setVelocity(0);
+
     }
 }
