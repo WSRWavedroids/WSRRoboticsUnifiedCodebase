@@ -44,9 +44,7 @@ public class ArtifactLocator {
         if (slot == SLOT_3) {
             return colorList[2];
         } else {
-            {
                 return EMPTY;
-            }
         }
     }
 
@@ -56,10 +54,10 @@ public class ArtifactLocator {
             total += 1;
         }
         if (findSlotContents(SLOT_2) == color) {
-            total += 2;
+            total += 1;
         }
         if (findSlotContents(SLOT_3) == color) {
-            total += 3;
+            total += 1;
         }
         return total;
     }
