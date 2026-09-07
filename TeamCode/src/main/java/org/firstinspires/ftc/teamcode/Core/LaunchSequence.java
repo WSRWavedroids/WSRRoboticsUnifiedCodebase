@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Core;
 
+import static org.firstinspires.ftc.teamcode.Core.LaunchSequence.LaunchSequenceSteps.*;
+
 import java.util.ArrayList;
 
 public class LaunchSequence {
@@ -15,37 +17,38 @@ public class LaunchSequence {
     public void clearQueue() {
         queue.clear();
     }
-    private boolean ballCheck = false;
-    public void ballCheck() {
 
-
+    public boolean ballCheck() {
+        return robot.artifactLocator.findColor(queue.get(0)) != Blender.SlotNames.NONE;
     }
     enum LaunchSequenceSteps {
-        READY, LAUNCH
+        READY, CHECK, LAUNCH
     }
-    private boolean launchStart = false;
-    private boolean doneLaunch = false;
-    private LaunchSequenceSteps launchSequenceSteps = LaunchSequenceSteps.READY;
-    public void launchSequence() {
+    private LaunchSequenceSteps launchSequenceSteps = READY;
+    public void update() {
         switch (launchSequenceSteps) {
             case READY:
-                ballCheck();
-                if (launchStart) {
-                    if (ballCheck) {
-                        launchSequenceSteps = LaunchSequenceSteps.LAUNCH;
-                    }
+                if (queue.isEmpty()) {
+                    launchSequenceSteps = LAUNCH;
+                }
+
+                break;
+            case CHECK:
+                if (ballCheck()) {
+                    robot.blender.rotateSlotToPosition();
+                    robot.launcher.launch();
+                } else {
+                    queue.remove(0);
+                    launchSequenceSteps = READY;
                 }
                 break;
 
             case LAUNCH:
-
-                if (doneLaunch == true) {
-                    launchSequenceSteps = LaunchSequenceSteps.READY;
+                if (!robot.launcher.isLaunching) {
+                    launchSequenceSteps = READY;
+                    queue.remove(0);
                 }
                 break;
         }
-    }
-    public void update() {
-        //TODO add this function
     }
 }

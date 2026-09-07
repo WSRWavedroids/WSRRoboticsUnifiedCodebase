@@ -32,21 +32,22 @@ public class Launcher {
     }
 
     launcherState currentState = launcherState.STALL;
-
     public void fireBall() {
-
+        goLaunch = true;
     }
+    public boolean goLaunch = false;
 
     public void update() {
-
-
        switch (currentState) {
             case STALL:
                 //add a way to switch to launching
+                if (goLaunch) {
+                    currentState = launcherState.CHECK_BLENDER;
+                }
                 break;
             case CHECK_BLENDER:
                 if (robot.blender.isBlenderPositioned()) {
-                    robot.blender.forceBlenderLock = true;
+                    robot.blender.lockBlender(true);
                     setPerfectLaunchSpeed(robot.limelight.getTargetTag().distanceZ);
                     currentState = launcherState.REV_MOTOR;
                 }
@@ -56,20 +57,25 @@ public class Launcher {
                    currentState = launcherState.FLICKY_UP;
                    robot.flicky.setPosition(0);
                    flickyIsUp = true;
-                   currentTime = robot.runtime;
+                   currentTime = robot.runtime.seconds();
                }
                break;
            case FLICKY_UP:
-               if (robot.runtime - currentTime = ) {
+               if (robot.runtime.seconds() - currentTime >= 1) {
+                   robot.flicky.setPosition(1);
                    currentState = launcherState.FLICKY_DOWN;
                }
                break;
            case FLICKY_DOWN:
+               if (robot.runtime.seconds() - currentTime >= 2) {
+                   goLaunch = false;
+                   currentState = launcherState.STALL;
+               }
                break;
         }
 
     }
-    private double setPerfectLaunchSpeed(double distance) {
+    private void setPerfectLaunchSpeed(double distance) {
         targetVelocity = (21.20299 * Math.pow(distance, 4))
                 - (233.8409 * Math.pow(distance, 3))
                 + (966.85113 * Math.pow(distance, 2))
