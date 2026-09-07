@@ -88,12 +88,11 @@ public class Blender {
         }
         return 0;
     }
-    public void updateBlender() {
-        findSlot(1);
-    }
 
     public void initBlender() {
-        //rotate until found in place by magnets
+        while (!isBlenderPositioned()) {
+            robot.sorterMotor.setPower(0.1);
+        }
         robot.sorterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.sorterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
