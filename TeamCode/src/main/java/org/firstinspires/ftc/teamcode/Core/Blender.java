@@ -26,7 +26,13 @@ public class Blender {
     public int storagePositionSlot = 3;
     public boolean forceBlenderLock = false;
 
-
+    public enum SlotPositions {
+        INTAKE(1), LAUNCH(2), STORE(3);
+        public final int positionNumber;
+        SlotPositions(int positionNumber) {
+            this.positionNumber = positionNumber;
+        }
+    }
     public enum SlotNames {SLOT_1, SLOT_2, SLOT_3, NONE}
 
     public SlotNames rotationSlot = SLOT_1;
@@ -36,14 +42,14 @@ public class Blender {
      *
      * @param slot
      */
-    public void rotateSlotToPosition(SlotNames slot, int position) {
+    public void rotateSlotToPosition(SlotNames slot, SlotPositions position) {
         rotationSlot = slot;
         int targetRotation = 0;
         switch (rotationSlot) {
             case NONE:
                 break;
             case SLOT_1:
-                targetRotation = position - findSlot(1);
+                targetRotation = position.positionNumber - findSlot(1);
                 if (targetRotation > 0) {
                     rotateClockwise(targetRotation);
                 } else if (targetRotation < 0) {
@@ -51,7 +57,7 @@ public class Blender {
                 }
                 break;
             case SLOT_2:
-                targetRotation = position - findSlot(2);
+                targetRotation = position.positionNumber - findSlot(2);
                 if (targetRotation > 0) {
                     rotateClockwise(targetRotation);
                 } else if (targetRotation < 0) {
@@ -59,7 +65,7 @@ public class Blender {
                 }
                 break;
             case SLOT_3:
-                targetRotation = position - findSlot(3);
+                targetRotation = position.positionNumber - findSlot(3);
                 if (targetRotation > 0) {
                     rotateClockwise(targetRotation);
                 } else if (targetRotation < 0) {
@@ -81,6 +87,9 @@ public class Blender {
             return 3;
         }
         return 0;
+    }
+    public void updateBlender() {
+        findSlot(1);
     }
 
     public void initBlender() {
