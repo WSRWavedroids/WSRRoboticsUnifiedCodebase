@@ -52,7 +52,7 @@ public class Blender {
                 targetRotation = position.positionNumber - findSlot(1);
                 if (targetRotation > 0) {
                     rotateClockwise(targetRotation);
-                } else if (targetRotation < 0) {
+                } else {
                     rotateCounterClockwise(-targetRotation);
                 }
                 break;
@@ -60,7 +60,7 @@ public class Blender {
                 targetRotation = position.positionNumber - findSlot(2);
                 if (targetRotation > 0) {
                     rotateClockwise(targetRotation);
-                } else if (targetRotation < 0) {
+                } else {
                     rotateCounterClockwise(-targetRotation);
                 }
                 break;
@@ -68,7 +68,7 @@ public class Blender {
                 targetRotation = position.positionNumber - findSlot(3);
                 if (targetRotation > 0) {
                     rotateClockwise(targetRotation);
-                } else if (targetRotation < 0) {
+                } else {
                     rotateCounterClockwise(-targetRotation);
                 }
                 break;
