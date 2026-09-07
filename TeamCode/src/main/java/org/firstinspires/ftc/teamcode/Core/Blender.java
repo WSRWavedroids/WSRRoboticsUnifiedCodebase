@@ -91,8 +91,10 @@ public class Blender {
 
     public void initBlender() {
         while (!isBlenderPositioned()) {
-            robot.sorterMotor.setPower(0.1);
+            robot.sorterMotor.setPower(0.1); //TODO make this a state machine so it doesnt hang
         }
+        robot.sorterMotor.setPower(0);
+
         robot.sorterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.sorterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
