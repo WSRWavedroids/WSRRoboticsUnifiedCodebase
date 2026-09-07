@@ -24,7 +24,7 @@ public class Blender {
     public boolean forceBlenderLock = false;
 
 
-    enum SlotNames {SLOT_1, SLOT_2, SLOT_3, NONE}
+    public enum SlotNames {SLOT_1, SLOT_2, SLOT_3, NONE}
     public SlotNames rotationSlot = SLOT_1;
 
     /**
@@ -89,15 +89,20 @@ public class Blender {
     public void rotateClockwise(int amount) {
         if (!forceBlenderLock) {
             int currentPos = robot.sorterMotor.getCurrentPosition();
-            robot.sorterMotor.setTargetPosition(currentPos + 2731);
-            rotateSlotVariables(1);
+            robot.sorterMotor.setTargetPosition(currentPos + (2731 * amount));
+            for (int i = 0; i < amount; i++) {
+                rotateSlotVariables(1);
+            }
+
         }
     }
     public void rotateCounterClockwise(int amount) {
         if (!forceBlenderLock) {
             int currentPos = robot.sorterMotor.getCurrentPosition();
-            robot.sorterMotor.setTargetPosition(currentPos - 2731);
-            rotateSlotVariables(-1);
+            robot.sorterMotor.setTargetPosition(currentPos - (2731 * amount));
+            for (int i = 0; i < amount; i++) {
+                rotateSlotVariables(-1);
+            }
     }
     }
     public boolean isBlenderPositioned() {
