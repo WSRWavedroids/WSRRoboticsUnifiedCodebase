@@ -7,17 +7,20 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class Blender {
 
     private Robot robot;
+
     public Blender(Robot robot) {
         this.robot = robot;
         this.blenderPID = new ezPID(robot.sorterMotor, 8192, 0.000375, 0.0, 0.000005, 0.0, 1, 25, ezPID.movementType.POSITION);
     }
+
     private ezPID blenderPID;
 
 
-
+    /*
     public int launcherSlotColor = 0;
     public int intakeSlotColor = 0;
     public int storageSlotColor = 0;
+    */
     public int launcherPositionSlot = 2;
     public int intakePositionSlot = 1;
     public int storagePositionSlot = 3;
@@ -25,10 +28,12 @@ public class Blender {
 
 
     public enum SlotNames {SLOT_1, SLOT_2, SLOT_3, NONE}
+
     public SlotNames rotationSlot = SLOT_1;
 
     /**
      * rotates a slot to the specified position
+     *
      * @param slot
      */
     public void rotateSlotToPosition(SlotNames slot, int position) {
@@ -65,15 +70,14 @@ public class Blender {
     }
 
 
-
     public int findSlot(int slot) {
-        if (intakePositionSlot == slot){
+        if (intakePositionSlot == slot) {
             return 1;
         }
-        if (launcherPositionSlot == slot){
+        if (launcherPositionSlot == slot) {
             return 2;
         }
-        if (storagePositionSlot == slot){
+        if (storagePositionSlot == slot) {
             return 3;
         }
         return 0;
@@ -86,6 +90,11 @@ public class Blender {
     }
 
     //one slot movement is 2730.666666 ticks, or one third of a rotation, rounded to 2731 to make ints happy
+
+    /**
+     * rotates the blender clockwise by the specified amount if it is safe to do so
+     * @param amount
+     */
     public void rotateClockwise(int amount) {
         if (!forceBlenderLock) {
             int currentPos = robot.sorterMotor.getCurrentPosition();
@@ -96,6 +105,10 @@ public class Blender {
 
         }
     }
+    /**
+     * rotates the blender counterclockwise by the specified amount if it is safe to do so
+     * @param amount
+     */
     public void rotateCounterClockwise(int amount) {
         if (!forceBlenderLock) {
             int currentPos = robot.sorterMotor.getCurrentPosition();
@@ -103,14 +116,16 @@ public class Blender {
             for (int i = 0; i < amount; i++) {
                 rotateSlotVariables(-1);
             }
+        }
     }
-    }
+
     public boolean isBlenderPositioned() {
         return robot.blenderMagnetSensor.isPressed();
     }
 
     /**
      * cycles position variables by +-1
+     *
      * @param direction
      */
     public void rotateSlotVariables(int direction) {
@@ -130,27 +145,18 @@ public class Blender {
         if (input < 1) {
             return 3;
         }
-        if (input >3) {
+        if (input > 3) {
             return 1;
         }
         return input;
     }
 
     /**
-     * force lock/unlock blender rotation
+     * lock/unlock blender rotation
+     *
      * @param true_false
      */
     public void lockBlender(boolean true_false) {
         forceBlenderLock = true_false;
-    }
-
-
-    /**
-     * checks if it is safe to move the blender
-     */
-
-    //don't think I need this but not deleting it just in case
-    public void checkSlotPositions() {
-        //do stuff
     }
 }
