@@ -43,11 +43,13 @@ public class ArtifactLocator {
             return colorList[2];
         } else {{
             return EMPTY;
-        }}
-    }
-    public int getInventory(Robot.BallColor color){
-
         }
-
+        }
+    }
+    public Robot.BallColor getInventory(Robot.BallColor color){
+        if(ballColor == GREEN){
+            return GREEN;
+        }
     }
 }
+

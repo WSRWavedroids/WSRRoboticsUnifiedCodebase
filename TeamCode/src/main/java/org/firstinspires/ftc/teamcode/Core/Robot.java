@@ -28,6 +28,7 @@ import org.firstinspires.ftc.teamcode.Vision.LimelightDriver;
 
 public class Robot {
 
+    public static boolean findColor;
     public DcMotorEx frontLeftDrive;
     public DcMotorEx frontRightDrive;
     public DcMotorEx backLeftDrive;
@@ -47,7 +48,6 @@ public class Robot {
 
 
     public LED fireRGB, loadRGB, storeRGB;
-    public Blender blender;
 
     public RevColorSensorV3 leftColorScanner;
     public RevColorSensorV3 rightColorScanner;
@@ -85,7 +85,7 @@ public class Robot {
     public Launcher launcher;
     public Turret turret;
     public LaunchSequence launchSequence;
-
+    public ArtifactLocator artifactLocator;
 
     public Panels panels;
 
