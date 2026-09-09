@@ -216,6 +216,7 @@ public class FabioTeleOp extends OpMode {
             killSwitchActivated = true;
             requestOpModeStop();
         }
+        telemetry.addData("robot X", "");
     }
 
     /**

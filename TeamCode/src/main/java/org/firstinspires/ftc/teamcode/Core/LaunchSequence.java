@@ -28,7 +28,7 @@ public class LaunchSequence {
     public void update() {
         switch (launchSequenceSteps) {
             case READY:
-                if (queue.isEmpty()) {
+                if (!queue.isEmpty()) {
                     launchSequenceSteps = LAUNCH;
                 }
 
