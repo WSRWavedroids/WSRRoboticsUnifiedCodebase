@@ -5,6 +5,7 @@ import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.*;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -193,6 +194,41 @@ public class Robot {
         launchSequence.update();
         turret.update();
     }
+
+    public Robot.BallColor getIntakeColor()
+    {
+        double purpleMinHue = 170;
+        double purpleMaxHue = 295;
+        double purpleMinValue = 0.3;
+        double purpleMaxValue = 1.2;
+
+
+        double greenMinHue = 130;
+        double greenMaxHue = 165;
+        double greenMinValue = 0.3;
+        double greenMaxValue = 1.2;
+
+        float[] leftHSVValues = new float[3];
+        float[] rightHSVValues = new float[3];
+        Color.RGBToHSV(leftColorScanner.red(),leftColorScanner.green(), leftColorScanner.blue(), leftHSVValues);
+        Color.RGBToHSV(rightColorScanner.red(), rightColorScanner.green(), rightColorScanner.blue(), rightHSVValues);
+
+        double leftHue = rightHSVValues[0];
+        double leftValue = rightHSVValues[2];
+
+
+
+        if(leftHue > purpleMinHue && leftHue < purpleMaxHue &&
+                leftValue > purpleMinValue && leftValue < purpleMaxValue) {
+            return BallColor.PURPLE;
+        }
+        else if(leftHue > greenMinHue && leftHue < greenMaxHue &&
+                leftValue > greenMinValue && leftValue < greenMaxValue) {
+            return BallColor.GREEN;
+        }
+        return BallColor.EMPTY;
+    }
+
 
 
     /**
