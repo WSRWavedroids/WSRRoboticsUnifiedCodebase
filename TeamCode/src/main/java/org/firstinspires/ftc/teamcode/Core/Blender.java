@@ -109,7 +109,7 @@ public class Blender {
     public void rotateClockwise(int amount) {
         if (!forceBlenderLock) {
             int currentPos = robot.sorterMotor.getCurrentPosition();
-            robot.sorterMotor.setTargetPosition(currentPos + (2731 * amount));
+            blenderPID.runCalledPID(currentPos + (2731 * amount));
             for (int i = 0; i < amount; i++) {
                 rotateSlotVariables(1);
             }
@@ -123,7 +123,7 @@ public class Blender {
     public void rotateCounterClockwise(int amount) {
         if (!forceBlenderLock) {
             int currentPos = robot.sorterMotor.getCurrentPosition();
-            robot.sorterMotor.setTargetPosition(currentPos - (2731 * amount));
+            blenderPID.runCalledPID(currentPos - (2731 * amount));
             for (int i = 0; i < amount; i++) {
                 rotateSlotVariables(-1);
             }
