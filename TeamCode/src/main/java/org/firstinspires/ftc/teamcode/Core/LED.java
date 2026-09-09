@@ -5,9 +5,11 @@ import static org.firstinspires.ftc.teamcode.Core.LED.LEDColors.VIOLET;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class LED {
-    private final Servo ledInterface;
-    public LED(Servo ledFromHardwareMap) {
-        ledInterface = ledFromHardwareMap;
+    private Robot robot;
+    //private final Servo ledInterface;
+    public LED(Robot robot) {
+        this.robot = robot;
+        //ledInterface = ledFromHardwareMap;
     }
 
     public enum LEDColors {
@@ -29,10 +31,13 @@ public class LED {
         }
     }
     public void setColor(LEDColors color) {
-        ledInterface.setPosition(color.colorOutputValue);
+        //ledInterface.setPosition(color.colorOutputValue);
     }
 
     public void setPosition(double colorOutputValue) {
-        ledInterface.setPosition(colorOutputValue);
+        //ledInterface.setPosition(colorOutputValue);
+    }
+    public void update() {
+        //if()
     }
 }

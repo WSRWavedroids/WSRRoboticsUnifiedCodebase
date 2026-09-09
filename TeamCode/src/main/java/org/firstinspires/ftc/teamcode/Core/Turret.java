@@ -30,8 +30,8 @@ public class Turret {
     }
 
     public void lockOn() {
-        double x = follower.getPose().getX() + turretOffsetX;
-        double y = follower.getPose().getY() + turretOffsetY;
+        double x = robot.follower.getPose().getX() + turretOffsetX;
+        double y = robot.follower.getPose().getY() + turretOffsetY;
         if (robot.alliance == RED) {
             heading = Math.toDegrees(Math.atan2(144 - y, 144 - x));
             robot.turretServo.setPosition(degreesToServoUnits(heading));

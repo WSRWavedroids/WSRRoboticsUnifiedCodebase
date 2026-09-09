@@ -5,10 +5,12 @@ import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.*;
 import static com.qualcomm.robotcore.hardware.DcMotorSimple.Direction.*;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 
 import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
+import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
@@ -25,6 +27,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Vision.LimelightDriver;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class Robot {
 
@@ -88,6 +91,7 @@ public class Robot {
     public LaunchSequence launchSequence;
     public ArtifactLocator artifactLocator;
     public LED led;
+    public Follower follower;
 
     public Panels panels;
 
@@ -141,17 +145,17 @@ public class Robot {
 
         blenderMagnetSensor = hardwareMap.get(TouchSensor.class, "magsense");
 
-        loadRGB = new LED(hardwareMap.get(Servo.class, "loadRGB"));
-        fireRGB = new LED(hardwareMap.get(Servo.class, "fireRGB"));
-        storeRGB = new LED(hardwareMap.get(Servo.class, "storeRGB")) ;
+//        loadRGB = new LED(hardwareMap.get(Servo.class, "loadRGB"));
+//        fireRGB = new LED(hardwareMap.get(Servo.class, "fireRGB"));
+//        storeRGB = new LED(hardwareMap.get(Servo.class, "storeRGB")) ;
 
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         // This section sets the direction of all of the motors.
-        frontLeftDrive.setDirection(REVERSE);
-        frontRightDrive.setDirection(FORWARD);
-        backLeftDrive.setDirection(REVERSE);
-        backRightDrive.setDirection(FORWARD);
+        frontLeftDrive.setDirection(FORWARD);
+        frontRightDrive.setDirection(REVERSE);
+        backLeftDrive.setDirection(FORWARD);
+        backRightDrive.setDirection(REVERSE);
 
         sorterMotor.setDirection(FORWARD);
         intakeMotor.setDirection(REVERSE);
@@ -171,7 +175,10 @@ public class Robot {
         launchSequence = new LaunchSequence(this);
         turret = new Turret(this);
 //        led = new LED(this);
+        artifactLocator = new ArtifactLocator(this);
         limelight = new LimelightDriver(this);
+
+        follower = Constants.createFollower(hardwareMap);
 
         if (alliance == null) alliance = Alliance.BLUE;
 
@@ -187,6 +194,42 @@ public class Robot {
         launchSequence.update();
         turret.update();
     }
+
+    public Robot.BallColor getIntakeColor()
+    {
+        double purpleMinHue = 170;
+        double purpleMaxHue = 295;
+        double purpleMinValue = 0.3;
+        double purpleMaxValue = 1.2;
+
+
+        double greenMinHue = 130;
+        double greenMaxHue = 165;
+        double greenMinValue = 0.3;
+        double greenMaxValue = 1.2;
+
+        float[] leftHSVValues = new float[3];
+        float[] rightHSVValues = new float[3];
+        Color.RGBToHSV(leftColorScanner.red(),leftColorScanner.green(), leftColorScanner.blue(), leftHSVValues);
+        Color.RGBToHSV(rightColorScanner.red(), rightColorScanner.green(), rightColorScanner.blue(), rightHSVValues);
+
+        double leftHue = rightHSVValues[0];
+        double leftValue = rightHSVValues[2];
+
+
+
+        if(leftHue > purpleMinHue && leftHue < purpleMaxHue &&
+                leftValue > purpleMinValue && leftValue < purpleMaxValue) {
+            return BallColor.PURPLE;
+        }
+        else if(leftHue > greenMinHue && leftHue < greenMaxHue &&
+                leftValue > greenMinValue && leftValue < greenMaxValue) {
+            return BallColor.GREEN;
+        }
+        return BallColor.EMPTY;
+    }
+
+
 
     /**
      * Checks to see if the wheels are moving to a target position.
