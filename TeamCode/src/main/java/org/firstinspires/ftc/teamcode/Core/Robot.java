@@ -87,6 +87,7 @@ public class Robot {
     public Intake intake;
     public LaunchSequence launchSequence;
     public ArtifactLocator artifactLocator;
+    public LED led;
 
     public Panels panels;
 
@@ -164,7 +165,12 @@ public class Robot {
         sorterMotor.setZeroPowerBehavior(FLOAT);
 
         telemetry.addData("Status", "Initialized");
-
+        blender = new Blender(this);
+        intake = new Intake(this);
+        launcher = new Launcher(this);
+        launchSequence = new LaunchSequence(this);
+        turret = new Turret(this);
+//        led = new LED(this);
         limelight = new LimelightDriver(this);
 
         if (alliance == null) alliance = Alliance.BLUE;

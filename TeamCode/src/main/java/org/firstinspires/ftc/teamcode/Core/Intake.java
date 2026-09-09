@@ -14,6 +14,7 @@ public class Intake {
         READY_FOR_COMMANDS, INTAKE, OUTTAKE, FULL
     }
     public IntakeSteps intakeStep = READY_FOR_COMMANDS;
+    public boolean fullInventoryCheck = true;
     private double currentTime = 0;
     public void update() {
         switch (intakeStep) {
@@ -32,6 +33,7 @@ public class Intake {
                 );
                 robot.feedServo.setPower(1);
                 robot.intakeMotor.setPower(1);
+                fullInventoryCheck = true;
                 break;
             case OUTTAKE:
                 robot.feedServo.setPower(-1);
@@ -39,11 +41,13 @@ public class Intake {
                 break;
             case FULL:
                 robot.feedServo.setPower(1);
-                robot.intakeMotor.setPower(1);
-                if (robot.runtime.seconds() - currentTime >= 2) {
+                robot.intakeMotor.setPower(-1);
+                if (robot.runtime.seconds() - currentTime >= 1) {
                     intakeStep = READY_FOR_COMMANDS;
+                    fullInventoryCheck = false;
                 }
                 break;
+
         }
     }
 

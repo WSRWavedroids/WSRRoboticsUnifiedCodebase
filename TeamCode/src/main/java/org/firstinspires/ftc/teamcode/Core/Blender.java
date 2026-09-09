@@ -89,6 +89,7 @@ public class Blender {
         return 0;
     }
 
+
     public void initBlender() {
         while (!isBlenderPositioned()) {
             robot.sorterMotor.setPower(0.1); //TODO make this a state machine so it doesnt hang

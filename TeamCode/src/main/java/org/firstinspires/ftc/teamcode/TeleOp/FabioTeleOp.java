@@ -192,8 +192,14 @@ public class FabioTeleOp extends OpMode {
         if(gamepad2.circle){
             robot.intake.intakeStep = Intake.IntakeSteps.INTAKE;
         }
+        if (gamepad2.circleWasReleased()) {
+            robot.intake.intakeStep = Intake.IntakeSteps.READY_FOR_COMMANDS;
+        }
         if(gamepad2.cross){
             robot.intake.intakeStep = Intake.IntakeSteps.OUTTAKE;
+        }
+        if (gamepad2.crossWasReleased()) {
+            robot.intake.intakeStep = Intake.IntakeSteps.READY_FOR_COMMANDS;
         }
         if(gamepad2.dpadUpWasPressed()){
             robot.launchSequence.addToQueue(Robot.BallColor.GREEN);
